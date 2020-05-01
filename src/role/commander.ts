@@ -41,7 +41,7 @@ export default function commander(creep: Creep) {
       switch (arrive(creep)) {
         case SUCCESS: case NOTHING_TODO: {
           if (Memory.rooms[creep.memory.room]._attack) {
-            if (creep.hits === creep.hitsMax) {
+            if (creep.getActiveBodyparts(TOUGH) > 0) {
               creep.memory._arrive = Memory.rooms[creep.memory.room]._attack
               creep.memory.state = ARRIVE_HOSTILE
             } else creep.heal(creep)

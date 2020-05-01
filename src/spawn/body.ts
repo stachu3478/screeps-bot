@@ -40,7 +40,7 @@ export function progressiveCommander(energy: number, level: number = 1) {
   let remaining = energy - levelCost
   if (remaining < 0) remaining = 0
   let partsRemaining = MAX_CREEP_SIZE - level * 4 - 2
-  const healParts = 1 + Math.floor(remaining / dualCost)
+  const healParts = 1 + Math.floor((remaining - dualCost) / dualCost)
   remaining -= healParts * dualCost
 
   // add addictional attack parts if energy available

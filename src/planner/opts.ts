@@ -6,7 +6,7 @@ export const getSourceToControllerElapseTime = (carryPartCount: number, workPart
 export const getSourceToControllerElapseEarn = (carryPartCount: number): number => carryPartCount * CARRY_CAPACITY
 export const getCreepCost = (bodyParts: BodyPartConstant[]): number => bodyParts.reduce((cost, part) => cost + BODYPART_COST[part], 0)
 export const getWorkSaturation = (workTime: number, moveTime: number): number => workTime / (workTime + moveTime)
-export const getMaximumWorkPartsForSource = (workSaturation: number): number => SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME / workSaturation
+export const getMaximumWorkPartsForSource = (workSaturation: number): number => SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME / workSaturation / HARVEST_POWER
 export const getTotalControllerEarn = (bodyParts: BodyPartConstant[], distance: number): number => {
   const workBodyParts = bodyParts.reduce((total, part) => total + ((part === WORK) ? 1 : 0), 0)
   const carryBodyParts = bodyParts.reduce((total, part) => total + ((part === CARRY) ? 1 : 0), 0)

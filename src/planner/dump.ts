@@ -33,6 +33,6 @@ export default function dump(room: Room, pm: PlannerMatrix, pathLength: number[]
   room.memory.colonySources = sourcePositions
   room.memory.colonySourceId = farSourceId
   room.memory.controllerSourceId = nearSourceId
-  room.memory.maxWorkController = getMaximumWorkPartsForSource(getWorkSaturation(25, 50 + pathLength[0]))
-  room.memory.maxWorkSpawn = getMaximumWorkPartsForSource(getWorkSaturation(25, 25)) // try to maintain
+  room.memory.maxWorkController = Math.ceil(getMaximumWorkPartsForSource(getWorkSaturation(25, 5 + 50 + pathLength[0])))
+  room.memory.maxWorkSpawn = Math.ceil(getMaximumWorkPartsForSource(getWorkSaturation(25, 25))) // try to maintain
 }

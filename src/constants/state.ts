@@ -20,3 +20,6 @@ export const ARRIVE_HOSTILE = 19
 export const DISMANTLE = 20
 export const ATTACKING = 21
 export const FALL_BACK = 22
+export const STORAGE_FILL = 23
+export const STORAGE_DRAW = 24
+export const FORTIFY = 25

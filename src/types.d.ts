@@ -28,6 +28,7 @@ interface CreepMemory {
   _dismantle?: Id<Structure>
   _heal?: Id<Creep>
   _attack?: Id<Creep | Structure>
+  _pick_pos?: string
 }
 
 interface SpawnMemory {

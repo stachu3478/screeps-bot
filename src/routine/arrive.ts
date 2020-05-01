@@ -16,8 +16,8 @@ export default function arrive(creep: Creep) {
   const targetRoom = creep.memory._arrive
   if (!targetRoom) return NOTHING_TODO
   const pos = new RoomPosition(25, 25, targetRoom)
-  cheapMove(creep, pos)
-  if (creep.room.name === targetRoom) {
+  const result = cheapMove(creep, pos, true)
+  if (creep.room.name === targetRoom && result === 0) {
     delete creep.memory._harvest
     delete creep.memory._fill
     delete creep.memory._build // fresh

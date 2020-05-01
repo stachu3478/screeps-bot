@@ -6,7 +6,7 @@ function rankCreep(creep: Creep) {
     + (creep.getActiveBodyparts(WORK) << 3)
 }
 
-export default function trackEnemy(room: Room) {
+export default function trackEnemy(room: Room): Creep | undefined {
   return room.find(FIND_HOSTILE_CREEPS, {
     filter: (creep) => {
       return creep.getActiveBodyparts(ATTACK) > 0

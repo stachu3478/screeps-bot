@@ -2,6 +2,7 @@ import roleHarvester from '../role/harvester'
 import roleUpgrader from '../role/upgrader'
 import roleClaimer from '../role/claimer'
 import roleScout from '../role/scout'
+import roleFortifier from '../role/fortifier'
 import commander from '../role/commander'
 import tower from '../role/tower'
 import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER } from '../constants/role'
@@ -22,6 +23,9 @@ export default function run(room: Room, cpuUsed: number) {
   let mem = room.memory
   if (!mem.creeps) mem.creeps = {}
   let count = 0
+
+  const enemy = trackEnemy(room)
+
   for (const name in mem.creeps) {
     const creep = Game.creeps[name]
     if (!creep) {
@@ -29,12 +33,22 @@ export default function run(room: Room, cpuUsed: number) {
       delete Memory.creeps[name]
       continue
     }
+    if (creep.memory.room !== room.name) {
+      delete mem.creeps[name]
+      continue
+    }
     const role = creep.memory.role || 0
     creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
     workPartCountByRole[role] = (workPartCountByRole[role] || 0) + creep.getActiveBodyparts(WORK)
     count++
     if (creep.spawning) continue
-    switch (creep.memory.role) {
+    if (enemy) switch (creep.memory.role) {
+      case HARVESTER: case UPGRADER: roleFortifier(creep); break
+      case SCOUT: roleScout(creep); break
+      case CLAIMER: roleClaimer(creep); break
+      case COMMANDER: commander(creep); break
+      default: creep.memory.role = UPGRADER;
+    } else switch (creep.memory.role) {
       case HARVESTER: roleHarvester(creep); break
       case UPGRADER: roleUpgrader(creep); break
       case SCOUT: roleScout(creep); break
@@ -44,8 +58,10 @@ export default function run(room: Room, cpuUsed: number) {
     }
   }
 
-  const enemy = trackEnemy(room)
-  if (enemy) room.find(FIND_MY_STRUCTURES, { filter: s => s.structureType === STRUCTURE_TOWER && tower(s, enemy) })
+  if (enemy) {
+    room.find(FIND_MY_STRUCTURES, { filter: s => s.structureType === STRUCTURE_TOWER && tower(s, enemy) })
+    room.visual.text("Enemy tracked: " + enemy.name, 0, 4, dangerStyle)
+  }
 
   let spawn = Game.spawns[room.memory.spawnName || '']
   if (!spawn) {
