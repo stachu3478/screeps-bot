@@ -21,12 +21,13 @@ export default {
     format: "cjs",
     sourcemap: true
   },
+  external: ['lodash'],
 
   plugins: [
     clear({ targets: ["dist"] }),
     resolve(),
     commonjs(),
-    typescript({tsconfig: "./tsconfig.json"}),
-    screeps({config: cfg, dryRun: cfg == null})
+    typescript({ tsconfig: "./tsconfig.json" }),
+    screeps({ config: cfg, dryRun: cfg == null }),
   ]
 }

@@ -1,14 +1,10 @@
-import { ErrorMapper } from "utils/ErrorMapper";
+import run from "room/core"
 
-// When compiling TS to JS and bundling with rollup, the line numbers and file names in error messages change
-// This utility uses source maps to get the line numbers and file names of the original, TS source code
-export const loop = ErrorMapper.wrapLoop(() => {
-  console.log(`Current game tick is ${Game.time}`);
-
-  // Automatically delete memory of missing creeps
-  for (const name in Memory.creeps) {
-    if (!(name in Game.creeps)) {
-      delete Memory.creeps[name];
-    }
+export const loop = () => {
+  let usage = 0
+  for (const name in Memory.myRooms) {
+    const room = Game.rooms[name]
+    if (room) usage += run(room, usage)
   }
-});
+
+};

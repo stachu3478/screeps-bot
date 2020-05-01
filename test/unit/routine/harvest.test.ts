@@ -1,8 +1,8 @@
-import "./constants"
+import "../constants"
 import { assert } from "chai";
 import _ from "lodash"
-import { loop } from "../../src/main";
-import { Game, Memory } from "./mock"
+import harvest from "../../../src/routine/work/harvest"
+import { Game, Memory, Creep } from "../mock"
 
 describe("main", () => {
   before(() => {
@@ -18,10 +18,10 @@ describe("main", () => {
   });
 
   it("should export a loop function", function () {
-    assert.isTrue(typeof loop === "function");
+    assert.isTrue(typeof harvest === "function");
   });
 
-  it("should return void when called with no context", function () {
-    assert.isUndefined(loop());
+  it("should return number when called with no context", function () {
+    assert.isNumber(harvest(_.clone(Creep) as Creep));
   });
 });
