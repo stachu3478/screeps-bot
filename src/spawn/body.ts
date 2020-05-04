@@ -39,13 +39,15 @@ export function progressiveCommander(energy: number, level: number = 1) {
   const dualCost = BODYPART_COST[HEAL] + BODYPART_COST[MOVE]
   let remaining = energy - levelCost
   if (remaining < 0) remaining = 0
-  let partsRemaining = MAX_CREEP_SIZE - level * 4 - 2
-  const healParts = 1 + Math.floor((remaining - dualCost) / dualCost)
+  let partsRemaining = MAX_CREEP_SIZE - level * 4
+  let healParts = Math.min(Math.floor(remaining / dualCost), partsRemaining / 2)
+  if (healParts < 1) healParts = 1
+  partsRemaining -= healParts * 2
   remaining -= healParts * dualCost
 
   // add addictional attack parts if energy available
   const attackCost = BODYPART_COST[ATTACK] + BODYPART_COST[MOVE]
-  while (remaining >= attackCost && partsRemaining > 0) {
+  while (remaining >= attackCost && partsRemaining > 1) {
     remaining -= attackCost
     attackParts++
     partsRemaining -= 2
@@ -53,7 +55,7 @@ export function progressiveCommander(energy: number, level: number = 1) {
 
   // add addictional tough parts if energy available
   const toughCost = BODYPART_COST[TOUGH] + BODYPART_COST[MOVE]
-  while (remaining >= toughCost && partsRemaining > 0) {
+  while (remaining >= toughCost && partsRemaining > 1) {
     remaining -= toughCost
     toughParts++
     partsRemaining -= 2

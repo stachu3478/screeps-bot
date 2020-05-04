@@ -1,4 +1,4 @@
-import { HARVESTING, TOWER_FILL, SPAWN_FILL, REPAIR, BUILD, UPGRADE, ARRIVE, ARRIVE_HOSTILE, DISMANTLE, STORAGE_FILL, STORAGE_DRAW } from '../constants/state'
+import { HARVESTING, TOWER_FILL, SPAWN_FILL, REPAIR, BUILD, UPGRADE, ARRIVE, ARRIVE_HOSTILE, DISMANTLE, STORAGE_FILL, STORAGE_DRAW, RECYCLE } from '../constants/state'
 import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS } from '../constants/response'
 import harvest from 'routine/work/harvest'
 import towerFill from 'routine/work/towerFill'
@@ -14,9 +14,15 @@ import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/work/autoPick'
 import arrive from 'routine/arrive'
 import dismantle from 'routine/work/dismantle'
+import recycle from 'routine/recycle'
 
 export default function run(creep: Creep) {
   switch (creep.memory.state) {
+    case RECYCLE: {
+      switch (recycle(creep)) {
+        case DONE: delete Memory.creeps[creep.name]
+      }
+    } break;
     case DISMANTLE: {
       switch (dismantle(creep)) {
         case NOTHING_TODO: case FAILED: {
@@ -59,8 +65,7 @@ export default function run(creep: Creep) {
       switch (spawnerFill(creep)) {
         case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) creep.memory.state = HARVESTING; break
         case NOTHING_TODO: {
-          if (storageFill(creep) === NOTHING_DONE) creep.memory.state = STORAGE_FILL
-          else creep.memory.state = REPAIR
+          creep.memory.state = REPAIR
         } break
         case FAILED: creep.memory.state = TOWER_FILL; break
         case NOTHING_DONE: autoRepair(creep); break;

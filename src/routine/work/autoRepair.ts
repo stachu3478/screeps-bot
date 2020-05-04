@@ -7,6 +7,7 @@ const toRepair: ToRepair = {
   [STRUCTURE_ROAD]: 1,
   [STRUCTURE_WALL]: 1,
   [STRUCTURE_RAMPART]: 1,
+  [STRUCTURE_CONTAINER]: 1,
 }
 export default function autoRepair(creep: Creep) {
   const mem = creep.memory

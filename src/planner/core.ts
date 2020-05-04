@@ -3,6 +3,7 @@ import dump from './dump'
 import pos from './pos'
 
 export default function plan(room: Room) {
+  if (!room.controller) return
   const terrain = room.getTerrain()
   const pm = new PlannerMatrix(terrain)
   const matrix = pm.getMatrix()

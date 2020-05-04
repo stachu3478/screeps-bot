@@ -25,7 +25,7 @@ export default function run(room: Room, cpuUsed: number) {
   let count = 0
 
   const enemy = trackEnemy(room)
-
+  let deprived
   for (const name in mem.creeps) {
     const creep = Game.creeps[name]
     if (!creep) {
@@ -34,13 +34,20 @@ export default function run(room: Room, cpuUsed: number) {
       continue
     }
     if (creep.memory.room !== room.name) {
-      delete mem.creeps[name]
-      continue
+      if (creep.room.name !== room.name) {
+        delete mem.creeps[name]
+      } else {
+        const otherMemRoom = Memory.rooms[creep.memory.room].creeps
+        if (otherMemRoom) delete otherMemRoom[creep.name]
+        creep.memory.room = room.name
+      }
     }
     const role = creep.memory.role || 0
-    creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
-    workPartCountByRole[role] = (workPartCountByRole[role] || 0) + creep.getActiveBodyparts(WORK)
-    count++
+    if ((creep.ticksToLive || 0) > creep.body.length * CREEP_SPAWN_TIME) {
+      creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
+      workPartCountByRole[role] = (workPartCountByRole[role] || 0) + creep.getActiveBodyparts(WORK)
+      count++
+    }
     if (creep.spawning) continue
     if (enemy) switch (creep.memory.role) {
       case HARVESTER: case UPGRADER: roleFortifier(creep); break
@@ -56,7 +63,24 @@ export default function run(room: Room, cpuUsed: number) {
       case COMMANDER: commander(creep); break
       default: creep.memory.role = UPGRADER;
     }
+    if (creep.memory.deprived) deprived = creep
   }
+
+  const logs = room.getEventLog()
+  logs.forEach(l => {
+    switch (l.event) {
+      case EVENT_ATTACK:
+        if (l.data.attackType === EVENT_ATTACK_TYPE_HIT_BACK) return;
+      case EVENT_ATTACK_CONTROLLER:
+        const creep = Game.getObjectById(l.objectId as Id<Creep>)
+        if (creep && creep.owner && Memory.whitelist[creep.owner.username]) {
+          const message = `${creep.owner.username} has been removed from the whitelist due to violating peace regulations`
+          console.log(message)
+          Game.notify(message, 5)
+          delete Memory.whitelist[creep.owner.username]
+        }
+    }
+  })
 
   if (enemy) {
     room.find(FIND_MY_STRUCTURES, { filter: s => s.structureType === STRUCTURE_TOWER && tower(s, enemy) })
@@ -71,7 +95,7 @@ export default function run(room: Room, cpuUsed: number) {
     } else room.memory.spawnName = spawn.name
   }
 
-  if (spawn) spawnLoop(spawn, creepCountByRole, workPartCountByRole)
+  if (spawn) spawnLoop(spawn, creepCountByRole, workPartCountByRole, deprived)
   room.visual.text("Population: " + count, 0, 0, count === 0 ? dangerStyle : infoStyle)
   room.visual.text("Spawns: " + room.energyAvailable + "/" + room.energyCapacityAvailable, 0, 1, room.energyCapacityAvailable === 0 ? dangerStyle : infoStyle)
   return usage(room, cpuUsed)

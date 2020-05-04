@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import { posToChar, roomPos } from 'planner/pos'
 
 const directions: DirectionConstant[] = [
   TOP,
@@ -25,9 +26,29 @@ const offsetsByDirection: OffsetByDirection = {
   [TOP_LEFT]: [-1, -1]
 };
 
+function saveCache(positions: RoomPosition[]) {
+  if (!positions.length) return
+  if (!Memory.roomCacheKeepers) Memory.roomCacheKeepers = {}
+  let poses = ''
+  positions.forEach(p => {
+    poses += posToChar(p)
+  })
+  Memory.roomCacheKeepers[positions[0].roomName] = poses
+}
+
 function roomCallback(roomName: string, costMatrix: CostMatrix) {
   const room = Game.rooms[roomName]
-  if (!room) return costMatrix
+  if (!room) {
+    const cache = Memory.roomCacheKeepers && Memory.roomCacheKeepers[roomName]
+    if (!cache) return costMatrix
+    cache.split('').forEach(c => {
+      const { x, y } = roomPos(c, roomName)
+      for (let ox = -3; ox <= 3; ox++)
+        for (let oy = -3; oy <= 3; oy++)
+          costMatrix.set(x + ox, y + oy, 25)
+    })
+    return costMatrix
+  }
   const sourceKeepers = room.find(FIND_HOSTILE_CREEPS, {
     filter: c => c.owner.username === "Source Keeper"
   })
@@ -35,12 +56,14 @@ function roomCallback(roomName: string, costMatrix: CostMatrix) {
     const { x, y } = c.pos
     for (let ox = -3; ox <= 3; ox++)
       for (let oy = -3; oy <= 3; oy++)
-        costMatrix.set(x + ox, y + oy, 255)
+        costMatrix.set(x + ox, y + oy, 25)
   })
+  saveCache(sourceKeepers.map(c => c.pos))
   return costMatrix
 }
 
 export function cheapMove(creep: Creep, target: RoomPosition | _HasRoomPosition, safe: boolean = false): ScreepsReturnCode {
+  if (creep.fatigue) return ERR_TIRED
   const costCallback = safe ? roomCallback : undefined
   let result = creep.moveTo(target, { noPathFinding: true, reusePath: 100, costCallback })
   if (result === ERR_NOT_FOUND) {
@@ -62,6 +85,7 @@ export function cheapMove(creep: Creep, target: RoomPosition | _HasRoomPosition,
       } else creepOnRoad.move(directions[_.random(1, 8)])
     }
   }
+  creep.say(result + '')
   return result
 }
 

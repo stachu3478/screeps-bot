@@ -29,17 +29,25 @@ interface CreepMemory {
   _heal?: Id<Creep>
   _attack?: Id<Creep | Structure>
   _pick_pos?: string
+  _prev_hits?: number
+  deprived?: 1
 }
 
 interface SpawnMemory {
-
+  upgradeMode?: boolean
 }
 
 interface Memory {
-  uuid: number;
-  log: any;
+  uuid: number
+  log: any
   myRooms: {
     [key: string]: 0
+  }
+  whitelist: {
+    [key: string]: number
+  }
+  roomCacheKeepers?: {
+    [key: string]: string
   }
 }
 

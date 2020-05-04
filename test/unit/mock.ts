@@ -11,6 +11,7 @@ export const Memory = {
 };
 
 export const Creep = {
+  store: { getFreeCapacity: () => 50 },
   memory: {} as CreepMemory,
   pos: {
     findClosestByPath: (CNST: FindConstant) => null
@@ -18,6 +19,7 @@ export const Creep = {
 }
 
 export const SourcyCreep = {
+  store: { getFreeCapacity: () => 50 },
   memory: {} as CreepMemory,
   pos: {
     findClosestByPath: (structure: FindConstant) => {
