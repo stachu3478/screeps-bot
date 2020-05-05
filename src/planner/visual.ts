@@ -1,11 +1,7 @@
-const spawnStyle: PolyStyle = {
-  fill: '#ffff88',
-}
-
-const structStyle: PolyStyle = {
-  fill: '#88ffff',
-}
-
+const spawnStyle: PolyStyle = { fill: '#ffff88' }
+const storageStyle: PolyStyle = { fill: '#888888' }
+const termStyle: PolyStyle = { fill: '#aaaaaa' }
+const structStyle: PolyStyle = { fill: '#88ffff' }
 const roadStyle: PolyStyle = {
   fill: '#dddddd',
 }
@@ -16,10 +12,15 @@ export default function visual(room: Room) {
   if (structs) {
     const spawnPos = structs.charCodeAt(0)
     vis.rect((spawnPos & 63) - 0.25, (spawnPos >> 6) - 0.25, 0.5, 0.5, spawnStyle)
+    const storagePos = structs.charCodeAt(1)
+    vis.rect((storagePos & 63) - 0.25, (storagePos >> 6) - 0.25, 0.5, 0.5, storageStyle)
+    const termPos = structs.charCodeAt(2)
+    vis.rect((termPos & 63) - 0.25, (termPos >> 6) - 0.25, 0.5, 0.5, termStyle)
 
     const roadCount = structs.length
-    for (let i = 1; i < roadCount; i++) {
+    for (let i = 3; i < roadCount; i++) {
       const structPos = structs.charCodeAt(i)
+
       vis.rect((structPos & 63) - 0.25, (structPos >> 6) - 0.25, 0.5, 0.5, structStyle)
     }
   }
