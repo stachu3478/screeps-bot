@@ -10,11 +10,12 @@ export default function attack(creep: Creep) {
   let target: Creep | Structure | null = Game.getObjectById(creep.memory._attack || "")
   if (creep.getActiveBodyparts(TOUGH) === 0) return FAILED
   if (!target) {
+    const list = Memory.whitelist || {}
     let newTarget: Creep | Structure | null = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-      filter: s => !Memory.whitelist[s.owner ? s.owner.username : ''] && hittable(s)
+      filter: s => !list[s.owner ? s.owner.username : ''] && hittable(s)
     })
     if (!newTarget) newTarget = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
-      filter: c => !Memory.whitelist[c.owner.username] && hittable(c)
+      filter: c => !list[c.owner.username] && hittable(c)
     })
     if (!newTarget) newTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, hittableFilter)
     if (!newTarget) return NOTHING_TODO

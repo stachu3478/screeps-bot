@@ -5,7 +5,7 @@ import roleScout from '../role/scout'
 import roleFortifier from '../role/fortifier'
 import commander from '../role/commander'
 import tower from '../role/tower'
-import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER } from '../constants/role'
+import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER } from '../constants/role'
 import spawnLoop from 'spawn/core'
 import plan from 'planner/core'
 import callRescue from 'planner/rescue';
@@ -13,6 +13,7 @@ import trackEnemy from './enemyTrack';
 import visual from 'planner/visual'
 import usage from './usage'
 import { infoStyle, dangerStyle } from './style'
+import miner from 'role/miner';
 
 export default function run(room: Room, cpuUsed: number) {
   if (!room.memory.roads) plan(room)
@@ -54,6 +55,7 @@ export default function run(room: Room, cpuUsed: number) {
       case SCOUT: roleScout(creep); break
       case CLAIMER: roleClaimer(creep); break
       case COMMANDER: commander(creep); break
+      case MINER: miner(creep); break
       default: creep.memory.role = UPGRADER;
     } else switch (creep.memory.role) {
       case HARVESTER: roleHarvester(creep); break
@@ -61,6 +63,7 @@ export default function run(room: Room, cpuUsed: number) {
       case SCOUT: roleScout(creep); break
       case CLAIMER: roleClaimer(creep); break
       case COMMANDER: commander(creep); break
+      case MINER: miner(creep); break
       default: creep.memory.role = UPGRADER;
     }
     if (creep.memory.deprived) deprived = creep
@@ -73,6 +76,7 @@ export default function run(room: Room, cpuUsed: number) {
         if (l.data.attackType === EVENT_ATTACK_TYPE_HIT_BACK) return;
       case EVENT_ATTACK_CONTROLLER:
         const creep = Game.getObjectById(l.objectId as Id<Creep>)
+        if (!Memory.whitelist) Memory.whitelist = {}
         if (creep && creep.owner && Memory.whitelist[creep.owner.username]) {
           const message = `${creep.owner.username} has been removed from the whitelist due to violating peace regulations`
           console.log(message)

@@ -1,16 +1,61 @@
+const workPack = BODYPART_COST[WORK] + BODYPART_COST[CARRY] + BODYPART_COST[MOVE]
+const liteWorkPack = BODYPART_COST[WORK] + BODYPART_COST[MOVE]
+const carryPack = 2 * BODYPART_COST[CARRY] + BODYPART_COST[MOVE]
+const liteCarryPack = BODYPART_COST[CARRY] + BODYPART_COST[MOVE]
+const moveWorkPack = 2 * BODYPART_COST[WORK] + BODYPART_COST[MOVE]
+
 export function progressiveWorker(energy: number, maxWork: number = MAX_CREEP_SIZE) {
   const parts = [WORK, CARRY, MOVE]
-  let remaining = energy - 200
+  let remaining = energy - workPack
   let partsRemaining = MAX_CREEP_SIZE - 3
   let workRemaining = maxWork - 1
-  while (remaining >= 200 && partsRemaining >= 3 && workRemaining > 0) {
+  while (remaining >= workPack && partsRemaining >= 3 && workRemaining > 0) {
     parts.push(WORK, CARRY, MOVE)
-    remaining -= 200
+    remaining -= workPack
     partsRemaining -= 3
     workRemaining--
   }
-  if (remaining >= 150 && partsRemaining >= 2 && workRemaining > 0) parts.push(WORK, MOVE)
-  else if (remaining >= 100 && partsRemaining >= 2) parts.push(CARRY, MOVE)
+  if (remaining >= liteWorkPack && partsRemaining >= 2 && workRemaining > 0) parts.push(WORK, MOVE)
+  else if (remaining >= liteCarryPack && partsRemaining >= 2) parts.push(CARRY, MOVE)
+  return parts
+}
+
+export function progressiveLiteWorker(energy: number) {
+  let workRemaining = 1 + SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME / BUILD_POWER
+  const parts = []
+  let remaining = Math.max(energy, SPAWN_ENERGY_START)
+  let partsRemaining = MAX_CREEP_SIZE
+  while (remaining >= workPack && partsRemaining >= 3 && workRemaining > 0) {
+    parts.push(WORK, CARRY, MOVE)
+    remaining -= workPack
+    partsRemaining -= 3
+    workRemaining--
+  }
+  while (remaining >= carryPack && partsRemaining >= 3) {
+    parts.push(CARRY, CARRY, MOVE)
+    remaining -= carryPack
+    partsRemaining -= 3
+  }
+  if (remaining >= liteWorkPack && partsRemaining >= 2 && workRemaining > 0) parts.push(WORK, MOVE)
+  else if (remaining >= liteCarryPack && partsRemaining >= 2) parts.push(CARRY, MOVE)
+  return parts
+}
+
+export function progressiveMiner(energy: number) {
+  const maxWork = 1 + SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME / HARVEST_POWER
+  let currentWork = 0
+  const parts: BodyPartConstant[] = [CARRY]
+  let remaining = energy - BODYPART_COST[CARRY]
+  while (remaining > moveWorkPack && currentWork + 2 <= maxWork) {
+    parts.push(WORK, WORK, MOVE)
+    remaining -= moveWorkPack
+    currentWork += 2
+  }
+  const lessPack = BODYPART_COST[WORK] + BODYPART_COST[MOVE]
+  if (remaining > lessPack && currentWork < maxWork) {
+    parts.push(WORK, WORK, MOVE)
+    remaining -= lessPack
+  }
   return parts
 }
 

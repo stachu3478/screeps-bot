@@ -1,6 +1,7 @@
+import _ from 'lodash'
 import PlannerMatrix from './matrix'
 import dump from './dump'
-import pos from './pos'
+import pos, { posToChar } from './pos'
 
 export default function plan(room: Room) {
   if (!room.controller) return
@@ -11,14 +12,13 @@ export default function plan(room: Room) {
 
   // find all paths and mark in matrix
   interface SourceMap {
-    [id: string]: string[]
+    [id: string]: string
   }
   const sources = room.find(FIND_SOURCES)
   let furthestSource = sources[0]
   let nearestSource = sources[0]
   let shortestPathLength = Infinity
   let furthestPath: RoomPosition[] = []
-  const pathLength: number[] = []
   const sourcePositions: SourceMap = {}
   const costMatrix = new PathFinder.CostMatrix()
   const roomCallback = (roomName: string) => roomName === room.name ? costMatrix : false;
@@ -33,39 +33,50 @@ export default function plan(room: Room) {
   })
   sources.forEach(obj => {
     const ps = obj.pos
-    sourcePositions[obj.id] = []
-    for (let ox = -1; ox <= 1; ox++)
-      for (let oy = -1; oy <= 1; oy++) {
-        const xy = pos(ps.x + ox, ps.y + oy)
-        if (terrain.get(ps.x + ox, ps.y + oy) !== 1) {
-          const { path } = PathFinder.search(
-            new RoomPosition(ps.x + ox, ps.y + oy, room.name),
-            { pos: controllerPos, range: 3 },
-            { plainCost: 2, roomCallback }
-          )
-          pm.setField(ps.x + ox, ps.y + oy, 1)
-          path.forEach((s: RoomPosition, step: number) => {
-            pm.setField(s.x, s.y, step + 1)
-            costMatrix.set(s.x, s.y, 1)
-          })
-          sourcePositions[obj.id].push(String.fromCharCode(xy))
-          if (path.length > furthestPath.length) {
-            furthestSource = obj
-            furthestPath = path
-          }
-          if (path.length < shortestPathLength) {
-            nearestSource = obj
-            shortestPathLength = path.length
-          }
-          pathLength.push(path.length)
-        }
-      }
+    const { path } = PathFinder.search(
+      new RoomPosition(ps.x, ps.y, room.name),
+      { pos: controllerPos, range: 3 },
+      { plainCost: 2, roomCallback }
+    )
+    path.forEach((s: RoomPosition, step: number) => {
+      if (s === obj.pos) return
+      pm.setField(s.x, s.y, step + 1)
+      costMatrix.set(s.x, s.y, 1)
+    })
+    sourcePositions[obj.id] = posToChar(path[0]) + String.fromCharCode(path.length)
+    if (path.length > furthestPath.length) {
+      furthestSource = obj
+      furthestPath = path
+    }
+    if (path.length < shortestPathLength) {
+      nearestSource = obj
+      shortestPathLength = path.length
+    }
+  })
+
+  // find path to prospect time to travel to routine place
+  sources.forEach(obj => {
+    if (obj === furthestSource) {
+      sourcePositions[obj.id] += String.fromCharCode(0)
+      return
+    }
+    const ps = obj.pos
+    const { path } = PathFinder.search(
+      new RoomPosition(ps.x, ps.y, room.name),
+      furthestSource.pos,
+      { plainCost: 2, roomCallback }
+    )
+    sourcePositions[obj.id] += String.fromCharCode(path.length)
   })
 
   pm.coverBorder() // fill the covers to block iteration
 
   // initially plan structures
-  const structsCountGoal = 49
+  const structsCountGoal = _.sum(CONTROLLER_STRUCTURES, (s) => {
+    const max = _.max(s)
+    if (max === 2500 || typeof max !== 'number') return 0
+    return max
+  })
   const structurePoses: number[] = []
   const structureCosts: number[] = []
   furthestPath.forEach(({ x, y }) => {
@@ -136,5 +147,5 @@ export default function plan(room: Room) {
     // break
   }
 
-  dump(room, pm, pathLength, sourcePositions, furthestSource.id, nearestSource.id)
+  dump(room, pm, sourcePositions, furthestSource.id, nearestSource.id)
 };

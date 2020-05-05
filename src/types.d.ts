@@ -1,6 +1,6 @@
 // example declaration file - remove these and add your own custom typings
 interface SourceMap {
-  [id: string]: string[]
+  [id: string]: string
 }
 // memory extension samples
 interface CreepMemory {
@@ -22,7 +22,6 @@ interface CreepMemory {
   _auto_repair?: Id<Structure>
   _repair_cooldown?: number
   _build?: Id<ConstructionSite>
-  _sourceResevation?: string
   _arrive?: string
   _exit?: string
   _dismantle?: Id<Structure>
@@ -30,6 +29,7 @@ interface CreepMemory {
   _attack?: Id<Creep | Structure>
   _pick_pos?: string
   _prev_hits?: number
+  _draw?: Id<StructureContainer>
   deprived?: 1
 }
 
@@ -43,7 +43,7 @@ interface Memory {
   myRooms: {
     [key: string]: 0
   }
-  whitelist: {
+  whitelist?: {
     [key: string]: number
   }
   roomCacheKeepers?: {
@@ -57,10 +57,8 @@ interface RoomMemory {
   roads?: string
   colonySources?: SourceMap
   colonySourceId?: Id<Source>
-  controllerSourceId?: Id<Source>
-  sourceToControllerPathLength?: number[]
+  sourceCount?: number
   maxWorkController?: number
-  maxWorkSpawn?: number
   spawnName?: string
   _struct_iteration?: number
   _road_iteration?: number

@@ -15,6 +15,7 @@ import autoPick from 'routine/work/autoPick'
 import arrive from 'routine/arrive'
 import dismantle from 'routine/work/dismantle'
 import recycle from 'routine/recycle'
+import drawContainer from 'routine/work/containerDraw';
 
 export default function run(creep: Creep) {
   switch (creep.memory.state) {
@@ -37,8 +38,8 @@ export default function run(creep: Creep) {
       }
     } break;
     case HARVESTING: {
-      switch (harvest(creep, Memory.rooms[creep.memory.room].colonySourceId)) {
-        case DONE: creep.memory.state = TOWER_FILL; break
+      switch (drawContainer(creep)) {
+        case DONE: case SUCCESS: creep.memory.state = TOWER_FILL; break
         case FAILED: {
           creep.memory._arrive = creep.memory.room
           creep.memory.state = ARRIVE
