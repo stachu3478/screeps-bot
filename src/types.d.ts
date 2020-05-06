@@ -72,6 +72,7 @@ interface RoomMemory {
   _dismantle?: string
   averageUsage?: number
   _attack?: string
+  _extractor?: Id<StructureExtractor>
 }
 
 // `global` extension samples

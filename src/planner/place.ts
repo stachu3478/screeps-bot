@@ -2,6 +2,7 @@ import plan from './core'
 import { SUCCESS, NOTHING_TODO } from '../constants/response'
 
 export default function place(room: Room) {
+  if (!room.controller) return
   const mem = room.memory
   if (!mem.structs) plan(room)
   mem.structs = mem.structs || ''
@@ -22,6 +23,15 @@ export default function place(room: Room) {
       return SUCCESS
     }
     if (++iteration >= times) iteration = 0
+  }
+  if (!mem._extractor && CONTROLLER_STRUCTURES[STRUCTURE_EXTRACTOR][room.controller.level]) {
+    const extractor = room.find(FIND_STRUCTURES, {
+      filter: s => s.structureType === STRUCTURE_EXTRACTOR
+    })[0] as StructureExtractor
+    if (!extractor) {
+      const mineralPos = room.find(FIND_MINERALS)[0]
+      if (mineralPos && mineralPos.pos.createConstructionSite(STRUCTURE_EXTRACTOR) === 0) return SUCCESS
+    } else mem._extractor = extractor.id
   }
   return NOTHING_TODO
 }
