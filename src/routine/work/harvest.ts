@@ -5,9 +5,9 @@ import { roomPos } from 'planner/pos'
 export default function harvest(creep: Creep, sourceId?: Id<Source>) {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return DONE
   let target = Game.getObjectById(creep.memory._harvest || ('' as Id<Source>))
-  if (!target || !target.energy) {
-    if (sourceId && (!target || target.id !== sourceId)) target = Game.getObjectById(sourceId)
-    if (!target || !target.energy) return NOTHING_TODO
+  if (!target) {
+    if (sourceId) target = Game.getObjectById(sourceId)
+    if (!target) return NOTHING_TODO
     creep.memory._harvest = target.id
   }
   let targetPos
@@ -21,6 +21,7 @@ export default function harvest(creep: Creep, sourceId?: Id<Source>) {
   creep.say(result + '')
   const remaining = creep.store.getFreeCapacity(RESOURCE_ENERGY) - creep.getActiveBodyparts(WORK) * HARVEST_POWER
   if (result === ERR_NOT_IN_RANGE) cheapMove(creep, targetPos)
+  else if (result === ERR_TIRED) return NOTHING_TODO
   else if (result !== 0) return FAILED
   else {
     if (remaining <= 0) return DONE

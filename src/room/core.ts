@@ -5,7 +5,7 @@ import roleScout from '../role/scout'
 import roleFortifier from '../role/fortifier'
 import commander from '../role/commander'
 import tower from '../role/tower'
-import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER } from '../constants/role'
+import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER, RETIRED } from '../constants/role'
 import spawnLoop from 'spawn/core'
 import plan from 'planner/core'
 import callRescue from 'planner/rescue';
@@ -49,7 +49,7 @@ export default function run(room: Room, cpuUsed: number) {
       creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
       workPartCountByRole[role] = (workPartCountByRole[role] || 0) + creep.getActiveBodyparts(WORK)
       count++
-    }
+    } else creepCountByRole[RETIRED] = (creepCountByRole[RETIRED] || 0) + 1
     if (creep.spawning) continue
     if (enemy) switch (creep.memory.role) {
       case HARVESTER: case UPGRADER: roleFortifier(creep); break
@@ -83,6 +83,14 @@ export default function run(room: Room, cpuUsed: number) {
           Game.notify(message, 5)
           delete Memory.whitelist[creep.owner.username]
         }
+        break
+      case EVENT_OBJECT_DESTROYED:
+        const type = l.data.type
+        if (type !== LOOK_CREEPS) {
+          if (type === STRUCTURE_ROAD) mem._roadBuilt = false
+          else mem._built = false
+        }
+        break
     }
   })
 

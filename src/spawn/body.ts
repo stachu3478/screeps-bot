@@ -20,9 +20,9 @@ export function progressiveWorker(energy: number, maxWork: number = MAX_CREEP_SI
   return parts
 }
 
-export function progressiveLiteWorker(energy: number) {
+export function progressiveLiteWorker(energy: number): BodyPartConstant[] {
   let workRemaining = 1 + SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME / BUILD_POWER
-  const parts = []
+  const parts: BodyPartConstant[] = []
   let remaining = Math.max(energy, SPAWN_ENERGY_START)
   let partsRemaining = MAX_CREEP_SIZE
   while (remaining >= workPack && partsRemaining >= 3 && workRemaining > 0) {
@@ -46,14 +46,14 @@ export function progressiveMiner(energy: number) {
   let currentWork = 0
   const parts: BodyPartConstant[] = [CARRY]
   let remaining = energy - BODYPART_COST[CARRY]
-  while (remaining > moveWorkPack && currentWork + 2 <= maxWork) {
+  while (remaining >= moveWorkPack && currentWork + 2 <= maxWork) {
     parts.push(WORK, WORK, MOVE)
     remaining -= moveWorkPack
     currentWork += 2
   }
   const lessPack = BODYPART_COST[WORK] + BODYPART_COST[MOVE]
-  if (remaining > lessPack && currentWork < maxWork) {
-    parts.push(WORK, WORK, MOVE)
+  if (remaining >= lessPack && currentWork < maxWork) {
+    parts.push(WORK, MOVE)
     remaining -= lessPack
   }
   return parts

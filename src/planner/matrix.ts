@@ -83,12 +83,12 @@ export default class PlannerMatrix {
 
   coverBorder() {
     for (let x = 0; x < 50; x++) {
-      this.setField(x, 0, -127)
-      this.setField(x, 49, -127)
+      this.setField(x, 2, -127)
+      this.setField(x, 47, -127)
     }
     for (let y = 0; y < 50; y++) {
-      this.setField(0, y, -127)
-      this.setField(49, y, -127)
+      this.setField(2, y, -127)
+      this.setField(47, y, -127)
     }
   }
 

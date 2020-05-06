@@ -31,8 +31,8 @@ export default function autoFill(creep: Creep) {
   }) as AnyStoreStructure[], s => toFill[s.structureType] || 0)
   if (!target || !target.structureType) return NOTHING_TODO
   const result = creep.transfer(target, RESOURCE_ENERGY)
-  creep.say(target.structureType)
   remaining -= (target.store as StoreBase<ResourceConstant, false>).getFreeCapacity(RESOURCE_ENERGY)
+  if (target.structureType === STRUCTURE_CONTAINER) creep.memory._draw = target.id
   if (result !== 0) return FAILED
   else {
     if (remaining <= 0) return DONE

@@ -3,6 +3,7 @@ import { SUCCESS, NOTHING_TODO } from '../constants/response'
 
 export default function place(room: Room) {
   const mem = room.memory
+  if (mem._built) return NOTHING_TODO
   if (!mem.structs) plan(room)
   mem.structs = mem.structs || ''
   const times = mem.structs.length
@@ -23,5 +24,6 @@ export default function place(room: Room) {
     }
     if (++iteration >= times) iteration = 0
   }
+  mem._built = true
   return NOTHING_TODO
 }

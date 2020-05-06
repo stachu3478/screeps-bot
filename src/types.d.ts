@@ -59,6 +59,7 @@ interface RoomMemory {
   colonySourceId?: Id<Source>
   sourceCount?: number
   maxWorkController?: number
+  workControllerOver?: number
   spawnName?: string
   _struct_iteration?: number
   _road_iteration?: number
@@ -70,6 +71,8 @@ interface RoomMemory {
   _dismantle?: string
   averageUsage?: number
   _attack?: string
+  _built?: boolean
+  _roadBuilt?: boolean
 }
 
 // `global` extension samples

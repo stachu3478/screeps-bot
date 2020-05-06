@@ -43,7 +43,7 @@ export default function plan(room: Room) {
       pm.setField(s.x, s.y, step + 1)
       costMatrix.set(s.x, s.y, 1)
     })
-    sourcePositions[obj.id] = posToChar(path[0]) + String.fromCharCode(path.length)
+    sourcePositions[obj.id] = posToChar(path[0])
     if (path.length > furthestPath.length) {
       furthestSource = obj
       furthestPath = path
@@ -57,7 +57,7 @@ export default function plan(room: Room) {
   // find path to prospect time to travel to routine place
   sources.forEach(obj => {
     if (obj === furthestSource) {
-      sourcePositions[obj.id] += String.fromCharCode(0)
+      sourcePositions[obj.id] += String.fromCharCode(1)
       return
     }
     const ps = obj.pos
