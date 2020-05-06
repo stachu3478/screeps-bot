@@ -14,6 +14,7 @@ import visual from 'planner/visual'
 import usage from './usage'
 import { infoStyle, dangerStyle } from './style'
 import miner from 'role/miner';
+import isRetired from 'utils/retired';
 
 export default function run(room: Room, cpuUsed: number) {
   if (!room.memory.roads) plan(room)
@@ -44,7 +45,7 @@ export default function run(room: Room, cpuUsed: number) {
       }
     }
     const role = creep.memory.role || 0
-    if ((creep.ticksToLive || 0) > creep.body.length * CREEP_SPAWN_TIME) {
+    if (!isRetired(creep)) {
       creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
       workPartCountByRole[role] = (workPartCountByRole[role] || 0) + creep.getActiveBodyparts(WORK)
       count++
@@ -66,7 +67,6 @@ export default function run(room: Room, cpuUsed: number) {
       case MINER: miner(creep); break
       default: creep.memory.role = UPGRADER;
     }
-    if (creep.memory.deprived) deprived = creep
   }
 
   const logs = room.getEventLog()
@@ -99,7 +99,7 @@ export default function run(room: Room, cpuUsed: number) {
     } else room.memory.spawnName = spawn.name
   }
 
-  if (spawn) spawnLoop(spawn, creepCountByRole, workPartCountByRole, deprived)
+  if (spawn) spawnLoop(spawn, creepCountByRole, workPartCountByRole)
   room.visual.text("Population: " + count, 0, 0, count === 0 ? dangerStyle : infoStyle)
   room.visual.text("Spawns: " + room.energyAvailable + "/" + room.energyCapacityAvailable, 0, 1, room.energyCapacityAvailable === 0 ? dangerStyle : infoStyle)
   return usage(room, cpuUsed)

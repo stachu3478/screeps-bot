@@ -30,7 +30,7 @@ interface CreepMemory {
   _pick_pos?: string
   _prev_hits?: number
   _draw?: Id<StructureContainer>
-  deprived?: 1
+  deprivity: number
 }
 
 interface SpawnMemory {
