@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { DONE, SUCCESS, FAILED, NOTHING_DONE } from "constants/response";
 
 export default function fortify(creep: Creep) {
@@ -12,7 +13,7 @@ export default function fortify(creep: Creep) {
     return DONE
   }
 
-  const ramp = creep.pos.lookFor(LOOK_STRUCTURES)[0]
+  const ramp = _.filter(creep.pos.lookFor(LOOK_STRUCTURES), s => s.structureType === STRUCTURE_RAMPART)[0]
   if (ramp) {
     creep.memory._repair = ramp.id
     creep.say("rtni")

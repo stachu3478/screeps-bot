@@ -38,7 +38,7 @@ export default function run(creep: Creep) {
           if (storageDraw(creep) === NOTHING_DONE) creep.memory.state = STORAGE_DRAW
           else creep.memory.state = HARVESTING
         } break
-        case NOTHING_TODO: case FAILED: creep.memory.state = TOWER_FILL; break
+        case NOTHING_TODO: case FAILED: creep.memory.state = BUILD; break
         case NOTHING_DONE: autoRepair(creep); break;
       }
     } break;
@@ -58,7 +58,7 @@ export default function run(creep: Creep) {
     } break;
     case FORTIFY: {
       switch (fortify(creep)) {
-        case SUCCESS: {
+        case SUCCESS: case DONE: {
           if (creep.memory._repair) creep.memory.state = REPAIR
           else creep.memory.state = BUILD
         } break
