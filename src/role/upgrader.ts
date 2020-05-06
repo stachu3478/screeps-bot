@@ -1,16 +1,16 @@
 import { HARVESTING, UPGRADE, STORAGE_DRAW } from '../constants/state'
 import { DONE, NOTHING_DONE, FAILED, NO_RESOURCE, SUCCESS, NOTHING_TODO } from '../constants/response'
-import harvest from 'routine/work/harvest'
 import upgrade from 'routine/work/upgrade'
 import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/work/autoPick'
 import storageDraw from 'routine/work/storageDraw'
+import drawContainer from 'routine/work/containerDraw';
 
 export default function run(creep: Creep) {
   switch (creep.memory.state) {
     case HARVESTING: {
-      switch (harvest(creep, creep.room.memory.controllerSourceId)) {
-        case DONE: creep.memory.state = UPGRADE; break
+      switch (drawContainer(creep)) {
+        case DONE: case SUCCESS: creep.memory.state = UPGRADE; break
         case NOTHING_DONE: autoPick(creep); break
         case NOTHING_TODO: {
           creep.memory.state = STORAGE_DRAW

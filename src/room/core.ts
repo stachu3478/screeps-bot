@@ -5,7 +5,7 @@ import roleScout from '../role/scout'
 import roleFortifier from '../role/fortifier'
 import commander from '../role/commander'
 import tower from '../role/tower'
-import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER } from '../constants/role'
+import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER, RETIRED } from '../constants/role'
 import spawnLoop from 'spawn/core'
 import plan from 'planner/core'
 import callRescue from 'planner/rescue';
@@ -13,6 +13,8 @@ import trackEnemy from './enemyTrack';
 import visual from 'planner/visual'
 import usage from './usage'
 import { infoStyle, dangerStyle } from './style'
+import miner from 'role/miner';
+import isRetired from 'utils/retired';
 
 export default function run(room: Room, cpuUsed: number) {
   if (!room.memory.roads) plan(room)
@@ -43,17 +45,18 @@ export default function run(room: Room, cpuUsed: number) {
       }
     }
     const role = creep.memory.role || 0
-    if ((creep.ticksToLive || 0) > creep.body.length * CREEP_SPAWN_TIME) {
+    if (!isRetired(creep)) {
       creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
       workPartCountByRole[role] = (workPartCountByRole[role] || 0) + creep.getActiveBodyparts(WORK)
       count++
-    }
+    } else creepCountByRole[RETIRED] = (creepCountByRole[RETIRED] || 0) + 1
     if (creep.spawning) continue
     if (enemy) switch (creep.memory.role) {
       case HARVESTER: case UPGRADER: roleFortifier(creep); break
       case SCOUT: roleScout(creep); break
       case CLAIMER: roleClaimer(creep); break
       case COMMANDER: commander(creep); break
+      case MINER: miner(creep); break
       default: creep.memory.role = UPGRADER;
     } else switch (creep.memory.role) {
       case HARVESTER: roleHarvester(creep); break
@@ -61,9 +64,9 @@ export default function run(room: Room, cpuUsed: number) {
       case SCOUT: roleScout(creep); break
       case CLAIMER: roleClaimer(creep); break
       case COMMANDER: commander(creep); break
+      case MINER: miner(creep); break
       default: creep.memory.role = UPGRADER;
     }
-    if (creep.memory.deprived) deprived = creep
   }
 
   const logs = room.getEventLog()
@@ -73,12 +76,21 @@ export default function run(room: Room, cpuUsed: number) {
         if (l.data.attackType === EVENT_ATTACK_TYPE_HIT_BACK) return;
       case EVENT_ATTACK_CONTROLLER:
         const creep = Game.getObjectById(l.objectId as Id<Creep>)
+        if (!Memory.whitelist) Memory.whitelist = {}
         if (creep && creep.owner && Memory.whitelist[creep.owner.username]) {
           const message = `${creep.owner.username} has been removed from the whitelist due to violating peace regulations`
           console.log(message)
           Game.notify(message, 5)
           delete Memory.whitelist[creep.owner.username]
         }
+        break
+      case EVENT_OBJECT_DESTROYED:
+        const type = l.data.type
+        if (type !== LOOK_CREEPS) {
+          if (type === STRUCTURE_ROAD) mem._roadBuilt = false
+          else mem._built = false
+        }
+        break
     }
   })
 
@@ -95,7 +107,7 @@ export default function run(room: Room, cpuUsed: number) {
     } else room.memory.spawnName = spawn.name
   }
 
-  if (spawn) spawnLoop(spawn, creepCountByRole, workPartCountByRole, deprived)
+  if (spawn) spawnLoop(spawn, creepCountByRole, workPartCountByRole)
   room.visual.text("Population: " + count, 0, 0, count === 0 ? dangerStyle : infoStyle)
   room.visual.text("Spawns: " + room.energyAvailable + "/" + room.energyCapacityAvailable, 0, 1, room.energyCapacityAvailable === 0 ? dangerStyle : infoStyle)
   return usage(room, cpuUsed)

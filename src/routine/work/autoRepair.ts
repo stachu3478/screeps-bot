@@ -9,7 +9,7 @@ const toRepair: ToRepair = {
   [STRUCTURE_RAMPART]: 1,
   [STRUCTURE_CONTAINER]: 1,
 }
-export default function autoRepair(creep: Creep) {
+export default function autoRepair(creep: Creep, timeout: number = 6) {
   const mem = creep.memory
   if ((mem._repair_cooldown || 0) > 0) {
     mem._repair_cooldown = (mem._repair_cooldown || 0) - 1
@@ -24,7 +24,7 @@ export default function autoRepair(creep: Creep) {
         && s.hits + repairPower <= s.hitsMax
     })[0]
     if (!target) {
-      mem._repair_cooldown = 6
+      mem._repair_cooldown = timeout
       return NOTHING_TODO
     }
     mem._auto_repair = target.id

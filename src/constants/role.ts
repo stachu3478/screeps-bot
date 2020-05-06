@@ -3,3 +3,5 @@ export const UPGRADER = 2
 export const SCOUT = 3
 export const COMMANDER = 4
 export const CLAIMER = 5
+export const MINER = 6
+export const RETIRED = 7

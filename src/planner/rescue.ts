@@ -1,6 +1,7 @@
-import { HARVESTER } from 'constants/role'
+import { MINER } from 'constants/role'
 import { ARRIVE } from 'constants/state';
 
+// TODO make it work with miners
 export default function callRescue(room: Room) {
   console.log(`WARNING: No creeps in room ${room.name}!`)
   const claimer = Game.rooms[room.memory._claimer]
@@ -21,7 +22,8 @@ export default function callRescue(room: Room) {
     if (!room.memory.creeps) room.memory.creeps = {}
     room.memory.creeps[name] = 0
     creep.memory.room = room.name
-    creep.memory.role = HARVESTER
+    creep.memory.role = MINER
+    creep.memory._harvest = room.memory.colonySourceId
     creep.memory.state = ARRIVE
     creep.memory._arrive = room.name
     return
