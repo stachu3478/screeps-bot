@@ -1,5 +1,5 @@
 import { HARVESTING, TOWER_FILL, SPAWN_FILL, REPAIR, BUILD, ARRIVE, ARRIVE_HOSTILE, DISMANTLE, STORAGE_FILL, STORAGE_DRAW, RECYCLE } from '../constants/state'
-import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS } from '../constants/response'
+import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS, ACCEPTABLE } from '../constants/response'
 import towerFill from 'routine/work/towerFill'
 import spawnerFill from 'routine/work/spawnerFill'
 import storageFill from 'routine/work/storageFill'
@@ -48,7 +48,7 @@ export default function run(creep: Creep) {
             creep.memory.state = ARRIVE_HOSTILE
             break
           }
-          creep.memory.state = STORAGE_DRAW
+          if (creep.room.storage) creep.memory.state = STORAGE_DRAW
         } break
         case NOTHING_DONE: autoPick(creep)
       }
@@ -56,7 +56,7 @@ export default function run(creep: Creep) {
     case TOWER_FILL: {
       switch (towerFill(creep)) {
         case NO_RESOURCE: case FAILED: if (autoPick(creep) !== SUCCESS) {
-          if (drawStorage(creep) === NOTHING_DONE) creep.memory.state = STORAGE_DRAW
+          if (drawStorage(creep) in ACCEPTABLE) creep.memory.state = STORAGE_DRAW
           else creep.memory.state = HARVESTING
         } break
         case NOTHING_TODO: creep.memory.state = SPAWN_FILL; break
@@ -66,7 +66,7 @@ export default function run(creep: Creep) {
     case SPAWN_FILL: {
       switch (spawnerFill(creep)) {
         case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) {
-          if (drawStorage(creep) === NOTHING_DONE) creep.memory.state = STORAGE_DRAW
+          if (drawStorage(creep) in ACCEPTABLE) creep.memory.state = STORAGE_DRAW
           else creep.memory.state = HARVESTING
         } break
         case NOTHING_TODO: {
@@ -90,7 +90,7 @@ export default function run(creep: Creep) {
         case FAILED: creep.memory.state = TOWER_FILL; break
         case NOTHING_TODO: {
           if (place(creep.room) === SUCCESS || placeRoad(creep.room) === SUCCESS) break
-          if (storageFill(creep) === NOTHING_DONE) creep.memory.state = STORAGE_FILL
+          if (storageFill(creep) in ACCEPTABLE) creep.memory.state = STORAGE_FILL
           else creep.memory.state = HARVESTING
         }; break
         case NOTHING_DONE: autoRepair(creep); break;
@@ -106,8 +106,8 @@ export default function run(creep: Creep) {
     case STORAGE_DRAW: {
       switch (drawStorage(creep)) {
         case DONE: case SUCCESS: {
-          if (spawnerFill(creep) === NOTHING_DONE) creep.memory.state = SPAWN_FILL
-          else if (towerFill(creep) === NOTHING_DONE) creep.memory.state = TOWER_FILL
+          if (spawnerFill(creep) in ACCEPTABLE) creep.memory.state = SPAWN_FILL
+          else if (towerFill(creep) in ACCEPTABLE) creep.memory.state = TOWER_FILL
           else creep.memory.state = HARVESTING
         } break
         case NOTHING_TODO: case FAILED: creep.memory.state = HARVESTING; break

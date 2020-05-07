@@ -3,6 +3,9 @@ const liteWorkPack = BODYPART_COST[WORK] + BODYPART_COST[MOVE]
 const carryPack = 2 * BODYPART_COST[CARRY] + BODYPART_COST[MOVE]
 const liteCarryPack = BODYPART_COST[CARRY] + BODYPART_COST[MOVE]
 const moveWorkPack = 2 * BODYPART_COST[WORK] + BODYPART_COST[MOVE]
+const fightPack = 2 * BODYPART_COST[ATTACK] + BODYPART_COST[MOVE]
+const liteFightPack = BODYPART_COST[ATTACK] + BODYPART_COST[MOVE]
+const toughPack = 2 * BODYPART_COST[TOUGH] + BODYPART_COST[MOVE]
 
 export function progressiveWorker(energy: number, maxWork: number = MAX_CREEP_SIZE) {
   const parts = [WORK, CARRY, MOVE]
@@ -23,7 +26,7 @@ export function progressiveWorker(energy: number, maxWork: number = MAX_CREEP_SI
 export function progressiveLiteWorker(energy: number): BodyPartConstant[] {
   let workRemaining = 1 + SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME / BUILD_POWER
   const parts: BodyPartConstant[] = []
-  let remaining = Math.max(energy, SPAWN_ENERGY_START)
+  let remaining = energy
   let partsRemaining = MAX_CREEP_SIZE
   while (remaining >= workPack && partsRemaining >= 3 && workRemaining > 0) {
     parts.push(WORK, CARRY, MOVE)
@@ -70,6 +73,30 @@ export function progressiveClaimer(energy: number, maxParts: number = MAX_CREEP_
     partsRemaining -= 2
   }
   if (remaining >= BODYPART_COST[MOVE] && partsRemaining > 0) parts.push(MOVE)
+  return parts
+}
+
+export function progressiveFighter(energy: number) {
+  const parts: BodyPartConstant[] = []
+  let remaining = energy - fightPack
+  let partsRemaining = MAX_CREEP_SIZE - 1
+  let attackParts = 2
+  while (remaining >= fightPack && partsRemaining >= 3) {
+    attackParts += 2
+    remaining -= fightPack
+    partsRemaining -= 3
+  }
+  if (remaining >= liteFightPack && partsRemaining >= 2) {
+    attackParts++
+    remaining -= liteFightPack
+    partsRemaining -= 2
+  }
+  if (remaining >= toughPack && partsRemaining >= 3) {
+    parts.push(TOUGH, TOUGH, MOVE)
+  }
+  const moveParts = Math.ceil(attackParts / 2)
+  for (let i = 0; i < moveParts; i++) parts.push(MOVE)
+  for (let i = 0; i < attackParts; i++) parts.push(ATTACK)
   return parts
 }
 

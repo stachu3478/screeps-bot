@@ -1,7 +1,7 @@
 import { EXIT, INIT, SCOUT } from '../constants/state'
 import { DONE, FAILED } from '../constants/response'
 import exit from 'routine/exit'
-import scout from 'routine/scout'
+import scout from 'routine/military/scout'
 
 export default function run(creep: Creep) {
   switch (creep.memory.state) {

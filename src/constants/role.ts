@@ -5,3 +5,5 @@ export const COMMANDER = 4
 export const CLAIMER = 5
 export const MINER = 6
 export const RETIRED = 7
+export const EXTRACTOR = 8
+export const FIGHTER = 9

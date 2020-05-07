@@ -17,6 +17,7 @@ interface CreepMemory {
     stuck?: number
   };
   _harvest?: Id<Source>
+  _extract?: MineralConstant
   _fill?: Id<StructureSpawn | StructureExtension | StructureTower>
   _repair?: Id<Structure>
   _auto_repair?: Id<Structure>
@@ -40,6 +41,7 @@ interface SpawnMemory {
 interface Memory {
   uuid: number
   log: any
+  ticksToProfile?: number
   myRooms: {
     [key: string]: 0
   }
@@ -72,8 +74,15 @@ interface RoomMemory {
   averageUsage?: number
   _attack?: string
   _extractor?: Id<StructureExtractor>
+  _mineral?: Id<Mineral>
   _built?: boolean
   _roadBuilt?: boolean
+  _lvl?: number
+  _healthy?: boolean
+}
+
+interface ControlledRoom extends Room {
+  controller: StructureController
 }
 
 // `global` extension samples

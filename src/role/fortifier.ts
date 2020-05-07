@@ -1,21 +1,22 @@
 import { HARVESTING, TOWER_FILL, REPAIR, BUILD, STORAGE_DRAW, FORTIFY } from '../constants/state'
-import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS } from '../constants/response'
-import harvest from 'routine/work/harvest'
+import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS, ACCEPTABLE } from '../constants/response'
 import towerFill from 'routine/work/towerFill'
 import storageDraw from 'routine/work/storageDraw'
 import repair from 'routine/work/repair'
 import build from 'routine/work/build'
 import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/work/autoPick'
-import fortify from 'routine/fortify'
+import fortify from 'routine/military/fortify'
+import drawContainer from 'routine/work/containerDraw';
+import { cheapMove } from 'utils/path';
 
 export default function run(creep: Creep) {
   switch (creep.memory.state) {
     case HARVESTING: {
-      switch (harvest(creep)) {
+      switch (drawContainer(creep)) {
         case DONE: creep.memory.state = TOWER_FILL; break
         case FAILED: case NOTHING_TODO: {
-          creep.memory.state = STORAGE_DRAW
+          if (creep.room.storage) creep.memory.state = STORAGE_DRAW
         } break
         case NOTHING_DONE: autoPick(creep)
       }
@@ -24,7 +25,7 @@ export default function run(creep: Creep) {
       switch (towerFill(creep)) {
         case NO_RESOURCE: {
           if (autoPick(creep) === SUCCESS) break
-          if (storageDraw(creep) === NOTHING_DONE) creep.memory.state = STORAGE_DRAW
+          if (storageDraw(creep) in ACCEPTABLE) creep.memory.state = STORAGE_DRAW
           else creep.memory.state = HARVESTING
         } break
         case NOTHING_TODO: case FAILED: creep.memory.state = FORTIFY; break
@@ -35,7 +36,7 @@ export default function run(creep: Creep) {
       switch (repair(creep)) {
         case NO_RESOURCE: {
           if (autoPick(creep) === SUCCESS) break
-          if (storageDraw(creep) === NOTHING_DONE) creep.memory.state = STORAGE_DRAW
+          if (storageDraw(creep) in ACCEPTABLE) creep.memory.state = STORAGE_DRAW
           else creep.memory.state = HARVESTING
         } break
         case NOTHING_TODO: case FAILED: creep.memory.state = BUILD; break
@@ -46,7 +47,7 @@ export default function run(creep: Creep) {
       switch (build(creep)) {
         case NO_RESOURCE: {
           if (autoPick(creep) === SUCCESS) break
-          if (storageDraw(creep) === NOTHING_DONE) creep.memory.state = STORAGE_DRAW
+          if (storageDraw(creep) in ACCEPTABLE) creep.memory.state = STORAGE_DRAW
           else creep.memory.state = HARVESTING
         } break
         case FAILED: creep.memory.state = TOWER_FILL; break
@@ -63,12 +64,13 @@ export default function run(creep: Creep) {
           else creep.memory.state = BUILD
         } break
         case NOTHING_DONE: autoRepair(creep); break;
+        case FAILED: cheapMove(creep, creep.room.controller || Game.spawns[creep.room.memory.spawnName || ''])
       }
     } break;
     case STORAGE_DRAW: {
       switch (storageDraw(creep)) {
         case DONE: case SUCCESS: {
-          if (towerFill(creep) === NOTHING_DONE) creep.memory.state = TOWER_FILL
+          if (towerFill(creep) in ACCEPTABLE) creep.memory.state = TOWER_FILL
           else creep.memory.state = FORTIFY
         } break
         case NOTHING_TODO: case FAILED: creep.memory.state = HARVESTING; break

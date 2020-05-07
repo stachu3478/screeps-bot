@@ -1,8 +1,8 @@
 import { ARRIVE_HOSTILE, ATTACKING, FALL_BACK, RECYCLE, INIT } from '../constants/state'
 import { DONE, NOTHING_TODO, SUCCESS, NOTHING_DONE, FAILED } from '../constants/response'
 import arrive from 'routine/arrive'
-import attack from 'routine/attack'
-import heal from 'routine/heal';
+import attack from 'routine/military/attack'
+import heal from 'routine/military/heal';
 import recycle from 'routine/recycle';
 
 export default function commander(creep: Creep) {
@@ -18,7 +18,7 @@ export default function commander(creep: Creep) {
       switch (recycle(creep)) {
         case DONE: delete Memory.creeps[creep.name]
       }
-    }; break // TODO recycle
+    }; break
     case ARRIVE_HOSTILE: {
       switch (arrive(creep)) {
         case DONE: creep.memory.state = ATTACKING; break

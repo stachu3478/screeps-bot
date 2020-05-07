@@ -25,7 +25,6 @@ function getHealPower(creep: Creep, distant: boolean = false) {
   return heal
 }
 
-// TODO pin
 export function findMostVulnerableCreep(enemies: Creep[], towers: StructureTower[], fighters: Creep[]) {
   const enemyHealable: number[] = []
   const enemyDealable: number[] = []
@@ -59,7 +58,7 @@ export function findMostVulnerableCreep(enemies: Creep[], towers: StructureTower
   }
 }
 
-export default function trackEnemy(room: Room): Creep | undefined {
+export default function trackEnemy(room: Room): Creep[] {
   if (!Memory.whitelist) Memory.whitelist = {}
   const list = Memory.whitelist
   return room.find(FIND_HOSTILE_CREEPS, {
@@ -73,5 +72,5 @@ export default function trackEnemy(room: Room): Creep | undefined {
       if (treshold < 0) delete list[creep.owner.username]
       return treshold < 0
     }
-  }).sort((a, b) => rankCreep(b) - rankCreep(a))[0]
+  }).sort((a, b) => rankCreep(b) - rankCreep(a))
 }

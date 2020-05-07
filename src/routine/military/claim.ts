@@ -1,5 +1,5 @@
-import { cheapMove } from '../utils/path'
-import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from '../constants/response'
+import { cheapMove } from 'utils/path'
+import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 
 export default function claim(creep: Creep) {
   const target = creep.room.controller
