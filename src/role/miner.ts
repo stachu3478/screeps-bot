@@ -19,6 +19,10 @@ export default function miner(creep: Creep) {
           else if (autoBuild(creep) in ACCEPTABLE) creep.memory.state = BUILD
           else if (creep.room.memory.colonySources && creep.memory._harvest) {
             const miningPos = roomPos(creep.room.memory.colonySources[creep.memory._harvest][0], creep.room.name)
+            if (miningPos.x !== creep.pos.x || miningPos.y !== creep.pos.y) {
+              creep.drop(RESOURCE_ENERGY)
+              return
+            }
             const container = _.find(miningPos.lookFor(LOOK_STRUCTURES), s => s.structureType === STRUCTURE_CONTAINER)
             if (!container || miningPos.createConstructionSite(STRUCTURE_CONTAINER) === 0) {
               if (container) creep.memory._repair = container.id

@@ -10,7 +10,8 @@ interface CreepMemory {
   prevState?: number
   _move?: {
     path: string,
-    target: {
+    dest: {
+      room: string,
       x: number,
       y: number,
     },

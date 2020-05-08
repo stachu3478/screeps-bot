@@ -3,7 +3,7 @@ import { SUCCESS, NOTHING_TODO } from '../constants/response'
 
 export default function place(room: Room) {
   const mem = room.memory
-  if (mem._built) return NOTHING_TODO
+  if (mem._roadBuilt) return NOTHING_TODO
   if (!mem.roads) plan(room)
   mem.roads = mem.roads || ''
   const times = mem.roads.length

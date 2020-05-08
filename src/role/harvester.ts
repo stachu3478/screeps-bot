@@ -43,12 +43,15 @@ export default function run(creep: Creep) {
           creep.memory.state = ARRIVE
         } break
         case NOTHING_TODO: {
+          if (creep.room.storage) {
+            creep.memory.state = STORAGE_DRAW
+            break
+          }
           if (creep.room.memory._dismantle) {
             creep.memory._arrive = creep.room.memory._dismantle
             creep.memory.state = ARRIVE_HOSTILE
             break
           }
-          if (creep.room.storage) creep.memory.state = STORAGE_DRAW
         } break
         case NOTHING_DONE: autoPick(creep)
       }
@@ -78,7 +81,10 @@ export default function run(creep: Creep) {
     } break;
     case REPAIR: {
       switch (repair(creep)) {
-        case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) creep.memory.state = HARVESTING; break
+        case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) {
+          if (drawStorage(creep) in ACCEPTABLE) creep.memory.state = STORAGE_DRAW
+          else creep.memory.state = HARVESTING
+        } break
         case NOTHING_TODO: creep.memory.state = BUILD; break
         case FAILED: creep.memory.state = TOWER_FILL; break
         case NOTHING_DONE: autoRepair(creep); break;
@@ -86,7 +92,10 @@ export default function run(creep: Creep) {
     } break;
     case BUILD: {
       switch (build(creep)) {
-        case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) creep.memory.state = HARVESTING; break
+        case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) {
+          if (drawStorage(creep) in ACCEPTABLE) creep.memory.state = STORAGE_DRAW
+          else creep.memory.state = HARVESTING
+        } break
         case FAILED: creep.memory.state = TOWER_FILL; break
         case NOTHING_TODO: {
           if (place(creep.room) === SUCCESS || placeRoad(creep.room) === SUCCESS) break
