@@ -2,7 +2,15 @@ import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 import { roomPos } from 'planner/pos'
 
-export default function harvest(creep: Creep, sourceId?: Id<Source>) {
+interface HarvestCreep extends Creep {
+  memory: HarvestMemory
+}
+
+interface HarvestMemory extends CreepMemory {
+  _harvest?: Id<Source>
+}
+
+export default function harvest(creep: HarvestCreep, sourceId?: Id<Source>) {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return DONE
   let target = Game.getObjectById(creep.memory._harvest || ('' as Id<Source>))
   if (!target) {

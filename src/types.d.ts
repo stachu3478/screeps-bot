@@ -7,7 +7,6 @@ interface CreepMemory {
   role: number
   room: string
   state?: number
-  prevState?: number
   _move?: {
     path: string,
     dest: {
@@ -17,21 +16,6 @@ interface CreepMemory {
     },
     stuck?: number
   };
-  _harvest?: Id<Source>
-  _extract?: MineralConstant
-  _fill?: Id<StructureSpawn | StructureExtension | StructureTower>
-  _repair?: Id<Structure>
-  _auto_repair?: Id<Structure>
-  _repair_cooldown?: number
-  _build?: Id<ConstructionSite>
-  _arrive?: string
-  _exit?: string
-  _dismantle?: Id<Structure>
-  _heal?: Id<Creep>
-  _attack?: Id<Creep | Structure>
-  _pick_pos?: string
-  _prev_hits?: number
-  _draw?: Id<AnyStoreStructure>
   deprivity: number
 }
 

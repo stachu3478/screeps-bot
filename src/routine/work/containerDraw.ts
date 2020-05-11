@@ -1,7 +1,15 @@
 import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 
-export default function drawContainer(creep: Creep) {
+interface DrawContainerCreep extends Creep {
+  memory: DrawContainerMemory
+}
+
+interface DrawContainerMemory extends CreepMemory {
+  _draw?: Id<AnyStoreStructure>
+}
+
+export default function drawContainer(creep: DrawContainerCreep) {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return DONE
   let target = Game.getObjectById(creep.memory._draw || ('' as Id<StructureContainer>))
   if (!target || target.store[RESOURCE_ENERGY] === 0) {

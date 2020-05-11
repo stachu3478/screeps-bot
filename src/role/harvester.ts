@@ -15,7 +15,25 @@ import recycle from 'routine/recycle'
 import drawContainer from 'routine/work/containerDraw';
 import drawStorage from 'routine/work/storageDraw';
 
-export default function run(creep: Creep) {
+export interface Harvester extends Creep {
+  memory: HarvesterMemory
+}
+
+interface HarvesterMemory extends CreepMemory {
+  _arrive?: string
+  _harvest?: Id<Source>
+  _fillTower?: Id<StructureTower>
+  _fillSpawn?: Id<StructureSpawn | StructureExtension>
+  _repair?: Id<Structure>
+  _auto_repair?: Id<Structure>
+  _repair_cooldown?: number
+  _build?: Id<ConstructionSite>
+  _dismantle?: Id<Structure>
+  _pick_pos?: string
+  _draw?: Id<AnyStoreStructure>
+}
+
+export default function harvester(creep: Harvester) {
   switch (creep.memory.state) {
     case RECYCLE: {
       switch (recycle(creep)) {

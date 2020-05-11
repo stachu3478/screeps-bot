@@ -1,9 +1,17 @@
 import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
 
-export default function fillSpawn(creep: Creep) {
+interface SpawnFillCreep extends Creep {
+  memory: SpawnFillMemory
+}
+
+interface SpawnFillMemory extends CreepMemory {
+  _fillSpawn?: Id<StructureSpawn | StructureExtension>
+}
+
+export default function fillSpawn(creep: SpawnFillCreep) {
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
-  let target = Game.getObjectById(creep.memory._fill || ('' as Id<StructureSpawn>))
+  let target = Game.getObjectById(creep.memory._fillSpawn || ('' as Id<StructureSpawn>))
   if (!target || target.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
     const newTarget = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
       filter: s => (s.structureType === STRUCTURE_SPAWN
@@ -13,7 +21,7 @@ export default function fillSpawn(creep: Creep) {
     if (!newTarget) return NOTHING_TODO
     if (newTarget.structureType !== STRUCTURE_EXTENSION && newTarget.structureType !== STRUCTURE_SPAWN) return FAILED
     target = newTarget
-    creep.memory._fill = target.id
+    creep.memory._fillSpawn = target.id
   }
   const result = creep.transfer(target, RESOURCE_ENERGY)
   const remaining = creep.store[RESOURCE_ENERGY] - target.store.getFreeCapacity(RESOURCE_ENERGY)

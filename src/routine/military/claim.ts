@@ -1,7 +1,13 @@
 import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 
-export default function claim(creep: Creep) {
+interface ClaimCreep extends Creep {
+  memory: ClaimMemory
+}
+
+interface ClaimMemory extends CreepMemory { }
+
+export default function claim(creep: ClaimCreep) {
   const target = creep.room.controller
   if (!target || target.my) return NOTHING_TODO
   let result

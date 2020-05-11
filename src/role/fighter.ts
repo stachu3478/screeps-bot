@@ -3,7 +3,13 @@ import { DONE, NOTHING_TODO } from '../constants/response'
 import recycle from 'routine/recycle';
 import fight from 'routine/military/fight';
 
-export default function fighter(creep: Creep, enemy?: Creep) {
+export interface Fighter extends Creep {
+  memory: FighterMemory
+}
+
+interface FighterMemory extends CreepMemory { }
+
+export default function fighter(creep: Fighter, enemy?: Creep) {
   switch (creep.memory.state) {
     case INIT: {
       creep.notifyWhenAttacked(false)

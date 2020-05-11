@@ -4,7 +4,16 @@ import selfDestruct from '../routine/selfDestruct'
 import arrive from 'routine/arrive'
 import claim from 'routine/military/claim';
 
-export default function run(creep: Creep) {
+export interface Claimer extends Creep {
+  memory: ClaimerMemory
+}
+
+interface ClaimerMemory extends CreepMemory {
+  role: 5
+  _arrive?: string
+}
+
+export default function run(creep: Claimer) {
   switch (creep.memory.state) {
     case ARRIVE: {
       switch (arrive(creep)) {

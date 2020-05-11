@@ -1,7 +1,13 @@
 import { NOTHING_TODO, FAILED, DONE } from '../constants/response'
 import { cheapMove } from 'utils/path';
 
-export default function recycle(creep: Creep) {
+interface RecycleCreep extends Creep {
+  memory: RecycleMemory
+}
+
+interface RecycleMemory extends CreepMemory { }
+
+export default function recycle(creep: RecycleCreep) {
   const spawn = Game.spawns[creep.room.memory.spawnName || '']
   if (!spawn) return NOTHING_TODO
   const result = spawn.recycleCreep(creep)

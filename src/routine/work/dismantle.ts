@@ -1,7 +1,15 @@
 import { cheapMove } from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from '../../constants/response'
 
-export default function dismantle(creep: Creep) {
+interface DismantleCreep extends Creep {
+  memory: DismantleMemory
+}
+
+interface DismantleMemory extends CreepMemory {
+  _dismantle?: Id<Structure>
+}
+
+export default function dismantle(creep: DismantleCreep) {
   let target = Game.getObjectById(creep.memory._dismantle || '' as Id<Structure>)
   if (!target || !target.hits) {
     const newTarget = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {

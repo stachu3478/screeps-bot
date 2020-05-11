@@ -1,13 +1,12 @@
 import { SUCCESS, NOTHING_DONE } from "constants/response";
 
-export default function heal(creep: Creep) {
-  /*const target = Game.creeps[creep.memory._heal || ""]
-  if (!target || target.hits === target.hitsMax) {
-    const newTarget = creep.pos.findClosestByRange(FIND_MY_CREEPS, {
-      filter: creep => creep.hits < creep.hitsMax
-    })
-  }*/
+interface HealCreep extends Creep {
+  memory: HealMemory
+}
 
+interface HealMemory extends CreepMemory { }
+
+export default function heal(creep: HealCreep) {
   const nearest = creep.pos.findClosestByRange(FIND_MY_CREEPS, {
     filter: creep => creep.hits < creep.hitsMax
   })

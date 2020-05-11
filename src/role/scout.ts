@@ -3,7 +3,15 @@ import { DONE, FAILED } from '../constants/response'
 import exit from 'routine/exit'
 import scout from 'routine/military/scout'
 
-export default function run(creep: Creep) {
+export interface Scout extends Creep {
+  memory: ScoutMemory
+}
+
+interface ScoutMemory extends CreepMemory {
+  _exit: string
+}
+
+export default function run(creep: Scout) {
   switch (creep.memory.state) {
     case INIT: {
       creep.notifyWhenAttacked(false)

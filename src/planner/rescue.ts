@@ -23,9 +23,7 @@ export default function callRescue(room: Room) {
     room.memory.creeps[name] = 0
     creep.memory.room = room.name
     creep.memory.role = MINER
-    creep.memory._harvest = room.memory.colonySourceId
     creep.memory.state = ARRIVE
-    creep.memory._arrive = room.name
     return
   }
 }

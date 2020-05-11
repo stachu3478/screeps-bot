@@ -9,7 +9,17 @@ const toRepair: ToRepair = {
   [STRUCTURE_RAMPART]: 1,
   [STRUCTURE_CONTAINER]: 1,
 }
-export default function autoRepair(creep: Creep, timeout: number = 6) {
+
+interface AutoRepairCreep extends Creep {
+  memory: AutoRepairMemory
+}
+
+interface AutoRepairMemory extends CreepMemory {
+  _repair_cooldown?: number
+  _auto_repair?: Id<Structure>
+}
+
+export default function autoRepair(creep: AutoRepairCreep, timeout: number = 6) {
   const mem = creep.memory
   if ((mem._repair_cooldown || 0) > 0) {
     mem._repair_cooldown = (mem._repair_cooldown || 0) - 1

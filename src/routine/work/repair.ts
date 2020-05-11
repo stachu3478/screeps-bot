@@ -11,7 +11,16 @@ const toRepair: ToRepair = {
   [STRUCTURE_STORAGE]: 1,
   [STRUCTURE_TERMINAL]: 1
 }
-export default function repair(creep: Creep) {
+
+interface RepairCreep extends Creep {
+  memory: RepairMemory
+}
+
+interface RepairMemory extends CreepMemory {
+  _repair?: Id<Structure>
+}
+
+export default function repair(creep: RepairCreep) {
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
   let target = Game.getObjectById(creep.memory._repair || ('' as Id<Structure>))
   const repairPower = creep.getActiveBodyparts(WORK) * REPAIR_POWER

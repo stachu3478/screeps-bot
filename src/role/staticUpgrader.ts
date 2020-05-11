@@ -6,7 +6,16 @@ import autoPick from 'routine/work/autoPick'
 import draw from 'routine/work/draw';
 import maintainControllerLink from 'utils/controllerLink';
 
-export default function staticUpgrader(creep: Creep) {
+export interface StaticUpgrader extends Creep {
+  memory: StaticUpgraderMemory
+}
+
+interface StaticUpgraderMemory extends CreepMemory {
+  _draw?: Id<AnyStoreStructure>
+  _auto_repair?: Id<Structure>
+}
+
+export default function staticUpgrader(creep: StaticUpgrader) {
   switch (creep.memory.state) {
     case UPGRADE: {
       switch (upgrade(creep, true)) {

@@ -1,7 +1,15 @@
 import { SUCCESS, NOTHING_TODO, FAILED, DONE } from '../../constants/response'
 import { roomPos, posToChar } from '../../planner/pos'
 
-export default function autoPick(creep: Creep, mineralType: MineralConstant) {
+interface AutoPickCreep extends Creep {
+  memory: AutoPickMemory
+}
+
+interface AutoPickMemory extends CreepMemory {
+  _pick_pos?: string
+}
+
+export default function autoPick(creep: AutoPickCreep, mineralType: MineralConstant) {
   let remaining = creep.store.getFreeCapacity(mineralType)
   if (remaining === 0) return NOTHING_TODO
   const mem = creep.memory

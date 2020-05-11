@@ -2,7 +2,13 @@ import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
 import handleTerminal from 'utils/handleTerminal';
 
-export default function mineralFill(creep: Creep, mineralType: MineralConstant) {
+interface MineralFillCreep extends Creep {
+  memory: MineralFillCMemory
+}
+
+interface MineralFillCMemory extends CreepMemory { }
+
+export default function mineralFill(creep: MineralFillCreep, mineralType: MineralConstant) {
   if (creep.store[mineralType] === 0) return NO_RESOURCE
   const room = Game.rooms[creep.memory.room]
   let target: AnyStoreStructure | undefined = room.terminal

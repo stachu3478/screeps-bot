@@ -8,3 +8,4 @@ export const RETIRED = 7
 export const EXTRACTOR = 8
 export const FIGHTER = 9
 export const STATIC_UPGRADER = 10
+export const COLONIZER = 11

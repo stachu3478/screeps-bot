@@ -1,7 +1,15 @@
 import { cheapMove } from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from '../../constants/response'
 
-export default function build(creep: Creep) {
+interface BuildCreep extends Creep {
+  memory: BuildMemory
+}
+
+interface BuildMemory extends CreepMemory {
+  _build?: Id<ConstructionSite>
+}
+
+export default function build(creep: BuildCreep) {
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
   let target = Game.getObjectById(creep.memory._build || ('' as Id<ConstructionSite>))
   if (!target) {

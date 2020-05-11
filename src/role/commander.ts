@@ -5,7 +5,18 @@ import attack from 'routine/military/attack'
 import heal from 'routine/military/heal';
 import recycle from 'routine/recycle';
 
-export default function commander(creep: Creep) {
+export interface Commander extends Creep {
+  memory: CommanderMemory
+}
+
+interface CommanderMemory extends CreepMemory {
+  _arrive?: string
+  _prev_hits?: number
+  _attack?: Id<Creep | Structure>
+  _heal?: Id<Creep>
+}
+
+export default function commander(creep: Commander) {
   const prevHits = creep.memory._prev_hits || creep.hits - 1
   creep.memory._prev_hits = creep.hits
   switch (creep.memory.state) {

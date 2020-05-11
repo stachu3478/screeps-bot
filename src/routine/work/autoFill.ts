@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import { SUCCESS, NOTHING_TODO, FAILED, DONE, NO_RESOURCE } from '../../constants/response'
-import { roomPos, posToChar } from '../../planner/pos'
 
 interface ToFill {
   [key: string]: number
@@ -18,7 +17,16 @@ const toFill: ToFill = {
   [STRUCTURE_FACTORY]: 2,
   [STRUCTURE_CONTAINER]: 1,
 }
-export default function autoFill(creep: Creep) {
+
+interface FillCreep extends Creep {
+  memory: FillMemory
+}
+
+interface FillMemory extends CreepMemory {
+  _draw?: Id<AnyStoreStructure>
+}
+
+export default function autoFill(creep: FillCreep) {
   let remaining = creep.store[RESOURCE_ENERGY]
   if (remaining === 0) return NO_RESOURCE
   const target = _.max(creep.pos.findInRange(FIND_STRUCTURES, 1, {

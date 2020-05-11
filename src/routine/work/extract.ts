@@ -1,7 +1,15 @@
 import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 
-export default function extract(creep: Creep) {
+interface ExtractCreep extends Creep {
+  memory: ExtractMemory
+}
+
+interface ExtractMemory extends CreepMemory {
+  _extract?: MineralConstant
+}
+
+export default function extract(creep: ExtractCreep) {
   if (creep.store.getFreeCapacity() === 0) return DONE
   const target = Game.getObjectById(creep.room.memory._mineral || ('' as Id<Mineral>))
   if (!target || !target.mineralAmount) return NOTHING_TODO

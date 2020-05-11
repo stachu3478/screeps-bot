@@ -1,6 +1,12 @@
 import { DONE, FAILED, NOTHING_DONE } from 'constants/response';
 
-export default function scout(creep: Creep) {
+interface ScoutCreep extends Creep {
+  memory: ScoutMemory
+}
+
+interface ScoutMemory extends CreepMemory { }
+
+export default function scout(creep: ScoutCreep) {
   const controller = creep.room.controller
   if (!controller || controller.my || controller.owner || controller.reservation) return FAILED
 

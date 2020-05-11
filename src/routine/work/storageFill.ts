@@ -1,7 +1,13 @@
 import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
 
-export default function fillStorage(creep: Creep) {
+interface StorageFillCreep extends Creep {
+  memory: StorageFillMemory
+}
+
+interface StorageFillMemory extends CreepMemory { }
+
+export default function fillStorage(creep: StorageFillCreep) {
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
   let target
   if (creep.room.terminal && creep.room.terminal.store[RESOURCE_ENERGY] < TERMINAL_CAPACITY / 10) target = creep.room.terminal

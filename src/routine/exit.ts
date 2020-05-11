@@ -9,7 +9,15 @@ const exits = [
   FIND_EXIT_RIGHT,
 ]
 
-export default function exit(creep: Creep) {
+interface ExitCreep extends Creep {
+  memory: ExitMemory
+}
+
+interface ExitMemory extends CreepMemory {
+  _exit: string
+}
+
+export default function exit(creep: ExitCreep) {
   if (creep.fatigue) return NOTHING_DONE
 
   let target = creep.memory._exit

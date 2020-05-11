@@ -1,7 +1,13 @@
 import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 
-export default function drawStorage(creep: Creep) {
+interface StorageDrawCreep extends Creep {
+  memory: StorageDrawMemory
+}
+
+interface StorageDrawMemory extends CreepMemory { }
+
+export default function drawStorage(creep: StorageDrawCreep) {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return DONE
   let target = Game.rooms[creep.memory.room].storage
   if (!target || target.store[RESOURCE_ENERGY] === 0) return NOTHING_TODO

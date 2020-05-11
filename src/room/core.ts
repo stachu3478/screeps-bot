@@ -1,8 +1,8 @@
 import _ from 'lodash'
 import roleHarvester from '../role/harvester'
 import roleUpgrader from '../role/upgrader'
-import roleClaimer from '../role/claimer'
-import roleScout from '../role/scout'
+import roleClaimer, { Claimer } from '../role/claimer'
+import roleScout, { Scout } from '../role/scout'
 import commander from '../role/commander'
 import tower from '../role/tower'
 import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER, RETIRED, EXTRACTOR, FIGHTER, STATIC_UPGRADER } from '../constants/role'
@@ -86,8 +86,8 @@ export default function run(room: ControlledRoom, cpuUsed: number) {
       case HARVESTER: roleHarvester(creep); break
       case UPGRADER: roleUpgrader(creep); break
       case STATIC_UPGRADER: staticUpgrader(creep); break
-      case SCOUT: roleScout(creep); break
-      case CLAIMER: roleClaimer(creep); break
+      case SCOUT: roleScout(creep as Scout); break
+      case CLAIMER: roleClaimer(creep as Claimer); break
       case COMMANDER: commander(creep); break
       case MINER: miner(creep); break
       case EXTRACTOR: extractor(creep); break

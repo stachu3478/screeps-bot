@@ -8,7 +8,16 @@ import drawContainer from 'routine/work/containerDraw';
 import draw from 'routine/work/draw';
 import maintainControllerLink from 'utils/controllerLink';
 
-export default function upgrader(creep: Creep) {
+export interface UpgraderCreep extends Creep {
+  memory: UpgraderMemory
+}
+
+interface UpgraderMemory extends CreepMemory {
+  _draw?: Id<AnyStoreStructure>
+  _auto_repair?: Id<Structure>
+}
+
+export default function upgrader(creep: UpgraderCreep) {
   switch (creep.memory.state) {
     case HARVESTING: {
       switch (drawContainer(creep)) {

@@ -1,15 +1,32 @@
 import _ from 'lodash'
 import { NOTHING_TODO, NOTHING_DONE, DONE, NO_RESOURCE, FAILED, ACCEPTABLE } from 'constants/response'
 import harvest from 'routine/work/harvest';
-import { HARVESTING, REPAIR, BUILD } from 'constants/state';
+import { HARVESTING, REPAIR, BUILD, INIT } from 'constants/state';
 import autoFill from 'routine/work/autoFill';
 import autoRepair from 'routine/work/autoRepair';
 import autoBuild from 'routine/work/autoBuild';
 import autoPick from 'routine/work/autoPick';
 import { roomPos } from 'planner/pos';
 
-export default function miner(creep: Creep) {
+export interface Miner extends Creep {
+  memory: MinerMemory
+}
+
+export interface MinerMemory extends CreepMemory {
+  _harvest?: Id<Source>
+  _auto_repair?: Id<Structure>
+  _repair_cooldown?: number
+  _build?: Id<ConstructionSite>
+  _pick_pos?: string
+  _draw?: Id<AnyStoreStructure>
+}
+
+export default function miner(creep: Miner) {
   switch (creep.memory.state) {
+    case INIT: {
+      if (!creep.memory._harvest) creep.memory._harvest = creep.room.memory.colonySourceId
+      else creep.memory.state = HARVESTING
+    } break
     case HARVESTING: {
       switch (harvest(creep, creep.memory._harvest)) {
         case DONE: case NOTHING_TODO: {
@@ -30,7 +47,7 @@ export default function miner(creep: Creep) {
                 break
               }
             } else if (container.hits < container.hitsMax) {
-              creep.memory._repair = container.id
+              creep.memory._auto_repair = container.id
               creep.memory.state = REPAIR
               break
             }
@@ -41,7 +58,7 @@ export default function miner(creep: Creep) {
                 break
               }
             } else {
-              creep.memory._repair = rampart.id
+              creep.memory._auto_repair = rampart.id
               creep.memory.state = REPAIR
               break
             }
@@ -63,6 +80,6 @@ export default function miner(creep: Creep) {
         case NOTHING_TODO: case FAILED: creep.memory.state = HARVESTING; break;
       }
     } break
-    default: creep.memory.state = HARVESTING;
+    default: creep.memory.state = INIT;
   }
 }

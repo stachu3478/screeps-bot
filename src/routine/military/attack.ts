@@ -6,7 +6,15 @@ const hittableFilter = {
   filter: hittable
 }
 
-export default function attack(creep: Creep) {
+interface AttackCreep extends Creep {
+  memory: AttackMemory
+}
+
+interface AttackMemory extends CreepMemory {
+  _attack?: Id<Creep | Structure>
+}
+
+export default function attack(creep: AttackCreep) {
   let target: Creep | Structure | null = Game.getObjectById(creep.memory._attack || "")
   if (creep.getActiveBodyparts(TOUGH) === 0) return FAILED
   if (!target) {
