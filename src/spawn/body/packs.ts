@@ -1,0 +1,8 @@
+export const workPack = BODYPART_COST[WORK] + BODYPART_COST[CARRY] + BODYPART_COST[MOVE]
+export const liteWorkPack = BODYPART_COST[WORK] + BODYPART_COST[MOVE]
+export const carryPack = 2 * BODYPART_COST[CARRY] + BODYPART_COST[MOVE]
+export const liteCarryPack = BODYPART_COST[CARRY] + BODYPART_COST[MOVE]
+export const moveWorkPack = 2 * BODYPART_COST[WORK] + BODYPART_COST[MOVE]
+export const fightPack = 2 * BODYPART_COST[ATTACK] + BODYPART_COST[MOVE]
+export const liteFightPack = BODYPART_COST[ATTACK] + BODYPART_COST[MOVE]
+export const toughPack = 2 * BODYPART_COST[TOUGH] + BODYPART_COST[MOVE]

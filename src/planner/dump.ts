@@ -10,6 +10,8 @@ export default function dump(room: Room, pm: PlannerMatrix, sourcePositions: Sou
   const terrain = room.getTerrain()
   const structs: number[][] = []
   const roads: number[] = []
+  const links: number[] = []
+  const labs: number[] = []
   let totalRoadCost = 0
   pm.each((v, xy, x, y) => {
     if (v === -1) {
@@ -17,6 +19,12 @@ export default function dump(room: Room, pm: PlannerMatrix, sourcePositions: Sou
         xy,
         pm.getWeight(x, y)
       ])
+    } else if (v === -2) {
+      links.push(xy)
+    } else if (v === -3) {
+      labs.push(xy)
+    } else if (v === -4) {
+      room.memory.controllerLink = String.fromCharCode(xy)
     } else if (v > 0) {
       roads.push(xy)
       if (terrain.get(x, y) === 0) totalRoadCost++
@@ -33,4 +41,5 @@ export default function dump(room: Room, pm: PlannerMatrix, sourcePositions: Sou
   room.memory.colonySources = sourcePositions
   room.memory.colonySourceId = farSourceId
   room.memory.maxWorkController = Math.ceil(getMaximumWorkPartsForSource(getWorkSaturation(50, 2 * sourcePositions[nearSourceId].charCodeAt(1))))
+  room.memory.links = links.map(n => String.fromCharCode(n)).join('')
 }

@@ -1,9 +1,15 @@
 const spawnStyle: PolyStyle = { fill: '#ffff88' }
+const linkStyle: PolyStyle = { fill: '#ff8844', stroke: '#000000' }
 const storageStyle: PolyStyle = { fill: '#888888' }
 const termStyle: PolyStyle = { fill: '#aaaaaa' }
 const structStyle: PolyStyle = { fill: '#88ffff' }
 const roadStyle: PolyStyle = {
   fill: '#dddddd',
+}
+
+const rect45 = (x: number, y: number): [number, number][] => {
+  const last: [number, number] = [x + 0.5, y]
+  return [last, [x, y + 0.5], [x - 0.5, y], [x, y - 0.5], last]
 }
 
 export default function visual(room: Room) {
@@ -31,6 +37,17 @@ export default function visual(room: Room) {
     for (let i = 0; i < roadCount; i++) {
       const roadPos = roads.charCodeAt(i)
       vis.circle(roadPos & 63, roadPos >> 6, roadStyle)
+    }
+  }
+
+  const links = (room.memory.controllerLink || '') + (room.memory.links || '')
+  if (links) {
+    const linkCount = links.length
+    for (let i = 0; i < linkCount; i++) {
+      const linkPos = links.charCodeAt(i)
+      const x = linkPos & 63
+      const y = linkPos >> 6
+      vis.poly(rect45(linkPos & 63, linkPos >> 6), linkStyle)
     }
   }
 }

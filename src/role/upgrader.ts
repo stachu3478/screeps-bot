@@ -1,12 +1,14 @@
-import { HARVESTING, UPGRADE, STORAGE_DRAW } from '../constants/state'
+import { HARVESTING, UPGRADE, STORAGE_DRAW, DRAW } from '../constants/state'
 import { DONE, NOTHING_DONE, FAILED, NO_RESOURCE, SUCCESS, NOTHING_TODO } from '../constants/response'
 import upgrade from 'routine/work/upgrade'
 import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/work/autoPick'
 import storageDraw from 'routine/work/storageDraw'
 import drawContainer from 'routine/work/containerDraw';
+import draw from 'routine/work/draw';
+import maintainControllerLink from 'utils/controllerLink';
 
-export default function run(creep: Creep) {
+export default function upgrader(creep: Creep) {
   switch (creep.memory.state) {
     case HARVESTING: {
       switch (drawContainer(creep)) {
@@ -19,12 +21,29 @@ export default function run(creep: Creep) {
     } break;
     case UPGRADE: {
       switch (upgrade(creep)) {
-        case NO_RESOURCE: case FAILED: if (autoPick(creep) !== SUCCESS) creep.memory.state = HARVESTING; break
+        case NO_RESOURCE: case FAILED: {
+          if (autoPick(creep) === SUCCESS) break
+          const linkId = maintainControllerLink(creep.room, creep.store.getFreeCapacity(RESOURCE_ENERGY))
+          if (linkId) {
+            creep.memory.state = DRAW
+            creep.memory._draw = linkId
+            draw(creep)
+            break
+          }
+          creep.memory.state = HARVESTING
+        }
         case NOTHING_DONE: autoRepair(creep); break
       }
     } break;
     case STORAGE_DRAW: {
       switch (storageDraw(creep)) {
+        case DONE: case SUCCESS: creep.memory.state = UPGRADE; break
+        case NOTHING_TODO: case FAILED: creep.memory.state = HARVESTING; break
+        case NOTHING_DONE: autoPick(creep); break;
+      }
+    } break
+    case DRAW: {
+      switch (draw(creep)) {
         case DONE: case SUCCESS: creep.memory.state = UPGRADE; break
         case NOTHING_TODO: case FAILED: creep.memory.state = HARVESTING; break
         case NOTHING_DONE: autoPick(creep); break;

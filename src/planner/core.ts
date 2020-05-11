@@ -2,6 +2,7 @@ import _ from 'lodash'
 import PlannerMatrix from './matrix'
 import dump from './dump'
 import pos, { posToChar } from './pos'
+import planLink from './links';
 
 export default function plan(room: Room) {
   if (!room.controller) return
@@ -66,8 +67,19 @@ export default function plan(room: Room) {
       furthestSource.pos,
       { plainCost: 2, roomCallback }
     )
+    planLink(room, sourcePositions[obj.id][0], matrix, terrain)
+    // save path length
     sourcePositions[obj.id] += String.fromCharCode(path.length)
   })
+
+  // plan controller link
+  const { path } = PathFinder.search(
+    furthestSource.pos,
+    { pos: controllerPos, range: 3 },
+    { plainCost: 2, roomCallback }
+  )
+  const lastPos = path[path.length - 1]
+  planLink(room, new RoomPosition(lastPos.x, lastPos.y, room.name), matrix, terrain, -4)
 
   pm.coverBorder() // fill the covers to block iteration
 

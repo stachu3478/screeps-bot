@@ -4,7 +4,7 @@ import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/res
 export default function extract(creep: Creep) {
   if (creep.store.getFreeCapacity() === 0) return DONE
   const target = Game.getObjectById(creep.room.memory._mineral || ('' as Id<Mineral>))
-  if (!target) return NOTHING_TODO
+  if (!target || !target.mineralAmount) return NOTHING_TODO
   const result = creep.harvest(target)
   const remaining = creep.store.getFreeCapacity() - creep.getActiveBodyparts(WORK) * HARVEST_MINERAL_POWER
   if (result === ERR_NOT_IN_RANGE) cheapMove(creep, target)

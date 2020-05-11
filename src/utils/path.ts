@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import { posToChar, roomPos } from 'planner/pos'
+import { MINER } from 'constants/role';
 
 const directions: DirectionConstant[] = [
   TOP,
@@ -62,6 +63,38 @@ function roomCallback(roomName: string, costMatrix: CostMatrix) {
   return costMatrix
 }
 
+const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
+  if (room.getTerrain().get(x, y) === TERRAIN_MASK_WALL) return false
+  const nonWalkableStruct = _.find(room.lookForAt(LOOK_STRUCTURES, x, y), s => s.structureType !== STRUCTURE_ROAD && s.structureType !== STRUCTURE_RAMPART && s.structureType !== STRUCTURE_CONTAINER)
+  if (nonWalkableStruct) return false
+  const creep = _.find(room.lookForAt(LOOK_CREEPS, x, y), (c: Creep) => !me || c !== me)
+  if (creep) return false
+  return true
+}
+
+const zmod = (a: number, b: number) => a - Math.floor(a / b) * b
+function moveAnywhere(creep: Creep, preferDirection: DirectionConstant = TOP, me?: Creep) {
+  const room = creep.room
+  const { x, y } = creep.pos
+  let dirOffset = 0
+  for (let i = 0; i < 8; i++) {
+    const dir = zmod(preferDirection + dirOffset - 1, 8) + 1 as DirectionConstant
+    console.log("Try to move at " + dir)
+    if (dir < 1 || dir > 8) throw new Error("Invalid direction")
+    const offset = offsetsByDirection[dir]
+    const mx = x + offset[0]
+    const my = y + offset[1]
+    if (isWalkable(room, mx, my, me)) {
+      console.log("moved")
+      creep.move(dir)
+      return true
+    }
+    if (dirOffset > -1) dirOffset++
+    dirOffset = -dirOffset
+  }
+  return false
+}
+
 export function cheapMove(creep: Creep, target: RoomPosition | _HasRoomPosition, safe: boolean = false): ScreepsReturnCode {
   if (creep.fatigue) return ERR_TIRED
   const costCallback = safe ? roomCallback : undefined
@@ -71,37 +104,21 @@ export function cheapMove(creep: Creep, target: RoomPosition | _HasRoomPosition,
   }
   const mem = creep.memory
   if (!mem._move) return result
-  const dir = parseInt(mem._move.path.charAt(4))
+  const dir = parseInt(mem._move.path.charAt(4)) as DirectionConstant
   if (dir) {
     const creepOnRoad = creep.room.lookForAt(LOOK_CREEPS, creep.pos.x + offsetsByDirection[dir][0], creep.pos.y + offsetsByDirection[dir][1])[0]
     if (creepOnRoad) {
       if (!creepOnRoad.memory) {
         if (!creepOnRoad.my) return creep.moveTo(target, { costCallback })
-        creepOnRoad.move(directions[_.random(1, 8)])
-        mem._move.stuck = 0
+        if (moveAnywhere(creepOnRoad, dir, creep)) mem._move.stuck = 0
       } else if (creepOnRoad.memory._move && creepOnRoad.memory._move.path.length > (mem._move.stuck || 0)) {
-        // this creep is movind we wont do anything
+        // this creep is moving we wont do anything
         mem._move.stuck = (mem._move.stuck || 5) + 1
-      } else creepOnRoad.move(directions[_.random(1, 8)])
+      } else if (moveAnywhere(creepOnRoad, creepOnRoad.memory.role === MINER ? creepOnRoad.pos.getDirectionTo(creep) : dir), creep) {
+        mem._move.stuck = 0
+      }
     }
   }
   creep.say(result + '')
   return result
-}
-
-export function sitifyPath(from: RoomPosition, to: RoomPosition | _HasRoomPosition) {
-  const room = Game.rooms[from.roomName]
-  const path = from.findPathTo(to, {
-    ignoreCreeps: true,
-    plainCost: 2,
-    swampCost: 2,
-    range: 1
-  })
-  path.forEach(obj => {
-    const structures = room.lookForAt(LOOK_STRUCTURES, obj.x, obj.y)
-    if (structures.length) return
-    const sites = room.lookForAt(LOOK_CONSTRUCTION_SITES, obj.x, obj.y)
-    if (sites.length) return
-    room.createConstructionSite(obj.x, obj.y, STRUCTURE_ROAD)
-  })
 }

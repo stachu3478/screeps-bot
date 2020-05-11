@@ -1,4 +1,4 @@
-import { progressiveClaimer, progressiveCommander } from './body'
+import { progressiveClaimer, progressiveCommander } from './body/body'
 import { CLAIMER, SCOUT, COMMANDER } from 'constants/role';
 import { uniqName } from './name'
 import { infoStyle } from '../room/style'

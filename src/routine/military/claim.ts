@@ -5,18 +5,22 @@ export default function claim(creep: Creep) {
   const target = creep.room.controller
   if (!target || target.my) return NOTHING_TODO
   let result
-  if (target.reservation || target.level) result = creep.attackController(target)
-  else {
+  if ((target.reservation && target.reservation.username !== "mocnyFull") || (target.level && !target.my)) result = creep.attackController(target)
+  else if (creep.pos.isNearTo(target)) {
     result = creep.claimController(target)
     if (result === 0) {
       Memory.myRooms[creep.room.name] = 0
       creep.room.memory._claimer = creep.memory.room
+      const mem = Memory.rooms[creep.memory.room]
+      if (!mem._claimed) mem._claimed = []
+      mem._claimed.push(creep.room.name)
       return DONE
     }
     else if (creep.reserveController(target) === 0) return SUCCESS
-  }
-  if (result === ERR_NOT_IN_RANGE) {
+    return FAILED
+  } else {
     cheapMove(creep, target)
     return NOTHING_DONE
-  } else return FAILED
+  }
+  return FAILED
 }

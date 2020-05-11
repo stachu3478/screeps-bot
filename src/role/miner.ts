@@ -24,18 +24,28 @@ export default function miner(creep: Creep) {
               return
             }
             const container = _.find(miningPos.lookFor(LOOK_STRUCTURES), s => s.structureType === STRUCTURE_CONTAINER)
-            if (!container || miningPos.createConstructionSite(STRUCTURE_CONTAINER) === 0) {
-              if (container) creep.memory._repair = container.id
-              else creep.memory.state = BUILD
+            if (!container) {
+              if (miningPos.createConstructionSite(STRUCTURE_CONTAINER) === 0) {
+                creep.memory.state = BUILD
+                break
+              }
+            } else if (container.hits < container.hitsMax) {
+              creep.memory._repair = container.id
+              creep.memory.state = REPAIR
               break
             }
             const rampart = _.find(miningPos.lookFor(LOOK_STRUCTURES), s => s.structureType === STRUCTURE_RAMPART)
-            if (!rampart || miningPos.createConstructionSite(STRUCTURE_RAMPART) === 0) {
-              if (rampart) creep.memory._repair = rampart.id
-              else creep.memory.state = BUILD
+            if (!rampart) {
+              if (miningPos.createConstructionSite(STRUCTURE_RAMPART) === 0) {
+                creep.memory.state = BUILD
+                break
+              }
+            } else {
+              creep.memory._repair = rampart.id
+              creep.memory.state = REPAIR
               break
             }
-            creep.say(result + '')
+            creep.say(result + ' ' + miningPos.x + ' ' + miningPos.y)
           }
         } break
         case NOTHING_DONE: autoPick(creep)

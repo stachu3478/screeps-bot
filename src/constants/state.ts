@@ -24,3 +24,6 @@ export const STORAGE_FILL = 23
 export const STORAGE_DRAW = 24
 export const FORTIFY = 25
 export const FIGHT = 26
+export const DRAW = 27
+export const IDLE = 28
+export const DEAL = 29

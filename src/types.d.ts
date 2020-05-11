@@ -31,7 +31,7 @@ interface CreepMemory {
   _attack?: Id<Creep | Structure>
   _pick_pos?: string
   _prev_hits?: number
-  _draw?: Id<StructureContainer>
+  _draw?: Id<AnyStoreStructure>
   deprivity: number
 }
 
@@ -42,6 +42,7 @@ interface SpawnMemory {
 interface Memory {
   uuid: number
   log: any
+  test: Id<StructureLink>[]
   ticksToProfile?: number
   myRooms: {
     [key: string]: 0
@@ -52,6 +53,9 @@ interface Memory {
   roomCacheKeepers?: {
     [key: string]: string
   }
+  trade_blacklist?: {
+    [key: string]: number
+  }
 }
 
 interface RoomMemory {
@@ -60,10 +64,16 @@ interface RoomMemory {
   roads?: string
   colonySources?: SourceMap
   colonySourceId?: Id<Source>
+  links?: string
+  controllerLink?: string
   sourceCount?: number
   maxWorkController?: number
   workControllerOver?: number
   spawnName?: string
+
+  terminalState?: number
+  terminalDealResourceType?: ResourceConstant
+
   _struct_iteration?: number
   _road_iteration?: number
   creeps?: {
@@ -71,6 +81,7 @@ interface RoomMemory {
   }
   _claim: string
   _claimer: string
+  _claimed?: string[]
   _dismantle?: string
   averageUsage?: number
   _attack?: string
@@ -80,6 +91,14 @@ interface RoomMemory {
   _roadBuilt?: boolean
   _lvl?: number
   _healthy?: boolean
+  _linked?: 0 | 1
+}
+
+interface StableRoomMemory extends RoomMemory {
+  maxWorkController: number
+  creeps: {
+    [key: string]: 0
+  }
 }
 
 interface ControlledRoom extends Room {

@@ -1,5 +1,5 @@
 import { uniqName } from "./name";
-import { progressiveWorker } from "./body";
+import { progressiveWorker } from "./body/work";
 import { EXTRACTOR } from "constants/role";
 import { infoStyle } from "room/style";
 
