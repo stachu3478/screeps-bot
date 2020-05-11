@@ -1,4 +1,4 @@
-import { cheapMove } from "utils/path";
+import { cheapMove, moveAnywhere } from "utils/path";
 import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from "constants/response";
 
 interface FightCreep extends Creep {
@@ -7,8 +7,14 @@ interface FightCreep extends Creep {
 
 interface FightMemory extends CreepMemory { }
 
-export default function fight(creep: FightCreep, enemy?: Creep) {
+export default function fight(creep: FightCreep, enemy?: Creep, keepDistance: boolean = false) {
   if (!enemy) return NOTHING_TODO
+  if (keepDistance) {
+    const range = creep.pos.getRangeTo(enemy)
+    if (range > 4) creep.moveTo(enemy)
+    else if (range < 4) moveAnywhere(creep, enemy.pos.getDirectionTo(creep))
+    return NOTHING_DONE
+  }
   if (!creep.pos.isNearTo(enemy)) {
     cheapMove(creep, enemy)
     return NOTHING_DONE

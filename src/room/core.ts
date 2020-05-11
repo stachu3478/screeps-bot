@@ -1,11 +1,6 @@
 import _ from 'lodash'
-import roleHarvester from '../role/harvester'
-import roleUpgrader from '../role/upgrader'
-import roleClaimer, { Claimer } from '../role/claimer'
-import roleScout, { Scout } from '../role/scout'
-import commander from '../role/commander'
 import tower from '../role/tower'
-import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER, RETIRED, EXTRACTOR, FIGHTER, STATIC_UPGRADER } from '../constants/role'
+import { RETIRED, FIGHTER } from '../constants/role'
 import spawnLoop from 'spawn/core'
 import plan from 'planner/core'
 import callRescue from 'planner/rescue';
@@ -13,23 +8,16 @@ import trackEnemy, { findMostVulnerableCreep } from './enemyTrack';
 import visual from 'planner/visual'
 import usage from './usage'
 import { infoStyle, dangerStyle } from './style'
-import miner from 'role/miner';
-import isRetired from 'utils/retired';
-import extractor from 'role/extractor';
-import fighter from 'role/fighter';
-import staticUpgrader from '../role/staticUpgrader';
 import handleLog from './log';
 import { roomPos } from 'planner/pos';
+import creeps from './creeps';
 
 export default function run(room: ControlledRoom, cpuUsed: number) {
   if (!room.memory.roads) plan(room)
   visual(room)
 
-  const creepCountByRole: number[] = []
-  const workPartCountByRole: number[] = []
   let mem = room.memory
   if (!mem.creeps) mem.creeps = {}
-  let count = 0
 
   const enemies = trackEnemy(room)
   let enemy: Creep | undefined
@@ -59,42 +47,12 @@ export default function run(room: ControlledRoom, cpuUsed: number) {
     if (creeps) room.find(FIND_MY_STRUCTURES, { filter: s => s.structureType === STRUCTURE_TOWER && tower(s, creeps[_.random(0, creeps.length - 1)]) })
     else mem._healthy = true
   }
-  for (const name in mem.creeps) {
-    const creep = Game.creeps[name]
-    if (!creep) {
-      delete mem.creeps[name]
-      delete Memory.creeps[name]
-      continue
-    }
-    if (creep.memory.room !== room.name) {
-      if (creep.room.name !== room.name) {
-        delete mem.creeps[name]
-      } else {
-        const otherMemRoom = Memory.rooms[creep.memory.room].creeps
-        if (otherMemRoom) delete otherMemRoom[creep.name]
-        creep.memory.room = room.name
-      }
-    }
-    const role = creep.memory.role || 0
-    if (!isRetired(creep)) {
-      creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
-      workPartCountByRole[role] = (workPartCountByRole[role] || 0) + creep.getActiveBodyparts(WORK)
-      count++
-    } else creepCountByRole[RETIRED] = (creepCountByRole[RETIRED] || 0) + 1
-    if (creep.spawning) continue
-    switch (creep.memory.role) {
-      case HARVESTER: roleHarvester(creep); break
-      case UPGRADER: roleUpgrader(creep); break
-      case STATIC_UPGRADER: staticUpgrader(creep); break
-      case SCOUT: roleScout(creep as Scout); break
-      case CLAIMER: roleClaimer(creep as Claimer); break
-      case COMMANDER: commander(creep); break
-      case MINER: miner(creep); break
-      case EXTRACTOR: extractor(creep); break
-      case FIGHTER: fighter(creep); break
-      default: creep.memory.role = UPGRADER;
-    }
-  }
+
+  const {
+    creepCountByRole,
+    workPartCountByRole,
+    count,
+  } = creeps(mem.creeps, room, enemy, needFighters)
 
   handleLog(room, room.getEventLog())
 

@@ -73,7 +73,7 @@ const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
 }
 
 const zmod = (a: number, b: number) => a - Math.floor(a / b) * b
-function moveAnywhere(creep: Creep, preferDirection: DirectionConstant = TOP, me?: Creep) {
+export function moveAnywhere(creep: Creep, preferDirection: DirectionConstant = TOP, me?: Creep) {
   const room = creep.room
   const { x, y } = creep.pos
   let dirOffset = 0

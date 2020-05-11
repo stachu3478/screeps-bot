@@ -9,7 +9,7 @@ export interface Fighter extends Creep {
 
 interface FighterMemory extends CreepMemory { }
 
-export default function fighter(creep: Fighter, enemy?: Creep) {
+export default function fighter(creep: Fighter, enemy?: Creep, keepDistance?: boolean) {
   switch (creep.memory.state) {
     case INIT: {
       creep.notifyWhenAttacked(false)
@@ -21,7 +21,7 @@ export default function fighter(creep: Fighter, enemy?: Creep) {
       }
     }; break
     case FIGHT: {
-      switch (fight(creep, enemy)) {
+      switch (fight(creep, enemy, keepDistance)) {
         case NOTHING_TODO: creep.memory.state = RECYCLE; break
       }
     } break;

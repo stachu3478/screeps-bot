@@ -50,7 +50,7 @@ export function findMostVulnerableCreep(enemies: Creep[], towers: StructureTower
     })
     enemySummary[i] = enemyDealable[i] - enemyHealable[i]
   })
-  const best = _.max(enemies, (v, i) => enemySummary[i])
+  const best: Creep = _.max(enemies, (v, i) => enemySummary[i])
   const value = _.max(enemySummary)
   return {
     enemy: best,
