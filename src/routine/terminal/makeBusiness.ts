@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { DONE, NOTHING_TODO, NOTHING_DONE, FAILED, SUCCESS } from "constants/response";
+import { DONE, NOTHING_DONE, FAILED, SUCCESS } from "constants/response";
 import { getAverageCost, energyCost } from 'utils/handleTerminal';
 
 function calcCost(room1: string, room2?: string) {
@@ -37,14 +37,10 @@ export default function makeBusiness(term: StructureTerminal) {
     const sellCalc = fromSell(averageCost, roomName)
     const buyCalc = fromBuy(averageCost, roomName)
     const bestSellOrder = _.max(sellOrders, sellCalc)
-    if (!bestBuyOrder || !bestSellOrder) {
-      console.log('Not both sides supplied.')
-      return NOTHING_DONE
-    }
 
     const victims = buyCalc(bestBuyOrder) + sellCalc(bestSellOrder)
     if (victims > 0) {
-      console.log('It is a ludicrous occasion!', JSON.stringify({
+      console.log('It is a ludicrous occasion! ' + victims, JSON.stringify({
         buy: bestBuyOrder,
         sell: bestSellOrder
       }))

@@ -1,5 +1,6 @@
 import { cheapMove } from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from '../../constants/response'
+import { findClosestHostileHittableStructures } from 'utils/find';
 
 interface DismantleCreep extends Creep {
   memory: DismantleMemory
@@ -12,9 +13,7 @@ interface DismantleMemory extends CreepMemory {
 export default function dismantle(creep: DismantleCreep) {
   let target = Game.getObjectById(creep.memory._dismantle || '' as Id<Structure>)
   if (!target || !target.hits) {
-    const newTarget = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-      filter: s => s.hits
-    })
+    const newTarget = findClosestHostileHittableStructures(creep.pos)
     if (newTarget) {
       target = newTarget
       creep.memory._dismantle = newTarget.id

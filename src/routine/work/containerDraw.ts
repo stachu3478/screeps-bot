@@ -1,5 +1,6 @@
 import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
+import { findClosestFilledContainer } from 'utils/find';
 
 interface DrawContainerCreep extends Creep {
   memory: DrawContainerMemory
@@ -13,11 +14,8 @@ export default function drawContainer(creep: DrawContainerCreep) {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return DONE
   let target = Game.getObjectById(creep.memory._draw || ('' as Id<StructureContainer>))
   if (!target || target.store[RESOURCE_ENERGY] === 0) {
-    const newTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: s => s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] > 0
-    }) as StructureContainer | undefined
+    const newTarget = findClosestFilledContainer(creep.pos)
     if (!newTarget) return NOTHING_TODO
-    if (newTarget.structureType !== STRUCTURE_CONTAINER) return FAILED
     target = newTarget
     creep.memory._draw = target.id
   }

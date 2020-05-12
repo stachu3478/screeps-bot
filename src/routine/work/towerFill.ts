@@ -1,5 +1,6 @@
 import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
+import { findMostEmptiedTower } from 'utils/find';
 
 interface TowerFillCreep extends Creep {
   memory: TowerFillMemory
@@ -13,11 +14,8 @@ export default function fillTower(creep: TowerFillCreep) {
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
   let target = Game.getObjectById(creep.memory._fillTower || ('' as Id<StructureTower>))
   if (!target || target.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-    const newTarget = creep.pos.findClosestByPath(FIND_MY_STRUCTURES, {
-      filter: s => (s.structureType === STRUCTURE_TOWER)
-        && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-    })
-    if (!newTarget) return NOTHING_TODO
+    const newTarget = findMostEmptiedTower(creep.room)
+    if (typeof newTarget === 'number') return NOTHING_TODO
     if (newTarget.structureType !== STRUCTURE_TOWER) return FAILED
     target = newTarget
     creep.memory._fillTower = target.id
