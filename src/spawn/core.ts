@@ -8,6 +8,7 @@ import isRetired from 'utils/retired';
 import extract from './extract';
 import spawnUpgrader from './upgrader';
 import { MinerMemory, Miner } from 'role/miner';
+import { findContainers } from 'utils/find';
 
 export default function loop(spawn: StructureSpawn, creepCountByRole: number[], workPartCountByRole: number[], needsFighters: boolean) {
   const mem = spawn.room.memory
@@ -22,7 +23,7 @@ export default function loop(spawn: StructureSpawn, creepCountByRole: number[], 
   const upgraderCount = creepCountByRole[UPGRADER] || 0
   const minerCount = creepCountByRole[MINER] || 0
   const maxUpgradersCount = 3
-  const containers = spawn.room.find(FIND_STRUCTURES, { filter: s => s.structureType === STRUCTURE_CONTAINER }).length || spawn.room.storage
+  const containers = findContainers(spawn.room).length || spawn.room.storage
   if (minerCount === 0 && !creepCountByRole[RETIRED]) {
     const name = uniqName("M")
     const colonySource = mem.colonySourceId || ''

@@ -2,6 +2,8 @@ import plan from './core'
 import { SUCCESS, NOTHING_TODO } from '../constants/response'
 import { roomPos } from './pos';
 import _ from 'lodash';
+import { findExtractors } from 'utils/find';
+import { getLink } from 'utils/selectFromPos';
 
 export default function place(room: Room) {
   if (!room.controller) return
@@ -20,7 +22,8 @@ export default function place(room: Room) {
     else if (iteration === 1) structureToPlace = STRUCTURE_SPAWN
     else if (iteration === 2) structureToPlace = STRUCTURE_STORAGE
     else if (iteration === 3) structureToPlace = STRUCTURE_TERMINAL
-    else if (iteration < 10) structureToPlace = STRUCTURE_TOWER
+    else if (iteration === 4) structureToPlace = STRUCTURE_LAB
+    else if (iteration < 11) structureToPlace = STRUCTURE_TOWER
     else structureToPlace = STRUCTURE_EXTENSION
     if (room.createConstructionSite(x, y, structureToPlace) === 0) {
       room.memory._struct_iteration = iteration
@@ -29,9 +32,7 @@ export default function place(room: Room) {
     if (++iteration >= times) iteration = 0
   }
   if (!mem._extractor && CONTROLLER_STRUCTURES[STRUCTURE_EXTRACTOR][room.controller.level]) {
-    const extractor = room.find(FIND_STRUCTURES, {
-      filter: s => s.structureType === STRUCTURE_EXTRACTOR
-    })[0] as StructureExtractor | undefined
+    const extractor = findExtractors(room)[0] as StructureExtractor | undefined
     if (!extractor) {
       const mineralPos = room.find(FIND_MINERALS)[0]
       if (mineralPos && mineralPos.pos.createConstructionSite(STRUCTURE_EXTRACTOR) === 0) {
@@ -46,7 +47,7 @@ export default function place(room: Room) {
     let linked: 0 | 1 = 1
     for (let i = 0; i < linkCount; i++) {
       const linkPos = roomPos(linkPoses[i], room.name)
-      const link = _.filter(linkPos.lookFor(LOOK_STRUCTURES), s => s.structureType === STRUCTURE_LINK)[0]
+      const link = getLink(linkPos)
       if (link) continue
       const result = linkPos.createConstructionSite(STRUCTURE_LINK)
       if (result === ERR_RCL_NOT_ENOUGH) break

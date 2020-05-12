@@ -27,6 +27,7 @@ export default function commander(creep: Commander) {
     } break;
     case RECYCLE: {
       switch (recycle(creep)) {
+        case NOTHING_TODO: creep.suicide()
         case DONE: delete Memory.creeps[creep.name]
       }
     }; break
@@ -66,12 +67,15 @@ export default function commander(creep: Commander) {
                 creep.memory._arrive = Memory.rooms[creep.memory.room]._attack
                 creep.memory.state = ARRIVE_HOSTILE
               } else creep.heal(creep)
+              break
             }
-          } break
+          }
+          case DONE: recycle(creep); creep.memory.state = RECYCLE; break
           default: creep.heal(creep)
         } else if (creep.getActiveBodyparts(TOUGH) > 0) {
           creep.memory._arrive = Memory.rooms[creep.memory.room]._attack
-          creep.memory.state = ARRIVE_HOSTILE
+          if (creep.memory._arrive) creep.memory.state = ARRIVE_HOSTILE
+          else creep.memory.state = RECYCLE
         } else creep.heal(creep)
     } break;
     default: {

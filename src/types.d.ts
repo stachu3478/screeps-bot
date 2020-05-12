@@ -57,6 +57,9 @@ interface RoomMemory {
 
   terminalState?: number
   terminalDealResourceType?: ResourceConstant
+  terminalResourceIteration?: number
+  termBusinessSell?: 0 | 1
+  termBusinessAmount?: number
 
   _struct_iteration?: number
   _road_iteration?: number

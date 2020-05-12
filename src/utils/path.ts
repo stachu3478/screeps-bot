@@ -1,17 +1,7 @@
 import _ from 'lodash'
 import { posToChar, roomPos } from 'planner/pos'
 import { MINER } from 'constants/role';
-
-const directions: DirectionConstant[] = [
-  TOP,
-  TOP_RIGHT,
-  RIGHT,
-  BOTTOM_RIGHT,
-  BOTTOM,
-  BOTTOM_LEFT,
-  LEFT,
-  TOP_LEFT,
-]
+import { findSourceKeepers } from './find';
 
 interface OffsetByDirection {
   [key: number]: number[]
@@ -50,9 +40,7 @@ function roomCallback(roomName: string, costMatrix: CostMatrix) {
     })
     return costMatrix
   }
-  const sourceKeepers = room.find(FIND_HOSTILE_CREEPS, {
-    filter: c => c.owner.username === "Source Keeper"
-  })
+  const sourceKeepers = findSourceKeepers(room)
   sourceKeepers.forEach(c => {
     const { x, y } = c.pos
     for (let ox = -3; ox <= 3; ox++)
@@ -65,7 +53,7 @@ function roomCallback(roomName: string, costMatrix: CostMatrix) {
 
 const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
   if (room.getTerrain().get(x, y) === TERRAIN_MASK_WALL) return false
-  const nonWalkableStruct = _.find(room.lookForAt(LOOK_STRUCTURES, x, y), s => s.structureType !== STRUCTURE_ROAD && s.structureType !== STRUCTURE_RAMPART && s.structureType !== STRUCTURE_CONTAINER)
+  const nonWalkableStruct = _.find(room.lookForAt(LOOK_STRUCTURES, x, y), s => s.structureType !== STRUCTURE_ROAD && (s.structureType !== STRUCTURE_RAMPART || !(s as StructureRampart).my || !(s as StructureRampart).isPublic) && s.structureType !== STRUCTURE_CONTAINER)
   if (nonWalkableStruct) return false
   const creep = _.find(room.lookForAt(LOOK_CREEPS, x, y), (c: Creep) => !me || c !== me)
   if (creep) return false

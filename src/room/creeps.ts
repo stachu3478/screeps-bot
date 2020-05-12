@@ -1,4 +1,4 @@
-import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER, RETIRED, EXTRACTOR, FIGHTER, STATIC_UPGRADER } from '../constants/role'
+import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER, RETIRED, EXTRACTOR, FIGHTER, STATIC_UPGRADER, COLONIZER } from '../constants/role'
 import roleHarvester from '../role/harvester'
 import roleUpgrader from '../role/upgrader'
 import roleClaimer, { Claimer } from '../role/claimer'
@@ -9,6 +9,7 @@ import isRetired from 'utils/retired';
 import extractor from 'role/extractor';
 import fighter from 'role/fighter';
 import staticUpgrader from '../role/staticUpgrader';
+import colonizer, { Colonizer } from 'role/colonizer';
 
 interface Creeps {
   [key: string]: 0
@@ -51,6 +52,7 @@ export default function creeps(creeps: Creeps, room: Room, enemy?: Creep, holdFi
       case MINER: miner(creep); break
       case EXTRACTOR: extractor(creep); break
       case FIGHTER: fighter(creep, enemy, holdFire); break
+      case COLONIZER: colonizer(creep as Colonizer); break
       default: creep.memory.role = UPGRADER;
     }
   }

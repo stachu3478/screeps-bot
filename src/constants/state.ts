@@ -27,3 +27,6 @@ export const FIGHT = 26
 export const DRAW = 27
 export const IDLE = 28
 export const DEAL = 29
+export const TERM_SEND_EXCESS = 30
+export const TERM_SELL_EXCESS = 31
+export const TERM_BUSINESS = 32

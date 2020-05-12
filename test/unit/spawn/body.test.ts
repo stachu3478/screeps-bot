@@ -1,8 +1,18 @@
 import "../constants"
 import { assert } from "chai";
-import { progressiveWorker, progressiveCommander } from "../../../src/spawn/body"
+import { progressiveCommander } from "../../../src/spawn/body/body"
+import { progressiveWorker, progressiveMobileWorker } from "../../../src/spawn/body/work"
+import { Game, Memory, Creep } from "../mock"
 
 describe("main", () => {
+  beforeEach(() => {
+    // runs before each test in this block
+    // @ts-ignore : allow adding Game to global
+    global.Game = _.clone(Game);
+    // @ts-ignore : allow adding Memory to global
+    global.Memory = _.clone(Memory);
+  });
+
   it("should export a loop function", function () {
     assert.isTrue(typeof progressiveWorker === "function");
   });
@@ -55,5 +65,14 @@ describe("main", () => {
   it("should return commander maxed out", function () {
     const result = progressiveCommander(1000000, 2)
     assert.equal(result.length, MAX_CREEP_SIZE)
+  });
+
+  it("should return progressive mobile worker", function () {
+    const testMax = SPAWN_ENERGY_START * 10
+    for (let e = SPAWN_ENERGY_START; e < testMax; e += 50) {
+      const result = progressiveMobileWorker(e)
+      const energy = result.reduce((c, p) => c + BODYPART_COST[p], 0)
+      assert.isAtMost(energy, e)
+    }
   });
 });

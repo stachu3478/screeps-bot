@@ -1,4 +1,5 @@
 import { SUCCESS, NOTHING_DONE } from "constants/response";
+import { findClosestDamagedCreeps } from "utils/find";
 
 interface HealCreep extends Creep {
   memory: HealMemory
@@ -7,9 +8,7 @@ interface HealCreep extends Creep {
 interface HealMemory extends CreepMemory { }
 
 export default function heal(creep: HealCreep) {
-  const nearest = creep.pos.findClosestByRange(FIND_MY_CREEPS, {
-    filter: creep => creep.hits < creep.hitsMax
-  })
+  const nearest = findClosestDamagedCreeps(creep.pos)
   if (nearest) {
     let result
     if (creep.pos.isNearTo(nearest)) {

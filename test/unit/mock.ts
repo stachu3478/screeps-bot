@@ -3,8 +3,18 @@ export const Game = {
   rooms: [],
   spawns: {},
   time: 12345,
-  getObjectById: () => null
+  getObjectById: () => null,
+  market: {
+    getHistory: () => []
+  },
+  cpu: {
+    getUsed: () => 0
+  }
 };
+
+export class RoomVisual {
+  text() { }
+}
 
 export const Memory = {
   creeps: []

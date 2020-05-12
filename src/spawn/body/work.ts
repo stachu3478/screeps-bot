@@ -27,6 +27,26 @@ export function progressiveMiner(energy: number) {
   return progressiveStaticWorker(energy, maxWork)
 }
 
+export function progressiveMobileWorker(energy: number) {
+  const parts: BodyPartConstant[] = []
+  let remaining = energy
+  let partsRemaining = MAX_CREEP_SIZE
+  parts.push(CARRY)
+  remaining -= BODYPART_COST[CARRY]
+  partsRemaining--
+  while (remaining >= liteWorkPack && partsRemaining >= 2) {
+    parts.push(WORK, MOVE)
+    remaining -= liteWorkPack
+    partsRemaining -= 2
+  }
+  while (remaining >= BODYPART_COST[CARRY] && partsRemaining > 0) {
+    parts.push(CARRY)
+    remaining -= BODYPART_COST[CARRY]
+    partsRemaining--
+  }
+  return parts
+}
+
 export function progressiveWorker(energy: number, maxWork: number = MAX_CREEP_SIZE) {
   const parts = [WORK, CARRY, MOVE]
   let remaining = energy - workPack

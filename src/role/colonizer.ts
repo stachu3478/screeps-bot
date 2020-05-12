@@ -6,12 +6,12 @@ export interface Colonizer extends Creep {
   memory: ColonizerMemory
 }
 
-interface ColonizerMemory extends CreepMemory {
+export interface ColonizerMemory extends CreepMemory {
   _arrive?: string
   _targetRole: number
 }
 
-export default function run(creep: Colonizer) {
+export default function colonizer(creep: Colonizer) {
   switch (creep.memory.state) {
     case ARRIVE: {
       switch (arrive(creep)) {

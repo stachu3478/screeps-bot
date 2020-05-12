@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import tower from '../role/tower'
-import { RETIRED, FIGHTER } from '../constants/role'
+import { RETIRED } from '../constants/role'
 import spawnLoop from 'spawn/core'
 import plan from 'planner/core'
 import callRescue from 'planner/rescue';
@@ -11,6 +11,8 @@ import { infoStyle, dangerStyle } from './style'
 import handleLog from './log';
 import { roomPos } from 'planner/pos';
 import creeps from './creeps';
+import terminal from 'role/terminal';
+import { findTowers, findFighters, findDamagedCreeps } from 'utils/find';
 
 export default function run(room: ControlledRoom, cpuUsed: number) {
   if (!room.memory.roads) plan(room)
@@ -24,8 +26,8 @@ export default function run(room: ControlledRoom, cpuUsed: number) {
   let needFighters = false
   let towersProcessed = false
   if (enemies.length) {
-    const towers = room.find(FIND_MY_STRUCTURES, { filter: s => s.structureType === STRUCTURE_TOWER }) as StructureTower[]
-    const fighters = room.find(FIND_MY_CREEPS, { filter: c => c.memory.role === FIGHTER })
+    const towers = findTowers(room)
+    const fighters = findFighters(room)
     const found = findMostVulnerableCreep(enemies, towers, fighters)
     enemy = found.enemy
     if (found.vulnerability <= 0) needFighters = true
@@ -43,8 +45,8 @@ export default function run(room: ControlledRoom, cpuUsed: number) {
     }
   }
   if (!mem._healthy && !towersProcessed) {
-    const creeps = room.find(FIND_MY_CREEPS, { filter: c => c.hits < c.hitsMax })
-    if (creeps) room.find(FIND_MY_STRUCTURES, { filter: s => s.structureType === STRUCTURE_TOWER && tower(s, creeps[_.random(0, creeps.length - 1)]) })
+    const creeps = findDamagedCreeps(room)
+    if (creeps.length) room.find(FIND_MY_STRUCTURES, { filter: s => s.structureType === STRUCTURE_TOWER && tower(s, creeps[_.random(0, creeps.length - 1)]) })
     else mem._healthy = true
   }
 
@@ -69,6 +71,8 @@ export default function run(room: ControlledRoom, cpuUsed: number) {
       }
     } else room.memory.spawnName = spawn.name
   }
+
+  if (room.terminal) terminal(room.terminal)
 
   if (spawn) spawnLoop(spawn, creepCountByRole, workPartCountByRole, needFighters)
   room.visual.text("Population: " + count + " Retired: " + (creepCountByRole[RETIRED] || 0), 0, 0, count === 0 ? dangerStyle : infoStyle)
