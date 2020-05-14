@@ -2,12 +2,19 @@ import run from "room/core"
 import { infoStyle } from "room/style";
 // import profiler from "screeps-profiler"
 
+const memory = JSON.parse(RawMemory.get())
 // profiler.enable()
+const roomVisual = new RoomVisual()
+
+let runtimeTicks = 0
 export const loop = () => {
   // profiler.wrap(() => {
+  delete global.Memory
+  global.Memory = memory
+
   Memory.myRooms
   let usage = Game.cpu.getUsed()
-  new RoomVisual().text("Memory overhead: ".concat(usage.toFixed(3)), 0, 49, infoStyle)
+  roomVisual.text("Memory overhead: " + usage.toFixed(3), 0, 49, infoStyle)
   for (const name in Memory.myRooms) {
     const room = Game.rooms[name]
     if (room) {
@@ -16,4 +23,15 @@ export const loop = () => {
     }
   }
   // })
+
+  if (!Memory.runtimeTicks) Memory.runtimeTicks = runtimeTicks++
+  else if (Memory.runtimeTicks > runtimeTicks) {
+    const currentResetTime = Memory.runtimeTicks;
+    let avg = Memory.runtimeAvg || currentResetTime
+    Memory.runtimeAvg = avg = Math.floor((avg * 9 + currentResetTime) / 10)
+    Memory.runtimeTicks = 0
+  } else Memory.runtimeTicks = runtimeTicks++
+  roomVisual.text("Runtime ticks: " + runtimeTicks + " (avg. " + (Memory.runtimeAvg || 'unknown') + ')', 0, 48, infoStyle)
+
+  RawMemory.set(JSON.stringify(Memory))
 }

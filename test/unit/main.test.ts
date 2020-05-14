@@ -2,7 +2,8 @@ import "./constants"
 import { assert } from "chai";
 import _ from "lodash"
 import { loop } from "../../src/main";
-import { Game, Memory } from "./mock"
+import { Memory } from "./mock"
+import Game from "./mock/Game"
 
 describe("main", () => {
   before(() => {

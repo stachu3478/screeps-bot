@@ -40,6 +40,8 @@ interface Memory {
   trade_blacklist?: {
     [key: string]: number
   }
+  runtimeTicks?: number
+  runtimeAvg?: number
 }
 
 interface RoomMemory {
@@ -96,5 +98,6 @@ interface ControlledRoom extends Room {
 declare namespace NodeJS {
   interface Global {
     log: any;
+    Memory: Memory
   }
 }

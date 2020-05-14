@@ -1,7 +1,6 @@
 import plan from './core'
 import { SUCCESS, NOTHING_TODO } from '../constants/response'
 import { roomPos } from './pos';
-import _ from 'lodash';
 import { findExtractors } from 'utils/find';
 import { getLink } from 'utils/selectFromPos';
 
@@ -50,7 +49,6 @@ export default function place(room: Room) {
       const link = getLink(linkPos)
       if (link) continue
       const result = linkPos.createConstructionSite(STRUCTURE_LINK)
-      if (result === ERR_RCL_NOT_ENOUGH) break
       if (result === 0) return SUCCESS
       linked = 0
     }

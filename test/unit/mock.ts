@@ -1,24 +1,19 @@
-export const Game = {
-  creeps: [],
-  rooms: [],
-  spawns: {},
-  time: 12345,
-  getObjectById: () => null,
-  market: {
-    getHistory: () => []
-  },
-  cpu: {
-    getUsed: () => 0
-  }
+export const Memory = {
+  creeps: []
 };
+
+export const RawMemory = {
+  get: () => JSON.stringify(Memory),
+  set: () => { }
+}
 
 export class RoomVisual {
   text() { }
 }
 
-export const Memory = {
-  creeps: []
-};
+export class RoomTerrain {
+  get() { return 0 }
+}
 
 export const Creep = {
   store: { getFreeCapacity: () => 50 },

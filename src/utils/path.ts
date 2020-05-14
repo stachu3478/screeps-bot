@@ -55,7 +55,10 @@ const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
   if (room.getTerrain().get(x, y) === TERRAIN_MASK_WALL) return false
   const nonWalkableStruct = _.find(room.lookForAt(LOOK_STRUCTURES, x, y), s => s.structureType !== STRUCTURE_ROAD && (s.structureType !== STRUCTURE_RAMPART || !(s as StructureRampart).my || !(s as StructureRampart).isPublic) && s.structureType !== STRUCTURE_CONTAINER)
   if (nonWalkableStruct) return false
-  const creep = _.find(room.lookForAt(LOOK_CREEPS, x, y), (c: Creep) => !me || c !== me)
+  const site = _.find(room.lookForAt(LOOK_CONSTRUCTION_SITES, x, y), s => s.structureType !== STRUCTURE_ROAD && s.structureType !== STRUCTURE_CONTAINER)
+  if (site) return false
+  if (!me) return true
+  const creep = _.find(room.lookForAt(LOOK_CREEPS, x, y), (c: Creep) => c !== me)
   if (creep) return false
   return true
 }

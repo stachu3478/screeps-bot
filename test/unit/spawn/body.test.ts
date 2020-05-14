@@ -2,7 +2,8 @@ import "../constants"
 import { assert } from "chai";
 import { progressiveCommander } from "../../../src/spawn/body/body"
 import { progressiveWorker, progressiveMobileWorker } from "../../../src/spawn/body/work"
-import { Game, Memory, Creep } from "../mock"
+import { Memory } from "../mock"
+import Game from "../mock/Game"
 
 describe("main", () => {
   beforeEach(() => {
