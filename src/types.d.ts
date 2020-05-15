@@ -26,7 +26,7 @@ interface SpawnMemory {
 interface Memory {
   uuid: number
   log: any
-  test: Id<StructureLink>[]
+  test?: Id<StructureLink>[]
   ticksToProfile?: number
   myRooms: {
     [key: string]: 0
@@ -81,6 +81,7 @@ interface RoomMemory {
   _lvl?: number
   _healthy?: boolean
   _linked?: 0 | 1
+  _shielded?: 0 | 1
 }
 
 interface StableRoomMemory extends RoomMemory {

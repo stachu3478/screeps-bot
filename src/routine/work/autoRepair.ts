@@ -1,14 +1,5 @@
 import { SUCCESS, NOTHING_TODO, FAILED, NO_RESOURCE } from '../../constants/response'
-
-interface ToRepair {
-  [key: string]: number
-}
-const toRepair: ToRepair = {
-  [STRUCTURE_ROAD]: 1,
-  [STRUCTURE_WALL]: 1,
-  [STRUCTURE_RAMPART]: 1,
-  [STRUCTURE_CONTAINER]: 1,
-}
+import { findCloseMostDamagedStructure } from 'utils/find';
 
 interface AutoRepairCreep extends Creep {
   memory: AutoRepairMemory
@@ -27,12 +18,9 @@ export default function autoRepair(creep: AutoRepairCreep, timeout: number = 6) 
   }
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
   let target = Game.getObjectById(mem._auto_repair || ('' as Id<Structure>))
-  const repairPower = creep.getActiveBodyparts(WORK) * REPAIR_POWER
   if (!target || target.hits === target.hitsMax || creep.pos.getRangeTo(target) > 3) {
-    target = creep.pos.findInRange(FIND_STRUCTURES, 3, {
-      filter: s => toRepair[s.structureType]
-        && s.hits + repairPower <= s.hitsMax
-    })[0]
+    const repairPower = creep.getActiveBodyparts(WORK) * REPAIR_POWER
+    target = findCloseMostDamagedStructure(creep.pos, repairPower)
     if (!target) {
       mem._repair_cooldown = timeout
       return NOTHING_TODO

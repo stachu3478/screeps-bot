@@ -2,6 +2,7 @@ export default class RoomPosition {
   public x: number
   public y: number
   public roomName: string
+  public prototype: any
 
   constructor(x: number, y: number, name: string) {
     this.x = x;
@@ -9,11 +10,11 @@ export default class RoomPosition {
     this.roomName = name;
   }
 
-  createConstructionSite() {
+  createConstructionSite(type: StructureConstant) {
     return OK
   }
 
-  createFlag() {
+  createFlag(): ScreepsReturnCode {
     return OK
   }
 
@@ -21,7 +22,7 @@ export default class RoomPosition {
     return null
   }
 
-  findClosestBRange() {
+  findClosestByRange() {
     return null
   }
 
@@ -60,7 +61,7 @@ export default class RoomPosition {
     }]
   }
 
-  lookFor() {
+  lookFor(type: LookConstant) {
     return []
   }
 }

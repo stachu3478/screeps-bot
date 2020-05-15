@@ -42,18 +42,22 @@ export default function creeps(creeps: Creeps, room: Room, enemy?: Creep, holdFi
       count++
     } else creepCountByRole[RETIRED] = (creepCountByRole[RETIRED] || 0) + 1
     if (creep.spawning) continue
-    switch (creep.memory.role) {
-      case HARVESTER: roleHarvester(creep); break
-      case UPGRADER: roleUpgrader(creep); break
-      case STATIC_UPGRADER: staticUpgrader(creep); break
-      case SCOUT: roleScout(creep as Scout); break
-      case CLAIMER: roleClaimer(creep as Claimer); break
-      case COMMANDER: commander(creep); break
-      case MINER: miner(creep); break
-      case EXTRACTOR: extractor(creep); break
-      case FIGHTER: fighter(creep, enemy, holdFire); break
-      case COLONIZER: colonizer(creep as Colonizer); break
-      default: creep.memory.role = UPGRADER;
+    try {
+      switch (creep.memory.role) {
+        case HARVESTER: roleHarvester(creep); break
+        case UPGRADER: roleUpgrader(creep); break
+        case STATIC_UPGRADER: staticUpgrader(creep); break
+        case SCOUT: roleScout(creep as Scout); break
+        case CLAIMER: roleClaimer(creep as Claimer); break
+        case COMMANDER: commander(creep); break
+        case MINER: miner(creep); break
+        case EXTRACTOR: extractor(creep); break
+        case FIGHTER: fighter(creep, enemy, holdFire); break
+        case COLONIZER: colonizer(creep as Colonizer); break
+        default: creep.memory.role = UPGRADER;
+      }
+    } catch (err) {
+      console.log(err.message, err.stack)
     }
   }
 

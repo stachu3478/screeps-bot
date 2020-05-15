@@ -1,6 +1,10 @@
 export const Memory = {
-  creeps: []
-};
+  uuid: 0,
+  log: [],
+  myRooms: {},
+  spawns: {},
+  creeps: {}
+} as Memory;
 
 export const RawMemory = {
   get: () => JSON.stringify(Memory),
@@ -8,7 +12,18 @@ export const RawMemory = {
 }
 
 export class RoomVisual {
-  text() { }
+  public roomName: string
+
+  constructor(roomName: string) {
+    this.roomName = roomName
+  }
+  text() { return this }
+  line() { return this }
+  poly() { return this }
+  rect() { return this }
+  circle() { return this }
+  clear() { return this }
+  getSize() { return 0 }
 }
 
 export class RoomTerrain {

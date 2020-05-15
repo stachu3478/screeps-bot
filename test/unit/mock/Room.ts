@@ -1,22 +1,24 @@
 import RoomPosition from './RoomPosition'
 import { RoomVisual, RoomTerrain } from '../mock'
 
-export default class Room {
-  public controller: undefined
+export default class RoomMock {
+  public controller?: StructureController
   public energyAvailable: number
   public energyCapacityAvailable: number
   public memory: RoomMemory
   public name: string
-  public storage: undefined
-  public terminal: undefined
+  public storage?: StructureStorage
+  public terminal?: StructureTerminal
   public visual: RoomVisual
+  public prototype: any
+  public mode: any
 
-  constructor() {
+  constructor(name: string) {
     this.energyAvailable = 0;
     this.energyCapacityAvailable = 0;
     this.memory = {} as RoomMemory;
-    this.name = 'test'
-    this.visual = new RoomVisual()
+    this.name = name
+    this.visual = new RoomVisual(name)
   }
 
   static serializePath() {
@@ -27,12 +29,12 @@ export default class Room {
     return []
   }
 
-  createConstructionSite() {
-    return OK
+  createConstructionSite(x: number, y: number, type: StructureConstant) {
+    return this.getPositionAt(x, y).createConstructionSite(type)
   }
 
-  createFlag() {
-    return OK
+  createFlag(x: number | RoomPosition | _HasRoomPosition, y: number): ScreepsReturnCode {
+    return this.getPositionAt(x as number, y).createFlag()
   }
 
   find() {
@@ -44,7 +46,7 @@ export default class Room {
   }
 
   findPath() {
-    return 0
+    return []
   }
 
   getEventLog() {
@@ -67,11 +69,11 @@ export default class Room {
     return {} // TODO mock better
   }
 
-  lookForAt() {
-    return []
+  lookForAt(type: LookConstant, x: number, y: number) {
+    return this.getPositionAt(x, y).lookFor(type)
   }
 
   lookForAtArea() {
     return {}
   }
-}
+};

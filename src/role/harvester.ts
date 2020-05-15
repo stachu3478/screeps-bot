@@ -14,6 +14,7 @@ import dismantle from 'routine/work/dismantle'
 import recycle from 'routine/recycle'
 import drawContainer from 'routine/work/containerDraw';
 import drawStorage from 'routine/work/storageDraw';
+import placeShield from 'planner/placeShield';
 
 export interface Harvester extends Creep {
   memory: HarvesterMemory
@@ -135,6 +136,7 @@ export default function harvester(creep: Harvester) {
         case DONE: case SUCCESS: {
           if (spawnerFill(creep) in ACCEPTABLE) creep.memory.state = SPAWN_FILL
           else if (towerFill(creep) in ACCEPTABLE) creep.memory.state = TOWER_FILL
+          else if (build(creep) in ACCEPTABLE || place(creep.room) in ACCEPTABLE || placeRoad(creep.room) in ACCEPTABLE || placeShield(creep.room) in ACCEPTABLE) creep.memory.state = BUILD
           else creep.memory.state = HARVESTING
         } break
         case NOTHING_TODO: case FAILED: creep.memory.state = HARVESTING; break

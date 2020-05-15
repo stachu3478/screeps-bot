@@ -5,7 +5,7 @@ import { progressiveWorker, progressiveMobileWorker } from "../../../src/spawn/b
 import { Memory } from "../mock"
 import Game from "../mock/Game"
 
-describe("main", () => {
+describe("spawn/body", () => {
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
@@ -57,7 +57,6 @@ describe("main", () => {
 
   it("should return as many heal parts as possible", function () {
     const result = progressiveCommander(10 * (BODYPART_COST[HEAL] + BODYPART_COST[MOVE]), 0)
-    console.log(result)
     assert.includeMembers(result, [MOVE, HEAL]);
     assert.equal(result.length, 20)
     assert.equal(result.filter(p => p === HEAL).length, 10)

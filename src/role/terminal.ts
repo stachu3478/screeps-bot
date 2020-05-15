@@ -15,8 +15,8 @@ export default function terminal(term: StructureTerminal) {
     case TERM_SEND_EXCESS: {
       term.room.visual.text('Terminal: Sending excess resources.', 0, 4, infoStyle)
       switch (sendExcess(term)) {
-        case NO_RESOURCE: case NOTHING_TODO: mem.terminalState = TERM_BUSINESS
-        case DONE: case FAILED: mem.terminalState = TERM_SELL_EXCESS
+        case NO_RESOURCE: case NOTHING_TODO: mem.terminalState = TERM_BUSINESS; break
+        case DONE: case FAILED: mem.terminalState = TERM_SELL_EXCESS; break
       }
     } break
     case TERM_SELL_EXCESS: {

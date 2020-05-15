@@ -3,11 +3,19 @@ export default function handleLog(room: ControlledRoom, logs: EventItem[]) {
   logs.forEach(l => {
     switch (l.event) {
       case EVENT_ATTACK:
-        if (l.data.attackType === EVENT_ATTACK_TYPE_HIT_BACK) return;
+        if (l.data.attackType === EVENT_ATTACK_TYPE_HIT_BACK) break;
+        const attacker = Game.getObjectById(l.objectId as Id<Creep>)
+        if (!attacker || attacker.my) break
+        const target = Game.getObjectById(l.data.targetId) as Creep | Structure
+        const structure = target as Structure
+        if (structure.structureType === STRUCTURE_SPAWN) {
+          room.controller.activateSafeMode()
+        }
       case EVENT_ATTACK_CONTROLLER:
         const creep = Game.getObjectById(l.objectId as Id<Creep>)
+        if (!creep || creep.my) break
         if (!Memory.whitelist) Memory.whitelist = {}
-        if (creep && creep.owner && Memory.whitelist[creep.owner.username]) {
+        if (creep.owner && Memory.whitelist[creep.owner.username]) {
           const message = `${creep.owner.username} has been removed from the whitelist due to violating peace regulations`
           console.log(message)
           Game.notify(message, 5)
@@ -18,6 +26,7 @@ export default function handleLog(room: ControlledRoom, logs: EventItem[]) {
         const type = l.data.type
         if (type !== LOOK_CREEPS) {
           if (type === STRUCTURE_ROAD) mem._roadBuilt = false
+          else if (type === STRUCTURE_RAMPART || type === STRUCTURE_WALL) mem._shielded = 0
           else mem._built = false
           if (type === STRUCTURE_LINK) mem._linked = 0
         }
@@ -26,6 +35,7 @@ export default function handleLog(room: ControlledRoom, logs: EventItem[]) {
         const controllerLevel = room.controller.level
         if (controllerLevel !== mem._lvl) {
           mem._built = false
+          mem._shielded = 0
           mem._lvl = controllerLevel
           mem._struct_iteration = 0
         }

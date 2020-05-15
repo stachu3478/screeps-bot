@@ -5,7 +5,7 @@ import { findExtractors } from 'utils/find';
 import { getLink } from 'utils/selectFromPos';
 
 export default function place(room: Room) {
-  if (!room.controller) return
+  if (!room.controller) return NOTHING_TODO
   const mem = room.memory
   if (mem._built) return NOTHING_TODO
   if (!mem.structs) plan(room)
@@ -21,7 +21,7 @@ export default function place(room: Room) {
     else if (iteration === 1) structureToPlace = STRUCTURE_SPAWN
     else if (iteration === 2) structureToPlace = STRUCTURE_STORAGE
     else if (iteration === 3) structureToPlace = STRUCTURE_TERMINAL
-    else if (iteration === 4) structureToPlace = STRUCTURE_LAB
+    else if (iteration === 4) structureToPlace = STRUCTURE_FACTORY
     else if (iteration < 11) structureToPlace = STRUCTURE_TOWER
     else structureToPlace = STRUCTURE_EXTENSION
     if (room.createConstructionSite(x, y, structureToPlace) === 0) {
@@ -48,9 +48,9 @@ export default function place(room: Room) {
       const linkPos = roomPos(linkPoses[i], room.name)
       const link = getLink(linkPos)
       if (link) continue
+      linked = 0
       const result = linkPos.createConstructionSite(STRUCTURE_LINK)
       if (result === 0) return SUCCESS
-      linked = 0
     }
     mem._linked = linked
   }

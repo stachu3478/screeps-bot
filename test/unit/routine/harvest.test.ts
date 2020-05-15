@@ -5,7 +5,7 @@ import harvest from "../../../src/routine/work/harvest"
 import { Memory, Creep } from "../mock"
 import Game from "../mock/Game"
 
-describe("main", () => {
+describe("routine/harvest", () => {
   before(() => {
     // runs before all test in this block
   });
