@@ -15,6 +15,7 @@ import recycle from 'routine/recycle'
 import drawContainer from 'routine/work/containerDraw';
 import drawStorage from 'routine/work/storageDraw';
 import placeShield from 'planner/placeShield';
+import draw from 'routine/work/draw';
 
 export interface Harvester extends Creep {
   memory: HarvesterMemory
@@ -32,6 +33,8 @@ interface HarvesterMemory extends CreepMemory {
   _dismantle?: Id<Structure>
   _pick_pos?: string
   _draw?: Id<AnyStoreStructure>
+  _drawAmount?: number
+  _drawType?: ResourceConstant
 }
 
 export default function harvester(creep: Harvester) {

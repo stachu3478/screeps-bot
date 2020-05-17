@@ -15,3 +15,4 @@ export const getXYSpawn = createXYSelector(STRUCTURE_SPAWN) as (room: Room, x: n
 export const getXYTower = createXYSelector(STRUCTURE_TOWER) as (room: Room, x: number, y: number) => StructureTower | undefined
 export const getXYRampart = createXYSelector(STRUCTURE_RAMPART) as (room: Room, x: number, y: number) => StructureRampart | undefined
 export const getXYWall = createXYSelector(STRUCTURE_WALL) as (room: Room, x: number, y: number) => StructureWall | undefined
+export const getXYLab = createXYSelector(STRUCTURE_LAB) as (room: Room, x: number, y: number) => StructureLab | undefined

@@ -13,6 +13,8 @@ export interface StaticUpgrader extends Creep {
 interface StaticUpgraderMemory extends CreepMemory {
   _draw?: Id<AnyStoreStructure>
   _auto_repair?: Id<Structure>
+  _drawAmount?: number
+  _drawType?: ResourceConstant
 }
 
 export default function staticUpgrader(creep: StaticUpgrader) {

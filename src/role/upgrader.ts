@@ -15,6 +15,8 @@ export interface UpgraderCreep extends Creep {
 interface UpgraderMemory extends CreepMemory {
   _draw?: Id<AnyStoreStructure>
   _auto_repair?: Id<Structure>
+  _drawAmount?: number
+  _drawType?: ResourceConstant
 }
 
 export default function upgrader(creep: UpgraderCreep) {

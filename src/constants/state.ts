@@ -30,3 +30,5 @@ export const DEAL = 29
 export const TERM_SEND_EXCESS = 30
 export const TERM_SELL_EXCESS = 31
 export const TERM_BUSINESS = 32
+export const LAB_COOLDOWN = 33
+export const LAB_PENDING = 34

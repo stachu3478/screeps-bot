@@ -1,10 +1,12 @@
-const spawnStyle: CircleStyle = { stroke: '#000000', strokeWidth: 0.15, radius: 0.5, fill: '#0000' }
-const extStyle: CircleStyle = { stroke: '#000000', radius: 0.25, fill: '#0000' }
+const spawnStyle: CircleStyle = { stroke: '#000', strokeWidth: 0.15, radius: 0.5, fill: '#0000' }
+const extStyle: CircleStyle = { stroke: '#000', radius: 0.25, fill: '#0000' }
 const towerStyle: CircleStyle = { stroke: '#8af4', strokeWidth: 0.15, radius: 0.5, fill: '#0000' }
-const linkStyle: PolyStyle = { stroke: '#000000', fill: '#0000' }
+const linkStyle: PolyStyle = { stroke: '#000', fill: '#0000' }
 const storageStyle: PolyStyle = { fill: '#888888' }
+const internalLabStyle: CircleStyle = { stroke: '#800', fill: '#8004', radius: 0.4 }
+const externalLabStyle: CircleStyle = { stroke: '#008', fill: '#0084', radius: 0.4 }
 const termStyle: PolyStyle = { fill: '#aaaaaa' }
-const factoryStyle: PolyStyle = { stroke: '#000000', fill: '#0000', strokeWidth: 0.15 }
+const factoryStyle: PolyStyle = { stroke: '#000', fill: '#0000', strokeWidth: 0.15 }
 const roadStyle: PolyStyle = {
   fill: '#dddddd',
 }
@@ -52,9 +54,25 @@ export default function visual(room: Room) {
     const linkCount = links.length
     for (let i = 0; i < linkCount; i++) {
       const linkPos = links.charCodeAt(i)
-      const x = linkPos & 63
-      const y = linkPos >> 6
       vis.poly(rect45(linkPos & 63, linkPos >> 6), linkStyle)
+    }
+  }
+
+  const internalLabs = room.memory.internalLabs
+  if (internalLabs) {
+    const count = internalLabs.length
+    for (let i = 0; i < count; i++) {
+      const pos = internalLabs.charCodeAt(i)
+      vis.circle(pos & 63, pos >> 6, internalLabStyle)
+    }
+  }
+
+  const externalLabs = room.memory.externalLabs
+  if (externalLabs) {
+    const count = externalLabs.length
+    for (let i = 0; i < count; i++) {
+      const pos = externalLabs.charCodeAt(i)
+      vis.circle(pos & 63, pos >> 6, externalLabStyle)
     }
   }
 }

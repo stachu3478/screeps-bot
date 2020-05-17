@@ -1,8 +1,9 @@
 import plan from './core'
-import { SUCCESS, NOTHING_TODO } from '../constants/response'
+import { SUCCESS, NOTHING_TODO, NOTHING_DONE } from '../constants/response'
 import { roomPos } from './pos';
 import { findExtractors } from 'utils/find';
 import { getLink } from 'utils/selectFromPos';
+import planLabs from './planLabs';
 
 export default function place(room: Room) {
   if (!room.controller) return NOTHING_TODO
@@ -23,6 +24,7 @@ export default function place(room: Room) {
     else if (iteration === 3) structureToPlace = STRUCTURE_TERMINAL
     else if (iteration === 4) structureToPlace = STRUCTURE_FACTORY
     else if (iteration < 11) structureToPlace = STRUCTURE_TOWER
+    else if (iteration === 11) structureToPlace = STRUCTURE_POWER_SPAWN
     else structureToPlace = STRUCTURE_EXTENSION
     if (room.createConstructionSite(x, y, structureToPlace) === 0) {
       room.memory._struct_iteration = iteration
@@ -50,10 +52,33 @@ export default function place(room: Room) {
       if (link) continue
       linked = 0
       const result = linkPos.createConstructionSite(STRUCTURE_LINK)
+      if (result === ERR_RCL_NOT_ENOUGH) break
       if (result === 0) return SUCCESS
     }
     mem._linked = linked
   }
+
+  if (mem.internalLabs && mem.externalLabs) {
+    const internal = mem.internalLabs + mem.externalLabs
+    const internalCount = internal.length
+    for (let i = 0; i < internalCount; i++) {
+      const pos = internal.charCodeAt(i)
+      const result = room.createConstructionSite(pos & 63, pos >> 6, STRUCTURE_LAB)
+      if (result === ERR_RCL_NOT_ENOUGH) break
+      if (result === ERR_INVALID_TARGET) {
+        const structure = room.lookForAt(LOOK_STRUCTURES, pos & 63, pos >> 6)[0]
+        if (structure && structure.structureType !== STRUCTURE_LAB) {
+          structure.destroy()
+          return NOTHING_DONE
+        }
+      }
+      if (result === 0) return SUCCESS
+    }
+  } else {
+    planLabs(room)
+    return NOTHING_DONE
+  }
+
   mem._built = true
   return NOTHING_TODO
 }

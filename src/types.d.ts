@@ -68,6 +68,15 @@ interface RoomMemory {
   termBusinessSell?: 0 | 1
   termBusinessAmount?: number
 
+  internalLabs?: string
+  externalLabs?: string
+  labState?: number
+  labCooldown?: number
+  labRecipe?: ResourceConstant
+  labIndegrient1?: ResourceConstant
+  labIndegrient2?: ResourceConstant
+  labTargetAmount?: number
+
   _struct_iteration?: number
   _road_iteration?: number
   creeps?: {
