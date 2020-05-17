@@ -14,10 +14,6 @@ describe("spawn/body", () => {
     global.Memory = _.clone(Memory);
   });
 
-  it("should export a loop function", function () {
-    assert.isTrue(typeof progressiveWorker === "function");
-  });
-
   it("should return array when called with no context", function () {
     assert.isArray(progressiveWorker(1000));
   });

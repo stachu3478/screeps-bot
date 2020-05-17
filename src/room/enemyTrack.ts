@@ -61,9 +61,10 @@ export function findMostVulnerableCreep(enemies: Creep[], towers: StructureTower
 export default function trackEnemy(room: Room): Creep[] {
   if (!Memory.whitelist) Memory.whitelist = {}
   const list = Memory.whitelist
+  const black = Memory.blacklist || {}
   return room.find(FIND_HOSTILE_CREEPS, {
     filter: (creep) => {
-      const treshold = (list[creep.owner.username] || 0)
+      const treshold = (list[creep.owner.username] || -black[creep.owner.username] || 0)
         - creep.getActiveBodyparts(ATTACK)
         - creep.getActiveBodyparts(WORK)
         - creep.getActiveBodyparts(RANGED_ATTACK)

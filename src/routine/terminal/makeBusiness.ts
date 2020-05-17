@@ -60,7 +60,6 @@ export default function makeBusiness(term: StructureTerminal) {
       mem.termBusinessAmount = amount
       mem.termBusinessSell = 1
     } else {
-      console.log('No luck this time ^_^ (' + victims + ')')
       mem.terminalResourceIteration++
     }
   }

@@ -23,14 +23,14 @@ export default function handleLog(room: ControlledRoom, logs: EventItem[]) {
         }
         break
       case EVENT_OBJECT_DESTROYED:
-        const type = l.data.type
-        if (type !== LOOK_CREEPS) {
-          if (type === STRUCTURE_ROAD) mem._roadBuilt = false
-          else if (type === STRUCTURE_RAMPART || type === STRUCTURE_WALL) mem._shielded = 0
-          else mem._built = false
-          if (type === STRUCTURE_LINK) mem._linked = 0
-        }
-        break
+        const type: EventDestroyType = l.data.type
+        switch (type) {
+          case LOOK_CREEPS: break
+          case STRUCTURE_ROAD: mem._roadBuilt = false; break
+          case STRUCTURE_RAMPART: case STRUCTURE_WALL: mem._shielded = 0; break
+          case STRUCTURE_LINK: mem._linked = 0
+          default: mem._built = false; console.log("Structure has been destroyed: " + type)
+        } break
       case EVENT_UPGRADE_CONTROLLER:
         const controllerLevel = room.controller.level
         if (controllerLevel !== mem._lvl) {

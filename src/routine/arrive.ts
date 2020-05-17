@@ -9,8 +9,8 @@ interface ArriveMemory extends CreepMemory {
   _arrive?: string
 }
 
-export default function arrive(creep: ArriveCreep) {
-  if (creep.store.getUsedCapacity() > 0) {
+export default function arrive(creep: ArriveCreep, dumpCarry: boolean = true) {
+  if (dumpCarry && creep.store.getUsedCapacity() > 0) {
     const resourceCount = RESOURCES_ALL.length
     for (let i = 0; i < resourceCount; i++) {
       const r = RESOURCES_ALL[i]

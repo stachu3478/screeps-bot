@@ -58,19 +58,23 @@ export default function harvester(creep: Harvester) {
       switch (drawContainer(creep)) {
         case DONE: case SUCCESS: creep.memory.state = TOWER_FILL; break
         case FAILED: {
-          creep.memory._arrive = creep.memory.room
-          creep.memory.state = ARRIVE
+          if (creep.room.name !== creep.memory.room) {
+            creep.memory._arrive = creep.memory.room
+            creep.memory.state = ARRIVE
+          }
+          autoPick(creep)
         } break
         case NOTHING_TODO: {
-          if (creep.room.storage) {
-            creep.memory.state = STORAGE_DRAW
-            break
-          }
           if (creep.room.memory._dismantle) {
             creep.memory._arrive = creep.room.memory._dismantle
             creep.memory.state = ARRIVE_HOSTILE
             break
           }
+          if (creep.room.storage || creep.room.terminal) {
+            creep.memory.state = STORAGE_DRAW
+            break
+          }
+          autoPick(creep)
         } break
         case NOTHING_DONE: autoPick(creep)
       }

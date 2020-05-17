@@ -81,14 +81,18 @@ export default class PlannerMatrix {
     return min
   }
 
-  coverBorder() {
+  coverBorder(thickness: number = 3) {
     for (let x = 0; x < 50; x++) {
-      this.setField(x, 2, -127)
-      this.setField(x, 47, -127)
+      for (let i = 0; i < thickness; i++)
+        this.setField(x, i, -127)
+      for (let i = 0; i < thickness; i++)
+        this.setField(x, 49 - i, -127)
     }
     for (let y = 0; y < 50; y++) {
-      this.setField(2, y, -127)
-      this.setField(47, y, -127)
+      for (let i = 0; i < thickness; i++)
+        this.setField(i, y, -127)
+      for (let i = 0; i < thickness; i++)
+        this.setField(49 - i, y, -127)
     }
   }
 

@@ -34,6 +34,9 @@ interface Memory {
   whitelist?: {
     [key: string]: number
   }
+  blacklist?: {
+    [key: string]: number
+  }
   roomCacheKeepers?: {
     [key: string]: string
   }
@@ -48,6 +51,8 @@ interface RoomMemory {
   structs?: string
   totalRoadCost?: number
   roads?: string
+  shields?: string
+  walls?: string
   colonySources?: SourceMap
   colonySourceId?: Id<Source>
   links?: string
@@ -81,7 +86,7 @@ interface RoomMemory {
   _lvl?: number
   _healthy?: boolean
   _linked?: 0 | 1
-  _shielded?: 0 | 1
+  _shielded?: number
 }
 
 interface StableRoomMemory extends RoomMemory {

@@ -1,5 +1,6 @@
 import run from "room/core"
 import { infoStyle } from "room/style";
+import planShields from "planner/planShields";
 // import profiler from "screeps-profiler"
 
 const memory = JSON.parse(RawMemory.get())
@@ -32,6 +33,8 @@ export const loop = () => {
     Memory.runtimeTicks = 0
   } else Memory.runtimeTicks = runtimeTicks++
   roomVisual.text("Runtime ticks: " + runtimeTicks + " (avg. " + (Memory.runtimeAvg || 'unknown') + ')', 0, 48, infoStyle)
+
+  if (Game.rooms.sim) planShields(Game.rooms.sim)
 
   RawMemory.set(JSON.stringify(Memory))
 }

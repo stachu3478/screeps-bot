@@ -30,6 +30,9 @@ export const findNearDroppedEnergy = (pos: RoomPosition) => pos.findInRange(FIND
 const tombstoneEnergyFilter = { filter: (r: Tombstone) => r.store[RESOURCE_ENERGY] }
 export const findNearEnergyTombstones = (pos: RoomPosition) => pos.findInRange(FIND_TOMBSTONES, 1, tombstoneEnergyFilter)
 
+const ruinEnergyFilter = { filter: (r: Ruin) => r.store[RESOURCE_ENERGY] }
+export const findNearEnergyRuins = (pos: RoomPosition) => pos.findInRange(FIND_RUINS, 1, ruinEnergyFilter)
+
 const filledContainerFilter = { filter: (s: AnyStoreStructure) => s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] }
 export const findClosestFilledContainer = (pos: RoomPosition) => pos.findClosestByRange(FIND_STRUCTURES, filledContainerFilter) as StructureContainer | undefined
 

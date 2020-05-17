@@ -16,7 +16,9 @@ export default function sellExcess(terminal: StructureTerminal) {
     return TERMINAL_MIN_SEND * o.price * averageCost - Game.market.calcTransactionCost(TERMINAL_MIN_SEND, room.name, destRoomName) * energyCost
   })
   if (bestOrder) {
-    const result = Game.market.deal(bestOrder.id, Math.min(terminal.store[resourceType], excessResourceAmount), room.name)
+    let amountToDeal = excessResourceAmount
+    while (Game.market.calcTransactionCost(amountToDeal, room.name, bestOrder.roomName || '') > terminal.store[RESOURCE_ENERGY]) amountToDeal /= 2
+    const result = Game.market.deal(bestOrder.id, amountToDeal, room.name)
     if (result !== 0) return FAILED
     return SUCCESS
   }

@@ -9,7 +9,8 @@ interface StorageDrawMemory extends CreepMemory { }
 
 export default function drawStorage(creep: StorageDrawCreep) {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return DONE
-  let target = Game.rooms[creep.memory.room].storage
+  let target: AnyStoreStructure | undefined = Game.rooms[creep.memory.room].storage
+  if (!target || target.store[RESOURCE_ENERGY] === 0) target = Game.rooms[creep.memory.room].terminal
   if (!target || target.store[RESOURCE_ENERGY] === 0) return NOTHING_TODO
   const result = creep.withdraw(target, RESOURCE_ENERGY)
   if (result === ERR_NOT_IN_RANGE) cheapMove(creep, target)

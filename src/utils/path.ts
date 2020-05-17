@@ -70,13 +70,13 @@ export function moveAnywhere(creep: Creep, preferDirection: DirectionConstant = 
   let dirOffset = 0
   for (let i = 0; i < 8; i++) {
     const dir = zmod(preferDirection + dirOffset - 1, 8) + 1 as DirectionConstant
-    console.log("Try to move at " + dir)
+    // console.log("Try to move at " + dir)
     if (dir < 1 || dir > 8) throw new Error("Invalid direction")
     const offset = offsetsByDirection[dir]
     const mx = x + offset[0]
     const my = y + offset[1]
     if (isWalkable(room, mx, my, me)) {
-      console.log("moved")
+      // console.log("moved")
       creep.move(dir)
       return true
     }
