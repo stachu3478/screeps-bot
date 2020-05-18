@@ -26,7 +26,7 @@ export default function handleLog(room: ControlledRoom, logs: EventItem[]) {
         const type: EventDestroyType = l.data.type
         switch (type) {
           case LOOK_CREEPS: break
-          case STRUCTURE_ROAD: mem._roadBuilt = false; break
+          case STRUCTURE_ROAD: mem._roadBuilt = 0; break
           case STRUCTURE_RAMPART: case STRUCTURE_WALL: mem._shielded = 0; break
           case STRUCTURE_LINK: mem._linked = 0
           default: mem._built = false; console.log("Structure has been destroyed: " + type)

@@ -9,7 +9,7 @@ export default function placeShield(room: Room) {
   if (!mem.structs) return NOTHING_TODO
   const structs = mem.structs
 
-  let minDecay = 0
+  let minDecay = Infinity
   const times = structs.length
   for (let i = 0; i < times; i++) {
     const xy = structs.charCodeAt(i)
@@ -22,7 +22,7 @@ export default function placeShield(room: Room) {
     if (!structure) continue
     const rampart = getXYRampart(room, x, y)
     if (rampart) {
-      minDecay = Math.min(minDecay, RAMPART_DECAY_TIME * Math.ceil(rampart.hits / RAMPART_DECAY_AMOUNT) - (RAMPART_DECAY_TIME - rampart.ticksToDecay))
+      minDecay = Math.min(minDecay, RAMPART_DECAY_TIME * Math.floor(rampart.hits / RAMPART_DECAY_AMOUNT) + rampart.ticksToDecay)
       continue
     }
     const result = room.createConstructionSite(x, y, STRUCTURE_RAMPART)
@@ -39,6 +39,8 @@ export default function placeShield(room: Room) {
       console.log(result)
       if (result === 0) return SUCCESS
     }
+  if (minDecay === Infinity) minDecay = 1
   mem._shielded = Game.time + minDecay
+  console.log('Decay ' + room.name + ': ' + minDecay)
   return NOTHING_TODO
 }

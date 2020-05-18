@@ -14,7 +14,8 @@ import creeps from './creeps';
 import terminal from 'role/terminal';
 import { findTowers, findFighters, findDamagedCreeps } from 'utils/find';
 import lab from 'role/lab';
-import { getXYLab } from 'utils/selectFromPos';
+import { getXYLab, getXYFactory } from 'utils/selectFromPos';
+import { factory } from 'utils/handleFactory';
 
 export default function run(room: ControlledRoom, cpuUsed: number) {
   if (!room.memory.roads) plan(room)
@@ -88,6 +89,10 @@ export default function run(room: ControlledRoom, cpuUsed: number) {
       lab(lab1, lab2, otherLabs)
     }
   }
+
+  const factoryPos = (mem.structs || '').charCodeAt(4)
+  const factoryStructure = getXYFactory(room, factoryPos & 63, factoryPos >> 6)
+  if (factoryStructure) factory(factoryStructure)
 
   if (spawn) spawnLoop(spawn, creepCountByRole, workPartCountByRole, needFighters)
   room.visual.text("Population: " + count + " Retired: " + (creepCountByRole[RETIRED] || 0), 0, 0, count === 0 ? dangerStyle : infoStyle)

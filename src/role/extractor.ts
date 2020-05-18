@@ -1,9 +1,9 @@
-import mineralFill from "routine/work/mineralFill";
+import mineralFill from "routine/haul/mineralFill";
 import { HARVESTING, STORAGE_FILL, RECYCLE } from "constants/state";
 import { SUCCESS, DONE, NOTHING_TODO, NO_RESOURCE, NOTHING_DONE, ACCEPTABLE } from "constants/response";
 import recycle from "routine/recycle";
 import extract from "routine/work/extract";
-import autoPick from "routine/work/autoPickMineral";
+import autoPick from "routine/haul/autoPickMineral";
 
 export interface Extractor extends Creep {
   memory: ExtractorMemory

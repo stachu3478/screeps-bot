@@ -12,6 +12,7 @@ interface SpawnFillMemory extends CreepMemory {
 
 export default function fillSpawn(creep: SpawnFillCreep) {
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
+  if (creep.room.energyAvailable === creep.room.energyCapacityAvailable) return NOTHING_TODO
   let target = Game.getObjectById(creep.memory._fillSpawn || ('' as Id<StructureSpawn>))
   if (!target || target.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
     const newTarget = findClosestHatchToFill(creep.pos)

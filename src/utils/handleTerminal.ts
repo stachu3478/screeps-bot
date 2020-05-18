@@ -1,5 +1,8 @@
 import _ from 'lodash'
 import { TERM_SEND_EXCESS } from 'constants/state';
+import handleLab from './handleLab';
+import { getXYFactory } from './selectFromPos';
+import handleFactory from './handleFactory';
 
 interface SomeMap {
   [key: string]: number
@@ -11,7 +14,7 @@ export function getAverageCost(resourceType: ResourceConstant) {
   return recentHistory.avgPrice
 }
 
-export const energyCost = 0// getAverageCost(RESOURCE_ENERGY)
+export const energyCost = getAverageCost(RESOURCE_ENERGY)
 const tradeBlackList = ["W4N29", "W6N33", "W7N33", "W9N32", "W11N35", "W11N34", "W11N25", "W5N31", "E1N29", "W11N25", "W8N38", "W9N38", "W9N39", "W13N33", "W12N37", "W13N33", "W15N32", "W15N29", "W16N39", "W22N21", "RoyalKnight", "sjfhsjfh", "TPEZ", "Unwannadie", "WheatEars", "wjx123xxx", "wyt", "Yuandiaodiaodiao", "ZAchiever", "zzsstt644"]
 export const tradeBlackMap: SomeMap = {}
 tradeBlackList.forEach(n => {
@@ -20,6 +23,12 @@ tradeBlackList.forEach(n => {
 export const storagePerResource = Math.floor(TERMINAL_CAPACITY / RESOURCES_ALL.length)
 
 export default function handleTerminal(terminal: StructureTerminal, resourceType: ResourceConstant) {
-  terminal.room.memory.terminalState = TERM_SEND_EXCESS
-  terminal.room.memory.terminalDealResourceType = resourceType
+  const mem = terminal.room.memory
+  mem.terminalState = TERM_SEND_EXCESS
+  mem.terminalDealResourceType = resourceType
+  handleLab(terminal)
+  if (!mem.structs) return
+  const factoryPos = mem.structs.charCodeAt(4)
+  const factory = getXYFactory(terminal.room, factoryPos & 63, factoryPos >> 6)
+  if (factory) handleFactory(terminal.store, factory)
 }

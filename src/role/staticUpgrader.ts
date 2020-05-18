@@ -2,8 +2,8 @@ import { UPGRADE, DRAW } from '../constants/state'
 import { DONE, NOTHING_DONE, FAILED, NO_RESOURCE, SUCCESS, NOTHING_TODO } from '../constants/response'
 import upgrade from 'routine/work/upgrade'
 import autoRepair from 'routine/work/autoRepair'
-import autoPick from 'routine/work/autoPick'
-import draw from 'routine/work/draw';
+import autoPick from 'routine/haul/autoPick'
+import draw from 'routine/haul/draw';
 import maintainControllerLink from 'utils/controllerLink';
 
 export interface StaticUpgrader extends Creep {

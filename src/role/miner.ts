@@ -2,10 +2,10 @@ import _ from 'lodash'
 import { NOTHING_TODO, NOTHING_DONE, DONE, NO_RESOURCE, FAILED, ACCEPTABLE } from 'constants/response'
 import harvest from 'routine/work/harvest';
 import { HARVESTING, REPAIR, BUILD, INIT } from 'constants/state';
-import autoFill from 'routine/work/autoFill';
+import autoFill from 'routine/haul/autoFill';
 import autoRepair from 'routine/work/autoRepair';
 import autoBuild from 'routine/work/autoBuild';
-import autoPick from 'routine/work/autoPick';
+import autoPick from 'routine/haul/autoPick';
 import { roomPos } from 'planner/pos';
 
 export interface Miner extends Creep {

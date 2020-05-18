@@ -24,12 +24,12 @@ export default function makeBusiness(term: StructureTerminal) {
   if (mem.termBusinessSell) {
     const bestBuyOrder = _.max(buyOrders, buyCalc)
     const result = Game.market.deal(bestBuyOrder.id, mem.termBusinessAmount || 0, roomName)
+    mem.termBusinessSell = 0
+    mem.terminalResourceIteration++
     if (result !== 0) {
       console.log('Oh no! Something went wrong during sell!')
       return FAILED
     }
-    mem.termBusinessSell = 0
-    mem.terminalResourceIteration++
     return SUCCESS
   } else {
     const sellOrders = Game.market.getAllOrders({ type: ORDER_SELL, resourceType })

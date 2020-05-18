@@ -16,3 +16,5 @@ export const getXYTower = createXYSelector(STRUCTURE_TOWER) as (room: Room, x: n
 export const getXYRampart = createXYSelector(STRUCTURE_RAMPART) as (room: Room, x: number, y: number) => StructureRampart | undefined
 export const getXYWall = createXYSelector(STRUCTURE_WALL) as (room: Room, x: number, y: number) => StructureWall | undefined
 export const getXYLab = createXYSelector(STRUCTURE_LAB) as (room: Room, x: number, y: number) => StructureLab | undefined
+export const getXYFactory = createXYSelector(STRUCTURE_FACTORY) as (room: Room, x: number, y: number) => StructureFactory | undefined
+export const getXYRoad = createXYSelector(STRUCTURE_ROAD) as (room: Room, x: number, y: number) => StructureRoad | undefined

@@ -31,7 +31,10 @@ export default function autoRepair(creep: AutoRepairCreep, timeout: number = 6) 
   const remaining = creep.store[RESOURCE_ENERGY] - creep.getActiveBodyparts(WORK)
   if (result !== 0) return FAILED
   else {
-    if (remaining <= 0) return NO_RESOURCE
+    if (remaining <= 0) {
+      delete mem._auto_repair
+      return NO_RESOURCE
+    }
     return SUCCESS
   }
 }

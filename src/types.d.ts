@@ -77,6 +77,11 @@ interface RoomMemory {
   labIndegrient2?: ResourceConstant
   labTargetAmount?: number
 
+  factoryNeeds?: ResourceConstant
+  factoryDumps?: ResourceConstant
+  factoryState?: number
+  factoryProducing?: ResourceConstant
+
   _struct_iteration?: number
   _road_iteration?: number
   creeps?: {
@@ -91,7 +96,7 @@ interface RoomMemory {
   _extractor?: Id<StructureExtractor>
   _mineral?: Id<Mineral>
   _built?: boolean
-  _roadBuilt?: boolean
+  _roadBuilt?: number
   _lvl?: number
   _healthy?: boolean
   _linked?: 0 | 1
