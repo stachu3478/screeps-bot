@@ -20,7 +20,13 @@ interface CreepMemory {
 }
 
 interface SpawnMemory {
-  upgradeMode?: boolean
+  trySpawn?: {
+    creep: BodyPartConstant[]
+    cooldown: number
+    name: string
+    memory: CreepMemory
+  }
+  spawnSourceId?: Id<Source>
 }
 
 interface Memory {
@@ -61,6 +67,7 @@ interface RoomMemory {
   maxWorkController?: number
   workControllerOver?: number
   spawnName?: string
+  towerFilled?: 0 | 1
 
   terminalState?: number
   terminalDealResourceType?: ResourceConstant
@@ -76,6 +83,9 @@ interface RoomMemory {
   labIndegrient1?: ResourceConstant
   labIndegrient2?: ResourceConstant
   labTargetAmount?: number
+
+  depositRoom?: string
+  depositLastCooldown?: number
 
   factoryNeeds?: ResourceConstant
   factoryDumps?: ResourceConstant
@@ -105,6 +115,7 @@ interface RoomMemory {
 
 interface StableRoomMemory extends RoomMemory {
   maxWorkController: number
+  colonySources: SourceMap
   creeps: {
     [key: string]: 0
   }

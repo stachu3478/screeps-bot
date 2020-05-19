@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import { SUCCESS, NOTHING_TODO, FAILED, DONE, NO_RESOURCE } from '../../constants/response'
+import profiler from "screeps-profiler"
 
 interface ToFill {
   [key: string]: number
@@ -26,7 +27,7 @@ interface FillMemory extends CreepMemory {
   _draw?: Id<AnyStoreStructure>
 }
 
-export default function autoFill(creep: FillCreep) {
+export default profiler.registerFN(function autoFill(creep: FillCreep) {
   let remaining = creep.store[RESOURCE_ENERGY]
   if (remaining === 0) return NO_RESOURCE
   const target = _.max(creep.pos.findInRange(FIND_STRUCTURES, 1, {
@@ -46,4 +47,4 @@ export default function autoFill(creep: FillCreep) {
     if (remaining <= 0) return DONE
     return SUCCESS
   }
-}
+}, 'autoFillRoutine')

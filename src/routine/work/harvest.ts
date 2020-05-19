@@ -1,6 +1,7 @@
 import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 import { roomPos } from 'planner/pos'
+import profiler from "screeps-profiler"
 
 interface HarvestCreep extends Creep {
   memory: HarvestMemory
@@ -10,7 +11,7 @@ interface HarvestMemory extends CreepMemory {
   _harvest?: Id<Source>
 }
 
-export default function harvest(creep: HarvestCreep, sourceId?: Id<Source>) {
+export default profiler.registerFN(function harvest(creep: HarvestCreep, sourceId?: Id<Source>) {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return DONE
   let target = Game.getObjectById(creep.memory._harvest || ('' as Id<Source>))
   if (!target) {
@@ -26,7 +27,6 @@ export default function harvest(creep: HarvestCreep, sourceId?: Id<Source>) {
     return NOTHING_DONE
   }
   const result = creep.harvest(target)
-  creep.say(result + '')
   const remaining = creep.store.getFreeCapacity(RESOURCE_ENERGY) - creep.getActiveBodyparts(WORK) * HARVEST_POWER
   if (result === ERR_NOT_IN_RANGE) cheapMove(creep, targetPos)
   else if (result === ERR_TIRED) return NOTHING_TODO
@@ -36,4 +36,4 @@ export default function harvest(creep: HarvestCreep, sourceId?: Id<Source>) {
     return SUCCESS
   }
   return NOTHING_DONE
-}
+}, 'routineHarvest')

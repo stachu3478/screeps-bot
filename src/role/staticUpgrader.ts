@@ -5,6 +5,7 @@ import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/haul/autoPick'
 import draw from 'routine/haul/draw';
 import maintainControllerLink from 'utils/controllerLink';
+import profiler from "screeps-profiler"
 
 export interface StaticUpgrader extends Creep {
   memory: StaticUpgraderMemory
@@ -17,7 +18,7 @@ interface StaticUpgraderMemory extends CreepMemory {
   _drawType?: ResourceConstant
 }
 
-export default function staticUpgrader(creep: StaticUpgrader) {
+export default profiler.registerFN(function staticUpgrader(creep: StaticUpgrader) {
   switch (creep.memory.state) {
     case UPGRADE: {
       switch (upgrade(creep, true)) {
@@ -43,4 +44,4 @@ export default function staticUpgrader(creep: StaticUpgrader) {
       creep.memory.state = UPGRADE
     }
   }
-}
+}, 'roleStaticUpgrader')

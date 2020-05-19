@@ -1,8 +1,7 @@
 import plan from './core'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE } from '../constants/response'
-import { roomPos } from './pos';
 import { findExtractors } from 'utils/find';
-import { getLink } from 'utils/selectFromPos';
+import { getXYLink } from 'utils/selectFromPos';
 import planLabs from './planLabs';
 
 export default function place(room: Room) {
@@ -47,11 +46,13 @@ export default function place(room: Room) {
     const linkCount = linkPoses.length
     let linked: 0 | 1 = 1
     for (let i = 0; i < linkCount; i++) {
-      const linkPos = roomPos(linkPoses[i], room.name)
-      const link = getLink(linkPos)
+      const pos = linkPoses.charCodeAt(i)
+      const x = pos & 63
+      const y = pos >> 6
+      const link = getXYLink(room, x, y)
       if (link) continue
       linked = 0
-      const result = linkPos.createConstructionSite(STRUCTURE_LINK)
+      const result = room.createConstructionSite(x, y, STRUCTURE_LINK)
       if (result === ERR_RCL_NOT_ENOUGH) break
       if (result === 0) return SUCCESS
     }

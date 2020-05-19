@@ -4,6 +4,7 @@ import { SUCCESS, DONE, NOTHING_TODO, NO_RESOURCE, NOTHING_DONE, ACCEPTABLE } fr
 import recycle from "routine/recycle";
 import extract from "routine/work/extract";
 import autoPick from "routine/haul/autoPickMineral";
+import profiler from "screeps-profiler"
 
 export interface Extractor extends Creep {
   memory: ExtractorMemory
@@ -13,7 +14,7 @@ interface ExtractorMemory extends CreepMemory {
   _extract?: MineralConstant
 }
 
-export default function extractor(creep: Extractor) {
+export default profiler.registerFN(function extractor(creep: Extractor) {
   switch (creep.memory.state) {
     case HARVESTING: {
       switch (extract(creep)) {
@@ -45,4 +46,4 @@ export default function extractor(creep: Extractor) {
       creep.memory.state = HARVESTING
     }
   }
-}
+}, 'roleExtractor')

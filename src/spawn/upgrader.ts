@@ -2,6 +2,7 @@ import { infoStyle } from "room/style";
 import { UPGRADER, STATIC_UPGRADER } from "constants/role";
 import { uniqName } from "./name";
 import { progressiveWorker, progressiveStaticUpgrader } from "./body/work";
+import { trySpawnCreep } from "./core";
 
 export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemory) {
   const name = uniqName("U")
@@ -28,7 +29,5 @@ export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemo
       }
     }
   }
-  const result = spawn.spawnCreep(parts, name, { memory: { role, room: spawn.room.name, deprivity } })
-  if (result === 0) mem.creeps[name] = 0
-  else spawn.room.visual.text("Try to spawn upgrader.", 0, 3, infoStyle)
+  const result = trySpawnCreep(parts, name, { role, room: spawn.room.name, deprivity }, spawn)
 }

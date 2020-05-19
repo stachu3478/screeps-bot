@@ -7,6 +7,7 @@ import autoRepair from 'routine/work/autoRepair';
 import autoBuild from 'routine/work/autoBuild';
 import autoPick from 'routine/haul/autoPick';
 import { roomPos } from 'planner/pos';
+import profiler from "screeps-profiler"
 
 export interface Miner extends Creep {
   memory: MinerMemory
@@ -21,7 +22,7 @@ export interface MinerMemory extends CreepMemory {
   _draw?: Id<AnyStoreStructure>
 }
 
-export default function miner(creep: Miner) {
+export default profiler.registerFN(function miner(creep: Miner) {
   switch (creep.memory.state) {
     case INIT: {
       if (!creep.memory._harvest) creep.memory._harvest = creep.room.memory.colonySourceId
@@ -62,7 +63,6 @@ export default function miner(creep: Miner) {
               creep.memory.state = REPAIR
               break
             }
-            creep.say(result + ' ' + miningPos.x + ' ' + miningPos.y)
           }
         } break
         case NOTHING_DONE: autoPick(creep)
@@ -82,4 +82,4 @@ export default function miner(creep: Miner) {
     } break
     default: creep.memory.state = INIT;
   }
-}
+}, 'roleMiner')

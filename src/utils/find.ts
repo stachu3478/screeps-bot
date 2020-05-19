@@ -44,7 +44,7 @@ const fillableHatchFilter = {
     || s.structureType === STRUCTURE_EXTENSION)
     && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
 }
-export const findClosestHatchToFill = (pos: RoomPosition) => pos.findClosestByPath(FIND_MY_STRUCTURES, fillableHatchFilter) as StructureSpawn | StructureExtension | null
+export const findClosestHatchToFill = (pos: RoomPosition) => (pos.findClosestByPath(FIND_MY_STRUCTURES, fillableHatchFilter) || pos.findClosestByRange(FIND_MY_STRUCTURES, fillableHatchFilter)) as StructureSpawn | StructureExtension | null
 
 const fillableTowerFilter = {
   filter: (s: AnyStoreStructure) => (s.structureType === STRUCTURE_TOWER)

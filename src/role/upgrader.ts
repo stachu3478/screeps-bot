@@ -7,6 +7,7 @@ import storageDraw from 'routine/haul/storageDraw'
 import drawContainer from 'routine/haul/containerDraw';
 import draw from 'routine/haul/draw';
 import maintainControllerLink from 'utils/controllerLink';
+import profiler from "screeps-profiler"
 
 export interface UpgraderCreep extends Creep {
   memory: UpgraderMemory
@@ -19,7 +20,7 @@ interface UpgraderMemory extends CreepMemory {
   _drawType?: ResourceConstant
 }
 
-export default function upgrader(creep: UpgraderCreep) {
+export default profiler.registerFN(function upgrader(creep: UpgraderCreep) {
   switch (creep.memory.state) {
     case HARVESTING: {
       switch (drawContainer(creep)) {
@@ -64,4 +65,4 @@ export default function upgrader(creep: UpgraderCreep) {
       creep.memory.state = HARVESTING
     }
   }
-}
+}, 'roleUpgrader')

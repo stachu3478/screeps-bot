@@ -110,6 +110,5 @@ export function cheapMove(creep: Creep, target: RoomPosition | _HasRoomPosition,
       }
     }
   }
-  creep.say(result + '')
   return result
 }

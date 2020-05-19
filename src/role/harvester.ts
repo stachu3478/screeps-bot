@@ -19,6 +19,7 @@ import draw from 'routine/haul/draw';
 import { getXYFactory } from 'utils/selectFromPos';
 import fill from 'routine/haul/fill';
 import { factoryStoragePerResource } from 'utils/handleFactory';
+import profiler from "screeps-profiler"
 
 export interface Harvester extends Creep {
   memory: HarvesterMemory
@@ -45,8 +46,8 @@ interface HarvesterMemory extends CreepMemory {
 function findOtherJob(creep: Harvester) {
   const factoryPos = (creep.room.memory.structs || '').charCodeAt(4)
   const factory = getXYFactory(creep.room, factoryPos & 63, factoryPos >> 6)
-  if (!factory) return console.log("ERROR not factory")
-  if (!creep.room.terminal) return console.log("ERROR no term")
+  if (!factory) return
+  if (!creep.room.terminal) return
   if (creep.room.memory.factoryNeeds) {
     const type = creep.room.memory.factoryNeeds
     creep.memory._draw = creep.room.terminal.id
@@ -83,10 +84,9 @@ function findDownJob(creep: Harvester) {
     creep.memory.state = ARRIVE_HOSTILE
   } else if ((result = storageFill(creep)) in ACCEPTABLE) creep.memory.state = STORAGE_FILL
   else if (result === NO_RESOURCE) findOtherJob(creep)
-  creep.say(result + '')
 }
 
-export default function harvester(creep: Harvester) {
+export default profiler.registerFN(function harvester(creep: Harvester) {
   switch (creep.memory.state) {
     case RECYCLE: {
       switch (recycle(creep)) {
@@ -241,4 +241,4 @@ export default function harvester(creep: Harvester) {
       findUpJob(creep)
     }
   }
-}
+}, 'roleHarvester')
