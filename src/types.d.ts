@@ -97,8 +97,8 @@ interface RoomMemory {
   creeps?: {
     [key: string]: 0
   }
-  _claim: string
-  _claimer: string
+  _claim?: string
+  _claimer?: string
   _claimed?: string[]
   _dismantle?: string
   averageUsage?: number

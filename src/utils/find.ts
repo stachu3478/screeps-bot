@@ -24,6 +24,8 @@ const damagedCreepsFilter = { filter: (c: Creep) => c.hits < c.hitsMax }
 export const findDamagedCreeps = (room: Room) => room.find(FIND_MY_CREEPS, damagedCreepsFilter)
 export const findClosestDamagedCreeps = (pos: RoomPosition) => pos.findClosestByPath(FIND_MY_CREEPS, damagedCreepsFilter)
 
+const lookResultDeobfuscator = ({ structure }: LookForAtAreaResultWithPos<Structure, LOOK_STRUCTURES>) => structure
+
 const droppedEnergyFilter = { filter: (r: Resource) => r.resourceType === RESOURCE_ENERGY }
 export const findNearDroppedEnergy = (pos: RoomPosition) => pos.findInRange(FIND_DROPPED_RESOURCES, 1, droppedEnergyFilter)
 
@@ -39,12 +41,21 @@ export const findClosestFilledContainer = (pos: RoomPosition) => pos.findClosest
 const hittableFilter = { filter: (s: Structure) => s.hits }
 export const findClosestHostileHittableStructures = (pos: RoomPosition) => pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, hittableFilter)
 
-const fillableHatchFilter = {
+const standardHatchFilter = {
   filter: (s: AnyStoreStructure) => (s.structureType === STRUCTURE_SPAWN
     || s.structureType === STRUCTURE_EXTENSION)
     && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
 }
-export const findClosestHatchToFill = (pos: RoomPosition) => (pos.findClosestByPath(FIND_MY_STRUCTURES, fillableHatchFilter) || pos.findClosestByRange(FIND_MY_STRUCTURES, fillableHatchFilter)) as StructureSpawn | StructureExtension | null
+const fillableHatchFilter = (differ?: AnyStoreStructure) => (
+  differ ? {
+    filter: (s: AnyStoreStructure) =>
+      s !== differ
+      && (s.structureType === STRUCTURE_SPAWN
+        || s.structureType === STRUCTURE_EXTENSION)
+      && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
+  } : standardHatchFilter
+)
+export const findClosestHatchToFill = (pos: RoomPosition, differ?: AnyStoreStructure) => (pos.findClosestByPath(FIND_MY_STRUCTURES, fillableHatchFilter(differ)) || pos.findClosestByRange(FIND_MY_STRUCTURES, fillableHatchFilter(differ))) as StructureSpawn | StructureExtension | null
 
 const fillableTowerFilter = {
   filter: (s: AnyStoreStructure) => (s.structureType === STRUCTURE_TOWER)
@@ -89,3 +100,32 @@ export const findCloseMostDamagedStructure = (pos: RoomPosition, threshold: numb
   const structures = pos.findInRange(FIND_STRUCTURES, 3).filter(damagedFilter(threshold)) as Structure<BuildableStructureConstant>[]
   return structures.reduce(damagePrioritySelector, structures[0])
 }
+
+interface ToFill {
+  [key: string]: number
+}
+const fillPriority: ToFill = {
+  [STRUCTURE_TOWER]: 11,
+  [STRUCTURE_SPAWN]: 10,
+  [STRUCTURE_EXTENSION]: 9,
+  [STRUCTURE_LAB]: 8,
+  [STRUCTURE_NUKER]: 7,
+  [STRUCTURE_LINK]: 6,
+  [STRUCTURE_STORAGE]: 5,
+  [STRUCTURE_TERMINAL]: 4,
+  [STRUCTURE_POWER_SPAWN]: 3,
+  [STRUCTURE_FACTORY]: 2,
+  [STRUCTURE_CONTAINER]: 1,
+}
+const toFillFilter = (s: LookForAtAreaResultWithPos<Structure, LOOK_STRUCTURES>) => {
+  const { structure } = s
+  return fillPriority[structure.structureType]
+    && (structure as AnyStoreStructure).store
+    && (((structure as AnyStoreStructure).store as StoreBase<ResourceConstant, false>).getFreeCapacity(RESOURCE_ENERGY) || 0) > 0
+}
+const toFillPrioritySelector = (s: AnyStoreStructure) => fillPriority[s.structureType] || 0
+export const findNearStructureToFillWithPriority = (room: Room, x: number, y: number) => _.max(
+  room.lookForAtArea(LOOK_STRUCTURES, y - 1, x - 1, y + 1, x + 1, true)
+    .filter(toFillFilter).map(lookResultDeobfuscator),
+  toFillPrioritySelector
+) as AnyStoreStructure

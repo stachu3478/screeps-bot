@@ -1,12 +1,12 @@
-import { HARVESTING, TOWER_FILL, SPAWN_FILL, REPAIR, BUILD, ARRIVE, ARRIVE_HOSTILE, DISMANTLE, STORAGE_FILL, STORAGE_DRAW, RECYCLE, HAUL_FACTORY_FROM_TERMINAL, HAUL_TERMINAL_TO_FACTORY, HAUL_TERMINAL_FROM_FACTORY, HAUL_FACTORY_TO_TERMINAL, FACT_WORKING, FACT_BOARD } from '../constants/state'
+import { HARVESTING, TOWER_FILL, SPAWN_FILL, REPAIR, BUILD, ARRIVE, ARRIVE_HOSTILE, DISMANTLE, STORAGE_FILL, STORAGE_DRAW, RECYCLE, HAUL_FACTORY_FROM_TERMINAL, HAUL_TERMINAL_TO_FACTORY, HAUL_TERMINAL_FROM_FACTORY, HAUL_FACTORY_TO_TERMINAL, FACT_WORKING, FACT_BOARD, IDLE } from '../constants/state'
 import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS, ACCEPTABLE } from '../constants/response'
 import towerFill from 'routine/haul/towerFill'
 import spawnerFill from 'routine/haul/spawnerFill'
 import storageFill from 'routine/haul/storageFill'
 import repair from 'routine/work/repair'
 import build from 'routine/work/build'
-import place from 'planner/place'
-import placeRoad from 'planner/placeRoad'
+import place from 'planner/place/place'
+import placeRoad from 'planner/place/road'
 import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/haul/autoPick'
 import arrive from 'routine/arrive'
@@ -14,7 +14,7 @@ import dismantle from 'routine/work/dismantle'
 import recycle from 'routine/recycle'
 import drawContainer from 'routine/haul/containerDraw';
 import drawStorage from 'routine/haul/storageDraw';
-import placeShield from 'planner/placeShield';
+import placeShield from 'planner/place/shield';
 import draw from 'routine/haul/draw';
 import { getXYFactory } from 'utils/selectFromPos';
 import fill from 'routine/haul/fill';
@@ -41,6 +41,7 @@ interface HarvesterMemory extends CreepMemory {
   _drawType?: ResourceConstant
   _fill?: Id<AnyStoreStructure>
   _fillType?: ResourceConstant
+  _noJob?: number
 }
 
 function findOtherJob(creep: Harvester) {
@@ -66,28 +67,45 @@ function findOtherJob(creep: Harvester) {
 }
 
 function findUpJob(creep: Harvester) {
-  if (drawStorage(creep) in ACCEPTABLE) creep.memory.state = STORAGE_DRAW
+  console.log('look job', creep.memory._noJob, creep.name)
+  if (!creep.memory._noJob && drawStorage(creep) in ACCEPTABLE) creep.memory.state = STORAGE_DRAW
   else if (drawContainer(creep) in ACCEPTABLE) creep.memory.state = HARVESTING
   else if (creep.room.memory._dismantle) {
     creep.memory._arrive = creep.room.memory._dismantle
     creep.memory.state = ARRIVE_HOSTILE
-  } else findOtherJob(creep)
+  } else if (creep.memory._noJob) {
+    findOtherJob(creep)
+    creep.memory._noJob = 0
+    console.log('rly no job', creep.name)
+    creep.memory.state = IDLE
+  }
 }
 
 function findDownJob(creep: Harvester) {
   let result
+  creep.memory._noJob = 0
+  console.log('look dwon job', creep.memory._noJob, creep.name)
   if ((result = towerFill(creep)) in ACCEPTABLE) creep.memory.state = TOWER_FILL
   else if ((result = spawnerFill(creep)) in ACCEPTABLE) creep.memory.state = SPAWN_FILL
+  else if ((result = repair(creep)) in ACCEPTABLE) creep.memory.state = REPAIR
   else if ((result = build(creep)) in ACCEPTABLE || place(creep.room) in ACCEPTABLE || placeRoad(creep.room) in ACCEPTABLE || placeShield(creep.room) in ACCEPTABLE) creep.memory.state = BUILD
   else if (creep.room.memory._dismantle) {
     creep.memory._arrive = creep.room.memory._dismantle
     creep.memory.state = ARRIVE_HOSTILE
-  } else if ((result = storageFill(creep)) in ACCEPTABLE) creep.memory.state = STORAGE_FILL
-  else if (result === NO_RESOURCE) findOtherJob(creep)
+  } else {
+    if ((result = storageFill(creep)) in ACCEPTABLE) creep.memory.state = STORAGE_FILL
+    creep.memory._noJob = 1
+    console.log('no job', creep.name)
+    if (result === NO_RESOURCE) creep.memory.state = IDLE
+  }
 }
 
 export default profiler.registerFN(function harvester(creep: Harvester) {
   switch (creep.memory.state) {
+    case IDLE: {
+      if (creep.store[RESOURCE_ENERGY]) findDownJob(creep)
+      else findUpJob(creep)
+    } break
     case RECYCLE: {
       switch (recycle(creep)) {
         case DONE: delete Memory.creeps[creep.name]
@@ -153,9 +171,8 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
     } break;
     case STORAGE_FILL: {
       switch (storageFill(creep)) {
-        case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) creep.memory.state = HARVESTING; break
-        case NOTHING_TODO: case FAILED: creep.memory.state = HARVESTING; break
         case NOTHING_DONE: autoRepair(creep); break;
+        default: if (autoPick(creep) !== SUCCESS) findUpJob(creep);
       }
     } break;
     case STORAGE_DRAW: {

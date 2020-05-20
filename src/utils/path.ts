@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { posToChar, roomPos } from 'planner/pos'
+import { posToChar } from 'planner/pos'
 import { MINER } from 'constants/role';
 import { findSourceKeepers } from './find';
 
@@ -33,7 +33,9 @@ function roomCallback(roomName: string, costMatrix: CostMatrix) {
     const cache = Memory.roomCacheKeepers && Memory.roomCacheKeepers[roomName]
     if (!cache) return costMatrix
     cache.split('').forEach(c => {
-      const { x, y } = roomPos(c, roomName)
+      const pos = c.charCodeAt(0)
+      const x = pos & 63
+      const y = pos >> 6
       for (let ox = -3; ox <= 3; ox++)
         for (let oy = -3; oy <= 3; oy++)
           costMatrix.set(x + ox, y + oy, 25)

@@ -6,7 +6,7 @@ import { ColonizerMemory } from 'role/colonizer';
 // TODO make it work with miners
 export default function callRescue(room: Room) {
   console.log(`WARNING: No creeps in room ${room.name}!`)
-  const claimers = [Game.rooms[room.memory._claimer] || '']
+  const claimers = [Game.rooms[room.memory._claimer || ''] || '']
   if (room.memory._claimed) claimers.push(...room.memory._claimed.map(n => Game.rooms[n]))
   claimers.find((claimer) => {
     if (!claimer) {

@@ -1,5 +1,5 @@
 import { SUCCESS, NOTHING_TODO, FAILED, DONE } from '../../constants/response'
-import { roomPos, posToChar } from '../../planner/pos'
+import { posToChar } from '../../planner/pos'
 import { findNearDroppedEnergy, findNearEnergyTombstones, findNearEnergyRuins } from 'utils/find';
 
 interface AutoPickCreep extends Creep {
@@ -14,7 +14,10 @@ export default function autoPick(creep: AutoPickCreep) {
   let remaining = creep.store.getFreeCapacity(RESOURCE_ENERGY)
   if (remaining === 0) return NOTHING_TODO
   const mem = creep.memory
-  if (mem._pick_pos && roomPos(mem._pick_pos, creep.room.name).isNearTo(creep)) return DONE
+  if (mem._pick_pos) {
+    const pickPos = mem._pick_pos.charCodeAt(0)
+    if (Math.max(Math.abs((pickPos & 63) - creep.pos.x), Math.abs((pickPos >> 6) - creep.pos.y)) < 2) return DONE
+  }
   let result
   let ruin: Ruin
   let tomb: Tombstone

@@ -9,7 +9,6 @@ import visual from 'planner/visual'
 import usage from './usage'
 import { infoStyle, dangerStyle } from './style'
 import handleLog from './log';
-import { roomPos } from 'planner/pos';
 import creeps from './creeps';
 import terminal from 'role/terminal';
 import { findTowers, findFighters, findDamagedCreeps } from 'utils/find';
@@ -70,7 +69,10 @@ export default function run(room: ControlledRoom, cpuUsed: number) {
       const spawnSite = sites.filter(s => s.structureType === STRUCTURE_SPAWN)[0]
       if (!spawnSite) {
         sites.forEach(s => s.remove())
-        if (room.memory.structs) roomPos(room.memory.structs[1], room.name).createConstructionSite(STRUCTURE_SPAWN)
+        if (room.memory.structs) {
+          const pos = room.memory.structs.charCodeAt(1)
+          room.createConstructionSite(pos & 63, pos >> 6, STRUCTURE_SPAWN)
+        }
       }
     } else room.memory.spawnName = spawn.name
   }

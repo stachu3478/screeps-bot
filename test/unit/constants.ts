@@ -1,12 +1,21 @@
 import _ from 'lodash'
-import { Memory, RoomVisual, RawMemory } from "./mock"
+import { Memory, RoomVisual, RawMemory, Structure, Spawn, Creep, Source, Flag } from "./mock"
+import Room from './mock/Room'
 import Game from "./mock/Game"
+import RoomPosition from './mock/RoomPosition'
 
 Object.assign(global, {
+  Creep,
+  Flag,
   Game,
   Memory,
   RawMemory,
+  Room,
+  RoomPosition,
   RoomVisual,
+  Source,
+  Spawn,
+  Structure,
   _
 })
 

@@ -1,4 +1,4 @@
-import { SUCCESS, NOTHING_TODO, DONE } from '../constants/response'
+import { SUCCESS, NOTHING_TODO } from '../../constants/response'
 import { getXYSpawn, getXYTower, getXYRampart, getXYWall } from 'utils/selectFromPos';
 
 export default function placeShield(room: Room) {

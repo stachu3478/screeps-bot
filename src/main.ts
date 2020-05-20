@@ -9,10 +9,10 @@ const roomVisual = new RoomVisual()
 
 let runtimeTicks = 0
 export const loop = () => {
-  profiler.wrap(() => {
-    delete global.Memory
-    global.Memory = memory
+  delete global.Memory
+  global.Memory = memory
 
+  profiler.wrap(() => {
     Memory.myRooms
     let usage = Game.cpu.getUsed()
     roomVisual.text("Memory overhead: " + usage.toFixed(3), 0, 49, infoStyle)

@@ -2,13 +2,12 @@ import "../constants"
 import { expect } from "chai";
 import sinon from 'sinon'
 import _ from "lodash"
-import place from "../../../src/planner/place/place"
+import placeLink from "../../../src/planner/place/link"
 import { Memory } from "../mock"
 import Game from "../mock/Game"
 import RoomPosition from "../mock/RoomPosition"
-import { NOTHING_TODO, SUCCESS } from "constants/response";
 
-describe("planner/place/place", () => {
+describe("planner/place/link", () => {
   const sandbox = sinon.createSandbox();
 
   beforeEach(() => {
@@ -26,18 +25,21 @@ describe("planner/place/place", () => {
     sandbox.restore()
   });
 
-  it("should return NOTHING_TODO number when called with no context", function () {
+  it("should return false when called with no context", function () {
     const room = {} as Room
-    expect(place(room)).to.eql(NOTHING_TODO);
+    expect(placeLink(room, {})).to.eql(false);
   });
 
-  it("should place a structure", function () {
+  it("should mark links as placed", function () {
     const room = {
-      memory: { structs: '1' },
+      memory: { links: 'a', controllerLink: 'b' },
       controller: { level: 8 },
     } as Room
-    room.createConstructionSite = sinon.fake.returns(OK)
-    expect(place(room)).to.eql(SUCCESS);
-    expect(room.createConstructionSite).to.be.called
+    room.createConstructionSite = sinon.fake.returns(ERR_INVALID_TARGET)
+    room.find = sinon.fake.returns([])
+    room.lookForAt = sinon.fake((type: LookConstant) => type === LOOK_STRUCTURES ? [{ structureType: STRUCTURE_LINK }] : [])
+    expect(placeLink(room, room.memory)).to.eql(false);
+    expect(room.lookForAt).to.be.called
+    expect(room.memory._linked).to.eql(1)
   });
 });

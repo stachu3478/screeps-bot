@@ -26,6 +26,13 @@ export default function fillSpawn(creep: SpawnFillCreep) {
   else if (result !== 0) return FAILED
   else {
     if (remaining <= 0) return NO_RESOURCE
+    else {
+      const newTarget = findClosestHatchToFill(creep.pos, target)
+      if (!newTarget) return NOTHING_TODO
+      target = newTarget
+      creep.memory._fillSpawn = target.id
+      if (!creep.pos.isNearTo(target)) cheapMove(creep, target)
+    }
     return SUCCESS
   }
   return NOTHING_DONE

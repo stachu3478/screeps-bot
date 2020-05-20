@@ -43,7 +43,10 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, creepCou
   if (spawn.memory.trySpawn) {
     const { creep, memory, name, cooldown } = spawn.memory.trySpawn
     const result = trySpawnCreep(creep, uniqName(name), memory, spawn, true)
-    if (result === 0 || cooldown <= 0) {
+    if (result === 0) return
+    if (cooldown <= 0) {
+      delete spawn.memory.spawnSourceId
+      delete spawn.memory.trySpawn
     } else spawn.memory.trySpawn.cooldown--
     return
   }

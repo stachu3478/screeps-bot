@@ -9,7 +9,7 @@ export default function plan(room: Room) {
   const terrain = room.getTerrain()
   const pm = new PlannerMatrix(terrain)
   const matrix = pm.getMatrix()
-  const controllerPos = room.controller ? room.controller.pos : new RoomPosition(0, 0, room.name)
+  const controllerPos = room.controller.pos
 
   // find all paths and mark in matrix
   interface SourceMap {

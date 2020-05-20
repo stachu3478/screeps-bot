@@ -4,7 +4,7 @@ import { infoStyle } from "room/style";
 export default function lab(internal1: StructureLab, internal2: StructureLab, external: StructureLab[]) {
   const room = internal1.room
   const mem = room.memory
-  switch (mem.terminalState) {
+  switch (mem.labState) {
     case IDLE:
       room.visual.text('Labs: Idle', 0, 5, infoStyle)
       break;
@@ -17,6 +17,6 @@ export default function lab(internal1: StructureLab, internal2: StructureLab, ex
     case LAB_PENDING: {
 
     } break
-    default: mem.terminalState = IDLE
+    default: mem.labState = IDLE
   }
 }
