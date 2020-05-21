@@ -38,9 +38,11 @@ export default function makeBusiness(term: StructureTerminal) {
     const buyCalc = fromBuy(averageCost, roomName)
     const bestSellOrder = _.max(sellOrders, sellCalc)
 
-    const victims = buyCalc(bestBuyOrder) + sellCalc(bestSellOrder)
+    const pros = buyCalc(bestBuyOrder)
+    const cons = sellCalc(bestSellOrder)
+    const victims = pros + cons
     if (victims > 0) {
-      console.log('It is a ludicrous occasion! ' + victims, JSON.stringify({
+      console.log('It is a ludicrous occasion! ', pros, cons, JSON.stringify({
         buy: bestBuyOrder,
         sell: bestSellOrder
       }))

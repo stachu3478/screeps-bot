@@ -18,9 +18,8 @@ export default function place(room: Room) {
     const road = getXYRoad(room, x, y)
     if (road) {
       minDecay = Math.min(minDecay, ROAD_DECAY_TIME * Math.floor(road.hits / ROAD_DECAY_AMOUNT) + road.ticksToDecay)
-      continue
-    } else minDecay = 0
-    if (room.createConstructionSite(x, y, STRUCTURE_ROAD) === 0) {
+    } else if (room.createConstructionSite(x, y, STRUCTURE_ROAD) === 0) {
+      minDecay = 0
       room.memory._road_iteration = iteration
       return SUCCESS
     }

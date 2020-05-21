@@ -25,8 +25,8 @@ export default function placeShield(room: Room) {
       minDecay = Math.min(minDecay, RAMPART_DECAY_TIME * Math.floor(rampart.hits / RAMPART_DECAY_AMOUNT) + rampart.ticksToDecay)
       continue
     }
+    minDecay = 0
     const result = room.createConstructionSite(x, y, STRUCTURE_RAMPART)
-    console.log(result)
     if (result === 0) return SUCCESS
   }
 
@@ -36,7 +36,6 @@ export default function placeShield(room: Room) {
       const wall = getXYWall(room, controllerPos.x + x, controllerPos.y + y)
       if (wall) continue
       const result = room.createConstructionSite(controllerPos.x + x, controllerPos.y + y, STRUCTURE_WALL)
-      console.log(result)
       if (result === 0) return SUCCESS
     }
   if (minDecay === Infinity) minDecay = 1

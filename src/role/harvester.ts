@@ -67,7 +67,6 @@ function findOtherJob(creep: Harvester) {
 }
 
 function findUpJob(creep: Harvester) {
-  console.log('look job', creep.memory._noJob, creep.name)
   if (!creep.memory._noJob && drawStorage(creep) in ACCEPTABLE) creep.memory.state = STORAGE_DRAW
   else if (drawContainer(creep) in ACCEPTABLE) creep.memory.state = HARVESTING
   else if (creep.room.memory._dismantle) {
@@ -76,7 +75,6 @@ function findUpJob(creep: Harvester) {
   } else if (creep.memory._noJob) {
     findOtherJob(creep)
     creep.memory._noJob = 0
-    console.log('rly no job', creep.name)
     creep.memory.state = IDLE
   }
 }
@@ -84,7 +82,6 @@ function findUpJob(creep: Harvester) {
 function findDownJob(creep: Harvester) {
   let result
   creep.memory._noJob = 0
-  console.log('look dwon job', creep.memory._noJob, creep.name)
   if ((result = towerFill(creep)) in ACCEPTABLE) creep.memory.state = TOWER_FILL
   else if ((result = spawnerFill(creep)) in ACCEPTABLE) creep.memory.state = SPAWN_FILL
   else if ((result = repair(creep)) in ACCEPTABLE) creep.memory.state = REPAIR
@@ -95,7 +92,6 @@ function findDownJob(creep: Harvester) {
   } else {
     if ((result = storageFill(creep)) in ACCEPTABLE) creep.memory.state = STORAGE_FILL
     creep.memory._noJob = 1
-    console.log('no job', creep.name)
     if (result === NO_RESOURCE) creep.memory.state = IDLE
   }
 }

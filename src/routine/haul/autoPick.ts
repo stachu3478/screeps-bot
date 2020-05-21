@@ -1,3 +1,4 @@
+import profiler from 'screeps-profiler'
 import { SUCCESS, NOTHING_TODO, FAILED, DONE } from '../../constants/response'
 import { posToChar } from '../../planner/pos'
 import { findNearDroppedEnergy, findNearEnergyTombstones, findNearEnergyRuins } from 'utils/find';
@@ -10,7 +11,7 @@ interface AutoPickMemory extends CreepMemory {
   _pick_pos?: string
 }
 
-export default function autoPick(creep: AutoPickCreep) {
+export default profiler.registerFN(function autoPick(creep: AutoPickCreep) {
   let remaining = creep.store.getFreeCapacity(RESOURCE_ENERGY)
   if (remaining === 0) return NOTHING_TODO
   const mem = creep.memory
@@ -47,4 +48,4 @@ export default function autoPick(creep: AutoPickCreep) {
     if (remaining <= 0) return DONE
     return SUCCESS
   }
-}
+}, 'autoPickRoutine')

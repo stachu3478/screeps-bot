@@ -34,7 +34,7 @@ export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: Cr
 export default profiler.registerFN(function loop(spawn: StructureSpawn, creepCountByRole: number[], workPartCountByRole: number[], needsFighters: boolean) {
   const mem = spawn.room.memory
   if (!mem.creeps) mem.creeps = {}
-  if (!mem.colonySources || !mem.maxWorkController) return
+  if (!mem.colonySources || mem.maxWorkController === undefined) return
   const max = mem.sourceCount || 0
   if (spawn.spawning) {
     spawn.room.visual.text("Spawning " + spawn.spawning.name, 0, 3, infoStyle)
