@@ -1,10 +1,9 @@
-import { infoStyle } from "room/style";
 import { UPGRADER, STATIC_UPGRADER } from "constants/role";
 import { uniqName } from "./name";
 import { progressiveWorker, progressiveStaticUpgrader } from "./body/work";
 import { trySpawnCreep } from "./core";
 
-export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemory) {
+export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemory, controller: StructureController) {
   const name = uniqName("U")
   let parts
   let role
@@ -12,7 +11,7 @@ export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemo
   if (mem._linked) {
     parts = progressiveStaticUpgrader(spawn.room.energyCapacityAvailable)
     role = STATIC_UPGRADER
-    deprivity = spawn.pos.findPathTo(spawn.room.controller as StructureController).length
+    deprivity = spawn.pos.findPathTo(controller).length
   } else {
     parts = progressiveWorker(spawn.room.energyCapacityAvailable, mem.maxWorkController)
     role = UPGRADER
@@ -29,5 +28,5 @@ export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemo
       }
     }
   }
-  const result = trySpawnCreep(parts, name, { role, room: spawn.room.name, deprivity }, spawn)
+  trySpawnCreep(parts, name, { role, room: spawn.room.name, deprivity }, spawn)
 }

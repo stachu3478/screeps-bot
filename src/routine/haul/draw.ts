@@ -14,7 +14,7 @@ interface DrawMemory extends CreepMemory {
 export default function draw(creep: DrawCreep) {
   const resourceType = creep.memory._drawType || RESOURCE_ENERGY
   if (creep.store.getFreeCapacity(resourceType) === 0) return DONE
-  let target = Game.getObjectById(creep.memory._draw || ('' as Id<StructureContainer>))
+  let target = creep.memory._draw && Game.getObjectById(creep.memory._draw)
   if (!target || target.store[resourceType] === 0) return NOTHING_TODO
   const result = creep.withdraw(target, resourceType, creep.memory._drawAmount)
   if (result === ERR_NOT_IN_RANGE) cheapMove(creep, target)

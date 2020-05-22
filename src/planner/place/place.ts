@@ -32,7 +32,7 @@ export default function place(room: Room) {
     if (++iteration >= times) iteration = 0
   }
   if (!mem._extractor && CONTROLLER_STRUCTURES[STRUCTURE_EXTRACTOR][room.controller.level]) {
-    const extractor = findExtractors(room)[0] as StructureExtractor | undefined
+    const extractor = findExtractors(room)[0]
     if (!extractor) {
       const mineralPos = room.find(FIND_MINERALS)[0]
       if (mineralPos && mineralPos.pos.createConstructionSite(STRUCTURE_EXTRACTOR) === 0) {

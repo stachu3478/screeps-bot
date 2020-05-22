@@ -15,11 +15,12 @@ interface BoostMap {
   } | undefined
 }
 
+const healBoosts = BOOSTS.heal as BoostMap
 function getHealPower(creep: Creep, distant: boolean = false) {
   let heal = 0
   creep.body.forEach(part => {
     if (part.type !== HEAL) return
-    const boost = (BOOSTS.heal as BoostMap)[part.boost || ''] || { heal: 1, rangedHeal: 1 }
+    const boost = healBoosts[part.boost || ''] || { heal: 1, rangedHeal: 1 }
     heal += distant ? boost.rangedHeal : boost.heal
   })
   return heal

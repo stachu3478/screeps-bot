@@ -52,9 +52,9 @@ export function optimalRemoteMiner(energy: number, distance: number) {
     moveCount += -carryCount + 1
     carryCount = 1
   }
-  return [
-    new Array(workCount).fill(WORK),
-    new Array(carryCount).fill(CARRY),
-    new Array(moveCount).fill(MOVE)
-  ].reduce((p, c) => p.concat(c), []) as BodyPartConstant[]
+  const partArray: BodyPartConstant[] = []
+  return partArray
+    .concat(new Array(workCount).fill(WORK))
+    .concat(new Array(carryCount).fill(CARRY))
+    .concat(new Array(moveCount).fill(MOVE))
 }

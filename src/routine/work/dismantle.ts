@@ -11,7 +11,7 @@ interface DismantleMemory extends CreepMemory {
 }
 
 export default function dismantle(creep: DismantleCreep) {
-  let target = Game.getObjectById(creep.memory._dismantle || '' as Id<Structure>)
+  let target = creep.memory._dismantle && Game.getObjectById(creep.memory._dismantle)
   if (!target || !target.hits) {
     const newTarget = findClosestHostileHittableStructures(creep.pos)
     if (newTarget) {

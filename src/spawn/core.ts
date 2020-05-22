@@ -31,10 +31,10 @@ export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: Cr
   return result
 }
 
-export default profiler.registerFN(function loop(spawn: StructureSpawn, creepCountByRole: number[], workPartCountByRole: number[], needsFighters: boolean) {
+export default profiler.registerFN(function loop(spawn: StructureSpawn, controller: StructureController, creepCountByRole: number[], workPartCountByRole: number[], needsFighters: boolean) {
   const mem = spawn.room.memory
   if (!mem.creeps) mem.creeps = {}
-  if (!mem.colonySources || mem.maxWorkController === undefined) return
+  if (!mem.colonySources || mem.maxWorkController === undefined || !mem.colonySourceId) return
   const max = mem.sourceCount || 0
   if (spawn.spawning) {
     spawn.room.visual.text("Spawning " + spawn.spawning.name, 0, 3, infoStyle)
@@ -57,8 +57,8 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, creepCou
   const containers = findContainers(spawn.room).length || spawn.room.storage
   if (minerCount === 0 && !creepCountByRole[RETIRED]) {
     const name = uniqName("M")
-    const colonySource = mem.colonySourceId || ''
-    spawn.memory.spawnSourceId = colonySource as Id<Source>
+    const colonySource = mem.colonySourceId
+    spawn.memory.spawnSourceId = colonySource
     trySpawnCreep(progressiveMiner(Math.max(SPAWN_ENERGY_START, spawn.room.energyAvailable)), name, { role: MINER, room: spawn.room.name, _harvest: colonySource, deprivity: 0 } as MinerMemory, spawn)
   } else if (harvesterCount === 0 && containers) {
     const name = uniqName("J")
@@ -83,9 +83,10 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, creepCou
     spawn.memory.spawnSourceId = freeSource as Id<Source>
     mem.colonySources[freeSource] = mem.colonySources[freeSource].slice(0, 2) + name
     const spec = mem.colonySources[freeSource].charCodeAt(1)
-    trySpawnCreep(parts, name, { role: MINER, room: spawn.room.name, _harvest: freeSource as Id<Source>, deprivity: spec } as MinerMemory, spawn)
+    const memory: MinerMemory = { role: MINER, room: spawn.room.name, _harvest: freeSource as Id<Source>, deprivity: spec }
+    trySpawnCreep(parts, name, memory, spawn)
   } else if ((!mem._linked && containers && upgraderCount < maxUpgradersCount && (workPartCountByRole[UPGRADER] || 0) < (mem.maxWorkController || 0)) || (mem._linked && !creepCountByRole[STATIC_UPGRADER])) {
-    spawnUpgrader(spawn, mem as StableRoomMemory)
+    spawnUpgrader(spawn, mem as StableRoomMemory, controller)
   } else if (domination(spawn, creepCountByRole)) spawn.room.visual.text("                            in domination", 0, 3, infoStyle)
   else if (!creepCountByRole[EXTRACTOR]) extract(spawn)
   else spawn.room.visual.text("Spawn is idle.", 0, 3, infoStyle)

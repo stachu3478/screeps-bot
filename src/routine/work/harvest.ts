@@ -15,7 +15,7 @@ interface HarvestMemory extends CreepMemory {
 export default profiler.registerFN(function harvest(creep: HarvestCreep, sourceId?: Id<Source>) {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return DONE
   const mem = creep.memory
-  let target = Game.getObjectById(mem._harvest || ('' as Id<Source>))
+  let target = mem._harvest && Game.getObjectById(mem._harvest)
   if (!target) {
     if (sourceId) target = Game.getObjectById(sourceId)
     if (!target) return NOTHING_TODO

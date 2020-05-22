@@ -1,5 +1,5 @@
-export default function handleLog(room: ControlledRoom, logs: EventItem[]) {
-  const mem = room.memory
+export default function handleLog(mem: RoomMemory, controller: StructureController) {
+  const logs = controller.room.getEventLog()
   logs.forEach(l => {
     switch (l.event) {
       case EVENT_ATTACK:
@@ -9,7 +9,7 @@ export default function handleLog(room: ControlledRoom, logs: EventItem[]) {
         const target = Game.getObjectById(l.data.targetId) as Creep | Structure
         const structure = target as Structure
         if (structure.structureType === STRUCTURE_SPAWN) {
-          room.controller.activateSafeMode()
+          controller.activateSafeMode()
         }
       case EVENT_ATTACK_CONTROLLER:
         const creep = Game.getObjectById(l.objectId as Id<Creep>)
@@ -32,7 +32,7 @@ export default function handleLog(room: ControlledRoom, logs: EventItem[]) {
           default: mem._built = false; console.log("Structure has been destroyed: " + type)
         } break
       case EVENT_UPGRADE_CONTROLLER:
-        const controllerLevel = room.controller.level
+        const controllerLevel = controller.level
         if (controllerLevel !== mem._lvl) {
           mem._built = false
           mem._shielded = 0

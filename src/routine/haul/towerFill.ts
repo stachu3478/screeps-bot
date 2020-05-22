@@ -13,7 +13,7 @@ interface TowerFillMemory extends CreepMemory {
 export default function fillTower(creep: TowerFillCreep) {
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
   if (creep.room.memory.towerFilled) return NOTHING_TODO
-  let target = Game.getObjectById(creep.memory._fillTower || ('' as Id<StructureTower>))
+  let target = creep.memory._fillTower && Game.getObjectById(creep.memory._fillTower)
   if (!target || target.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
     const newTarget = findMostEmptiedTower(creep.room)
     if (typeof newTarget === 'number') {

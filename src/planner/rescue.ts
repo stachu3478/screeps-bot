@@ -25,14 +25,15 @@ export default function callRescue(room: Room) {
     }
     console.log('Try to spawn creep')
     const name = uniqName('P')
+    const memory: ColonizerMemory = {
+      role: COLONIZER,
+      room: room.name,
+      deprivity: 0,
+      _arrive: room.name,
+      _targetRole: MINER
+    }
     const result = spawn.spawnCreep(progressiveMobileWorker(Math.max(spawn.room.energyAvailable, SPAWN_ENERGY_START)), name, {
-      memory: {
-        role: COLONIZER,
-        room: room.name,
-        deprivity: 0,
-        _arrive: room.name,
-        _targetRole: MINER
-      } as ColonizerMemory
+      memory
     })
     if (result === ERR_BUSY) {
       console.log('Spawn is busy', JSON.stringify(spawn))

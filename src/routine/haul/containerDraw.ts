@@ -12,7 +12,7 @@ interface DrawContainerMemory extends CreepMemory {
 
 export default function drawContainer(creep: DrawContainerCreep) {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return DONE
-  let target = Game.getObjectById(creep.memory._draw || ('' as Id<StructureContainer>))
+  let target = creep.memory._draw && Game.getObjectById(creep.memory._draw)
   if (!target || target.store[RESOURCE_ENERGY] === 0) {
     const newTarget = findClosestFilledContainer(creep.pos)
     if (!newTarget) return NOTHING_TODO

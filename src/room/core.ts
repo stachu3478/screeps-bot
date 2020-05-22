@@ -16,7 +16,8 @@ import lab from 'role/lab';
 import { getXYLab, getXYFactory } from 'utils/selectFromPos';
 import { factory } from 'utils/handleFactory';
 
-export default function run(room: ControlledRoom, cpuUsed: number) {
+export default function run(controller: StructureController, cpuUsed: number) {
+  const room = controller.room
   if (!room.memory.roads) plan(room)
   visual(room)
 
@@ -58,7 +59,7 @@ export default function run(room: ControlledRoom, cpuUsed: number) {
     count,
   } = creeps(mem.creeps, room, enemy, needFighters)
 
-  handleLog(room, room.getEventLog())
+  handleLog(mem, controller)
 
   let spawn = Game.spawns[room.memory.spawnName || '']
   if (!spawn) {
@@ -96,7 +97,7 @@ export default function run(room: ControlledRoom, cpuUsed: number) {
   const factoryStructure = getXYFactory(room, factoryPos & 63, factoryPos >> 6)
   if (factoryStructure) factory(factoryStructure)
 
-  if (spawn) spawnLoop(spawn, creepCountByRole, workPartCountByRole, needFighters)
+  if (spawn) spawnLoop(spawn, controller, creepCountByRole, workPartCountByRole, needFighters)
   room.visual.text("Population: " + count + " Retired: " + (creepCountByRole[RETIRED] || 0), 0, 0, count === 0 ? dangerStyle : infoStyle)
   room.visual.text("Spawns: " + room.energyAvailable + "/" + room.energyCapacityAvailable, 0, 1, room.energyCapacityAvailable === 0 ? dangerStyle : infoStyle)
   return usage(room, cpuUsed)

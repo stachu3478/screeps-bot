@@ -11,7 +11,7 @@ interface ExtractMemory extends CreepMemory {
 
 export default function extract(creep: ExtractCreep) {
   if (creep.store.getFreeCapacity() === 0) return DONE
-  const target = Game.getObjectById(creep.room.memory._mineral || ('' as Id<Mineral>))
+  const target = creep.room.memory._mineral && Game.getObjectById(creep.room.memory._mineral)
   if (!target || !target.mineralAmount) return NOTHING_TODO
   const result = creep.harvest(target)
   const remaining = creep.store.getFreeCapacity() - creep.getActiveBodyparts(WORK) * HARVEST_MINERAL_POWER

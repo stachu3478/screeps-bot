@@ -13,7 +13,7 @@ interface FillMemory extends CreepMemory {
 export default function fill(creep: FillCreep) {
   const resourceType = creep.memory._fillType || RESOURCE_ENERGY
   if (creep.store[resourceType] === 0) return DONE
-  let target = Game.getObjectById(creep.memory._fill || ('' as Id<StructureContainer>))
+  let target = creep.memory._fill && Game.getObjectById(creep.memory._fill)
   if (!target || !(target.store as Store<ResourceConstant, false>).getFreeCapacity()) return NOTHING_TODO
   const result = creep.transfer(target, resourceType)
   if (result === ERR_NOT_IN_RANGE) cheapMove(creep, target)

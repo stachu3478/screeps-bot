@@ -17,7 +17,7 @@ export default function autoRepair(creep: AutoRepairCreep, timeout: number = 6) 
     return NOTHING_TODO
   }
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
-  let target = Game.getObjectById(mem._auto_repair || ('' as Id<Structure>))
+  let target = mem._auto_repair && Game.getObjectById(mem._auto_repair)
   if (!target || target.hits === target.hitsMax || creep.pos.getRangeTo(target) > 3) {
     const repairPower = creep.getActiveBodyparts(WORK) * REPAIR_POWER
     target = findCloseMostDamagedStructure(creep.pos, repairPower)
