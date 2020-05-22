@@ -1,4 +1,4 @@
-import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER, RETIRED, EXTRACTOR, FIGHTER, STATIC_UPGRADER, COLONIZER } from '../constants/role'
+import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER, RETIRED, EXTRACTOR, FIGHTER, STATIC_UPGRADER, COLONIZER, FACTORY_MANAGER } from '../constants/role'
 import roleHarvester from '../role/harvester'
 import roleUpgrader from '../role/upgrader'
 import roleClaimer, { Claimer } from '../role/claimer'
@@ -10,6 +10,7 @@ import extractor from 'role/extractor';
 import fighter from 'role/fighter';
 import staticUpgrader from '../role/staticUpgrader';
 import colonizer, { Colonizer } from 'role/colonizer';
+import factoryManager from 'role/factoryManager';
 
 interface Creeps {
   [key: string]: 0
@@ -54,12 +55,16 @@ export default function creeps(creeps: Creeps, room: Room, enemy?: Creep, holdFi
         case EXTRACTOR: extractor(creep); break
         case FIGHTER: fighter(creep, enemy, holdFire); break
         case COLONIZER: colonizer(creep as Colonizer); break
+        case FACTORY_MANAGER: factoryManager(creep); break
         default: creep.memory.role = UPGRADER;
       }
     } catch (err) {
       console.log(err.message, err.stack)
     }
   }
+
+  if (creepCountByRole[HARVESTER] && creepCountByRole[FACTORY_MANAGER]) creepCountByRole[HARVESTER] += creepCountByRole[FACTORY_MANAGER]
+  if (workPartCountByRole[HARVESTER] && workPartCountByRole[FACTORY_MANAGER]) workPartCountByRole[HARVESTER] += workPartCountByRole[FACTORY_MANAGER]
 
   return {
     creepCountByRole,

@@ -1,4 +1,4 @@
-import { HARVESTING, TOWER_FILL, SPAWN_FILL, REPAIR, BUILD, ARRIVE, ARRIVE_HOSTILE, DISMANTLE, STORAGE_FILL, STORAGE_DRAW, RECYCLE, HAUL_FACTORY_FROM_TERMINAL, HAUL_TERMINAL_TO_FACTORY, HAUL_TERMINAL_FROM_FACTORY, HAUL_FACTORY_TO_TERMINAL, FACT_WORKING, FACT_BOARD, IDLE } from '../constants/state'
+import { HARVESTING, TOWER_FILL, SPAWN_FILL, REPAIR, BUILD, ARRIVE, ARRIVE_HOSTILE, DISMANTLE, STORAGE_FILL, STORAGE_DRAW, RECYCLE, IDLE } from '../constants/state'
 import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS, ACCEPTABLE } from '../constants/response'
 import towerFill from 'routine/haul/towerFill'
 import spawnerFill from 'routine/haul/spawnerFill'
@@ -15,11 +15,8 @@ import recycle from 'routine/recycle'
 import drawContainer from 'routine/haul/containerDraw';
 import drawStorage from 'routine/haul/storageDraw';
 import placeShield from 'planner/place/shield';
-import draw from 'routine/haul/draw';
-import { getXYFactory } from 'utils/selectFromPos';
-import fill from 'routine/haul/fill';
-import { factoryStoragePerResource } from 'utils/handleFactory';
 import profiler from "screeps-profiler"
+import { FACTORY_MANAGER } from 'constants/role';
 
 export interface Harvester extends Creep {
   memory: HarvesterMemory
@@ -36,34 +33,7 @@ interface HarvesterMemory extends CreepMemory {
   _build?: Id<ConstructionSite>
   _dismantle?: Id<Structure>
   _pick_pos?: string
-  _draw?: Id<AnyStoreStructure>
-  _drawAmount?: number
-  _drawType?: ResourceConstant
-  _fill?: Id<AnyStoreStructure>
-  _fillType?: ResourceConstant
   _noJob?: number
-}
-
-function findOtherJob(creep: Harvester) {
-  const factoryPos = (creep.room.memory.structs || '').charCodeAt(4)
-  const factory = getXYFactory(creep.room, factoryPos & 63, factoryPos >> 6)
-  if (!factory) return
-  if (!creep.room.terminal) return
-  if (creep.room.memory.factoryNeeds) {
-    const type = creep.room.memory.factoryNeeds
-    creep.memory._draw = creep.room.terminal.id
-    creep.memory._drawType = type
-    creep.memory._drawAmount = factoryStoragePerResource - factory.store[type]
-    creep.memory.state = HAUL_FACTORY_FROM_TERMINAL
-    console.log('DA job found' + creep.room.name)
-  } else if (creep.room.memory.factoryDumps) {
-    const type = creep.room.memory.factoryDumps
-    creep.memory._draw = factory.id
-    creep.memory._drawType = type
-    creep.memory._drawAmount = factory.store[type]
-    creep.memory.state = HAUL_TERMINAL_FROM_FACTORY
-    console.log('DA job found out ' + creep.room.name)
-  }
 }
 
 function findUpJob(creep: Harvester) {
@@ -73,9 +43,8 @@ function findUpJob(creep: Harvester) {
     creep.memory._arrive = creep.room.memory._dismantle
     creep.memory.state = ARRIVE_HOSTILE
   } else if (creep.memory._noJob) {
-    findOtherJob(creep)
     creep.memory._noJob = 0
-    creep.memory.state = IDLE
+    creep.memory.role = FACTORY_MANAGER
   }
 }
 
@@ -176,68 +145,6 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
         case DONE: case SUCCESS: findDownJob(creep); break
         case NOTHING_TODO: case FAILED: findUpJob(creep); break
         case NOTHING_DONE: autoPick(creep); break
-      }
-    } break
-    case HAUL_FACTORY_FROM_TERMINAL: {
-      if (creep.store.getUsedCapacity()) {
-        findUpJob(creep)
-        break
-      }
-      switch (draw(creep)) {
-        case DONE: case SUCCESS: {
-          const factoryPos = (creep.room.memory.structs || '').charCodeAt(4)
-          const factory = getXYFactory(creep.room, factoryPos & 63, factoryPos >> 6)
-          if (factory) {
-            creep.memory._fill = factory.id
-            creep.memory._fillType = creep.room.memory.factoryNeeds
-            creep.memory.state = HAUL_TERMINAL_TO_FACTORY
-          } else creep.memory.state = HAUL_FACTORY_TO_TERMINAL
-        } break
-        case NOTHING_TODO: case FAILED: findUpJob(creep); break
-      }
-    } break
-    case HAUL_TERMINAL_TO_FACTORY: {
-      switch (fill(creep)) {
-        case DONE: case SUCCESS:
-          creep.room.memory.factoryState = FACT_BOARD
-          delete creep.room.memory.factoryNeeds
-          findUpJob(creep)
-          break
-        case NOTHING_TODO: case FAILED:
-          if (!creep.room.terminal) break
-          creep.memory._fill = creep.room.terminal.id
-          creep.memory.state = HAUL_FACTORY_TO_TERMINAL
-          console.log('Epic fail FACT')
-          break
-      }
-    } break
-    case HAUL_TERMINAL_FROM_FACTORY: {
-      switch (draw(creep)) {
-        case DONE: case SUCCESS: {
-          if (creep.room.terminal) {
-            creep.memory._fill = creep.room.terminal.id
-            creep.memory._fillType = creep.room.memory.factoryDumps
-            creep.memory.state = HAUL_FACTORY_TO_TERMINAL
-          } else creep.memory.state = HAUL_TERMINAL_TO_FACTORY
-        } break
-        case NOTHING_TODO: case FAILED: findUpJob(creep); break
-      }
-    } break
-    case HAUL_FACTORY_TO_TERMINAL: {
-      switch (fill(creep)) {
-        case DONE: case SUCCESS:
-          delete creep.room.memory.factoryDumps
-          findUpJob(creep)
-          break
-        case NOTHING_TODO: case FAILED:
-          const factoryPos = (creep.room.memory.structs || '').charCodeAt(4)
-          const factory = getXYFactory(creep.room, factoryPos & 63, factoryPos >> 6)
-          if (factory) {
-            creep.memory._fill = factory.id
-            creep.memory.state = HAUL_TERMINAL_TO_FACTORY
-          }
-          console.log('Epic fail TERM')
-          break
       }
     } break
     case ARRIVE: {
