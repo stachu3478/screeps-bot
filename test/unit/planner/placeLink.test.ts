@@ -26,8 +26,8 @@ describe("planner/place/link", () => {
   });
 
   it("should return false when called with no context", function () {
-    const room = {} as Room
-    expect(placeLink(room, {})).to.eql(false);
+    const room = { memory: {} } as Room
+    expect(placeLink(room)).to.eql(false);
   });
 
   it("should mark links as placed", function () {
@@ -38,7 +38,7 @@ describe("planner/place/link", () => {
     room.createConstructionSite = sinon.fake.returns(ERR_INVALID_TARGET)
     room.find = sinon.fake.returns([])
     room.lookForAt = sinon.fake((type: LookConstant) => type === LOOK_STRUCTURES ? [{ structureType: STRUCTURE_LINK }] : [])
-    expect(placeLink(room, room.memory)).to.eql(false);
+    expect(placeLink(room)).to.eql(false);
     expect(room.lookForAt).to.be.called
     expect(room.memory._linked).to.eql(1)
   });

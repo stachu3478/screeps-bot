@@ -1,9 +1,8 @@
 import { SUCCESS, NOTHING_TODO } from '../../constants/response'
 import { getXYSpawn, getXYTower, getXYRampart, getXYWall } from 'utils/selectFromPos';
 
-export default function placeShield(room: Room) {
-  const controller = room.controller
-  if (!controller) return NOTHING_TODO
+export default function placeShield(controller: StructureController) {
+  const room = controller.room
   const mem = room.memory
   if (mem._shielded && mem._shielded > Game.time) return NOTHING_TODO
   if (!mem.structs) return NOTHING_TODO

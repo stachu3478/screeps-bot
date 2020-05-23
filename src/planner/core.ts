@@ -3,6 +3,9 @@ import PlannerMatrix from './matrix'
 import dump from './dump'
 import pos, { posToChar } from './pos'
 import planLink from './links';
+import whirl from 'utils/whirl';
+import planPotencialPaths from './planPotencialPaths';
+import xyToChar from './pos';
 
 export default function plan(room: Room) {
   if (!room.controller) return
@@ -44,6 +47,17 @@ export default function plan(room: Room) {
       pm.setField(s.x, s.y, step + 1)
       costMatrix.set(s.x, s.y, 1)
     })
+    // ascetic polyfill where path length to controller is 0
+    if (!path[0]) {
+      whirl(ps.x, ps.y, (x, y) => {
+        if (terrain.get(x, y) === 0) {
+          path[0] = new RoomPosition(x, y, room.name)
+          return true
+        }
+        return false
+      })
+    }
+    ///
     sourcePositions[obj.id] = posToChar(path[0])
     if (path.length > furthestPath.length) {
       furthestSource = obj
@@ -83,6 +97,8 @@ export default function plan(room: Room) {
 
   pm.coverBorder() // fill the covers to block iteration
 
+  // planPotencialPaths(room, furthestSource, pm, roomCallback)
+
   // initially plan structures
   const structsCountGoal = _.sum(CONTROLLER_STRUCTURES, (s) => {
     const max = _.max(s)
@@ -109,6 +125,7 @@ export default function plan(room: Room) {
   let prevCount = pm.getStructuresCount()
   while (pm.getStructuresCount() < structsCountGoal) {
     const pos = variation++
+    if (matrix[pos] === 100) continue
     pm.setFieldRef(pos, -1)
     if (prevCount !== pm.getStructuresCount()) {
       prevCount = pm.getStructuresCount()
@@ -142,6 +159,7 @@ export default function plan(room: Room) {
               done = true
               break
             } // optimal solution found
+            if (matrix[xyToChar(x + ox, y + oy)] === 100) continue
             pm.setField(x + ox, y + oy, -1)
             pm.setFieldRef(structurePoses.pop() || 0, 0, true)
             structureCosts.pop()

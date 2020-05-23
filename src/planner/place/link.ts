@@ -1,6 +1,7 @@
 import { getXYLink } from "utils/selectFromPos";
 
-export default function placeLink(room: Room, mem: RoomMemory) {
+export default function placeLink(room: Room) {
+  const mem = room.memory
   if (mem.controllerLink && mem.links) {
     const linkPoses = mem.controllerLink + mem.links
     const linkCount = linkPoses.length

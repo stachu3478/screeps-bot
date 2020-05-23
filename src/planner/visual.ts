@@ -8,7 +8,7 @@ const externalLabStyle: CircleStyle = { stroke: '#008', fill: '#0084', radius: 0
 const termStyle: PolyStyle = { fill: '#aaaaaa' }
 const factoryStyle: PolyStyle = { stroke: '#000', fill: '#0000', strokeWidth: 0.15 }
 const roadStyle: PolyStyle = {
-  fill: '#dddddd',
+  fill: '#ccc',
 }
 
 const rect45 = (x: number, y: number): [number, number][] => {

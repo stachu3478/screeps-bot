@@ -1,3 +1,4 @@
+import './overloads/Room'
 import run from "room/core"
 import { infoStyle } from "room/style";
 import planShields from "planner/planShields";
@@ -20,7 +21,7 @@ export const loop = () => {
       const room = Game.rooms[name]
       if (room) {
         if (room.controller) usage += run(room.controller, usage)
-        else delete Game.rooms[name]
+        else delete Memory.myRooms[name]
       }
     }
 

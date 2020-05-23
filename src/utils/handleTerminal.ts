@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import { TERM_SEND_EXCESS } from 'constants/state';
 import handleLab from './handleLab';
-import { getXYFactory } from './selectFromPos';
 import handleFactory from './handleFactory';
 
 interface SomeMap {
@@ -28,7 +27,6 @@ export default function handleTerminal(terminal: StructureTerminal, resourceType
   mem.terminalDealResourceType = resourceType
   handleLab(terminal)
   if (!mem.structs) return
-  const factoryPos = mem.structs.charCodeAt(4)
-  const factory = getXYFactory(terminal.room, factoryPos & 63, factoryPos >> 6)
+  const factory = terminal.room.factory
   if (factory) handleFactory(terminal.store, factory)
 }

@@ -1,14 +1,14 @@
 import _ from 'lodash'
 import { DONE, NOTHING_DONE, FAILED, SUCCESS } from "constants/response";
-import { getAverageCost, energyCost } from 'utils/handleTerminal';
+import { energyCost } from 'utils/handleTerminal';
 
 function calcCost(room1: string, room2?: string) {
   if (room2) return Game.market.calcTransactionCost(TERMINAL_MIN_SEND, room1, room2)
   return Infinity
 }
 
-const fromSell = (avg: number, roomName: string) => (o: Order) => TERMINAL_MIN_SEND * -o.price * avg - calcCost(roomName, o.roomName) * energyCost
-const fromBuy = (avg: number, roomName: string) => (o: Order) => TERMINAL_MIN_SEND * o.price * avg - calcCost(roomName, o.roomName) * energyCost
+const fromSell = (roomName: string) => (o: Order) => TERMINAL_MIN_SEND * -o.price - calcCost(roomName, o.roomName) * energyCost
+const fromBuy = (roomName: string) => (o: Order) => TERMINAL_MIN_SEND * o.price - calcCost(roomName, o.roomName) * energyCost
 
 export default function makeBusiness(term: StructureTerminal) {
   const mem = term.room.memory
@@ -16,10 +16,10 @@ export default function makeBusiness(term: StructureTerminal) {
   if (!mem.terminalResourceIteration) iteration = mem.terminalResourceIteration = 0
   const resourceType = RESOURCES_ALL[iteration]
   if (!resourceType) return DONE
-  const averageCost = getAverageCost(resourceType)
   const roomName = term.room.name
   const buyOrders = Game.market.getAllOrders({ type: ORDER_BUY, resourceType })
-  const buyCalc = fromBuy(averageCost, roomName)
+    .filter(o => o.amount >= TERMINAL_MIN_SEND)
+  const buyCalc = fromBuy(roomName)
   const bestBuyOrder = _.max(buyOrders, buyCalc)
   if (mem.termBusinessSell) {
     const bestBuyOrder = _.max(buyOrders, buyCalc)
@@ -33,16 +33,16 @@ export default function makeBusiness(term: StructureTerminal) {
     return SUCCESS
   } else {
     const sellOrders = Game.market.getAllOrders({ type: ORDER_SELL, resourceType })
+      .filter(o => o.amount >= TERMINAL_MIN_SEND)
 
-    const sellCalc = fromSell(averageCost, roomName)
-    const buyCalc = fromBuy(averageCost, roomName)
+    const sellCalc = fromSell(roomName)
     const bestSellOrder = _.max(sellOrders, sellCalc)
 
-    const pros = buyCalc(bestBuyOrder)
-    const cons = sellCalc(bestSellOrder)
+    const pros = Math.floor(buyCalc(bestBuyOrder))
+    const cons = Math.floor(sellCalc(bestSellOrder))
     const victims = pros + cons
     if (victims > 0) {
-      console.log('It is a ludicrous occasion! ', pros, cons, JSON.stringify({
+      console.log('It is a ludicrous occasion! ', pros, cons, energyCost, JSON.stringify({
         buy: bestBuyOrder,
         sell: bestSellOrder
       }))

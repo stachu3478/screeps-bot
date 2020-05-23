@@ -16,7 +16,7 @@ export default function upgrade(creep: UpgradeCreep, staticMode: boolean = false
   if (result === ERR_NOT_IN_RANGE) cheapMove(creep, target)
   else if (result !== 0) return FAILED
   else {
-    if (!staticMode && !creep.pos.isNearTo(target)) cheapMove(creep, target)
+    if (!staticMode && creep.pos.getRangeTo(target) > 2) cheapMove(creep, target)
     if (remaining <= 0) return NO_RESOURCE
     return SUCCESS
   }

@@ -1,6 +1,6 @@
 import { progressiveMiner, progressiveLiteWorker } from './body/work'
 import { progressiveFighter } from './body/body'
-import { HARVESTER, UPGRADER, MINER, RETIRED, FIGHTER, EXTRACTOR, STATIC_UPGRADER } from '../constants/role'
+import { HARVESTER, UPGRADER, MINER, RETIRED, FIGHTER, EXTRACTOR, STATIC_UPGRADER, FACTORY_MANAGER, LAB_MANAGER } from '../constants/role'
 import domination from './domination'
 import { uniqName } from './name'
 import { infoStyle } from '../room/style'
@@ -50,7 +50,7 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
     } else spawn.memory.trySpawn.cooldown--
     return
   }
-  const harvesterCount = creepCountByRole[HARVESTER] || 0
+  const harvesterCount = (creepCountByRole[HARVESTER] || 0) + (creepCountByRole[FACTORY_MANAGER] || 0) + (creepCountByRole[LAB_MANAGER] || 0)
   const upgraderCount = creepCountByRole[UPGRADER] || 0
   const minerCount = creepCountByRole[MINER] || 0
   const maxUpgradersCount = 3

@@ -2,9 +2,6 @@ import _ from 'lodash'
 import { FIGHTER } from "constants/role";
 import { Fighter } from "role/fighter";
 
-const extractorFilter = { filter: (s: Structure) => s.structureType === STRUCTURE_EXTRACTOR }
-export const findExtractors = (room: Room) => room.find<StructureExtractor>(FIND_STRUCTURES, extractorFilter)
-
 const towerFilter = { filter: (s: Structure) => s.structureType === STRUCTURE_TOWER }
 export const findTowers = (room: Room) => room.find<StructureTower>(FIND_STRUCTURES, towerFilter)
 

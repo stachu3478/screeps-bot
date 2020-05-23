@@ -2,7 +2,7 @@ import "../constants"
 import { expect } from "chai";
 import sinon from 'sinon'
 import _ from "lodash"
-import place from "../../../src/planner/place/place"
+import placeStructure from "../../../src/planner/place/structure"
 import { Memory } from "../mock"
 import Game from "../mock/Game"
 import RoomPosition from "../mock/RoomPosition"
@@ -27,17 +27,17 @@ describe("planner/place/place", () => {
   });
 
   it("should return NOTHING_TODO number when called with no context", function () {
-    const room = {} as Room
-    expect(place(room)).to.eql(NOTHING_TODO);
+    const controller = { room: { memory: {} } } as StructureController
+    expect(placeStructure(controller, '')).to.eql(NOTHING_TODO);
   });
 
   it("should place a structure", function () {
-    const room = {
-      memory: { structs: '1' },
-      controller: { level: 8 },
-    } as Room
-    room.createConstructionSite = sinon.fake.returns(OK)
-    expect(place(room)).to.eql(SUCCESS);
-    expect(room.createConstructionSite).to.be.called
+    const controller = {
+      level: 8,
+      room: { memory: {} }
+    } as StructureController
+    controller.room.createConstructionSite = sinon.fake.returns(OK)
+    expect(placeStructure(controller, 'a')).to.eql(SUCCESS);
+    expect(controller.room.createConstructionSite).to.be.called
   });
 });

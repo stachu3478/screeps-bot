@@ -38,3 +38,7 @@ export const HAUL_TERMINAL_FROM_FACTORY = 37
 export const HAUL_FACTORY_FROM_TERMINAL = 38
 export const FACT_BOARD = 39
 export const FACT_WORKING = 40
+export const HAUL_STORAGE_TO_LAB = 41
+export const HAUL_LAB_TO_STORAGE = 42
+export const HAUL_STORAGE_FROM_LAB = 43
+export const HAUL_LAB_FROM_STORAGE = 44

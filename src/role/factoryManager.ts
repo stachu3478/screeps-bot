@@ -1,7 +1,6 @@
 import { HAUL_FACTORY_FROM_TERMINAL, HAUL_TERMINAL_TO_FACTORY, HAUL_TERMINAL_FROM_FACTORY, HAUL_FACTORY_TO_TERMINAL, FACT_BOARD, IDLE } from '../constants/state'
 import { DONE, NOTHING_TODO, FAILED, SUCCESS } from '../constants/response'
 import draw from 'routine/haul/draw';
-import { getFactory } from 'utils/selectFromPos';
 import fill from 'routine/haul/fill';
 import { factoryStoragePerResource } from 'utils/handleFactory';
 import profiler from "screeps-profiler"
@@ -17,12 +16,11 @@ interface FactoryManagerMemory extends CreepMemory {
   _drawType?: ResourceConstant
   _fill?: Id<AnyStoreStructure>
   _fillType?: ResourceConstant
-  _noJob?: number
 }
 
 function findJob(creep: FactoryManager) {
   creep.memory.state = IDLE
-  const factory = getFactory(creep.room, (creep.room.memory.structs || '').charCodeAt(4))
+  const factory = creep.room.factory
   if (!factory) return false
   if (!creep.room.terminal) return false
   if (creep.room.memory.factoryNeeds) {
@@ -44,19 +42,38 @@ function findJob(creep: FactoryManager) {
 export default profiler.registerFN(function factoryManager(creep: FactoryManager) {
   switch (creep.memory.state) {
     case IDLE: {
-      if (!findJob(creep)) creep.memory.role = HARVESTER
+      if (findJob(creep)) break
+      if (creep.store.getUsedCapacity() === 0) {
+        creep.memory.role = HARVESTER
+        break
+      }
+      for (const name in creep.store) {
+        const resource = name as ResourceConstant
+        if (creep.store[resource] > 0) {
+          const potentialStructure = creep.room.terminal || creep.room.storage || creep.room.factory
+          if (potentialStructure) {
+            creep.memory._fill = potentialStructure.id
+            creep.memory._fillType = resource
+            creep.memory.state = HAUL_FACTORY_TO_TERMINAL
+          } else creep.drop(resource)
+          break
+        }
+      }
     } break
     case HAUL_FACTORY_FROM_TERMINAL: {
       switch (draw(creep)) {
         case DONE: case SUCCESS: {
-          const factory = getFactory(creep.room, (creep.room.memory.structs || '').charCodeAt(4))
+          const factory = creep.room.factory
           if (factory) {
             creep.memory._fill = factory.id
             creep.memory._fillType = creep.room.memory.factoryNeeds
             creep.memory.state = HAUL_TERMINAL_TO_FACTORY
           } else creep.memory.state = HAUL_FACTORY_TO_TERMINAL
         } break
-        case NOTHING_TODO: case FAILED: findJob(creep); break
+        case NOTHING_TODO: case FAILED: {
+          findJob(creep)
+          delete creep.room.memory.factoryNeeds
+        }; break
       }
     } break
     case HAUL_TERMINAL_TO_FACTORY: {
@@ -82,7 +99,10 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
             creep.memory.state = HAUL_FACTORY_TO_TERMINAL
           } else creep.memory.state = HAUL_TERMINAL_TO_FACTORY
         } break
-        case NOTHING_TODO: case FAILED: findJob(creep); break
+        case NOTHING_TODO: case FAILED: {
+          findJob(creep)
+          delete creep.room.memory.factoryDumps
+        }; break
       }
     } break
     case HAUL_FACTORY_TO_TERMINAL: {
@@ -92,7 +112,7 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
           findJob(creep)
           break
         case NOTHING_TODO: case FAILED:
-          const factory = getFactory(creep.room, (creep.room.memory.structs || '').charCodeAt(4))
+          const factory = creep.room.factory
           if (!factory) break
           creep.memory._fill = factory.id
           creep.memory.state = HAUL_TERMINAL_TO_FACTORY

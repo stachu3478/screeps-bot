@@ -13,8 +13,7 @@ import creeps from './creeps';
 import terminal from 'role/terminal';
 import { findTowers, findFighters, findDamagedCreeps } from 'utils/find';
 import lab from 'role/lab';
-import { getXYFactory, getLab } from 'utils/selectFromPos';
-import { factory } from 'utils/handleFactory';
+import factory from 'role/factory';
 
 export default function run(controller: StructureController, cpuUsed: number) {
   const room = controller.room
@@ -79,20 +78,9 @@ export default function run(controller: StructureController, cpuUsed: number) {
   }
 
   if (room.terminal) terminal(room.terminal)
-  if (mem.externalLabs && mem.internalLabs) {
-    const lab1 = getLab(room, mem.internalLabs.charCodeAt(0))
-    const lab2 = getLab(room, mem.internalLabs.charCodeAt(1))
-    if (lab1 && lab2) {
-      const otherLabs = mem.externalLabs
-        .split('')
-        .map(char => getLab(room, char.charCodeAt(0)))
-        .filter(l => l) as StructureLab[]
-      lab(lab1, lab2, otherLabs)
-    }
-  }
+  lab(room)
 
-  const factoryPos = (mem.structs || '').charCodeAt(4)
-  const factoryStructure = getXYFactory(room, factoryPos & 63, factoryPos >> 6)
+  const factoryStructure = room.factory
   if (factoryStructure) factory(factoryStructure)
 
   if (spawn) spawnLoop(spawn, controller, creepCountByRole, workPartCountByRole, needFighters)

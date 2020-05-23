@@ -25,7 +25,7 @@ export default function dump(room: Room, pm: PlannerMatrix, sourcePositions: Sou
       labs.push(xy)
     } else if (v === -4) {
       room.memory.controllerLink = String.fromCharCode(xy)
-    } else if (v > 0) {
+    } else if (v > 0 && v < 100) {
       roads.push(xy)
       if (terrain.get(x, y) === 0) totalRoadCost++
       else totalRoadCost += 5

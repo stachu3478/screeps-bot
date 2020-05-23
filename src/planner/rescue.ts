@@ -3,7 +3,6 @@ import { progressiveMobileWorker } from 'spawn/body/work'
 import { uniqName } from 'spawn/name';
 import { ColonizerMemory } from 'role/colonizer';
 
-// TODO make it work with miners
 export default function callRescue(room: Room) {
   console.log(`WARNING: No creeps in room ${room.name}!`)
   const claimers = [Game.rooms[room.memory._claimer || ''] || '']

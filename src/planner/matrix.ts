@@ -41,12 +41,13 @@ export default class PlannerMatrix {
 
   rankPos(x: number, y: number) {
     const { matrix, terrain } = this
-    if (matrix[pos(x, y)] > 0 || terrain.get(x, y) === 1) return -Infinity
+    const matPos = pos(x, y)
+    if ((matrix[matPos] > 0 && matrix[matPos] !== 100) || terrain.get(x, y) === 1) return -Infinity
     let rank = -1
     for (let ox = -1; ox <= 1; ox++)
       for (let oy = -1; oy <= 1; oy++) {
         const xy = pos(x + ox, y + oy)
-        if (matrix[xy] === 0 && terrain.get(x + ox, y + oy) !== 1) rank++
+        if ((matrix[xy] === 0 || matrix[xy] === 100) && terrain.get(x + ox, y + oy) !== 1) rank++
       }
     return rank
   }
