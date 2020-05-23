@@ -4,7 +4,6 @@ import dump from './dump'
 import pos, { posToChar } from './pos'
 import planLink from './links';
 import whirl from 'utils/whirl';
-import planPotencialPaths from './planPotencialPaths';
 import xyToChar from './pos';
 
 export default function plan(room: Room) {

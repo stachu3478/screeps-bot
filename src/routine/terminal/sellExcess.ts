@@ -1,12 +1,13 @@
 import _ from 'lodash'
 import { NOTHING_TODO, FAILED, SUCCESS, DONE, NO_RESOURCE } from "constants/response";
-import { getAverageCost, storagePerResource, tradeBlackMap, energyCost } from "utils/handleTerminal";
+import { getAverageCost, tradeBlackMap, energyCost } from "utils/handleTerminal";
+import { storageSellThreshold } from 'config/terminal'
 
 export default function sellExcess(terminal: StructureTerminal) {
   const resourceType = terminal.room.memory.terminalDealResourceType
   if (!resourceType) return NOTHING_TODO
   const averageCost = getAverageCost(resourceType)
-  const excessResourceAmount = terminal.store[resourceType] - storagePerResource * 3
+  const excessResourceAmount = terminal.store[resourceType] - storageSellThreshold
   if (excessResourceAmount <= TERMINAL_MIN_SEND) return NO_RESOURCE
   const room = terminal.room
   const orders = Game.market.getAllOrders({ type: ORDER_BUY, resourceType }); // fast
