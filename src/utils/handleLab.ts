@@ -1,6 +1,6 @@
 import { IDLE, LAB_PENDING } from 'constants/state';
-import { storagePerResource } from './handleTerminal';
 import { DONE, SUCCESS, NOTHING_DONE } from 'constants/response';
+import { labProductionThreshold } from 'config/terminal';
 
 interface Hash {
   [key: string]: string
@@ -19,7 +19,7 @@ export default function handleLab(term: StructureTerminal) {
       if (term.store[resource2] < TERMINAL_MIN_SEND) continue
       if (!REACTIONS[resource2]) continue
       const intersection = (REACTIONS[resource1] as Hash)[resource2] as ResourceConstant
-      if (term.store[intersection] >= storagePerResource) continue
+      if (term.store[intersection] >= labProductionThreshold) continue
       mem.labState = LAB_PENDING
       mem.labRecipe = intersection
       mem.labIndegrient1 = resource1

@@ -1,5 +1,5 @@
-import { ARRIVE_HOSTILE, ATTACKING, FALL_BACK, RECYCLE, INIT } from '../constants/state'
-import { DONE, NOTHING_TODO, SUCCESS, NOTHING_DONE, FAILED } from '../constants/response'
+import { ARRIVE_HOSTILE, ATTACKING, FALL_BACK, RECYCLE, INIT } from 'constants/state'
+import { DONE, NOTHING_TODO, SUCCESS, NOTHING_DONE, FAILED } from 'constants/response'
 import arrive from 'routine/arrive'
 import attack from 'routine/military/attack'
 import heal from 'routine/military/heal';

@@ -1,5 +1,5 @@
-import { HARVESTING, REPAIR, BUILD, ARRIVE, ARRIVE_HOSTILE, DISMANTLE, STORAGE_FILL, STORAGE_DRAW, RECYCLE, IDLE, FILL_PRIORITY } from '../constants/state'
-import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS } from '../constants/response'
+import { HARVESTING, REPAIR, BUILD, ARRIVE, ARRIVE_HOSTILE, DISMANTLE, STORAGE_FILL, STORAGE_DRAW, RECYCLE, IDLE, FILL_PRIORITY } from 'constants/state'
+import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS } from 'constants/response'
 import storageFill from 'routine/haul/storageFill'
 import repair from 'routine/work/repair'
 import build from 'routine/work/build'

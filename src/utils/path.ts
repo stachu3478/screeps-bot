@@ -27,18 +27,26 @@ function saveCache(positions: RoomPosition[]) {
   Memory.roomCacheKeepers[positions[0].roomName] = poses
 }
 
+interface StructCache {
+  [key: string]: string
+}
+const structCache: StructCache = {}
 function roomCallback(roomName: string, costMatrix: CostMatrix) {
   const room = Game.rooms[roomName]
   if (!room) {
     const cache = Memory.roomCacheKeepers && Memory.roomCacheKeepers[roomName]
-    if (!cache) return costMatrix
-    cache.split('').forEach(c => {
+    if (cache) cache.split('').forEach(c => {
       const pos = c.charCodeAt(0)
       const x = pos & 63
       const y = pos >> 6
       for (let ox = -3; ox <= 3; ox++)
         for (let oy = -3; oy <= 3; oy++)
           costMatrix.set(x + ox, y + oy, 25)
+    })
+    const structs = structCache[roomName]
+    if (structs) structs.split('').forEach(c => {
+      const pos = c.charCodeAt(0)
+      costMatrix.set(pos & 63, pos >> 6, 255)
     })
     return costMatrix
   }
@@ -50,6 +58,11 @@ function roomCallback(roomName: string, costMatrix: CostMatrix) {
         costMatrix.set(x + ox, y + oy, 25)
   })
   saveCache(sourceKeepers.map(c => c.pos))
+  let structStr = ''
+  room.find(FIND_STRUCTURES).forEach(s => {
+    structStr += posToChar(s.pos)
+  })
+  structCache[roomName] = structStr
   return costMatrix
 }
 

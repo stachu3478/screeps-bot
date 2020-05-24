@@ -1,6 +1,6 @@
-import { ARRIVE, CLAIMING, DESTRUCT } from '../constants/state'
-import { DONE, NOTHING_TODO } from '../constants/response'
-import selfDestruct from '../routine/selfDestruct'
+import { ARRIVE, CLAIMING, DESTRUCT } from 'constants/state'
+import { DONE, NOTHING_TODO } from 'constants/response'
+import selfDestruct from 'routine/selfDestruct'
 import arrive from 'routine/arrive'
 import claim from 'routine/military/claim';
 

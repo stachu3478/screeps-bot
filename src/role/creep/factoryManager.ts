@@ -1,5 +1,5 @@
-import { HAUL_FACTORY_FROM_TERMINAL, HAUL_TERMINAL_TO_FACTORY, HAUL_TERMINAL_FROM_FACTORY, HAUL_FACTORY_TO_TERMINAL, FACT_BOARD, IDLE } from '../constants/state'
-import { DONE, NOTHING_TODO, FAILED, SUCCESS } from '../constants/response'
+import { HAUL_FACTORY_FROM_TERMINAL, HAUL_TERMINAL_TO_FACTORY, HAUL_TERMINAL_FROM_FACTORY, HAUL_FACTORY_TO_TERMINAL, FACT_BOARD, IDLE } from 'constants/state'
+import { DONE, NOTHING_TODO, FAILED, SUCCESS } from 'constants/response'
 import draw from 'routine/haul/draw';
 import fill from 'routine/haul/fill';
 import { factoryStoragePerResource } from 'utils/handleFactory';

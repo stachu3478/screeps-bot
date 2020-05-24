@@ -3,7 +3,7 @@ import drawContainer from "routine/haul/containerDraw";
 import { ACCEPTABLE } from "constants/response";
 import { STORAGE_DRAW, HARVESTING, ARRIVE_HOSTILE } from "constants/state";
 import { LAB_MANAGER } from "constants/role";
-import Harvester from "role/harvester.d";
+import Harvester from "role/creep/harvester.d";
 
 export default function energyHaul(creep: Harvester) {
   if (!creep.memory._noJob && drawStorage(creep) in ACCEPTABLE) creep.memory.state = STORAGE_DRAW

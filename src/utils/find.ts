@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { FIGHTER } from "constants/role";
-import { Fighter } from "role/fighter";
+import { Fighter } from "role/creep/fighter";
+import { posToChar } from 'planner/pos';
 
 const towerFilter = { filter: (s: Structure) => s.structureType === STRUCTURE_TOWER }
 export const findTowers = (room: Room) => room.find<StructureTower>(FIND_STRUCTURES, towerFilter)
@@ -22,6 +23,15 @@ const lookResultDeobfuscator = ({ structure }: LookForAtAreaResultWithPos<Struct
 
 const droppedEnergyFilter = { filter: (r: Resource) => r.resourceType === RESOURCE_ENERGY }
 export const findNearDroppedEnergy = (pos: RoomPosition) => pos.findInRange(FIND_DROPPED_RESOURCES, 1, droppedEnergyFilter)
+export const getDroppedResource = (pos: RoomPosition) => pos.findClosestByPath(FIND_DROPPED_RESOURCES) || pos.findClosestByRange(FIND_DROPPED_RESOURCES)
+
+const filledFilter = (s: Ruin | Tombstone) => s.store.getUsedCapacity() > 0
+export const findHaulable = (room: Room, pos: RoomPosition) => {
+  let potential: (Ruin | Tombstone)[] = room.find(FIND_TOMBSTONES)
+  potential = potential.concat(room.find(FIND_RUINS))
+  potential = potential.filter(filledFilter)
+  return pos.findClosestByPath(potential) || pos.findClosestByRange(potential)
+}
 
 const energyFilter = { filter: (r: Tombstone | Ruin) => r.store[RESOURCE_ENERGY] }
 export const findNearEnergyTombstones = (pos: RoomPosition) => pos.findInRange(FIND_TOMBSTONES, 1, energyFilter)

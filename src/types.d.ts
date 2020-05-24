@@ -105,6 +105,8 @@ interface RoomMemory {
   _attack?: string
   _attackLevel?: number
 
+  _haul?: string
+
   _extractor?: Id<StructureExtractor>
   _mineral?: Id<Mineral>
   _built?: boolean

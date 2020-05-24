@@ -20,7 +20,7 @@ export default function attack(creep: AttackCreep) {
   if (!target) {
     const list = Memory.whitelist || {}
     let newTarget: Creep | Structure | null = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {
-      filter: s => !list[s.owner ? s.owner.username : ''] && hittable(s)
+      filter: s => !list[s.owner ? s.owner.username : ''] && hittable(s) && s.structureType !== STRUCTURE_STORAGE && s.structureType !== STRUCTURE_TERMINAL
     })
     if (!newTarget) newTarget = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
       filter: c => !list[c.owner.username] && hittable(c)
@@ -31,7 +31,7 @@ export default function attack(creep: AttackCreep) {
     target = newTarget
   }
   if (!creep.pos.isNearTo(target)) {
-    cheapMove(creep, target)
+    creep.moveTo(target)
     return NOTHING_DONE
   }
   if (creep.hits === creep.hitsMax) {

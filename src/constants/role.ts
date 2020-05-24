@@ -11,3 +11,4 @@ export const STATIC_UPGRADER = 10
 export const COLONIZER = 11
 export const FACTORY_MANAGER = 12
 export const LAB_MANAGER = 13
+export const HAULER = 14

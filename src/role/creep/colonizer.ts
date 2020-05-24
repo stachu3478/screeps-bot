@@ -1,5 +1,5 @@
-import { ARRIVE } from '../constants/state'
-import { DONE, NOTHING_TODO } from '../constants/response'
+import { ARRIVE } from 'constants/state'
+import { DONE, NOTHING_TODO } from 'constants/response'
 import arrive from 'routine/arrive';
 
 export interface Colonizer extends Creep {

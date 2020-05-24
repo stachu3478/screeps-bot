@@ -1,17 +1,18 @@
-import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER, RETIRED, EXTRACTOR, FIGHTER, STATIC_UPGRADER, COLONIZER, FACTORY_MANAGER, LAB_MANAGER } from '../constants/role'
-import roleHarvester from '../role/harvester'
-import roleUpgrader from '../role/upgrader'
-import roleClaimer, { Claimer } from '../role/claimer'
-import roleScout, { Scout } from '../role/scout'
-import commander from '../role/commander'
-import miner from 'role/miner';
+import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER, RETIRED, EXTRACTOR, FIGHTER, STATIC_UPGRADER, COLONIZER, FACTORY_MANAGER, LAB_MANAGER, HAULER } from '../constants/role'
+import roleHarvester from '../role/creep/harvester'
+import roleUpgrader from '../role/creep/upgrader'
+import roleClaimer, { Claimer } from '../role/creep/claimer'
+import roleScout, { Scout } from '../role/creep/scout'
+import commander from '../role/creep/commander'
+import miner from 'role/creep/miner';
 import isRetired from 'utils/retired';
-import extractor from 'role/extractor';
-import fighter from 'role/fighter';
-import staticUpgrader from '../role/staticUpgrader';
-import colonizer, { Colonizer } from 'role/colonizer';
-import factoryManager from 'role/factoryManager';
-import labManager from 'role/labManager';
+import extractor from 'role/creep/extractor';
+import fighter from 'role/creep/fighter';
+import staticUpgrader from '../role/creep/staticUpgrader';
+import colonizer, { Colonizer } from 'role/creep/colonizer';
+import factoryManager from 'role/creep/factoryManager';
+import labManager from 'role/creep/labManager';
+import hauler from 'role/creep/hauler';
 
 interface Creeps {
   [key: string]: 0
@@ -58,6 +59,7 @@ export default function creeps(creeps: Creeps, room: Room, enemy?: Creep, holdFi
         case COLONIZER: colonizer(creep as Colonizer); break
         case FACTORY_MANAGER: factoryManager(creep); break
         case LAB_MANAGER: labManager(creep); break
+        case HAULER: hauler(creep); break
         default: creep.memory.role = UPGRADER;
       }
     } catch (err) {

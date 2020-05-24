@@ -1,7 +1,7 @@
 import { COLONIZER, MINER } from 'constants/role'
 import { progressiveMobileWorker } from 'spawn/body/work'
 import { uniqName } from 'spawn/name';
-import { ColonizerMemory } from 'role/colonizer';
+import { ColonizerMemory } from 'role/creep/colonizer';
 
 export default function callRescue(room: Room) {
   console.log(`WARNING: No creeps in room ${room.name}!`)

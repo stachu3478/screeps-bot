@@ -1,13 +1,13 @@
 import { progressiveMiner, progressiveLiteWorker } from './body/work'
 import { progressiveFighter } from './body/body'
-import { HARVESTER, UPGRADER, MINER, RETIRED, FIGHTER, EXTRACTOR, STATIC_UPGRADER, FACTORY_MANAGER, LAB_MANAGER } from '../constants/role'
+import { HARVESTER, UPGRADER, MINER, RETIRED, FIGHTER, EXTRACTOR, STATIC_UPGRADER, FACTORY_MANAGER, LAB_MANAGER, HAULER } from '../constants/role'
 import domination from './domination'
 import { uniqName } from './name'
 import { infoStyle } from '../room/style'
 import isRetired from 'utils/retired';
 import extract from './extract';
 import spawnUpgrader from './upgrader';
-import { MinerMemory, Miner } from 'role/miner';
+import { MinerMemory, Miner } from 'role/creep/miner';
 import { findContainers } from 'utils/find';
 import profiler from "screeps-profiler"
 
@@ -88,6 +88,8 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
     trySpawnCreep(parts, name, memory, spawn)
   } else if ((!mem._linked && containers && upgraderCount < maxUpgradersCount && (workPartCountByRole[UPGRADER] || 0) < (mem.maxWorkController || 0)) || (mem._linked && !creepCountByRole[STATIC_UPGRADER])) {
     spawnUpgrader(spawn, mem as StableRoomMemory, controller)
+  } else if (mem._haul && !creepCountByRole[HAULER]) {
+    trySpawnCreep([MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY], uniqName("H"), { role: HAULER, room: spawn.room.name, deprivity: 10 }, spawn)
   } else if (domination(spawn, creepCountByRole)) spawn.room.visual.text("                            in domination", 0, 3, infoStyle)
   else if (!creepCountByRole[EXTRACTOR]) extract(spawn)
   else spawn.room.visual.text("Spawn is idle.", 0, 3, infoStyle)

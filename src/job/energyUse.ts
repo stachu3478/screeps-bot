@@ -1,4 +1,4 @@
-import Harvester from "role/harvester.d";
+import Harvester from "role/creep/harvester.d";
 import { ACCEPTABLE, NO_RESOURCE } from "constants/response";
 import { REPAIR, ARRIVE_HOSTILE, IDLE, STORAGE_FILL, BUILD, FILL_PRIORITY } from "constants/state";
 import place from "planner/place/place";

@@ -1,5 +1,5 @@
-import { RECYCLE, INIT, FIGHT } from '../constants/state'
-import { DONE, NOTHING_TODO } from '../constants/response'
+import { RECYCLE, INIT, FIGHT } from 'constants/state'
+import { DONE, NOTHING_TODO } from 'constants/response'
 import recycle from 'routine/recycle';
 import fight from 'routine/military/fight';
 

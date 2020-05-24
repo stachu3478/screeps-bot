@@ -1,5 +1,5 @@
-import { IDLE, HAUL_LAB_TO_STORAGE, HAUL_LAB_FROM_STORAGE, HAUL_STORAGE_TO_LAB, HAUL_STORAGE_FROM_LAB, LAB_PENDING, LAB_COOLDOWN } from '../constants/state'
-import { DONE, NOTHING_TODO, FAILED, SUCCESS } from '../constants/response'
+import { IDLE, HAUL_LAB_TO_STORAGE, HAUL_LAB_FROM_STORAGE, HAUL_STORAGE_TO_LAB, HAUL_STORAGE_FROM_LAB, LAB_PENDING, LAB_COOLDOWN } from 'constants/state'
+import { DONE, NOTHING_TODO, FAILED, SUCCESS } from 'constants/response'
 import draw from 'routine/haul/draw';
 import fill from 'routine/haul/fill';
 import profiler from "screeps-profiler"
