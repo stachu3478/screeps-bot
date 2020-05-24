@@ -32,7 +32,6 @@ interface SpawnMemory {
 interface Memory {
   uuid: number
   log: any
-  test?: Id<StructureLink>[]
   ticksToProfile?: number
   myRooms: {
     [key: string]: 0
@@ -67,7 +66,7 @@ interface RoomMemory {
   maxWorkController?: number
   workControllerOver?: number
   spawnName?: string
-  towerFilled?: 0 | 1
+  priorityFilled?: 0 | 1
 
   terminalState?: number
   terminalDealResourceType?: ResourceConstant
@@ -102,7 +101,10 @@ interface RoomMemory {
   _claimed?: string[]
   _dismantle?: string
   averageUsage?: number
+
   _attack?: string
+  _attackLevel?: number
+
   _extractor?: Id<StructureExtractor>
   _mineral?: Id<Mineral>
   _built?: boolean

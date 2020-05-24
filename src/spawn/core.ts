@@ -22,6 +22,7 @@ export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: Cr
       cooldown: 100
     }
   } else {
+    mem.priorityFilled = 0
     mem.creeps[name] = 0
     if (memory.role === MINER) mem.colonySources[spawn.memory.spawnSourceId || ''] = mem.colonySources[spawn.memory.spawnSourceId || ''].slice(0, 2) + name
     delete spawn.memory.spawnSourceId

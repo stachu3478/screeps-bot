@@ -97,21 +97,22 @@ export function cheapMove(creep: Creep, target: RoomPosition | _HasRoomPosition,
   }
   const mem = creep.memory
   if (!mem._move) return result
-  const dir = parseInt(mem._move.path.charAt(4)) as DirectionConstant
+  const path = mem._move.path
+  const dir = parseInt(path.charAt(4)) as DirectionConstant
+  const moved = parseInt(path.substr(0, 2)) === creep.pos.x && parseInt(path.substr(2, 2)) === creep.pos.y
+  if (moved) mem._move.stuck = 0
+  const stuck = mem._move.stuck || 0
   if (dir) {
     const creepOnRoad = creep.room.lookForAt(LOOK_CREEPS, creep.pos.x + offsetsByDirection[dir][0], creep.pos.y + offsetsByDirection[dir][1])[0]
-    const stuck = mem._move.stuck || 0
     if (creepOnRoad) {
       if (!creepOnRoad.memory) {
         if (!creepOnRoad.my) return creep.moveTo(target, { costCallback })
-        if (moveAnywhere(creepOnRoad, dir, creep)) mem._move.stuck = 0
+        moveAnywhere(creepOnRoad, dir, creep)
       } else if (creepOnRoad.memory._move && creepOnRoad.memory._move.path.length > stuck && stuck < 10) {
         // this creep is moving we wont do anything
-        mem._move.stuck = stuck + 1
-      } else if (moveAnywhere(creepOnRoad, (creepOnRoad.memory.role === MINER || stuck > 20) ? creepOnRoad.pos.getDirectionTo(creep) : dir), creep) {
-        mem._move.stuck = 0
-      } else mem._move.stuck = stuck + 1
+      } else moveAnywhere(creepOnRoad, (creepOnRoad.memory.role === MINER || stuck > 20) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep)
     }
   }
+  mem._move.stuck = stuck + 1
   return result
 }

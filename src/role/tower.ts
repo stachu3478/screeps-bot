@@ -5,5 +5,5 @@ export default function tower(tower: StructureTower, enemy?: Creep | PowerCreep)
   } else {
     tower.attack(enemy)
   }
-  tower.room.memory.towerFilled = 0
+  tower.room.memory.priorityFilled = 0
 }

@@ -1,6 +1,4 @@
 export const HARVESTING = 1
-export const TOWER_FILL = 2
-export const SPAWN_FILL = 3
 export const REPAIR = 4
 export const BUILD = 5
 export const UPGRADE = 6
@@ -42,3 +40,4 @@ export const HAUL_STORAGE_TO_LAB = 41
 export const HAUL_LAB_TO_STORAGE = 42
 export const HAUL_STORAGE_FROM_LAB = 43
 export const HAUL_LAB_FROM_STORAGE = 44
+export const FILL_PRIORITY = 45

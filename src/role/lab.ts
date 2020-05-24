@@ -31,7 +31,7 @@ export default function lab(room: Room) {
       labs.forEach(lab => {
         result = lab.runReaction(lab1, lab2)
       })
-      if (result === ERR_NOT_ENOUGH_RESOURCES) {
+      if (result === ERR_NOT_ENOUGH_RESOURCES || result === ERR_FULL) {
         delete mem.labRecipe
         mem.labState = IDLE
         room.visual.text('Labs: Insufficient minerals!', 0, 5, infoStyle)

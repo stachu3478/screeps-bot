@@ -52,25 +52,24 @@ export default function commander(creep: Commander) {
           arrive(creep)
         } break
         case NOTHING_TODO: {
-          creep.memory.state = FALL_BACK
-          creep.memory._arrive = creep.memory.room
+          creep.memory.state = RECYCLE
           delete Memory.rooms[creep.memory.room]._attack
         }; break
       }
     } break;
     case FALL_BACK: {
-      if (creep.hits < prevHits)
+      if (creep.hits < prevHits || !creep.getActiveBodyparts(ATTACK))
         switch (arrive(creep)) {
           case SUCCESS: case NOTHING_TODO: {
             if (Memory.rooms[creep.memory.room]._attack) {
               if (creep.getActiveBodyparts(TOUGH) > 0) {
                 creep.memory._arrive = Memory.rooms[creep.memory.room]._attack
                 creep.memory.state = ARRIVE_HOSTILE
-              } else creep.heal(creep)
+              }
+              creep.heal(creep)
               break
             }
           }
-          case DONE: recycle(creep); creep.memory.state = RECYCLE; break
           default: creep.heal(creep)
         } else if (creep.getActiveBodyparts(TOUGH) > 0) {
           creep.memory._arrive = Memory.rooms[creep.memory.room]._attack

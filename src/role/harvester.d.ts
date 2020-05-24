@@ -5,8 +5,6 @@ export default interface Harvester extends Creep {
 interface HarvesterMemory extends CreepMemory {
   _arrive?: string
   _harvest?: Id<Source>
-  _fillTower?: Id<StructureTower>
-  _fillSpawn?: Id<StructureSpawn | StructureExtension>
   _repair?: Id<Structure>
   _auto_repair?: Id<Structure>
   _repair_cooldown?: number

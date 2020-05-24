@@ -1,7 +1,5 @@
-import { HARVESTING, TOWER_FILL, SPAWN_FILL, REPAIR, BUILD, ARRIVE, ARRIVE_HOSTILE, DISMANTLE, STORAGE_FILL, STORAGE_DRAW, RECYCLE, IDLE } from '../constants/state'
-import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS, ACCEPTABLE } from '../constants/response'
-import towerFill from 'routine/haul/towerFill'
-import spawnerFill from 'routine/haul/spawnerFill'
+import { HARVESTING, REPAIR, BUILD, ARRIVE, ARRIVE_HOSTILE, DISMANTLE, STORAGE_FILL, STORAGE_DRAW, RECYCLE, IDLE, FILL_PRIORITY } from '../constants/state'
+import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS } from '../constants/response'
 import storageFill from 'routine/haul/storageFill'
 import repair from 'routine/work/repair'
 import build from 'routine/work/build'
@@ -16,6 +14,7 @@ import profiler from "screeps-profiler"
 import energyHaul from 'job/energyHaul'
 import energyUse from 'job/energyUse'
 import Harvester from './harvester.d'
+import priorityFill from 'routine/haul/priorityFill';
 
 export default profiler.registerFN(function harvester(creep: Harvester) {
   switch (creep.memory.state) {
@@ -58,15 +57,8 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
         case NOTHING_DONE: autoPick(creep)
       }
     } break;
-    case TOWER_FILL: {
-      switch (towerFill(creep)) {
-        case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
-        case NOTHING_TODO: case FAILED: energyUse(creep); break
-        case NOTHING_DONE: autoRepair(creep); break;
-      }
-    } break;
-    case SPAWN_FILL: {
-      switch (spawnerFill(creep)) {
+    case FILL_PRIORITY: {
+      switch (priorityFill(creep)) {
         case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
         case NOTHING_TODO: case FAILED: energyUse(creep); break
         case NOTHING_DONE: autoRepair(creep); break;
@@ -94,7 +86,7 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
     } break;
     case STORAGE_DRAW: {
       switch (drawStorage(creep)) {
-        case DONE: case SUCCESS: energyUse(creep); break
+        case DONE: case SUCCESS: creep.memory.state = IDLE; break
         case NOTHING_TODO: case FAILED: energyHaul(creep); break
         case NOTHING_DONE: autoPick(creep); break
       }

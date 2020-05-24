@@ -71,7 +71,7 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
           } else creep.memory.state = HAUL_FACTORY_TO_TERMINAL
         } break
         case NOTHING_TODO: case FAILED: {
-          findJob(creep)
+          creep.memory.state = IDLE
           delete creep.room.memory.factoryNeeds
         }; break
       }
@@ -81,7 +81,7 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
         case DONE: case SUCCESS:
           creep.room.memory.factoryState = FACT_BOARD
           delete creep.room.memory.factoryNeeds
-          findJob(creep)
+          creep.memory.state = IDLE
           break
         case NOTHING_TODO: case FAILED:
           if (!creep.room.terminal) break
@@ -100,7 +100,7 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
           } else creep.memory.state = HAUL_TERMINAL_TO_FACTORY
         } break
         case NOTHING_TODO: case FAILED: {
-          findJob(creep)
+          creep.memory.state = IDLE
           delete creep.room.memory.factoryDumps
         }; break
       }
@@ -109,7 +109,7 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
       switch (fill(creep)) {
         case DONE: case SUCCESS:
           delete creep.room.memory.factoryDumps
-          findJob(creep)
+          creep.memory.state = IDLE
           break
         case NOTHING_TODO: case FAILED:
           const factory = creep.room.factory

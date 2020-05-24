@@ -103,16 +103,12 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
             creep.memory.state = HAUL_STORAGE_TO_LAB
           } else creep.memory.state = HAUL_LAB_TO_STORAGE
         } break
-        case NOTHING_TODO: case FAILED: {
-          findJob(creep)
-        }; break
+        case NOTHING_TODO: case FAILED: creep.memory.state = IDLE; break
       }
     } break
     case HAUL_STORAGE_TO_LAB: {
       switch (fill(creep)) {
-        case DONE: case SUCCESS:
-          findJob(creep)
-          break
+        case DONE: case SUCCESS: creep.memory.state = IDLE; break
         case NOTHING_TODO: case FAILED:
           if (!creep.room.terminal) break
           creep.memory._fill = creep.room.terminal.id
@@ -128,16 +124,12 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
             creep.memory.state = HAUL_LAB_TO_STORAGE
           } else creep.memory.state = HAUL_STORAGE_TO_LAB
         } break
-        case NOTHING_TODO: case FAILED: {
-          findJob(creep)
-        }; break
+        case NOTHING_TODO: case FAILED: creep.memory.state = IDLE; break
       }
     } break
     case HAUL_LAB_TO_STORAGE: {
       switch (fill(creep)) {
-        case DONE: case SUCCESS:
-          findJob(creep)
-          break
+        case DONE: case SUCCESS: creep.memory.state = IDLE; break
         case NOTHING_TODO: case FAILED:
           if (creep.memory._fillType) creep.drop(creep.memory._fillType)
           creep.memory.state = IDLE

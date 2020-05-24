@@ -8,9 +8,6 @@ export const findTowers = (room: Room) => room.find<StructureTower>(FIND_STRUCTU
 const containerFilter = { filter: (s: Structure) => s.structureType === STRUCTURE_CONTAINER }
 export const findContainers = (room: Room) => room.find<StructureContainer>(FIND_STRUCTURES, containerFilter)
 
-const linkFilter = { filter: (s: Structure) => s.structureType === STRUCTURE_LINK }
-export const findLinks = (room: Room) => room.find<StructureLink>(FIND_STRUCTURES, linkFilter)
-
 const sourceKeepersFilter = { filter: (c: Creep) => c.owner.username === "Source Keeper" }
 export const findSourceKeepers = (room: Room) => room.find(FIND_HOSTILE_CREEPS, sourceKeepersFilter)
 
@@ -26,40 +23,15 @@ const lookResultDeobfuscator = ({ structure }: LookForAtAreaResultWithPos<Struct
 const droppedEnergyFilter = { filter: (r: Resource) => r.resourceType === RESOURCE_ENERGY }
 export const findNearDroppedEnergy = (pos: RoomPosition) => pos.findInRange(FIND_DROPPED_RESOURCES, 1, droppedEnergyFilter)
 
-const tombstoneEnergyFilter = { filter: (r: Tombstone) => r.store[RESOURCE_ENERGY] }
-export const findNearEnergyTombstones = (pos: RoomPosition) => pos.findInRange(FIND_TOMBSTONES, 1, tombstoneEnergyFilter)
-
-const ruinEnergyFilter = { filter: (r: Ruin) => r.store[RESOURCE_ENERGY] }
-export const findNearEnergyRuins = (pos: RoomPosition) => pos.findInRange(FIND_RUINS, 1, ruinEnergyFilter)
+const energyFilter = { filter: (r: Tombstone | Ruin) => r.store[RESOURCE_ENERGY] }
+export const findNearEnergyTombstones = (pos: RoomPosition) => pos.findInRange(FIND_TOMBSTONES, 1, energyFilter)
+export const findNearEnergyRuins = (pos: RoomPosition) => pos.findInRange(FIND_RUINS, 1, energyFilter)
 
 const filledContainerFilter = { filter: (s: AnyStoreStructure) => s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] }
 export const findClosestFilledContainer = (pos: RoomPosition) => pos.findClosestByRange<StructureContainer>(FIND_STRUCTURES, filledContainerFilter)
 
 const hittableFilter = { filter: (s: Structure) => s.hits }
 export const findClosestHostileHittableStructures = (pos: RoomPosition) => pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, hittableFilter)
-
-const standardHatchFilter = {
-  filter: (s: AnyStoreStructure) => (s.structureType === STRUCTURE_SPAWN
-    || s.structureType === STRUCTURE_EXTENSION)
-    && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-}
-const fillableHatchFilter = (differ?: AnyStoreStructure) => (
-  differ ? {
-    filter: (s: AnyStoreStructure) =>
-      s !== differ
-      && (s.structureType === STRUCTURE_SPAWN
-        || s.structureType === STRUCTURE_EXTENSION)
-      && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-  } : standardHatchFilter
-)
-export const findClosestHatchToFill = (pos: RoomPosition, differ?: AnyStoreStructure) => (pos.findClosestByPath(FIND_MY_STRUCTURES, fillableHatchFilter(differ)) || pos.findClosestByRange(FIND_MY_STRUCTURES, fillableHatchFilter(differ))) as StructureSpawn | StructureExtension | null
-
-const fillableTowerFilter = {
-  filter: (s: AnyStoreStructure) => (s.structureType === STRUCTURE_TOWER)
-    && s.store.getFreeCapacity(RESOURCE_ENERGY) > 0
-}
-const towerEmtinessRank = (t: StructureTower) => t.store[RESOURCE_ENERGY]
-export const findMostEmptiedTower = (room: Room) => _.min(room.find<StructureTower>(FIND_MY_STRUCTURES, fillableTowerFilter), towerEmtinessRank) as StructureTower | number
 
 interface ObjectNumber {
   [key: string]: number
@@ -95,6 +67,7 @@ const damagePrioritySelector = (selected: Structure<BuildableStructureConstant>,
 }
 export const findCloseMostDamagedStructure = (pos: RoomPosition, threshold: number) => {
   const structures = pos.findInRange<Structure<BuildableStructureConstant>>(FIND_STRUCTURES, 3).filter(damagedFilter(threshold))
+  if (!structures.length) return null
   return structures.reduce(damagePrioritySelector, structures[0])
 }
 
@@ -107,22 +80,36 @@ const fillPriority: ToFill = {
   [STRUCTURE_EXTENSION]: 9,
   [STRUCTURE_LAB]: 8,
   [STRUCTURE_NUKER]: 7,
-  [STRUCTURE_LINK]: 6,
-  [STRUCTURE_STORAGE]: 5,
-  [STRUCTURE_TERMINAL]: 4,
-  [STRUCTURE_POWER_SPAWN]: 3,
+  [STRUCTURE_POWER_SPAWN]: 6,
+  [STRUCTURE_LINK]: 5,
+  [STRUCTURE_STORAGE]: 4,
+  [STRUCTURE_TERMINAL]: 3,
   [STRUCTURE_FACTORY]: 2,
   [STRUCTURE_CONTAINER]: 1,
 }
-const toFillFilter = (s: LookForAtAreaResultWithPos<Structure, LOOK_STRUCTURES>) => {
-  const { structure } = s
+
+const toFillFilter = (differ?: AnyStoreStructure) => (structure: Structure) => {
   return fillPriority[structure.structureType]
     && (structure as AnyStoreStructure).store
+    && structure !== differ
     && (((structure as AnyStoreStructure).store as StoreBase<ResourceConstant, false>).getFreeCapacity(RESOURCE_ENERGY) || 0) > 0
 }
 const toFillPrioritySelector = (s: AnyStoreStructure) => fillPriority[s.structureType] || 0
 export const findNearStructureToFillWithPriority = (room: Room, x: number, y: number) => _.max(
   room.lookForAtArea(LOOK_STRUCTURES, y - 1, x - 1, y + 1, x + 1, true)
-    .filter(toFillFilter).map(lookResultDeobfuscator),
+    .map(lookResultDeobfuscator)
+    .filter(toFillFilter()),
   toFillPrioritySelector
 ) as AnyStoreStructure
+
+const priorityObfuscator = (s: AnyStoreStructure) => fillPriority[s.structureType]
+const priorityLimiter = (s: AnyStoreStructure) => fillPriority[s.structureType] > 5
+export const findClosestStructureToFillWithPriority = (room: Room, pos: RoomPosition, differ?: AnyStoreStructure) => {
+  const structures = room.find<AnyStoreStructure>(FIND_STRUCTURES)
+    .filter(priorityLimiter)
+    .filter(toFillFilter(differ))
+  if (!structures.length) return null
+  const maxPriority = fillPriority[_.max(structures, priorityObfuscator).structureType]
+  const prioritized = structures.filter((s) => fillPriority[s.structureType] === maxPriority)
+  return pos.findClosestByPath(prioritized) || pos.findClosestByRange(prioritized)
+}
