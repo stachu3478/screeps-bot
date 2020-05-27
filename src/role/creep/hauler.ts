@@ -1,4 +1,4 @@
-import { ARRIVE, STORAGE_FILL, RECYCLE, IDLE, PICK } from 'constants/state'
+import { ARRIVE, STORAGE_FILL, RECYCLE, IDLE, PICK, DRAW } from 'constants/state'
 import { DONE, NOTHING_DONE, NOTHING_TODO, SUCCESS } from 'constants/response'
 import autoPick from 'routine/haul/autoPick'
 import arrive from 'routine/arrive'
@@ -8,6 +8,7 @@ import Hauler from './hauler.d'
 import pick from 'routine/haul/pick';
 import resourceHaul from 'job/resourceHaul';
 import fill from 'routine/haul/fill';
+import draw from 'routine/haul/draw';
 
 export default profiler.registerFN(function hauler(creep: Hauler) {
   switch (creep.memory.state) {
@@ -31,6 +32,17 @@ export default profiler.registerFN(function hauler(creep: Hauler) {
         case DONE: delete Memory.creeps[creep.name]
       }
     } break;
+    case DRAW: {
+      switch (draw(creep)) {
+        case NOTHING_TODO:
+        case DONE:
+          creep.memory.state = STORAGE_FILL
+          creep.memory._fillType = RESOURCES_ALL.find(resource => !!creep.store[resource])
+          const room = Game.rooms[creep.memory.room]
+          const storageStructure = room.terminal || room.storage || room.factory
+          if (storageStructure) creep.memory._fill = storageStructure.id
+      }
+    } break
     case STORAGE_FILL: {
       switch (fill(creep)) {
         case NOTHING_DONE: break;

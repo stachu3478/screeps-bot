@@ -5,4 +5,8 @@ interface Room {
   externalLabs: StructureLab[]
   mineral?: Mineral
   extractor?: StructureExtractor
+
+  isBoosting: () => boolean
+  reserveBoost: (creep: Creep, type: ResourceConstant, amount: number) => boolean
+  unreserveBoost: (name: string) => void
 }

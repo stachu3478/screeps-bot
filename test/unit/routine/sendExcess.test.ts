@@ -27,7 +27,7 @@ describe("routine/terminal/sendExcess", () => {
   });
 
   it("should return NOTHING_TODO number when called with no context", function () {
-    const term = { room: { memory: {} } } as StructureTerminal
+    const term = { room: { memory: {} }, store: {} } as StructureTerminal
     expect(sendExcess(term)).to.eql(NOTHING_TODO);
   });
 

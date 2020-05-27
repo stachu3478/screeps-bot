@@ -52,6 +52,12 @@ interface Memory {
   runtimeAvg?: number
 }
 
+interface BoostData {
+  creeps: string[]
+  resources: ResourceConstant[]
+  amounts: number[]
+}
+
 interface RoomMemory {
   structs?: string
   totalRoadCost?: number
@@ -106,6 +112,9 @@ interface RoomMemory {
   _attackLevel?: number
 
   _haul?: string
+  _haulSize?: number
+
+  boost?: BoostData
 
   _extractor?: Id<StructureExtractor>
   _mineral?: Id<Mineral>

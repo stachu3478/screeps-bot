@@ -2,7 +2,7 @@ import { NOTHING_TODO, SUCCESS, DONE, FAILED, NO_RESOURCE } from "constants/resp
 import { storageSendThreshold } from 'config/terminal'
 
 export default function sendExcess(terminal: StructureTerminal) {
-  const resourceType = terminal.room.memory.terminalDealResourceType
+  const resourceType = terminal.room.memory.terminalDealResourceType || RESOURCES_ALL.find(resource => terminal.store[resource] > storageSendThreshold)
   if (!resourceType) return NOTHING_TODO
   let excessLocalAmount = terminal.store[resourceType] - storageSendThreshold
   if (excessLocalAmount <= TERMINAL_MIN_SEND) return NO_RESOURCE

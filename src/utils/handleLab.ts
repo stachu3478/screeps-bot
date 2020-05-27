@@ -13,11 +13,10 @@ export default function handleLab(term: StructureTerminal) {
     const resource1 = r1 as ResourceConstant
     if (term.store[resource1] < TERMINAL_MIN_SEND) continue
     if (!REACTIONS[resource1]) continue
-    for (const r2 in term.store) {
+    for (const r2 in REACTIONS[resource1]) {
       const resource2 = r2 as ResourceConstant
       if (r1 === r2) continue
       if (term.store[resource2] < TERMINAL_MIN_SEND) continue
-      if (!REACTIONS[resource2]) continue
       const intersection = (REACTIONS[resource1] as Hash)[resource2] as ResourceConstant
       if (term.store[intersection] >= labProductionThreshold) continue
       mem.labState = LAB_PENDING

@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { progressiveMiner, progressiveLiteWorker } from './body/work'
 import { progressiveFighter } from './body/body'
 import { HARVESTER, UPGRADER, MINER, RETIRED, FIGHTER, EXTRACTOR, STATIC_UPGRADER, FACTORY_MANAGER, LAB_MANAGER, HAULER } from '../constants/role'
@@ -11,7 +12,7 @@ import { MinerMemory, Miner } from 'role/creep/miner';
 import { findContainers } from 'utils/find';
 import profiler from "screeps-profiler"
 
-export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: CreepMemory, spawn: StructureSpawn, retry: boolean = false) {
+export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: CreepMemory, spawn: StructureSpawn, retry: boolean = false, cooldown: number = 100) {
   const result = spawn.spawnCreep(body, name, { memory })
   const mem = spawn.room.memory as StableRoomMemory
   if (result !== 0) {
@@ -19,7 +20,7 @@ export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: Cr
       creep: body,
       name,
       memory,
-      cooldown: 100
+      cooldown
     }
   } else {
     mem.priorityFilled = 0
@@ -41,6 +42,7 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
     spawn.room.visual.text("Spawning " + spawn.spawning.name, 0, 3, infoStyle)
     return
   }
+  if (spawn.room.energyAvailable < spawn.room.energyCapacityAvailable) mem.priorityFilled = 0
   if (spawn.memory.trySpawn) {
     const { creep, memory, name, cooldown } = spawn.memory.trySpawn
     const result = trySpawnCreep(creep, uniqName(name), memory, spawn, true)
@@ -89,7 +91,9 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
   } else if ((!mem._linked && containers && upgraderCount < maxUpgradersCount && (workPartCountByRole[UPGRADER] || 0) < (mem.maxWorkController || 0)) || (mem._linked && !creepCountByRole[STATIC_UPGRADER])) {
     spawnUpgrader(spawn, mem as StableRoomMemory, controller)
   } else if (mem._haul && !creepCountByRole[HAULER]) {
-    trySpawnCreep([MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY, MOVE, CARRY], uniqName("H"), { role: HAULER, room: spawn.room.name, deprivity: 10 }, spawn)
+    mem._haulSize = mem._haulSize ? mem._haulSize + 1 : 10
+    if (mem._haulSize > 50) mem._haulSize = 50
+    trySpawnCreep(_.times(mem._haulSize, i => i & 1 ? CARRY : MOVE), uniqName("H"), { role: HAULER, room: spawn.room.name, deprivity: 10 }, spawn)
   } else if (domination(spawn, creepCountByRole)) spawn.room.visual.text("                            in domination", 0, 3, infoStyle)
   else if (!creepCountByRole[EXTRACTOR]) extract(spawn)
   else spawn.room.visual.text("Spawn is idle.", 0, 3, infoStyle)

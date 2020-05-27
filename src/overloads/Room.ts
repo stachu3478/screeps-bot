@@ -1,4 +1,5 @@
 import { getFactory, getLab, getXYExtractor } from "utils/selectFromPos";
+import { IDLE, LAB_BOOSTING } from "constants/state";
 
 Object.defineProperty(Room.prototype, 'factory', {
   get: function () {
@@ -46,3 +47,38 @@ Object.defineProperty(Room.prototype, 'extractor', {
     return mineral && getXYExtractor(self, mineral.pos.x, mineral.pos.y)
   }
 })
+
+Room.prototype.unreserveBoost = function (creepName: string) {
+  const reservations = this.memory.boost
+  if (!reservations) return
+  const index = reservations.creeps.findIndex(name => name === creepName)
+  if (index === -1) return
+  reservations.creeps.splice(index, 1)
+  reservations.resources.splice(index, 1)
+  reservations.amounts.splice(index, 1)
+}
+
+Room.prototype.isBoosting = function () {
+  const reservations = this.memory.boost
+  if (reservations) return reservations.creeps.some(name => {
+    if (Game.creeps[name]) return true
+    this.unreserveBoost(name)
+    return false
+  })
+  return false
+}
+
+Room.prototype.reserveBoost = function (creep: Creep, type: ResourceConstant, amount: number) {
+  if (this.memory.labState !== IDLE) return false
+  let reservations = this.memory.boost
+  if (!reservations) reservations = this.memory.boost = {
+    creeps: [],
+    resources: [],
+    amounts: []
+  }
+  reservations.creeps.push(creep.name)
+  reservations.resources.push(type)
+  reservations.amounts.push(amount)
+  this.memory.labState = LAB_BOOSTING
+  return true
+}

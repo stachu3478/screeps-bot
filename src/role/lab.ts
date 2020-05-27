@@ -1,4 +1,4 @@
-import { IDLE, LAB_COOLDOWN, LAB_PENDING } from "constants/state";
+import { IDLE, LAB_PRODUCING, LAB_PENDING, LAB_BOOSTING, LAB_COLLECTING } from "constants/state";
 import { infoStyle } from "room/style";
 
 interface ReactionTimeHash {
@@ -19,10 +19,18 @@ export default function lab(room: Room) {
   switch (mem.labState) {
     case IDLE:
       room.visual.text('Labs: Idle', 0, 5, infoStyle)
+      if (lab1.mineralType || lab2.mineralType) mem.labState = LAB_COLLECTING
       break;
-    case LAB_COOLDOWN: {
+    case LAB_COLLECTING:
+      room.visual.text('Labs: Collecting resources...', 0, 5, infoStyle)
+      break;
+    case LAB_BOOSTING: {
+      room.visual.text('Labs: Boosting? Whoa', 0, 5, infoStyle)
+      if (!room.isBoosting()) mem.labState = IDLE
+    } break
+    case LAB_PRODUCING: {
       if (!mem.labRecipe) {
-        mem.labState = IDLE
+        mem.labState = LAB_COLLECTING
         room.visual.text('Labs: Recipe not found!', 0, 5, infoStyle)
         break
       }
@@ -33,7 +41,7 @@ export default function lab(room: Room) {
       })
       if (result === ERR_NOT_ENOUGH_RESOURCES || result === ERR_FULL) {
         delete mem.labRecipe
-        mem.labState = IDLE
+        mem.labState = LAB_COLLECTING
         room.visual.text('Labs: Insufficient minerals!', 0, 5, infoStyle)
         break
       }
@@ -43,12 +51,15 @@ export default function lab(room: Room) {
     case LAB_PENDING: {
       room.visual.text('Labs: Waiting for creeps', 0, 5, infoStyle)
       if (!mem.labRecipe) {
-        mem.labState = IDLE
+        mem.labState = LAB_COLLECTING
         break
       }
-      if (lab1.mineralType && lab1.mineralType !== mem.labIndegrient1) mem.labState = IDLE
-      if (lab2.mineralType && lab2.mineralType !== mem.labIndegrient2) mem.labState = IDLE
+      if (lab1.mineralType && lab1.mineralType !== mem.labIndegrient1) mem.labState = LAB_COLLECTING
+      if (lab2.mineralType && lab2.mineralType !== mem.labIndegrient2) mem.labState = LAB_COLLECTING
     } break
-    default: mem.labState = IDLE
+    default:
+      room.visual.text('Labs: Unknown state: ' + mem.labState, 0, 5, infoStyle)
+      if (mem.labRecipe) mem.labState = LAB_PRODUCING
+      else mem.labState = IDLE
   }
 }

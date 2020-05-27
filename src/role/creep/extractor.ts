@@ -18,9 +18,11 @@ export default profiler.registerFN(function extractor(creep: Extractor) {
   switch (creep.memory.state) {
     case HARVESTING: {
       switch (extract(creep)) {
-        case DONE: creep.memory.state = STORAGE_FILL; break
-        case NOTHING_TODO: if (creep.store[creep.memory._extract || RESOURCE_ENERGY]) creep.memory.state = STORAGE_FILL
-        else creep.memory.state = RECYCLE; break
+        case DONE:
+          creep.memory.state = STORAGE_FILL; break
+        case NOTHING_TODO:
+          if (creep.store[creep.memory._extract || RESOURCE_ENERGY]) creep.memory.state = STORAGE_FILL
+          else creep.memory.state = RECYCLE; break
         case NOTHING_DONE: if (creep.memory._extract) autoPick(creep, creep.memory._extract)
       }
     } break

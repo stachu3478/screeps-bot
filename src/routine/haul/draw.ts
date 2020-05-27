@@ -6,7 +6,7 @@ interface DrawCreep extends Creep {
 }
 
 interface DrawMemory extends CreepMemory {
-  _draw?: Id<AnyStoreStructure>
+  _draw?: Id<AnyStoreStructure | Tombstone | Ruin>
   _drawAmount?: number
   _drawType?: ResourceConstant
 }

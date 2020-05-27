@@ -1,9 +1,10 @@
-import { IDLE, TERM_SEND_EXCESS, TERM_SELL_EXCESS, TERM_BUSINESS } from "constants/state";
+import { IDLE, TERM_SEND_EXCESS, TERM_SELL_EXCESS, TERM_BUSINESS, TERM_BUY_MISSING } from "constants/state";
 import sendExcess from "routine/terminal/sendExcess";
 import { DONE, NOTHING_TODO, NO_RESOURCE, FAILED, SUCCESS, NOTHING_DONE } from "constants/response";
 import sellExcess from "routine/terminal/sellExcess";
 import makeBusiness from "routine/terminal/makeBusiness";
 import { infoStyle } from "room/style";
+import buyMissing from "routine/terminal/buyMissing";
 
 export default function terminal(term: StructureTerminal) {
   if (term.cooldown) return
@@ -22,6 +23,13 @@ export default function terminal(term: StructureTerminal) {
     case TERM_SELL_EXCESS: {
       term.room.visual.text('Terminal: Selling excess resources.', 0, 4, infoStyle)
       switch (sellExcess(term)) {
+        case SUCCESS: break
+        default: mem.terminalState = TERM_BUY_MISSING
+      }
+    } break
+    case TERM_BUY_MISSING: {
+      term.room.visual.text('Terminal: Buying missing resources.', 0, 4, infoStyle)
+      switch (buyMissing(term)) {
         case SUCCESS: break
         default: mem.terminalState = TERM_BUSINESS
       }
