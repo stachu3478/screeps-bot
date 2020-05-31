@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import { progressiveMiner, progressiveLiteWorker } from './body/work'
 import { progressiveFighter } from './body/body'
-import { HARVESTER, UPGRADER, MINER, RETIRED, FIGHTER, EXTRACTOR, STATIC_UPGRADER, FACTORY_MANAGER, LAB_MANAGER, HAULER } from '../constants/role'
+import { HARVESTER, UPGRADER, MINER, RETIRED, FIGHTER, EXTRACTOR, STATIC_UPGRADER, FACTORY_MANAGER, LAB_MANAGER, HAULER, BOOSTER } from '../constants/role'
 import domination from './domination'
 import { uniqName } from './name'
 import { infoStyle } from '../room/style'
@@ -13,7 +13,7 @@ import { findContainers } from 'utils/find';
 import profiler from "screeps-profiler"
 
 export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: CreepMemory, spawn: StructureSpawn, retry: boolean = false, cooldown: number = 100) {
-  const result = spawn.spawnCreep(body, name, { memory })
+  const result = spawn.spawnCreep(body, name, { memory, directions: spawn.getDirections() })
   const mem = spawn.room.memory as StableRoomMemory
   if (result !== 0) {
     if (!retry) spawn.memory.trySpawn = {
@@ -25,6 +25,9 @@ export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: Cr
   } else {
     mem.priorityFilled = 0
     mem.creeps[name] = 0
+    if (memory.role === BOOSTER && spawn.room.terminal) {
+      spawn.room.reserveBoost(name, RESOURCE_UTRIUM_OXIDE, LAB_BOOST_MINERAL * Math.floor(Math.min(body.reduce((n, part) => n + (part === WORK ? 1 : 0), 0), spawn.room.terminal.store[RESOURCE_UTRIUM_OXIDE])) / LAB_BOOST_MINERAL)
+    }
     if (memory.role === MINER) mem.colonySources[spawn.memory.spawnSourceId || ''] = mem.colonySources[spawn.memory.spawnSourceId || ''].slice(0, 2) + name
     delete spawn.memory.spawnSourceId
     delete spawn.memory.trySpawn

@@ -7,6 +7,7 @@ import { FACTORY_MANAGER } from 'constants/role';
 import handleLab from 'utils/handleLab';
 import { LabManager } from './labManager.d'
 import { prepareReaction, collectResources, boostLabs } from 'job/lab';
+import dumpResources from 'job/dumpResources';
 
 function findJob(creep: LabManager) {
   const roomMemory = creep.room.memory
@@ -37,18 +38,7 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
         creep.memory.role = FACTORY_MANAGER
         break
       }
-      for (const name in creep.store) {
-        const resource = name as ResourceConstant
-        if (creep.store[resource] > 0) {
-          const potentialStructure = creep.room.terminal || creep.room.storage || creep.room.factory
-          if (potentialStructure) {
-            creep.memory._fill = potentialStructure.id
-            creep.memory._fillType = resource
-            creep.memory.state = HAUL_LAB_TO_STORAGE
-          } else creep.drop(resource)
-          break
-        }
-      }
+      dumpResources(creep, HAUL_LAB_TO_STORAGE)
     } break
     case HAUL_LAB_FROM_STORAGE: {
       switch (draw(creep)) {

@@ -9,4 +9,5 @@ interface HaulerMemory extends CreepMemory {
   _fillType?: ResourceConstant
   _draw?: Id<Ruin | Tombstone | StructureStorage | StructureTerminal>
   _drawType?: ResourceConstant
+  _tmp?: 0 | 1
 }

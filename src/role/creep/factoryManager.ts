@@ -5,6 +5,7 @@ import fill from 'routine/haul/fill';
 import { factoryStoragePerResource } from 'utils/handleFactory';
 import profiler from "screeps-profiler"
 import { HARVESTER } from 'constants/role';
+import dumpResources from 'job/dumpResources';
 
 export interface FactoryManager extends Creep {
   memory: FactoryManagerMemory
@@ -47,18 +48,7 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
         creep.memory.role = HARVESTER
         break
       }
-      for (const name in creep.store) {
-        const resource = name as ResourceConstant
-        if (creep.store[resource] > 0) {
-          const potentialStructure = creep.room.terminal || creep.room.storage || creep.room.factory
-          if (potentialStructure) {
-            creep.memory._fill = potentialStructure.id
-            creep.memory._fillType = resource
-            creep.memory.state = HAUL_FACTORY_TO_TERMINAL
-          } else creep.drop(resource)
-          break
-        }
-      }
+      dumpResources(creep, HAUL_FACTORY_TO_TERMINAL)
     } break
     case HAUL_FACTORY_FROM_TERMINAL: {
       switch (draw(creep)) {

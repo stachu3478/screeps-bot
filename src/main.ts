@@ -1,7 +1,9 @@
 import './overloads/Room'
+import './overloads/Spawn'
 import run from "room/core"
 import { infoStyle } from "room/style";
 import profiler from "screeps-profiler"
+import handleStats from 'utils/stats'
 
 const memory = JSON.parse(RawMemory.get())
 // profiler.enable()
@@ -39,6 +41,7 @@ export const loop = () => {
     error = err
   }
 
+  Memory.stats = handleStats(Memory.stats)
   RawMemory.set(JSON.stringify(Memory))
   if (error) throw error
 }

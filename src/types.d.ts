@@ -29,6 +29,12 @@ interface SpawnMemory {
   spawnSourceId?: Id<Source>
 }
 
+interface Stats {
+  cpuInterval1: string
+  cpuInterval100: string
+  timer100: number
+}
+
 interface Memory {
   uuid: number
   log: any
@@ -48,6 +54,7 @@ interface Memory {
   trade_blacklist?: {
     [key: string]: number
   }
+  stats?: Stats
   runtimeTicks?: number
   runtimeAvg?: number
 }

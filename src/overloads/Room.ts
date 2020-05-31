@@ -33,6 +33,18 @@ Object.defineProperty(Room.prototype, 'externalLabs', {
   }
 })
 
+Object.defineProperty(Room.prototype, 'allLabs', {
+  get: function () {
+    const self = this as Room
+    const allLabs = self.externalLabs
+    const lab1 = self.lab1
+    if (lab1) allLabs.push(lab1)
+    const lab2 = self.lab2
+    if (lab2) allLabs.push(lab2)
+    return allLabs
+  }
+})
+
 Object.defineProperty(Room.prototype, 'mineral', {
   get: function () {
     const self = this as Room
@@ -48,10 +60,10 @@ Object.defineProperty(Room.prototype, 'extractor', {
   }
 })
 
-Room.prototype.unreserveBoost = function (creepName: string) {
+Room.prototype.unreserveBoost = function (creepName: string, type?: ResourceConstant) {
   const reservations = this.memory.boost
   if (!reservations) return
-  const index = reservations.creeps.findIndex(name => name === creepName)
+  const index = reservations.creeps.findIndex((name, i) => name === creepName && (!type || reservations.resources[i] === type))
   if (index === -1) return
   reservations.creeps.splice(index, 1)
   reservations.resources.splice(index, 1)
@@ -68,17 +80,28 @@ Room.prototype.isBoosting = function () {
   return false
 }
 
-Room.prototype.reserveBoost = function (creep: Creep, type: ResourceConstant, amount: number) {
-  if (this.memory.labState !== IDLE) return false
+Room.prototype.reserveBoost = function (name: string, type: ResourceConstant, amount: number) {
+  if (this.memory.labState !== IDLE || amount <= 0) return false
   let reservations = this.memory.boost
   if (!reservations) reservations = this.memory.boost = {
     creeps: [],
     resources: [],
     amounts: []
   }
-  reservations.creeps.push(creep.name)
+  reservations.creeps.push(name)
   reservations.resources.push(type)
   reservations.amounts.push(amount)
   this.memory.labState = LAB_BOOSTING
   return true
+}
+
+Room.prototype.getBoost = function (creep: Creep) {
+  let reservations = this.memory.boost
+  if (!reservations) return
+  const index = reservations.creeps.findIndex(name => creep.name === name)
+  if (index === -1) return
+  return {
+    type: reservations.resources[index],
+    amount: reservations.amounts[index]
+  }
 }

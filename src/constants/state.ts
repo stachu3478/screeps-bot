@@ -1,4 +1,5 @@
 export const HARVESTING = 1
+export const BOOST = 2
 export const REPAIR = 4
 export const BUILD = 5
 export const UPGRADE = 6

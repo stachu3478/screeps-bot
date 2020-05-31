@@ -10,7 +10,7 @@ export interface Extractor extends Creep {
   memory: ExtractorMemory
 }
 
-interface ExtractorMemory extends CreepMemory {
+export interface ExtractorMemory extends CreepMemory {
   _extract?: MineralConstant
 }
 

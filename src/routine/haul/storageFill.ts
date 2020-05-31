@@ -11,7 +11,7 @@ interface StorageFillMemory extends CreepMemory { }
 export default function fillStorage(creep: StorageFillCreep) {
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
   let target
-  if (creep.room.terminal && creep.room.terminal.store[RESOURCE_ENERGY] < energyKeep) target = creep.room.terminal
+  if (creep.room.terminal && creep.room.terminal.store[RESOURCE_ENERGY] < energyKeep && creep.room.terminal.store.getFreeCapacity() >= creep.store[RESOURCE_ENERGY]) target = creep.room.terminal
   else target = Game.rooms[creep.memory.room].storage
   if (!target || target.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return NOTHING_TODO
   const result = creep.transfer(target, RESOURCE_ENERGY)

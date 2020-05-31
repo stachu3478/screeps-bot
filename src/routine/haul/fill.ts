@@ -1,7 +1,7 @@
 import { cheapMove } from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 
-interface FillCreep extends Creep {
+export interface FillCreep extends Creep {
   memory: FillMemory
 }
 

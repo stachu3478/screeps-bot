@@ -3,31 +3,39 @@ import { PICK, RECYCLE, ARRIVE, DRAW } from "constants/state";
 import pick from "routine/haul/pick";
 import Hauler from 'role/creep/hauler.d'
 import { findHaulable } from "utils/find";
+import { HARVESTER } from "constants/role";
+
+function getHaulable(structure?: StructureStorage | StructureTerminal) {
+  return structure && structure.store.getUsedCapacity() && structure
+}
 
 export default function resourceHaul(creep: Hauler) {
-  const haulTarget = Memory.rooms[creep.memory.room]._haul
+  const mem = creep.memory
+  const haulTarget = Memory.rooms[mem.room]._haul
   if (!haulTarget) {
-    creep.memory.state = RECYCLE
+    if (mem._tmp) mem.role = HARVESTER
+    else mem.state = RECYCLE
     return true
   } else if (haulTarget === creep.room.name) {
     if (pick(creep) in ACCEPTABLE) {
-      creep.memory.state = PICK
+      mem.state = PICK
       return true
     }
-    const haulable = findHaulable(creep.room, creep.pos) || (creep.room.controller && !creep.room.controller.my && (creep.room.storage || creep.room.terminal))
+    const room = creep.room
+    const haulable = findHaulable(room, creep.pos) || (room.controller && !room.controller.my && (getHaulable(room.storage) || getHaulable(room.terminal)))
     if (haulable) {
-      creep.memory.state = DRAW
-      creep.memory._draw = haulable.id
-      creep.memory._drawType = RESOURCES_ALL.find(resource => !!haulable.store[resource])
+      mem.state = DRAW
+      mem._draw = haulable.id
+      mem._drawType = RESOURCES_ALL.find(resource => !!haulable.store[resource])
       return true
     }
-    creep.memory.state = ARRIVE
-    creep.memory._arrive = creep.memory.room
-    delete Memory.rooms[creep.memory.room]._haul
+    mem.state = ARRIVE
+    mem._arrive = mem.room
+    delete Memory.rooms[mem.room]._haul
     return false
   } else {
-    creep.memory.state = ARRIVE
-    creep.memory._arrive = haulTarget
+    mem.state = ARRIVE
+    mem._arrive = haulTarget
   }
   return false
 }
