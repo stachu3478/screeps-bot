@@ -22,18 +22,18 @@ interface UpgraderMemory extends CreepMemory {
 
 export default profiler.registerFN(function upgrader(creep: UpgraderCreep) {
   switch (creep.memory.state) {
-    case HARVESTING: {
+    case HARVESTING:
       switch (drawContainer(creep)) {
         case DONE: case SUCCESS: creep.memory.state = UPGRADE; break
         case NOTHING_DONE: autoPick(creep); break
-        case NOTHING_TODO: {
+        case NOTHING_TODO:
           creep.memory.state = STORAGE_DRAW
-        } break
+          break
       }
-    } break;
-    case UPGRADE: {
+      break
+    case UPGRADE:
       switch (upgrade(creep)) {
-        case NO_RESOURCE: case FAILED: {
+        case NO_RESOURCE: case FAILED:
           if (autoPick(creep) === SUCCESS) break
           const linkId = maintainControllerLink(creep.room, creep.store.getFreeCapacity(RESOURCE_ENERGY))
           if (linkId) {
@@ -43,26 +43,24 @@ export default profiler.registerFN(function upgrader(creep: UpgraderCreep) {
             break
           }
           creep.memory.state = HARVESTING
-        }
         case NOTHING_DONE: autoRepair(creep); break
       }
-    } break;
-    case STORAGE_DRAW: {
+      break
+    case STORAGE_DRAW:
       switch (storageDraw(creep)) {
         case DONE: case SUCCESS: creep.memory.state = UPGRADE; break
         case NOTHING_TODO: case FAILED: creep.memory.state = HARVESTING; break
         case NOTHING_DONE: autoPick(creep); break;
       }
-    } break
-    case DRAW: {
+      break
+    case DRAW:
       switch (draw(creep)) {
         case DONE: case SUCCESS: creep.memory.state = UPGRADE; break
         case NOTHING_TODO: case FAILED: creep.memory.state = HARVESTING; break
         case NOTHING_DONE: autoPick(creep); break;
       }
-    } break
-    default: {
+      break
+    default:
       creep.memory.state = HARVESTING
-    }
   }
 }, 'roleUpgrader')

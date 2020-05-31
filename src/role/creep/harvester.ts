@@ -18,16 +18,16 @@ import priorityFill from 'routine/haul/priorityFill';
 
 export default profiler.registerFN(function harvester(creep: Harvester) {
   switch (creep.memory.state) {
-    case IDLE: {
+    case IDLE:
       if (creep.store[RESOURCE_ENERGY]) energyUse(creep)
       else energyHaul(creep)
-    } break
-    case RECYCLE: {
+      break
+    case RECYCLE:
       switch (recycle(creep)) {
         case DONE: delete Memory.creeps[creep.name]
       }
-    } break;
-    case DISMANTLE: {
+      break
+    case DISMANTLE:
       switch (dismantle(creep)) {
         case NOTHING_TODO: case FAILED: {
           delete creep.room.memory._dismantle
@@ -39,70 +39,69 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
           creep.memory.state = ARRIVE
         } break
       }
-    } break;
-    case HARVESTING: {
+      break
+    case HARVESTING:
       switch (drawContainer(creep)) {
         case DONE: case SUCCESS: energyUse(creep); break
-        case FAILED: {
+        case FAILED:
           if (creep.room.name !== creep.memory.room) {
             creep.memory._arrive = creep.memory.room
             creep.memory.state = ARRIVE
           }
           autoPick(creep)
-        } break
-        case NOTHING_TODO: {
+          break
+        case NOTHING_TODO:
           energyHaul(creep)
           autoPick(creep)
-        } break
+          break
         case NOTHING_DONE: autoPick(creep)
       }
-    } break;
-    case FILL_PRIORITY: {
+      break
+    case FILL_PRIORITY:
       switch (priorityFill(creep)) {
         case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
         case NOTHING_TODO: case FAILED: energyUse(creep); break
         case NOTHING_DONE: autoRepair(creep); break;
       }
-    } break;
-    case REPAIR: {
+      break
+    case REPAIR:
       switch (repair(creep)) {
         case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
         case NOTHING_TODO: case FAILED: energyUse(creep); break
         case NOTHING_DONE: autoRepair(creep); break;
       }
-    } break;
-    case BUILD: {
+      break
+    case BUILD:
       switch (build(creep)) {
         case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
         case NOTHING_TODO: case FAILED: energyUse(creep); break
         case NOTHING_DONE: autoRepair(creep); break;
       }
-    } break;
-    case STORAGE_FILL: {
+      break
+    case STORAGE_FILL:
       switch (storageFill(creep)) {
         case NOTHING_DONE: autoRepair(creep); break;
         default: if (autoPick(creep) !== SUCCESS) energyHaul(creep);
       }
-    } break;
-    case STORAGE_DRAW: {
+      break
+    case STORAGE_DRAW:
       switch (drawStorage(creep)) {
         case DONE: case SUCCESS: creep.memory.state = IDLE; break
         case NOTHING_TODO: case FAILED: energyHaul(creep); break
         case NOTHING_DONE: autoPick(creep); break
       }
-    } break
-    case ARRIVE: {
+      break
+    case ARRIVE:
       switch (arrive(creep)) {
         case NOTHING_TODO: case DONE: energyHaul(creep); break
       }
-    } break;
-    case ARRIVE_HOSTILE: {
+      break
+    case ARRIVE_HOSTILE:
       switch (arrive(creep)) {
         case NOTHING_TODO: case DONE: creep.memory.state = DISMANTLE; break
       }
-    } break;
-    default: {
+      break
+    default:
       energyHaul(creep)
-    }
   }
 }, 'roleHarvester')

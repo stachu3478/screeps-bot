@@ -5,14 +5,14 @@ import handleFactory, { com, factoryStoragePerResource, isProducableByFactory } 
 export default function factory(factory: StructureFactory) {
   const mem = factory.room.memory
   switch (mem.factoryState) {
-    case IDLE: {
+    case IDLE:
       factory.room.visual.text('Factory: Idle', 0, 6, infoStyle)
-    } break
-    case FACT_BOARD: {
+      break
+    case FACT_BOARD:
       factory.room.visual.text('Factory: Withdrawing', 0, 6, infoStyle)
       mem.factoryState = FACT_WORKING
-    } break
-    case FACT_WORKING: {
+      break
+    case FACT_WORKING:
       if (factory.cooldown) return
       if (!mem.factoryProducing) {
         for (const name in com) {
@@ -33,7 +33,7 @@ export default function factory(factory: StructureFactory) {
       const result = factory.produce(mem.factoryProducing)
       factory.room.visual.text('Factory: Producing ' + mem.factoryProducing, 0, 6, infoStyle)
       if (result === ERR_NOT_ENOUGH_RESOURCES) delete mem.factoryProducing
-    } break
+      break
     default: mem.factoryState = IDLE
   }
 }

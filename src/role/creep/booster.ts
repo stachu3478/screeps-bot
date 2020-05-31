@@ -27,11 +27,11 @@ function findJob(creep: Booster) {
 
 export default profiler.registerFN(function labManager(creep: Booster) {
   switch (creep.memory.state) {
-    case IDLE: {
+    case IDLE:
       if (findJob(creep)) break
       creep.memory.role = creep.memory._targetRole
-    } break
-    case BOOST: {
+      break
+    case BOOST:
       if (!creep.memory._boostLab) {
         creep.memory.state = IDLE
         break
@@ -44,7 +44,7 @@ export default profiler.registerFN(function labManager(creep: Booster) {
         case NOTHING_TODO:
           creep.memory.state = IDLE
       }
-    } break
+      break
     default: findJob(creep)
   }
 }, 'roleBooster')

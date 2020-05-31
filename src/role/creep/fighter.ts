@@ -11,22 +11,21 @@ interface FighterMemory extends CreepMemory { }
 
 export default function fighter(creep: Fighter, enemy?: Creep, keepDistance?: boolean) {
   switch (creep.memory.state) {
-    case INIT: {
+    case INIT:
       creep.notifyWhenAttacked(false)
       creep.memory.state = FIGHT
-    } break;
-    case RECYCLE: {
+      break
+    case RECYCLE:
       switch (recycle(creep)) {
         case DONE: delete Memory.creeps[creep.name]
       }
-    }; break
-    case FIGHT: {
+      break
+    case FIGHT:
       switch (fight(creep, enemy, keepDistance)) {
         case NOTHING_TODO: creep.memory.state = RECYCLE; break
       }
-    } break;
-    default: {
+      break
+    default:
       creep.memory.state = INIT
-    }
   }
 }

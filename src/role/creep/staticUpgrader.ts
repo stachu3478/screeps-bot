@@ -20,9 +20,9 @@ interface StaticUpgraderMemory extends CreepMemory {
 
 export default profiler.registerFN(function staticUpgrader(creep: StaticUpgrader) {
   switch (creep.memory.state) {
-    case UPGRADE: {
+    case UPGRADE:
       switch (upgrade(creep, true)) {
-        case NO_RESOURCE: case FAILED: {
+        case NO_RESOURCE: case FAILED:
           if (autoPick(creep) === SUCCESS) break
           const linkId = maintainControllerLink(creep.room, creep.store.getFreeCapacity(RESOURCE_ENERGY))
           if (linkId) {
@@ -30,18 +30,17 @@ export default profiler.registerFN(function staticUpgrader(creep: StaticUpgrader
             creep.memory._draw = linkId
             draw(creep)
           }
-        } break
+          break
         case NOTHING_DONE: autoRepair(creep); break
       }
-    } break;
-    case DRAW: {
+      break
+    case DRAW:
       switch (draw(creep)) {
         case DONE: case SUCCESS: case NOTHING_TODO: case FAILED: creep.memory.state = UPGRADE; upgrade(creep, true); break
         case NOTHING_DONE: autoPick(creep); break;
       }
-    } break
-    default: {
+      break
+    default:
       creep.memory.state = UPGRADE
-    }
   }
 }, 'roleStaticUpgrader')

@@ -24,11 +24,11 @@ export default function lab(room: Room) {
     case LAB_COLLECTING:
       room.visual.text('Labs: Collecting resources...', 0, 5, infoStyle)
       break;
-    case LAB_BOOSTING: {
+    case LAB_BOOSTING:
       room.visual.text('Labs: Boosting? Whoa', 0, 5, infoStyle)
       if (!room.isBoosting()) mem.labState = IDLE
-    } break
-    case LAB_PRODUCING: {
+      break
+    case LAB_PRODUCING:
       if (!mem.labRecipe) {
         mem.labState = LAB_COLLECTING
         room.visual.text('Labs: Recipe not found!', 0, 5, infoStyle)
@@ -47,8 +47,8 @@ export default function lab(room: Room) {
       }
       room.visual.text('Labs: Running reaction: ' + mem.labRecipe, 0, 5, infoStyle)
       mem.labCooldown = (REACTION_TIME as ReactionTimeHash)[mem.labRecipe] - 1
-    } break
-    case LAB_PENDING: {
+      break
+    case LAB_PENDING:
       room.visual.text('Labs: Waiting for creeps', 0, 5, infoStyle)
       if (!mem.labRecipe) {
         mem.labState = LAB_COLLECTING
@@ -56,7 +56,7 @@ export default function lab(room: Room) {
       }
       if (lab1.mineralType && lab1.mineralType !== mem.labIndegrient1) mem.labState = LAB_COLLECTING
       if (lab2.mineralType && lab2.mineralType !== mem.labIndegrient2) mem.labState = LAB_COLLECTING
-    } break
+      break
     default:
       room.visual.text('Labs: Unknown state: ' + mem.labState, 0, 5, infoStyle)
       if (mem.labRecipe) mem.labState = LAB_PRODUCING

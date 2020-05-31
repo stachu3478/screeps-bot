@@ -23,13 +23,13 @@ export interface MinerMemory extends CreepMemory {
 
 export default profiler.registerFN(function miner(creep: Miner) {
   switch (creep.memory.state) {
-    case INIT: {
+    case INIT:
       if (!creep.memory._harvest) creep.memory._harvest = creep.room.memory.colonySourceId
       else creep.memory.state = HARVESTING
-    } break
-    case HARVESTING: {
+      break
+    case HARVESTING:
       switch (harvest(creep, creep.memory._harvest)) {
-        case DONE: case NOTHING_TODO: {
+        case DONE: case NOTHING_TODO:
           const result = autoFill(creep)
           if (result in ACCEPTABLE || result === NO_RESOURCE) creep.memory.state = HARVESTING
           else if (creep.memory._draw && autoRepair(creep, 0) in ACCEPTABLE) creep.memory.state = REPAIR
@@ -65,22 +65,22 @@ export default profiler.registerFN(function miner(creep: Miner) {
               break
             }
           }
-        } break
+          break
         case NOTHING_DONE: autoPick(creep); autoRepair(creep)
       }
-    } break
-    case REPAIR: {
+      break
+    case REPAIR:
       switch (autoRepair(creep)) {
         case NO_RESOURCE: harvest(creep); creep.memory.state = HARVESTING; break;
         case NOTHING_TODO: creep.memory.state = BUILD; break;
       }
-    } break
-    case BUILD: {
+      break
+    case BUILD:
       switch (autoBuild(creep)) {
         case NO_RESOURCE: harvest(creep); creep.memory.state = HARVESTING; break;
         case NOTHING_TODO: case FAILED: creep.memory.state = HARVESTING; break;
       }
-    } break
+      break
     default: creep.memory.state = INIT;
   }
 }, 'roleMiner')

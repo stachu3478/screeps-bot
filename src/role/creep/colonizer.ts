@@ -13,15 +13,14 @@ export interface ColonizerMemory extends CreepMemory {
 
 export default function colonizer(creep: Colonizer) {
   switch (creep.memory.state) {
-    case ARRIVE: {
+    case ARRIVE:
       switch (arrive(creep)) {
-        case DONE: case NOTHING_TODO: {
-          creep.memory.role = creep.memory._targetRole; break
-        }
+        case DONE: case NOTHING_TODO:
+          creep.memory.role = creep.memory._targetRole
+          break
       }
-    } break;
-    default: {
+      break;
+    default:
       creep.memory.state = ARRIVE
-    }
   }
 }

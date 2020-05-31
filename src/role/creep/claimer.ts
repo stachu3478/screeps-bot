@@ -15,30 +15,30 @@ interface ClaimerMemory extends CreepMemory {
 
 export default function run(creep: Claimer) {
   switch (creep.memory.state) {
-    case ARRIVE: {
+    case ARRIVE:
       switch (arrive(creep)) {
         case DONE: creep.memory.state = CLAIMING; break
       }
-    } break;
-    case CLAIMING: {
+      break;
+    case CLAIMING:
       switch (claim(creep)) {
-        case NOTHING_TODO: {
+        case NOTHING_TODO:
           creep.memory.state = ARRIVE
           creep.memory._arrive = Memory.rooms[creep.memory.room]._claim
-        }; break
-        case DONE: {
+          break
+        case DONE:
           delete Memory.rooms[creep.memory.room]._claim
           creep.memory.state = DESTRUCT
-        }; break
+          break
       }
-    } break;
-    case DESTRUCT: {
+      break;
+    case DESTRUCT:
       switch (selfDestruct(creep)) {
-        case NOTHING_TODO: case DONE: {
+        case NOTHING_TODO: case DONE:
           creep.suicide()
-        }; break
+          break
       }
-    }
+      break
     default: {
       creep.memory.state = ARRIVE
       creep.memory._arrive = Memory.rooms[creep.memory.room]._claim

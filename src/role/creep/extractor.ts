@@ -16,7 +16,7 @@ export interface ExtractorMemory extends CreepMemory {
 
 export default profiler.registerFN(function extractor(creep: Extractor) {
   switch (creep.memory.state) {
-    case HARVESTING: {
+    case HARVESTING:
       switch (extract(creep)) {
         case DONE:
           creep.memory.state = STORAGE_FILL; break
@@ -25,8 +25,8 @@ export default profiler.registerFN(function extractor(creep: Extractor) {
           else creep.memory.state = RECYCLE; break
         case NOTHING_DONE: if (creep.memory._extract) autoPick(creep, creep.memory._extract)
       }
-    } break
-    case STORAGE_FILL: {
+      break
+    case STORAGE_FILL:
       const mineralType = creep.memory._extract
       if (!mineralType) {
         creep.memory.state = HARVESTING
@@ -38,14 +38,13 @@ export default profiler.registerFN(function extractor(creep: Extractor) {
           else creep.memory.state = HARVESTING
         }
       }
-    } break
-    case RECYCLE: {
+      break
+    case RECYCLE:
       switch (recycle(creep)) {
         case DONE: delete Memory.creeps[creep.name]
       }
-    }; break
-    default: {
+      break
+    default:
       creep.memory.state = HARVESTING
-    }
   }
 }, 'roleExtractor')

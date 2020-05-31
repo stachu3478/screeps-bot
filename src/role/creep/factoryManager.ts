@@ -42,31 +42,31 @@ function findJob(creep: FactoryManager) {
 
 export default profiler.registerFN(function factoryManager(creep: FactoryManager) {
   switch (creep.memory.state) {
-    case IDLE: {
+    case IDLE:
       if (findJob(creep)) break
       if (creep.store.getUsedCapacity() === 0) {
         creep.memory.role = HARVESTER
         break
       }
       dumpResources(creep, HAUL_FACTORY_TO_TERMINAL)
-    } break
-    case HAUL_FACTORY_FROM_TERMINAL: {
+      break
+    case HAUL_FACTORY_FROM_TERMINAL:
       switch (draw(creep)) {
-        case DONE: case SUCCESS: {
+        case DONE: case SUCCESS:
           const factory = creep.room.factory
           if (factory) {
             creep.memory._fill = factory.id
             creep.memory._fillType = creep.room.memory.factoryNeeds
             creep.memory.state = HAUL_TERMINAL_TO_FACTORY
           } else creep.memory.state = HAUL_FACTORY_TO_TERMINAL
-        } break
-        case NOTHING_TODO: case FAILED: {
+          break
+        case NOTHING_TODO: case FAILED:
           creep.memory.state = IDLE
           delete creep.room.memory.factoryNeeds
-        }; break
+          break
       }
-    } break
-    case HAUL_TERMINAL_TO_FACTORY: {
+      break
+    case HAUL_TERMINAL_TO_FACTORY:
       switch (fill(creep)) {
         case DONE: case SUCCESS:
           creep.room.memory.factoryState = FACT_BOARD
@@ -79,8 +79,8 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
           creep.memory.state = HAUL_FACTORY_TO_TERMINAL
           break
       }
-    } break
-    case HAUL_TERMINAL_FROM_FACTORY: {
+      break
+    case HAUL_TERMINAL_FROM_FACTORY:
       switch (draw(creep)) {
         case DONE: case SUCCESS: {
           if (creep.room.terminal) {
@@ -94,8 +94,8 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
           delete creep.room.memory.factoryDumps
         }; break
       }
-    } break
-    case HAUL_FACTORY_TO_TERMINAL: {
+      break
+    case HAUL_FACTORY_TO_TERMINAL:
       switch (fill(creep)) {
         case DONE: case SUCCESS:
           delete creep.room.memory.factoryDumps
@@ -108,7 +108,7 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
           creep.memory.state = HAUL_TERMINAL_TO_FACTORY
           break
       }
-    } break
+      break
     default: findJob(creep)
   }
 }, 'roleFactoryManager')

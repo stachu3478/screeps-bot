@@ -32,27 +32,27 @@ function findJob(creep: LabManager) {
 
 export default profiler.registerFN(function labManager(creep: LabManager) {
   switch (creep.memory.state) {
-    case IDLE: {
+    case IDLE:
       if (findJob(creep)) break
       if (creep.store.getUsedCapacity() === 0) {
         creep.memory.role = FACTORY_MANAGER
         break
       }
       dumpResources(creep, HAUL_LAB_TO_STORAGE)
-    } break
-    case HAUL_LAB_FROM_STORAGE: {
+      break
+    case HAUL_LAB_FROM_STORAGE:
       switch (draw(creep)) {
-        case DONE: case SUCCESS: {
+        case DONE: case SUCCESS:
           const labId = creep.memory._targetLab
           if (labId) {
             creep.memory._fill = creep.memory._targetLab
             creep.memory.state = HAUL_STORAGE_TO_LAB
           } else creep.memory.state = HAUL_LAB_TO_STORAGE
-        } break
+          break
         case NOTHING_TODO: case FAILED: creep.memory.state = IDLE; break
       }
-    } break
-    case HAUL_STORAGE_TO_LAB: {
+      break
+    case HAUL_STORAGE_TO_LAB:
       switch (fill(creep)) {
         case DONE: case SUCCESS: creep.memory.state = IDLE; break
         case NOTHING_TODO: case FAILED:
@@ -61,8 +61,8 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
           creep.memory.state = HAUL_LAB_TO_STORAGE
           break
       }
-    } break
-    case HAUL_STORAGE_FROM_LAB: {
+      break
+    case HAUL_STORAGE_FROM_LAB:
       switch (draw(creep)) {
         case DONE: case SUCCESS: {
           if (creep.room.terminal) {
@@ -72,8 +72,8 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
         } break
         case NOTHING_TODO: case FAILED: creep.memory.state = IDLE; break
       }
-    } break
-    case HAUL_LAB_TO_STORAGE: {
+      break
+    case HAUL_LAB_TO_STORAGE:
       switch (fill(creep)) {
         case DONE: case SUCCESS: creep.memory.state = IDLE; break
         case NOTHING_TODO: case FAILED:
@@ -81,7 +81,7 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
           creep.memory.state = IDLE
           break
       }
-    } break
+      break
     default: findJob(creep)
   }
 }, 'roleLabManager')
