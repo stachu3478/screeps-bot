@@ -12,11 +12,6 @@ interface Room {
   mineral?: Mineral
   extractor?: StructureExtractor
   filled: boolean
-
-  isBoosting: () => boolean
-  reserveBoost: (name: string, type: ResourceConstant, amount: number) => boolean
-  unreserveBoost: (name: string, type?: ResourceConstant) => void
-  getBoost: (creep: Creep) => BoostingData | undefined
 }
 
 interface StructureSpawn {

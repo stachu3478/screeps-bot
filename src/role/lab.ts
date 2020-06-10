@@ -1,4 +1,4 @@
-import { IDLE, LAB_PRODUCING, LAB_PENDING, LAB_BOOSTING, LAB_COLLECTING } from "constants/state";
+import { IDLE, LAB_PRODUCING, LAB_PENDING, LAB_COLLECTING } from "constants/state";
 import { infoStyle } from "room/style";
 
 interface ReactionTimeHash {
@@ -24,10 +24,6 @@ export default function lab(room: Room) {
     case LAB_COLLECTING:
       room.visual.text('Labs: Collecting resources...', 0, 5, infoStyle)
       break;
-    case LAB_BOOSTING:
-      room.visual.text('Labs: Boosting? Whoa', 0, 5, infoStyle)
-      if (!room.isBoosting()) mem.labState = IDLE
-      break
     case LAB_PRODUCING:
       if (!mem.labRecipe) {
         mem.labState = LAB_COLLECTING

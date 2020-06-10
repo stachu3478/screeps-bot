@@ -13,7 +13,6 @@ import colonizer, { Colonizer } from 'role/creep/colonizer';
 import factoryManager from 'role/creep/factoryManager';
 import labManager from 'role/creep/labManager';
 import hauler from 'role/creep/hauler';
-import booster, { Booster } from 'role/creep/booster';
 
 interface Creeps {
   [key: string]: 0
@@ -41,10 +40,10 @@ export default function creeps(creeps: Creeps, room: Room, enemy?: Creep, holdFi
     }
     const role = creep.memory.role || 0
     if (!isRetired(creep)) {
-      if (role === BOOSTER) {
+      /*if (role === BOOSTER) {
         const targetRole = (creep as Booster).memory._targetRole
         creepCountByRole[targetRole] = (creepCountByRole[targetRole] || 0) + 1
-      } else creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
+      } else*/ creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
       workPartCountByRole[role] = (workPartCountByRole[role] || 0) + creep.getActiveBodyparts(WORK)
       count++
     } else creepCountByRole[RETIRED] = (creepCountByRole[RETIRED] || 0) + 1
@@ -64,7 +63,6 @@ export default function creeps(creeps: Creeps, room: Room, enemy?: Creep, holdFi
         case FACTORY_MANAGER: factoryManager(creep); break
         case LAB_MANAGER: labManager(creep); break
         case HAULER: hauler(creep); break
-        case BOOSTER: booster(creep); break
         default: creep.memory.role = UPGRADER;
       }
     } catch (err) {

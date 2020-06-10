@@ -45,22 +45,3 @@ export const collectResources = (creep: LabManager, labs: StructureLab[]) => {
     return false
   })
 }
-
-export const boostLabs = (creep: LabManager, labs: StructureLab[], terminal: StructureTerminal, boost: BoostData) => {
-  return boost.resources.some((resource, index) => {
-    const boostLab = labs.find(lab => lab.mineralType === resource) || labs.find(lab => !lab.mineralType)
-    if (boostLab) {
-      const targetAmount = boost.amounts[index]
-      if (boostLab.store[resource] < targetAmount) {
-        creep.memory._drawAmount = Math.min(targetAmount - boostLab.store[resource], creep.store.getFreeCapacity())
-        if (terminal.store[resource] < creep.memory._drawAmount) return false
-        creep.memory._draw = terminal.id
-        creep.memory._fillType = creep.memory._drawType = resource
-        creep.memory._targetLab = boostLab.id
-        creep.memory.state = HAUL_LAB_FROM_STORAGE
-        return true
-      }
-    }
-    return false
-  })
-}

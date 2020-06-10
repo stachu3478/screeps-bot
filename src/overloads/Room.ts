@@ -1,5 +1,4 @@
 import { getFactory, getLab, getXYExtractor } from "utils/selectFromPos";
-import { IDLE, LAB_BOOSTING } from "constants/state";
 
 Object.defineProperty(Room.prototype, 'factory', {
   get: function () {
@@ -66,49 +65,3 @@ Object.defineProperty(Room.prototype, 'filled', {
     return self.memory.priorityFilled && self.energyAvailable === self.energyCapacityAvailable
   }
 })
-
-Room.prototype.unreserveBoost = function (creepName: string, type?: ResourceConstant) {
-  const reservations = this.memory.boost
-  if (!reservations) return
-  const index = reservations.creeps.findIndex((name, i) => name === creepName && (!type || reservations.resources[i] === type))
-  if (index === -1) return
-  reservations.creeps.splice(index, 1)
-  reservations.resources.splice(index, 1)
-  reservations.amounts.splice(index, 1)
-}
-
-Room.prototype.isBoosting = function () {
-  const reservations = this.memory.boost
-  if (reservations) return reservations.creeps.some(name => {
-    if (Game.creeps[name]) return true
-    this.unreserveBoost(name)
-    return false
-  })
-  return false
-}
-
-Room.prototype.reserveBoost = function (name: string, type: ResourceConstant, amount: number) {
-  if (this.memory.labState !== IDLE || amount <= 0) return false
-  let reservations = this.memory.boost
-  if (!reservations) reservations = this.memory.boost = {
-    creeps: [],
-    resources: [],
-    amounts: []
-  }
-  reservations.creeps.push(name)
-  reservations.resources.push(type)
-  reservations.amounts.push(amount)
-  this.memory.labState = LAB_BOOSTING
-  return true
-}
-
-Room.prototype.getBoost = function (creep: Creep) {
-  let reservations = this.memory.boost
-  if (!reservations) return
-  const index = reservations.creeps.findIndex(name => creep.name === name)
-  if (index === -1) return
-  return {
-    type: reservations.resources[index],
-    amount: reservations.amounts[index]
-  }
-}

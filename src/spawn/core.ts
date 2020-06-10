@@ -12,12 +12,9 @@ import { MinerMemory, Miner } from 'role/creep/miner';
 import { findContainers } from 'utils/find';
 import profiler from "screeps-profiler"
 
-function p(v: any) { console.log(v); return v }
-
 export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: CreepMemory, spawn: StructureSpawn, retry: boolean = false, cooldown: number = 100) {
-  const result = spawn.spawnCreep(body, name, { memory, directions: p(spawn.getDirections()) })
+  const result = spawn.spawnCreep(body, name, { memory, directions: spawn.getDirections() })
   const mem = spawn.room.memory as StableRoomMemory
-  p(result)
   if (result !== 0) {
     if (!retry) spawn.memory.trySpawn = {
       creep: body,
@@ -28,9 +25,6 @@ export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: Cr
   } else {
     mem.priorityFilled = 0
     mem.creeps[name] = 0
-    if (memory.role === BOOSTER && spawn.room.terminal) {
-      spawn.room.reserveBoost(name, RESOURCE_UTRIUM_OXIDE, LAB_BOOST_MINERAL * Math.floor(Math.min(body.reduce((n, part) => n + (part === WORK ? 1 : 0), 0), spawn.room.terminal.store[RESOURCE_UTRIUM_OXIDE])) / LAB_BOOST_MINERAL)
-    }
     if (memory.role === MINER) mem.colonySources[spawn.memory.spawnSourceId || ''] = mem.colonySources[spawn.memory.spawnSourceId || ''].slice(0, 2) + name
     delete spawn.memory.spawnSourceId
     delete spawn.memory.trySpawn

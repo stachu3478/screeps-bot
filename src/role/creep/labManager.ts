@@ -1,4 +1,4 @@
-import { IDLE, HAUL_LAB_TO_STORAGE, HAUL_LAB_FROM_STORAGE, HAUL_STORAGE_TO_LAB, HAUL_STORAGE_FROM_LAB, LAB_PENDING, LAB_COLLECTING, LAB_BOOSTING } from 'constants/state'
+import { IDLE, HAUL_LAB_TO_STORAGE, HAUL_LAB_FROM_STORAGE, HAUL_STORAGE_TO_LAB, HAUL_STORAGE_FROM_LAB, LAB_PENDING, LAB_COLLECTING } from 'constants/state'
 import { DONE, NOTHING_TODO, FAILED, SUCCESS } from 'constants/response'
 import draw from 'routine/haul/draw';
 import fill from 'routine/haul/fill';
@@ -6,7 +6,7 @@ import profiler from "screeps-profiler"
 import { FACTORY_MANAGER } from 'constants/role';
 import handleLab from 'utils/handleLab';
 import { LabManager } from './labManager.d'
-import { prepareReaction, collectResources, boostLabs } from 'job/lab';
+import { prepareReaction, collectResources } from 'job/lab';
 import dumpResources from 'job/dumpResources';
 import { getFillableGenericStruture } from 'utils/fill';
 
@@ -25,8 +25,6 @@ function findJob(creep: LabManager) {
     if (collectResources(creep, allLabs)) return true
     roomMemory.labState = IDLE
     handleLab(terminal)
-  } else if (roomMemory.labState === LAB_BOOSTING && roomMemory.boost) {
-    if (boostLabs(creep, allLabs, terminal, roomMemory.boost)) return true
   }
   return false
 }

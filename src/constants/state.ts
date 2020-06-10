@@ -43,5 +43,4 @@ export const HAUL_STORAGE_FROM_LAB = 43
 export const HAUL_LAB_FROM_STORAGE = 44
 export const FILL_PRIORITY = 45
 export const TERM_BUY_MISSING = 46
-export const LAB_BOOSTING = 47
 export const LAB_COLLECTING = 48
