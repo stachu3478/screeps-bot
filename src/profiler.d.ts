@@ -1,5 +1,3 @@
-declare type AnyFunction = (...args: any[]) => any
-
 declare module 'screeps-profiler' {
   export function enable(): void
   export function registerFN<T>(fn: T, name?: string): T
