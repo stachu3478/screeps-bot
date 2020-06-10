@@ -11,6 +11,7 @@ interface Room {
   allLabs: StructureLab[]
   mineral?: Mineral
   extractor?: StructureExtractor
+  filled: boolean
 
   isBoosting: () => boolean
   reserveBoost: (name: string, type: ResourceConstant, amount: number) => boolean

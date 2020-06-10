@@ -16,6 +16,7 @@ Object.assign(global, {
   Source,
   Spawn,
   Structure,
+  StructureSpawn: class{},
   _
 })
 

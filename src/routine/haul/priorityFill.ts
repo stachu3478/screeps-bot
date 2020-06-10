@@ -12,7 +12,7 @@ interface PriorityFillMemory extends CreepMemory {
 
 export default function priorityFill(creep: PriorityFillCreep) {
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
-  if (creep.room.memory.priorityFilled) return NOTHING_TODO
+  if (creep.room.filled) return NOTHING_TODO
   let target = creep.memory._fill && Game.getObjectById(creep.memory._fill)
   if (!target || target.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
     const newTarget = findClosestStructureToFillWithPriority(creep.room, creep.pos)

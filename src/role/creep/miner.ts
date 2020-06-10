@@ -29,10 +29,14 @@ export default profiler.registerFN(function miner(creep: Miner) {
       break
     case HARVESTING:
       switch (harvest(creep, creep.memory._harvest)) {
+        case NOTHING_TODO:
+          delete creep.memory._pick_pos
+          autoPick(creep)
         case DONE: case NOTHING_TODO:
           const result = autoFill(creep)
-          if (result in ACCEPTABLE || result === NO_RESOURCE) creep.memory.state = HARVESTING
-          else if (creep.memory._draw && autoRepair(creep, 0) in ACCEPTABLE) creep.memory.state = REPAIR
+          if (result in ACCEPTABLE || result === NO_RESOURCE) {
+            // nothing to do
+          } else if (creep.memory._draw && autoRepair(creep, 0) in ACCEPTABLE) creep.memory.state = REPAIR
           else if (autoBuild(creep) in ACCEPTABLE) creep.memory.state = BUILD
           else if (creep.room.memory.colonySources && creep.memory._harvest) {
             const miningPos = creep.room.memory.colonySources[creep.memory._harvest].charCodeAt(0)

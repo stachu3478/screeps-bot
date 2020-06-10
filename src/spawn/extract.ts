@@ -12,20 +12,21 @@ export default function extract(spawn: StructureSpawn) {
   if (!mineral || !mineral.mineralAmount) return false
   const name = uniqName("D")
   let memory: ExtractorMemory | (ExtractorMemory & BoosterMemory)
-  if (spawn.room.terminal && spawn.room.terminal.store[RESOURCE_UTRIUM_OXIDE] > 100) {
+  // Boosting does not work
+  /*if (spawn.room.terminal && spawn.room.terminal.store[RESOURCE_UTRIUM_OXIDE] > 100) {
     memory = {
       role: BOOSTER,
       _targetRole: EXTRACTOR,
       room: spawn.room.name,
       deprivity: 0
     }
-  } else {
-    memory = {
-      role: EXTRACTOR,
-      room: spawn.room.name,
-      deprivity: 0
-    }
+  } else {*/
+  memory = {
+    role: EXTRACTOR,
+    room: spawn.room.name,
+    deprivity: 0
   }
+  //}
   trySpawnCreep(progressiveWorker(spawn.room.energyCapacityAvailable), name, memory, spawn, false, 25)
   return true
 }

@@ -148,7 +148,8 @@ interface ControlledRoom extends Room {
 // `global` extension samples
 declare namespace NodeJS {
   interface Global {
-    log: any;
+    log: any
+    Game: Game
     Memory: Memory
   }
 }

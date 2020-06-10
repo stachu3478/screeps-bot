@@ -6,6 +6,7 @@ import { factoryStoragePerResource } from 'utils/handleFactory';
 import profiler from "screeps-profiler"
 import { HARVESTER } from 'constants/role';
 import dumpResources from 'job/dumpResources';
+import { getFillableGenericStruture } from 'utils/fill';
 
 export interface FactoryManager extends Creep {
   memory: FactoryManagerMemory
@@ -29,12 +30,14 @@ function findJob(creep: FactoryManager) {
     creep.memory._draw = creep.room.terminal.id
     creep.memory._drawType = type
     creep.memory._drawAmount = factoryStoragePerResource - factory.store[type]
+    if (creep.memory._drawAmount > creep.room.terminal.store[type]) return false
     creep.memory.state = HAUL_FACTORY_FROM_TERMINAL
   } else if (creep.room.memory.factoryDumps) {
     const type = creep.room.memory.factoryDumps
     creep.memory._draw = factory.id
     creep.memory._drawType = type
     creep.memory._drawAmount = factory.store[type]
+    if (creep.memory._drawAmount > creep.room.terminal.store[type]) return false
     creep.memory.state = HAUL_TERMINAL_FROM_FACTORY
   } else return false
   return true
@@ -74,8 +77,9 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
           creep.memory.state = IDLE
           break
         case NOTHING_TODO: case FAILED:
-          if (!creep.room.terminal) break
-          creep.memory._fill = creep.room.terminal.id
+          const storage = getFillableGenericStruture(creep.room, creep.store.getUsedCapacity())
+          if (!storage) break
+          creep.memory._fill = storage.id
           creep.memory.state = HAUL_FACTORY_TO_TERMINAL
           break
       }
@@ -83,8 +87,9 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
     case HAUL_TERMINAL_FROM_FACTORY:
       switch (draw(creep)) {
         case DONE: case SUCCESS: {
-          if (creep.room.terminal) {
-            creep.memory._fill = creep.room.terminal.id
+          const storage = getFillableGenericStruture(creep.room, creep.store.getUsedCapacity())
+          if (storage) {
+            creep.memory._fill = storage.id
             creep.memory._fillType = creep.room.memory.factoryDumps
             creep.memory.state = HAUL_FACTORY_TO_TERMINAL
           } else creep.memory.state = HAUL_TERMINAL_TO_FACTORY

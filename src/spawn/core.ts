@@ -12,9 +12,12 @@ import { MinerMemory, Miner } from 'role/creep/miner';
 import { findContainers } from 'utils/find';
 import profiler from "screeps-profiler"
 
+function p(v: any) { console.log(v); return v }
+
 export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: CreepMemory, spawn: StructureSpawn, retry: boolean = false, cooldown: number = 100) {
-  const result = spawn.spawnCreep(body, name, { memory, directions: spawn.getDirections() })
+  const result = spawn.spawnCreep(body, name, { memory, directions: p(spawn.getDirections()) })
   const mem = spawn.room.memory as StableRoomMemory
+  p(result)
   if (result !== 0) {
     if (!retry) spawn.memory.trySpawn = {
       creep: body,

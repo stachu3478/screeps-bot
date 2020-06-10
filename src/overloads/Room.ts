@@ -60,6 +60,13 @@ Object.defineProperty(Room.prototype, 'extractor', {
   }
 })
 
+Object.defineProperty(Room.prototype, 'filled', {
+  get: function () {
+    const self = this as Room
+    return self.memory.priorityFilled && self.energyAvailable === self.energyCapacityAvailable
+  }
+})
+
 Room.prototype.unreserveBoost = function (creepName: string, type?: ResourceConstant) {
   const reservations = this.memory.boost
   if (!reservations) return

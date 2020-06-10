@@ -9,7 +9,9 @@ StructureSpawn.prototype.getDirections = function () {
   for (let x = -1; x <= 1; x++)
     for (let y = -1; y <= 1; y++) {
       const road = getXYRoad(room, sx + x, sy + y)
-      if (road) directions.push(this.pos.getDirectionTo(sx + x, sy + y))
+      if (!road) continue
+      const direction = this.pos.getDirectionTo(sx + x, sy + y)
+      if (direction) directions.push(direction)
     }
   if (directions.length > 0) return directions
   return allDirections

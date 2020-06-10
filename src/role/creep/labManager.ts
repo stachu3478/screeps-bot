@@ -8,6 +8,7 @@ import handleLab from 'utils/handleLab';
 import { LabManager } from './labManager.d'
 import { prepareReaction, collectResources, boostLabs } from 'job/lab';
 import dumpResources from 'job/dumpResources';
+import { getFillableGenericStruture } from 'utils/fill';
 
 function findJob(creep: LabManager) {
   const roomMemory = creep.room.memory
@@ -56,8 +57,9 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
       switch (fill(creep)) {
         case DONE: case SUCCESS: creep.memory.state = IDLE; break
         case NOTHING_TODO: case FAILED:
-          if (!creep.room.terminal) break
-          creep.memory._fill = creep.room.terminal.id
+          const storage = getFillableGenericStruture(creep.room, creep.store.getUsedCapacity())
+          if (!storage) break
+          creep.memory._fill = storage.id
           creep.memory.state = HAUL_LAB_TO_STORAGE
           break
       }
@@ -65,8 +67,9 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
     case HAUL_STORAGE_FROM_LAB:
       switch (draw(creep)) {
         case DONE: case SUCCESS: {
-          if (creep.room.terminal) {
-            creep.memory._fill = creep.room.terminal.id
+          const storage = getFillableGenericStruture(creep.room, creep.store.getUsedCapacity())
+          if (storage) {
+            creep.memory._fill = storage.id
             creep.memory.state = HAUL_LAB_TO_STORAGE
           } else creep.memory.state = HAUL_STORAGE_TO_LAB
         } break
