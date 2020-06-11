@@ -25,15 +25,16 @@ export default function lab(room: Room) {
       room.visual.text('Labs: Collecting resources...', 0, 5, infoStyle)
       break;
     case LAB_PRODUCING:
-      if (!mem.labRecipe) {
+      const recipe = mem.labRecipe
+      if (!recipe) {
         mem.labState = LAB_COLLECTING
         room.visual.text('Labs: Recipe not found!', 0, 5, infoStyle)
         break
       }
       const labs = room.externalLabs
       let result
-      labs.forEach(lab => {
-        result = lab.runReaction(lab1, lab2)
+      labs.forEach((lab, i) => {
+        if (lab.shouldRunReaction(recipe, i)) result = lab.runReaction(lab1, lab2)
       })
       if (result === ERR_NOT_ENOUGH_RESOURCES || result === ERR_FULL) {
         delete mem.labRecipe
@@ -41,8 +42,8 @@ export default function lab(room: Room) {
         room.visual.text('Labs: Insufficient minerals!', 0, 5, infoStyle)
         break
       }
-      room.visual.text('Labs: Running reaction: ' + mem.labRecipe, 0, 5, infoStyle)
-      mem.labCooldown = (REACTION_TIME as ReactionTimeHash)[mem.labRecipe] - 1
+      room.visual.text('Labs: Running reaction: ' + recipe, 0, 5, infoStyle)
+      mem.labCooldown = (REACTION_TIME as ReactionTimeHash)[recipe] - 1
       break
     case LAB_PENDING:
       room.visual.text('Labs: Waiting for creeps', 0, 5, infoStyle)

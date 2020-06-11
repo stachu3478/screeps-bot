@@ -16,7 +16,8 @@ Object.assign(global, {
   Source,
   Spawn,
   Structure,
-  StructureSpawn: class{},
+  StructureSpawn: class { },
+  StructureLab: class { },
   _
 })
 

@@ -13,6 +13,14 @@ interface Room {
   setBuilding: (x: number, y: number, order: number) => void
   setBuildingOrder: (x: number, y: number, order: number) => void
   moveBuilding: (x1: number, y1: number, x2: number, y2: number) => void
+
+  getBoosts: () => BoostData
+  getAmountReserved: (resource: ResourceConstant) => number
+  getAvailableBoosts: (resource: ResourceConstant, partCount: number) => number
+}
+
+interface StructureLab {
+  shouldRunReaction: (resource: ResourceConstant, labIndex: number) => boolean
 }
 
 interface StructureSpawn {

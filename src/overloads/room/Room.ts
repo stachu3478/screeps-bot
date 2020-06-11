@@ -1,4 +1,5 @@
 import './buildingManagement'
+import './boostManagement'
 import { getFactory, getLab, getXYExtractor } from "utils/selectFromPos";
 
 Object.defineProperty(Room.prototype, 'factory', {
