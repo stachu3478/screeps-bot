@@ -7,6 +7,12 @@ interface Room {
   mineral?: Mineral
   extractor?: StructureExtractor
   filled: boolean
+
+  addBuilding: (x: number, y: number, order?: number) => void
+  removeBuilding: (x: number, y: number) => void
+  setBuilding: (x: number, y: number, order: number) => void
+  setBuildingOrder: (x: number, y: number, order: number) => void
+  moveBuilding: (x1: number, y1: number, x2: number, y2: number) => void
 }
 
 interface StructureSpawn {

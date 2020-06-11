@@ -1,4 +1,5 @@
 import "./constants"
+import 'overloads/all'
 import { assert } from "chai";
 import _ from "lodash"
 import { loop } from "../../src/main";

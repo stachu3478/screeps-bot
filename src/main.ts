@@ -1,5 +1,4 @@
-import './overloads/Room'
-import './overloads/Spawn'
+import 'overloads/all'
 import run from "room/core"
 import { infoStyle } from "room/style";
 import profiler from "screeps-profiler"

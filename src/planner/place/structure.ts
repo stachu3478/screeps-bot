@@ -16,6 +16,7 @@ export default function placeStructure(controller: StructureController, structs:
     else if (iteration === 4) structureToPlace = STRUCTURE_FACTORY
     else if (iteration < 11) structureToPlace = STRUCTURE_TOWER
     else if (iteration === 11) structureToPlace = STRUCTURE_POWER_SPAWN
+    else if (iteration === 12) structureToPlace = STRUCTURE_NUKER
     else structureToPlace = STRUCTURE_EXTENSION
     if (room.createConstructionSite(x, y, structureToPlace) === 0) {
       room.memory._struct_iteration = iteration
