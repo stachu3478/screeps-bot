@@ -6,7 +6,8 @@ export default function handleLog(mem: RoomMemory, controller: StructureControll
         if (l.data.attackType === EVENT_ATTACK_TYPE_HIT_BACK) break;
         const attacker = Game.getObjectById(l.objectId as Id<Creep>)
         if (!attacker || attacker.my) break
-        const target = Game.getObjectById(l.data.targetId) as Creep | Structure
+        const target = Game.getObjectById(l.data.targetId)
+        if (!target) break
         const structure = target as Structure
         if (structure.structureType === STRUCTURE_SPAWN) {
           controller.activateSafeMode()

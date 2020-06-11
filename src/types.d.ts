@@ -61,11 +61,14 @@ interface Memory {
 
 interface BoostData {
   creeps: string[]
-  creepResources: ResourceConstant[]
-  creepAmounts: number[]
-
-  labResources: ResourceConstant[]
-  labAmounts: number[]
+  resources: {
+    labs: ResourceConstant[]
+    creeps: ResourceConstant[]
+  }
+  amounts: {
+    labs: number[]
+    creeps: number[]
+  }
 }
 
 interface RoomMemory {
@@ -124,7 +127,7 @@ interface RoomMemory {
   _haul?: string
   _haulSize?: number
 
-  boost?: BoostData
+  boosts?: BoostData
 
   _extractor?: Id<StructureExtractor>
   _mineral?: Id<Mineral>

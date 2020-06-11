@@ -1,8 +1,3 @@
-interface BoostingData {
-  type: ResourceConstant,
-  amount: number
-}
-
 interface Room {
   factory?: StructureFactory
   lab1?: StructureLab
