@@ -19,7 +19,6 @@ export const tradeBlackMap: SomeMap = {}
 tradeBlackList.forEach(n => {
   tradeBlackMap[n] = 1
 })
-export const storagePerResource = Math.floor(TERMINAL_CAPACITY / RESOURCES_ALL.length)
 
 export default function handleTerminal(terminal: StructureTerminal, resourceType: ResourceConstant) {
   const mem = terminal.room.memory

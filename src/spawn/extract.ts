@@ -1,7 +1,7 @@
 import { uniqName } from "./name";
 import { progressiveWorker } from "./body/work";
 import { EXTRACTOR } from "constants/role";
-import { trySpawnCreep } from "./core";
+import trySpawnCreep from "./trySpawn";
 
 export default function extract(spawn: StructureSpawn) {
   const mem = spawn.room.memory

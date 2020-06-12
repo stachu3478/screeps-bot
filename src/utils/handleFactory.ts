@@ -1,5 +1,5 @@
-import { storagePerResource } from './handleTerminal';
 import { FACT_BOARD } from 'constants/state';
+import { nominalStorage } from 'config/terminal';
 
 export const factoryStoragePerResource = Math.floor(FACTORY_CAPACITY / Object.keys(COMMODITIES).length)
 export const com = COMMODITIES as CommoMap
@@ -70,7 +70,7 @@ export default function handleFactory(resources: ResourceMap, factory: Structure
   if (!mem.factoryDumps) {
     for (const n in factory.store) {
       const name = n as ResourceConstant
-      if (resources[name] >= storagePerResource) continue
+      if (resources[name] >= nominalStorage) continue
       if (!isNeededByFactory(factory.store, name)) {
         mem.factoryDumps = name
         break

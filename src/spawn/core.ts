@@ -1,4 +1,5 @@
 import _ from 'lodash'
+import profiler from "screeps-profiler"
 import { progressiveMiner, progressiveLiteWorker } from './body/work'
 import { progressiveFighter } from './body/body'
 import { HARVESTER, UPGRADER, MINER, RETIRED, FIGHTER, EXTRACTOR, STATIC_UPGRADER, FACTORY_MANAGER, LAB_MANAGER, HAULER, BOOSTER } from '../constants/role'
@@ -10,28 +11,7 @@ import extract from './extract';
 import spawnUpgrader from './upgrader';
 import { MinerMemory, Miner } from 'role/creep/miner';
 import { findContainers } from 'utils/find';
-import profiler from "screeps-profiler"
-
-export function trySpawnCreep(body: BodyPartConstant[], name: string, memory: CreepMemory, spawn: StructureSpawn, retry: boolean = false, cooldown: number = 100) {
-  const result = spawn.spawnCreep(body, name, { memory, directions: spawn.getDirections() })
-  const mem = spawn.room.memory as StableRoomMemory
-  if (result !== 0) {
-    if (!retry) spawn.memory.trySpawn = {
-      creep: body,
-      name,
-      memory,
-      cooldown
-    }
-  } else {
-    mem.priorityFilled = 0
-    mem.creeps[name] = 0
-    if (memory.role === MINER) mem.colonySources[spawn.memory.spawnSourceId || ''] = mem.colonySources[spawn.memory.spawnSourceId || ''].slice(0, 2) + name
-    delete spawn.memory.spawnSourceId
-    delete spawn.memory.trySpawn
-  }
-  spawn.room.visual.text("Try to spawn " + name, 0, 3, infoStyle)
-  return result
-}
+import trySpawnCreep from "./trySpawn";
 
 export default profiler.registerFN(function loop(spawn: StructureSpawn, controller: StructureController, creepCountByRole: number[], workPartCountByRole: number[], needsFighters: boolean) {
   const mem = spawn.room.memory

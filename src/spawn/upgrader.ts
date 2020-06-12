@@ -1,7 +1,7 @@
 import { UPGRADER, STATIC_UPGRADER } from "constants/role";
 import { uniqName } from "./name";
 import { progressiveWorker, progressiveStaticUpgrader } from "./body/work";
-import { trySpawnCreep } from "./core";
+import trySpawnCreep from "./trySpawn";
 
 export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemory, controller: StructureController) {
   const name = uniqName("U")
