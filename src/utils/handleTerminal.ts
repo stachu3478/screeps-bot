@@ -25,7 +25,7 @@ export default function handleTerminal(terminal: StructureTerminal, resourceType
   const mem = terminal.room.memory
   mem.terminalState = TERM_SEND_EXCESS
   mem.terminalDealResourceType = resourceType
-  handleLab(terminal)
+  handleLab.run(terminal)
   if (!mem.structs) return
   const factory = terminal.room.factory
   if (factory) handleFactory(terminal.store, factory)

@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import _ from 'lodash'
-import { LAB_PRODUCING, LAB_COLLECTING } from 'constants/state';
-import sinon from 'sinon';
+import { LAB_PRODUCING } from 'constants/state';
 
 describe('When lab system is in producing state', () => {
   let room: Room

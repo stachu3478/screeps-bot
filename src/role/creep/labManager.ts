@@ -6,25 +6,27 @@ import profiler from "screeps-profiler"
 import { FACTORY_MANAGER } from 'constants/role';
 import handleLab from 'utils/handleLab';
 import { LabManager } from './labManager.d'
-import { prepareReaction, collectResources } from 'job/lab';
+import labJobs from 'job/lab';
 import dumpResources from 'job/dumpResources';
 import { getFillableGenericStruture } from 'utils/fill';
 
-function findJob(creep: LabManager) {
+export function findJob(creep: LabManager) {
   const roomMemory = creep.room.memory
   creep.memory.state = IDLE
   const lab1 = creep.room.lab1
   const lab2 = creep.room.lab2
   const terminal = creep.room.terminal
+  const externalLabs = creep.room.externalLabs
+  if (labJobs.prepareBoostResources(creep, externalLabs)) return true
   if (!lab1 || !lab2) return false
   if (!terminal) return false
-  const allLabs = creep.room.externalLabs.concat(lab1, lab2)
-  if (roomMemory.labState === LAB_PENDING && roomMemory.labRecipe) {
-    return prepareReaction(lab1, lab2, terminal, roomMemory, creep)
+  const allLabs = externalLabs.concat(lab1, lab2)
+  if (roomMemory.labState === LAB_PENDING) {
+    return labJobs.prepareReaction(lab1, lab2, terminal, roomMemory, creep)
   } else if (roomMemory.labState === LAB_COLLECTING) {
-    if (collectResources(creep, allLabs)) return true
+    if (labJobs.collectResources(creep, allLabs)) return true
     roomMemory.labState = IDLE
-    handleLab(terminal)
+    handleLab.run(terminal)
   }
   return false
 }
