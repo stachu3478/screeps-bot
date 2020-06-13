@@ -57,6 +57,7 @@ interface Memory {
   stats?: Stats
   runtimeTicks?: number
   runtimeAvg?: number
+  debugStructures?: 0 | 1
 }
 
 interface BoostData {

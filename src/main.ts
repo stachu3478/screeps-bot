@@ -3,6 +3,7 @@ import run from "room/core"
 import { infoStyle } from "room/style";
 import profiler from "screeps-profiler"
 import handleStats from 'utils/stats'
+import visual from 'planner/visual'
 
 const memory = JSON.parse(RawMemory.get())
 // profiler.enable()
@@ -26,6 +27,12 @@ export const loop = () => {
           else delete Memory.myRooms[name]
         }
       }
+
+      if (Memory.debugStructures)
+        for (const name in Memory.myRooms) {
+          const room = Game.rooms[name]
+          if (room) visual(room)
+        }
 
       if (!Memory.runtimeTicks) Memory.runtimeTicks = runtimeTicks++
       else if (Memory.runtimeTicks > runtimeTicks) {

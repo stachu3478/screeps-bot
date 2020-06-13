@@ -11,8 +11,8 @@ const labJobs = {
       return false
     }
     if (
-      labJobs.prepareCreepForFilling(creep, lab1, resource1, targetAmount)
-      || labJobs.prepareCreepForFilling(creep, lab2, resource2, targetAmount)
+      (lab1.store[resource1] < targetAmount && labJobs.prepareCreepForFilling(creep, lab1, resource1, targetAmount))
+      || (lab2.store[resource2] < targetAmount && labJobs.prepareCreepForFilling(creep, lab2, resource2, targetAmount))
     ) return true
     roomMemory.labState = LAB_PRODUCING
     return false

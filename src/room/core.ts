@@ -5,7 +5,6 @@ import spawnLoop from 'spawn/core'
 import plan from 'planner/core'
 import callRescue from 'planner/rescue';
 import trackEnemy, { findMostVulnerableCreep } from './enemyTrack';
-import visual from 'planner/visual'
 import usage from './usage'
 import { infoStyle, dangerStyle } from './style'
 import handleLog from './log';
@@ -18,7 +17,6 @@ import factory from 'role/factory';
 export default function run(controller: StructureController, cpuUsed: number) {
   const room = controller.room
   if (!room.memory.roads) plan(room)
-  visual(room)
 
   let mem = room.memory
   if (!mem.creeps) mem.creeps = {}
