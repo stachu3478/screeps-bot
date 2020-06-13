@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import move from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 
@@ -7,11 +8,14 @@ interface ClaimCreep extends Creep {
 
 interface ClaimMemory extends CreepMemory { }
 
+const myStructure = (_.find(Game.spawns) || _.find(Game.creeps))
+const myUsername = myStructure && myStructure.owner.username
+
 export default function claim(creep: ClaimCreep) {
   const target = creep.room.controller
   if (!target || target.my) return NOTHING_TODO
   let result
-  if ((target.reservation && target.reservation.username !== "mocnyFull") || (target.level && !target.my)) result = creep.attackController(target)
+  if ((target.reservation && target.reservation.username !== myUsername) || (target.level && !target.my)) result = creep.attackController(target)
   else if (creep.pos.isNearTo(target)) {
     result = creep.claimController(target)
     if (result === 0) {

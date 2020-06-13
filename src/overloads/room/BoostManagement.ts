@@ -28,17 +28,21 @@ Room.prototype.getAvailableBoosts = function (resource: ResourceConstant, partCo
 
 Room.prototype.getBoostRequest = function (creepName: string) {
   const boosts = this.getBoosts()
-  const index = boosts.creeps.findIndex(name => name === creepName)
-  if (index === -1) {
-    this.clearBoostRequest(creepName, boosts.resources.creeps[index])
-    return
-  }
-  const lab = this.externalLabs.find(lab => lab.mineralType === boosts.resources.creeps[index])
-  if (!lab) {
-    this.clearBoostRequest(creepName, boosts.resources.creeps[index])
-    return
-  }
-  return lab.id
+  const toBeRemoved: ResourceConstant[] = []
+  let labId
+  boosts.creeps.find((name, i) => {
+    if (name !== creepName) return false
+    const resourceNeeded = boosts.resources.creeps[i]
+    const lab = this.externalLabs.find(lab => lab.mineralType === resourceNeeded)
+    if (lab) {
+      labId = lab.id
+      return true
+    }
+    toBeRemoved.push(resourceNeeded)
+    return false
+  })
+  toBeRemoved.reverse().forEach(resource => this.clearBoostRequest(creepName, resource))
+  return labId
 }
 
 Room.prototype.getBestAvailableBoost = function (partType: string, action: string, partCount: number) {
