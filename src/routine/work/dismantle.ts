@@ -1,4 +1,4 @@
-import { cheapMove } from '../../utils/path'
+import move from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from '../../constants/response'
 import { findClosestHostileHittableStructures } from 'utils/find';
 
@@ -31,7 +31,7 @@ export default function dismantle(creep: DismantleCreep) {
     }
     return SUCCESS
   } else if (result === ERR_NOT_IN_RANGE) {
-    cheapMove(creep, target)
+    move.cheap(creep, target)
     return NOTHING_DONE
   } else if (result === ERR_NO_BODYPART) {
     delete creep.memory._dismantle

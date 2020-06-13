@@ -1,4 +1,4 @@
-import { cheapMove } from 'utils/path'
+import move from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
 
 interface ToRepair {
@@ -34,7 +34,7 @@ export default function repair(creep: RepairCreep) {
   }
   const result = creep.repair(target)
   const remaining = creep.store[RESOURCE_ENERGY] - creep.getActiveBodyparts(WORK)
-  if (result === ERR_NOT_IN_RANGE) cheapMove(creep, target)
+  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
   else if (result !== 0) return FAILED
   else {
     if (remaining <= 0) return NO_RESOURCE

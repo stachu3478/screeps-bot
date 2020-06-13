@@ -1,4 +1,3 @@
-import { cheapMove } from "utils/path";
 import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from "constants/response";
 
 const hittable = (obj: Creep | Structure) => obj.hits

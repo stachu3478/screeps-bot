@@ -1,4 +1,4 @@
-import { cheapMove } from 'utils/path'
+import move from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 
 interface ClaimCreep extends Creep {
@@ -25,7 +25,7 @@ export default function claim(creep: ClaimCreep) {
     else if (creep.reserveController(target) === 0) return SUCCESS
     return FAILED
   } else {
-    cheapMove(creep, target)
+    move.cheap(creep, target)
     return NOTHING_DONE
   }
   return FAILED

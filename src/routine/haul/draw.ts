@@ -1,4 +1,4 @@
-import { cheapMove } from 'utils/path'
+import move from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 
 interface DrawCreep extends Creep {
@@ -17,7 +17,7 @@ export default function draw(creep: DrawCreep) {
   let target = creep.memory._draw && Game.getObjectById(creep.memory._draw)
   if (!target || target.store[resourceType] === 0) return NOTHING_TODO
   const result = creep.withdraw(target, resourceType, creep.memory._drawAmount)
-  if (result === ERR_NOT_IN_RANGE) cheapMove(creep, target)
+  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
   else if (result !== 0) return FAILED
   else {
     delete creep.memory._draw

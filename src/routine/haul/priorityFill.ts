@@ -1,4 +1,4 @@
-import { cheapMove } from 'utils/path'
+import move from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
 import { findClosestStructureToFillWithPriority } from 'utils/find';
 
@@ -25,7 +25,7 @@ export default function priorityFill(creep: PriorityFillCreep) {
   }
   const result = creep.transfer(target, RESOURCE_ENERGY)
   const remaining = creep.store[RESOURCE_ENERGY] - target.store.getFreeCapacity(RESOURCE_ENERGY)
-  if (result === ERR_NOT_IN_RANGE) cheapMove(creep, target)
+  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
   else if (result !== 0) return FAILED
   else {
     if (remaining <= 0) return NO_RESOURCE
@@ -34,7 +34,7 @@ export default function priorityFill(creep: PriorityFillCreep) {
       if (!newTarget) return NOTHING_TODO
       target = newTarget
       creep.memory._fill = target.id
-      if (!creep.pos.isNearTo(target)) cheapMove(creep, target)
+      if (!creep.pos.isNearTo(target)) move.cheap(creep, target)
     }
     return SUCCESS
   }

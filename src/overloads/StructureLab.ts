@@ -1,8 +1,7 @@
-import { findCloseMostDamagedStructure } from "utils/find";
-
 StructureLab.prototype.shouldRunReaction = function (resource: ResourceConstant, labIndex: number) {
   if (this.mineralType) return true
-  const reservedResourceType = this.room.getBoosts().resources.labs[labIndex]
-  if (!reservedResourceType || reservedResourceType === resource) return true
+  const boosts = this.room.getBoosts()
+  const reservedResourceType = boosts.resources.labs[labIndex]
+  if (!reservedResourceType || reservedResourceType === resource || !boosts.amounts.labs[labIndex]) return true
   return false
 }

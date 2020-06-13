@@ -1,7 +1,6 @@
-import { UPGRADER, STATIC_UPGRADER } from "constants/role";
+import { UPGRADER, STATIC_UPGRADER, BOOSTER } from "constants/role";
 import { uniqName } from "./name";
 import { progressiveWorker, progressiveStaticUpgrader } from "./body/work";
-import trySpawnCreep from "./trySpawn";
 
 export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemory, controller: StructureController) {
   const name = uniqName("U")
@@ -28,5 +27,16 @@ export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemo
       }
     }
   }
-  trySpawnCreep(parts, name, { role, room: spawn.room.name, deprivity }, spawn)
+  const carryBoostInfo = spawn.room.getBestAvailableBoost('carry', 'capacity', 1)
+  const upgradeBoostInfo = spawn.room.getBestAvailableBoost('work', 'upgradeController', parts.filter(type => type === WORK).length)
+  const boostRequests: BoostInfo[] = []
+  if (carryBoostInfo) boostRequests.push(carryBoostInfo)
+  if (upgradeBoostInfo) boostRequests.push(upgradeBoostInfo)
+  const creepMemory: CreepMemory = { role, room: spawn.room.name, deprivity }
+  if (boostRequests.length) {
+    creepMemory.boosting = 1
+    creepMemory._targetRole = creepMemory.role
+    creepMemory.role = BOOSTER
+  }
+  spawn.trySpawnCreep(parts, name, creepMemory, false, 100, boostRequests)
 }

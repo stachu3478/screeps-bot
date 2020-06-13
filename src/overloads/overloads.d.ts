@@ -1,3 +1,8 @@
+interface BoostInfo {
+  resource: ResourceConstant
+  partCount: number
+}
+
 interface Room {
   factory?: StructureFactory
   lab1?: StructureLab
@@ -17,6 +22,10 @@ interface Room {
   getBoosts: () => BoostData
   getAmountReserved: (resource: ResourceConstant) => number
   getAvailableBoosts: (resource: ResourceConstant, partCount: number) => number
+  getBestAvailableBoost: (partType: string, action: string, partCount: number) => BoostInfo | null
+  getBoostRequest: (creepName: string) => Id<StructureLab> | undefined
+  createBoostRequest: (creepName: string, resource: ResourceConstant, partCount: number) => void
+  clearBoostRequest: (creepName: string, resource: ResourceConstant | null) => void
 }
 
 interface StructureLab {
@@ -25,4 +34,5 @@ interface StructureLab {
 
 interface StructureSpawn {
   getDirections: () => DirectionConstant[]
+  trySpawnCreep: (body: BodyPartConstant[], name: string, memory: CreepMemory, retry?: boolean, cooldown?: number, boost?: BoostInfo[]) => ScreepsReturnCode
 }

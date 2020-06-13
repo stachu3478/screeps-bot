@@ -48,7 +48,18 @@ describe('When lab system is in producing state', () => {
     lab.shouldRunReaction = StructureLab.prototype.shouldRunReaction
     const stubBoostData = {} as BoostData
     stubBoostData.resources = { labs: [RESOURCE_UTRIUM_HYDRIDE, RESOURCE_UTRIUM_LEMERGITE, RESOURCE_UTRIUM_OXIDE], creeps: [] }
+    stubBoostData.amounts = { labs: [100, 100, 300], creeps: [] }
     lab.room = { getBoosts: () => stubBoostData } as Room
     expect(lab.shouldRunReaction(RESOURCE_UTRIUM_HYDRIDE, 1)).to.eql(false)
+  });
+
+  it('should allow running reaction while there is no mineral', function () {
+    const lab = {} as StructureLab
+    lab.shouldRunReaction = StructureLab.prototype.shouldRunReaction
+    const stubBoostData = {} as BoostData
+    stubBoostData.resources = { labs: [RESOURCE_UTRIUM_HYDRIDE, RESOURCE_UTRIUM_LEMERGITE, RESOURCE_UTRIUM_OXIDE], creeps: [] }
+    stubBoostData.amounts = { labs: [100, 0, 300], creeps: [] }
+    lab.room = { getBoosts: () => stubBoostData } as Room
+    expect(lab.shouldRunReaction(RESOURCE_UTRIUM_HYDRIDE, 1)).to.eql(true)
   });
 });

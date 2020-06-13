@@ -1,4 +1,4 @@
-import { cheapMove } from 'utils/path'
+import move from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
 import handleTerminal from 'utils/handleTerminal';
 
@@ -17,7 +17,7 @@ export default function mineralFill(creep: MineralFillCreep, mineralType: Minera
   if (!target || target.store.getFreeCapacity(mineralType) === 0) return NOTHING_TODO
   const result = creep.transfer(target, mineralType)
   const remaining = creep.store[mineralType] - target.store.getFreeCapacity(mineralType)
-  if (result === ERR_NOT_IN_RANGE) cheapMove(creep, target)
+  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
   else if (result !== 0) return FAILED
   else {
     if (remaining <= 0) return NO_RESOURCE

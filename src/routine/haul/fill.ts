@@ -1,4 +1,4 @@
-import { cheapMove } from 'utils/path'
+import move from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 
 export interface FillCreep extends Creep {
@@ -16,7 +16,7 @@ export default function fill(creep: FillCreep) {
   let target = creep.memory._fill && Game.getObjectById(creep.memory._fill)
   if (!target || !(target.store as Store<ResourceConstant, false>).getFreeCapacity(resourceType)) return NOTHING_TODO
   const result = creep.transfer(target, resourceType)
-  if (result === ERR_NOT_IN_RANGE) cheapMove(creep, target)
+  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
   else if (result !== 0) return FAILED
   else {
     delete creep.memory._fill

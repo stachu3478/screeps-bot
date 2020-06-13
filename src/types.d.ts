@@ -5,6 +5,8 @@ interface SourceMap {
 // memory extension samples
 interface CreepMemory {
   role: number
+  _targetRole?: number
+  boosting?: 1
   room: string
   state?: number
   _move?: {
@@ -25,6 +27,7 @@ interface SpawnMemory {
     cooldown: number
     name: string
     memory: CreepMemory
+    boost: BoostInfo[]
   }
   spawnSourceId?: Id<Source>
 }

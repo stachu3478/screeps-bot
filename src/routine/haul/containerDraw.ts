@@ -1,4 +1,4 @@
-import { cheapMove } from 'utils/path'
+import move from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
 import { findClosestFilledContainer } from 'utils/find';
 
@@ -20,7 +20,7 @@ export default function drawContainer(creep: DrawContainerCreep) {
     creep.memory._draw = target.id
   }
   const result = creep.withdraw(target, RESOURCE_ENERGY)
-  if (result === ERR_NOT_IN_RANGE) cheapMove(creep, target)
+  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
   else if (result !== 0) return FAILED
   else {
     delete creep.memory._draw

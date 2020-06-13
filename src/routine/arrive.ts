@@ -1,5 +1,5 @@
 import { SUCCESS, NOTHING_TODO, DONE } from '../constants/response'
-import { cheapMove, moveAnywhere } from 'utils/path';
+import move from 'utils/path'
 
 interface ArriveCreep extends Creep {
   memory: ArriveMemory
@@ -24,8 +24,8 @@ export default function arrive(creep: ArriveCreep, dumpCarry: boolean = true) {
   const targetRoom = creep.memory._arrive
   if (!targetRoom) return NOTHING_TODO
   const pos = new RoomPosition(25, 25, targetRoom)
-  const result = cheapMove(creep, pos, true)
-  if (result === ERR_NO_PATH) moveAnywhere(creep, creep.pos.getDirectionTo(pos))
+  const result = move.cheap(creep, pos, true)
+  if (result === ERR_NO_PATH) move.anywhere(creep, creep.pos.getDirectionTo(pos))
   if (creep.room.name === targetRoom && result === 0) {
     delete creep.memory._arrive
     return DONE
