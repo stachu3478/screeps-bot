@@ -1,6 +1,8 @@
 import { SUCCESS, NOTHING_TODO, FAILED, DONE, NO_RESOURCE } from '../../constants/response'
 import profiler from "screeps-profiler"
 import { findNearStructureToFillWithPriority } from 'utils/find';
+import { getLink } from 'utils/selectFromPos';
+import { energyToUpgradeThreshold } from 'config/link';
 
 interface FillCreep extends Creep {
   memory: FillMemory
@@ -10,7 +12,7 @@ interface FillMemory extends CreepMemory {
   _draw?: Id<AnyStoreStructure>
 }
 
-export default profiler.registerFN(function autoFill(creep: FillCreep) {
+export default profiler.registerFN(function autoFill(creep: FillCreep, shouldSendToController: boolean = false) {
   let remaining = creep.store[RESOURCE_ENERGY]
   if (remaining === 0) return NO_RESOURCE
   const target = findNearStructureToFillWithPriority(creep.room, creep.pos.x, creep.pos.y)
@@ -20,6 +22,14 @@ export default profiler.registerFN(function autoFill(creep: FillCreep) {
   if (result !== 0) return FAILED
   else {
     if (remaining <= 0) return DONE
+    if (shouldSendToController && target.structureType === STRUCTURE_LINK) {
+      const linkPos = creep.room.memory.controllerLink
+      if (linkPos) {
+        const controllerLink = getLink(creep.room, linkPos.charCodeAt(0))
+        if (controllerLink && controllerLink.store.getFreeCapacity(RESOURCE_ENERGY) > energyToUpgradeThreshold)
+          target.transferEnergy(controllerLink)
+      }
+    }
     return SUCCESS
   }
 }, 'autoFillRoutine')

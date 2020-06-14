@@ -25,15 +25,15 @@ describe('Creep work in boost mode', () => {
   describe('equal positions', () => {
     describe('matching dest object', () => {
       it('Should return false', () => {
-        creep.memory._move = { path: '1234', dest: { x: 12, y: 34, room: 'W1N1' } }
+        creep.memory._move = { path: '12345', dest: { x: 12, y: 34, room: 'W1N1' } }
         creep.pos = { x: 12, y: 34, roomName: 'W1N1' } as RoomPosition
         expect(move.check(creep)).to.eql(false)
       })
     })
 
-    describe('mathing path position', () => {
-      it('Should return false', () => {
-        creep.memory._move = { path: '1234', dest: { x: 12, y: 35, room: 'W1N1' } }
+    describe('mathing path position only', () => {
+      it('Should return true', () => {
+        creep.memory._move = { path: '12345', dest: { x: 12, y: 35, room: 'W1N1' } }
         creep.pos = { x: 12, y: 34, roomName: 'W1N1' } as RoomPosition
         expect(move.check(creep)).to.eql(false)
       })
@@ -42,19 +42,19 @@ describe('Creep work in boost mode', () => {
 
   describe('not equal positions', () => {
     it('Should return true', () => {
-      creep.memory._move = { path: '1235', dest: { x: 12, y: 35, room: 'W1N1' } }
+      creep.memory._move = { path: '123567', dest: { x: 12, y: 35, room: 'W1N1' } }
       creep.pos = { x: 12, y: 34, roomName: 'W1N1' } as RoomPosition
       expect(move.check(creep)).to.eql(true)
     })
 
-    it('Should return true', () => {
-      creep.memory._move = { path: '1235', dest: { x: 13, y: 34, room: 'W1N1' } }
+    it('Should return false', () => {
+      creep.memory._move = { path: '12356', dest: { x: 13, y: 34, room: 'W1N1' } }
       creep.pos = { x: 12, y: 34, roomName: 'W1N1' } as RoomPosition
-      expect(move.check(creep)).to.eql(true)
+      expect(move.check(creep)).to.eql(false)
     })
 
     it('Should return true', () => {
-      creep.memory._move = { path: '1235', dest: { x: 13, y: 35, room: 'W1N1' } }
+      creep.memory._move = { path: '123567', dest: { x: 13, y: 35, room: 'W1N1' } }
       creep.pos = { x: 12, y: 34, roomName: 'W1N1' } as RoomPosition
       expect(move.check(creep)).to.eql(true)
     })

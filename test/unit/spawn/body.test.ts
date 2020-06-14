@@ -31,7 +31,6 @@ describe("spawn/body", () => {
   });
 
   it("should return even bigger worker", function () {
-    console.log(progressiveWorker(350))
     assert.notDeepEqual(progressiveWorker(300), progressiveWorker(350));
   });
 

@@ -1,5 +1,6 @@
 import { SUCCESS, NOTHING_TODO } from '../../constants/response'
 import { getXYSpawn, getXYTower, getXYRampart, getXYWall } from 'utils/selectFromPos';
+import { roomPos } from '../pos';
 
 export default function placeShield(controller: StructureController) {
   const room = controller.room
@@ -30,11 +31,18 @@ export default function placeShield(controller: StructureController) {
   }
 
   const controllerPos = controller.pos
+  const colonySourcePositions = Object.values(mem.colonySources || {}).map(p => roomPos(p, room.name))
   for (let x = -1; x < 2; x++)
     for (let y = -1; y < 2; y++) {
-      const wall = getXYWall(room, controllerPos.x + x, controllerPos.y + y)
+      const xPos = controllerPos.x + x
+      const yPos = controllerPos.y + y
+      const notBlockingSources = colonySourcePositions.every(({ x, y }) => {
+        return xPos !== x || yPos !== y
+      })
+      if (!notBlockingSources) continue
+      const wall = getXYWall(room, xPos, yPos)
       if (wall) continue
-      const result = room.createConstructionSite(controllerPos.x + x, controllerPos.y + y, STRUCTURE_WALL)
+      const result = room.createConstructionSite(xPos, yPos, STRUCTURE_WALL)
       if (result === 0) return SUCCESS
     }
   if (minDecay === Infinity) minDecay = 1

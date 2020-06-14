@@ -86,13 +86,11 @@ const move = {
     let dirOffset = 0
     for (let i = 0; i < 8; i++) {
       const dir = zmod(preferDirection + dirOffset - 1, 8) + 1 as DirectionConstant
-      // console.log("Try to move at " + dir)
       if (dir < 1 || dir > 8) throw new Error("Invalid direction")
       const offset = offsetsByDirection[dir]
       const mx = x + offset[0]
       const my = y + offset[1]
       if (isWalkable(room, mx, my, me)) {
-        // console.log("moved")
         creep.move(dir)
         return true
       }
@@ -101,12 +99,12 @@ const move = {
     }
     return false
   },
-  cheap: (creep: Creep, target: RoomPosition | _HasRoomPosition, safe: boolean = false): ScreepsReturnCode => {
+  cheap: (creep: Creep, target: RoomPosition | _HasRoomPosition, safe: boolean = false, range: number = 0): ScreepsReturnCode => {
     if (creep.fatigue) return ERR_TIRED
     const costCallback = safe ? roomCallback : undefined
-    let result = creep.moveTo(target, { noPathFinding: true, reusePath: 100, costCallback })
+    let result = creep.moveTo(target, { noPathFinding: true, reusePath: 100, costCallback, range })
     if (result === ERR_NOT_FOUND) {
-      result = creep.moveTo(target, { ignoreCreeps: true, reusePath: 100, costCallback })
+      result = creep.moveTo(target, { ignoreCreeps: true, reusePath: 100, costCallback, range })
     }
     const mem = creep.memory
     if (!mem._move) return result
@@ -114,19 +112,21 @@ const move = {
     const dir = parseInt(path.charAt(4)) as DirectionConstant
     const moved = parseInt(path.substr(0, 2)) === creep.pos.x && parseInt(path.substr(2, 2)) === creep.pos.y
     if (moved) mem._move.stuck = 0
-    const stuck = mem._move.stuck || 0
+    let stuck = mem._move.stuck || -1
     if (dir) {
       const creepOnRoad = creep.room.lookForAt(LOOK_CREEPS, creep.pos.x + offsetsByDirection[dir][0], creep.pos.y + offsetsByDirection[dir][1])[0]
       if (creepOnRoad) {
         if (!creepOnRoad.memory) {
-          if (!creepOnRoad.my) return creep.moveTo(target, { costCallback })
-          move.anywhere(creepOnRoad, dir, creep)
+          if (!creepOnRoad.my) result = creep.moveTo(target, { costCallback, range })
+          else if (move.anywhere(creepOnRoad, dir, creep))
+            stuck = -1
         } else if (move.check(creepOnRoad) && stuck < 5) {
           // this creep is moving we wont do anything
-        } else if (stuck < 20) {
-          move.anywhere(creepOnRoad, (creepOnRoad.memory.role === MINER || stuck > 10) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep)
-        } else creepOnRoad.suicide()
-      }
+        } else {
+          if (move.anywhere(creepOnRoad, (creepOnRoad.memory.role === MINER || stuck > 10) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep))
+            stuck = -1
+        }
+      } else stuck = -1
     }
     mem._move.stuck = stuck + 1
     return result
@@ -135,10 +135,8 @@ const move = {
     const moveData = creep.memory._move
     if (!moveData) return false
     if (creep.pos.roomName !== moveData.dest.room) return true
-    const xPos = creep.pos.x
-    const yPos = creep.pos.y
-    return (xPos !== moveData.dest.x || yPos !== moveData.dest.y)
-      && (xPos !== parseInt(moveData.path.substr(0, 2)) || yPos !== parseInt(moveData.path.substr(2, 4)))
+    return (creep.pos.x !== moveData.dest.x || creep.pos.y !== moveData.dest.y)
+      && moveData.path.length > 5
   }
 }
 

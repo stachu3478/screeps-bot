@@ -60,21 +60,21 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
     case FILL_PRIORITY:
       switch (priorityFill(creep)) {
         case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
-        case NOTHING_TODO: case FAILED: energyUse(creep); break
+        case NOTHING_TODO: case FAILED: energyUse(creep)
         case NOTHING_DONE: autoRepair(creep); break;
       }
       break
     case REPAIR:
       switch (repair(creep)) {
         case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
-        case NOTHING_TODO: case FAILED: energyUse(creep); break
+        case NOTHING_TODO: case FAILED: energyUse(creep)
         case NOTHING_DONE: autoRepair(creep); break;
       }
       break
     case BUILD:
       switch (build(creep)) {
         case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
-        case NOTHING_TODO: case FAILED: energyUse(creep); break
+        case NOTHING_TODO: case FAILED: energyUse(creep)
         case NOTHING_DONE: autoRepair(creep); break;
       }
       break
@@ -87,7 +87,7 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
     case STORAGE_DRAW:
       switch (drawStorage(creep)) {
         case DONE: case SUCCESS: creep.memory.state = IDLE; break
-        case NOTHING_TODO: case FAILED: energyHaul(creep); break
+        case NOTHING_TODO: case FAILED: energyHaul(creep)
         case NOTHING_DONE: autoPick(creep); break
       }
       break

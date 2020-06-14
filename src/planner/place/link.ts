@@ -13,10 +13,11 @@ export default function placeLink(room: Room) {
       const link = getXYLink(room, x, y)
       if (link) continue
       else console.log('link not found')
-      linked = 0
       const result = room.createConstructionSite(x, y, STRUCTURE_LINK)
+      linked = 0
       if (result === ERR_RCL_NOT_ENOUGH) break
       if (result === 0) return true
+      linked = 1
     }
     mem._linked = linked
   }

@@ -27,7 +27,7 @@ export default profiler.registerFN(function harvest(creep: HarvestCreep, sourceI
   const targetPosCode = mem._targetPos.charCodeAt(0)
   if (creep.pos.x !== (targetPosCode & 63) || creep.pos.y !== (targetPosCode >> 6) || creep.room.name !== creep.memory.room) {
     targetPos = roomPos(mem._targetPos, Game.rooms[creep.memory.room].name)
-    move.cheap(creep, targetPos)
+    move.cheap(creep, targetPos, false, 0)
     return NOTHING_DONE
   }
   const result = creep.harvest(target)

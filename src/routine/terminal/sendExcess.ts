@@ -12,7 +12,6 @@ export default function sendExcess(terminal: StructureTerminal) {
     const roomTerminal = room.terminal
     if (!roomTerminal || !roomTerminal.my) continue
     const missing = storageSendThreshold - roomTerminal.store[resourceType]
-    console.log(missing)
     if (missing < TERMINAL_MIN_SEND) continue
     const toSend = Math.min(missing, excessLocalAmount)
     const result = terminal.send(resourceType, toSend, name)

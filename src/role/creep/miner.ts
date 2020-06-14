@@ -32,8 +32,8 @@ export default profiler.registerFN(function miner(creep: Miner) {
         case NOTHING_TODO:
           delete creep.memory._pick_pos
           autoPick(creep)
-        case DONE: case NOTHING_TODO:
-          const result = autoFill(creep)
+        case DONE:
+          const result = autoFill(creep, creep.memory._harvest !== creep.room.memory.colonySourceId)
           if (result in ACCEPTABLE || result === NO_RESOURCE) {
             // nothing to do
           } else if (creep.memory._draw && autoRepair(creep, 0) in ACCEPTABLE) creep.memory.state = REPAIR

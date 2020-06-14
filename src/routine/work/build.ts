@@ -19,7 +19,7 @@ export default function build(creep: BuildCreep) {
   }
   const result = creep.build(target)
   const remaining = creep.store[RESOURCE_ENERGY] - creep.getActiveBodyparts(WORK) * BUILD_POWER
-  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
+  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target, false, 3)
   else if (result !== 0) return FAILED
   else {
     if (remaining <= 0) return NO_RESOURCE
