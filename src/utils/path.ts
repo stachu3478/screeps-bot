@@ -121,13 +121,24 @@ const move = {
         if (!creepOnRoad.memory) {
           if (!creepOnRoad.my) return creep.moveTo(target, { costCallback })
           move.anywhere(creepOnRoad, dir, creep)
-        } else if (creepOnRoad.memory._move && creepOnRoad.memory._move.path.length > stuck && stuck < 10) {
+        } else if (move.check(creepOnRoad) && stuck < 5) {
           // this creep is moving we wont do anything
-        } else move.anywhere(creepOnRoad, (creepOnRoad.memory.role === MINER || stuck > 20) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep)
+        } else if (stuck < 20) {
+          move.anywhere(creepOnRoad, (creepOnRoad.memory.role === MINER || stuck > 10) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep)
+        } else creepOnRoad.suicide()
       }
     }
     mem._move.stuck = stuck + 1
     return result
+  },
+  check: (creep: Creep) => {
+    const moveData = creep.memory._move
+    if (!moveData) return false
+    if (creep.pos.roomName !== moveData.dest.room) return true
+    const xPos = creep.pos.x
+    const yPos = creep.pos.y
+    return (xPos !== moveData.dest.x || yPos !== moveData.dest.y)
+      && (xPos !== parseInt(moveData.path.substr(0, 2)) || yPos !== parseInt(moveData.path.substr(2, 4)))
   }
 }
 
