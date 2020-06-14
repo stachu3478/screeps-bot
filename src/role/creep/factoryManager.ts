@@ -1,4 +1,4 @@
-import { HAUL_FACTORY_FROM_TERMINAL, HAUL_TERMINAL_TO_FACTORY, HAUL_TERMINAL_FROM_FACTORY, HAUL_FACTORY_TO_TERMINAL, FACT_BOARD, IDLE } from 'constants/state'
+import State from 'constants/state'
 import { DONE, NOTHING_TODO, FAILED, SUCCESS } from 'constants/response'
 import draw from 'routine/haul/draw';
 import fill from 'routine/haul/fill';
@@ -21,7 +21,7 @@ interface FactoryManagerMemory extends CreepMemory {
 }
 
 function findJob(creep: FactoryManager) {
-  creep.memory.state = IDLE
+  creep.memory.state = State.IDLE
   const factory = creep.room.factory
   if (!factory) return false
   if (!creep.room.terminal) return false
@@ -31,86 +31,86 @@ function findJob(creep: FactoryManager) {
     creep.memory._drawType = type
     creep.memory._drawAmount = factoryStoragePerResource - factory.store[type]
     if (creep.memory._drawAmount > creep.room.terminal.store[type]) return false
-    creep.memory.state = HAUL_FACTORY_FROM_TERMINAL
+    creep.memory.state = State.HAUL_FACTORY_FROM_TERMINAL
   } else if (creep.room.memory.factoryDumps) {
     const type = creep.room.memory.factoryDumps
     creep.memory._draw = factory.id
     creep.memory._drawType = type
     creep.memory._drawAmount = factory.store[type]
     if (creep.memory._drawAmount > creep.room.terminal.store[type]) return false
-    creep.memory.state = HAUL_TERMINAL_FROM_FACTORY
+    creep.memory.state = State.HAUL_TERMINAL_FROM_FACTORY
   } else return false
   return true
 }
 
 export default profiler.registerFN(function factoryManager(creep: FactoryManager) {
   switch (creep.memory.state) {
-    case IDLE:
+    case State.IDLE:
       if (findJob(creep)) break
       if (creep.store.getUsedCapacity() === 0) {
         creep.memory.role = HARVESTER
         break
       }
-      dumpResources(creep, HAUL_FACTORY_TO_TERMINAL)
+      dumpResources(creep, State.HAUL_FACTORY_TO_TERMINAL)
       break
-    case HAUL_FACTORY_FROM_TERMINAL:
+    case State.HAUL_FACTORY_FROM_TERMINAL:
       switch (draw(creep)) {
         case DONE: case SUCCESS:
           const factory = creep.room.factory
           if (factory) {
             creep.memory._fill = factory.id
             creep.memory._fillType = creep.room.memory.factoryNeeds
-            creep.memory.state = HAUL_TERMINAL_TO_FACTORY
-          } else creep.memory.state = HAUL_FACTORY_TO_TERMINAL
+            creep.memory.state = State.HAUL_TERMINAL_TO_FACTORY
+          } else creep.memory.state = State.HAUL_FACTORY_TO_TERMINAL
           break
         case NOTHING_TODO: case FAILED:
-          creep.memory.state = IDLE
+          creep.memory.state = State.IDLE
           delete creep.room.memory.factoryNeeds
           break
       }
       break
-    case HAUL_TERMINAL_TO_FACTORY:
+    case State.HAUL_TERMINAL_TO_FACTORY:
       switch (fill(creep)) {
         case DONE: case SUCCESS:
-          creep.room.memory.factoryState = FACT_BOARD
+          creep.room.memory.factoryState = State.FACT_BOARD
           delete creep.room.memory.factoryNeeds
-          creep.memory.state = IDLE
+          creep.memory.state = State.IDLE
           break
         case NOTHING_TODO: case FAILED:
           const storage = getFillableGenericStruture(creep.room, creep.store.getUsedCapacity())
           if (!storage) break
           creep.memory._fill = storage.id
-          creep.memory.state = HAUL_FACTORY_TO_TERMINAL
+          creep.memory.state = State.HAUL_FACTORY_TO_TERMINAL
           break
       }
       break
-    case HAUL_TERMINAL_FROM_FACTORY:
+    case State.HAUL_TERMINAL_FROM_FACTORY:
       switch (draw(creep)) {
         case DONE: case SUCCESS: {
           const storage = getFillableGenericStruture(creep.room, creep.store.getUsedCapacity())
           if (storage) {
             creep.memory._fill = storage.id
             creep.memory._fillType = creep.room.memory.factoryDumps
-            creep.memory.state = HAUL_FACTORY_TO_TERMINAL
-          } else creep.memory.state = HAUL_TERMINAL_TO_FACTORY
+            creep.memory.state = State.HAUL_FACTORY_TO_TERMINAL
+          } else creep.memory.state = State.HAUL_TERMINAL_TO_FACTORY
         } break
         case NOTHING_TODO: case FAILED: {
-          creep.memory.state = IDLE
+          creep.memory.state = State.IDLE
           delete creep.room.memory.factoryDumps
         }; break
       }
       break
-    case HAUL_FACTORY_TO_TERMINAL:
+    case State.HAUL_FACTORY_TO_TERMINAL:
       switch (fill(creep)) {
         case DONE: case SUCCESS:
           delete creep.room.memory.factoryDumps
-          creep.memory.state = IDLE
+          creep.memory.state = State.IDLE
           break
         case NOTHING_TODO: case FAILED:
           const factory = creep.room.factory
           if (!factory) break
           creep.memory._fill = factory.id
-          creep.memory.state = HAUL_TERMINAL_TO_FACTORY
+          creep.memory.state = State.HAUL_TERMINAL_TO_FACTORY
           break
       }
       break

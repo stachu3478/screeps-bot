@@ -1,4 +1,4 @@
-import { BOOST } from "constants/state";
+import State from "constants/state";
 import routineBooster from "routine/boost";
 import { NOTHING_DONE } from "constants/response";
 
@@ -14,7 +14,7 @@ interface BoosterMemory extends CreepMemory {
 const roleBooster = {
   run: (creep: BoosterCreep) => {
     switch (creep.memory.state) {
-      case BOOST:
+      case State.BOOST:
         const lab = Game.getObjectById(creep.memory._boostLab || ('' as Id<StructureLab>))
         const result = routineBooster.run(creep, lab)
         if (result !== NOTHING_DONE) {
@@ -25,7 +25,7 @@ const roleBooster = {
       default:
         const targetLabId = creep.room.getBoostRequest(creep.name)
         if (targetLabId) {
-          creep.memory.state = BOOST
+          creep.memory.state = State.BOOST
           creep.memory._boostLab = targetLabId
         } else {
           creep.memory.role = creep.memory._targetRole

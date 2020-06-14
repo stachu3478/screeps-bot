@@ -1,4 +1,4 @@
-import { EXIT, INIT, SCOUT } from 'constants/state'
+import State from 'constants/state'
 import { DONE, FAILED } from 'constants/response'
 import exit from 'routine/exit'
 import scout from 'routine/military/scout'
@@ -13,25 +13,25 @@ interface ScoutMemory extends CreepMemory {
 
 export default function run(creep: Scout) {
   switch (creep.memory.state) {
-    case INIT:
+    case State.INIT:
       creep.notifyWhenAttacked(false)
-      creep.memory.state = EXIT
+      creep.memory.state = State.EXIT
       break;
-    case EXIT:
+    case State.EXIT:
       switch (exit(creep)) {
-        case DONE: creep.memory.state = SCOUT; break
+        case DONE: creep.memory.state = State.SCOUT; break
       }
       break;
-    case SCOUT:
+    case State.SCOUT:
       switch (scout(creep)) {
-        case FAILED: creep.memory.state = EXIT; break
+        case FAILED: creep.memory.state = State.EXIT; break
         case DONE:
           Memory.rooms[creep.memory.room]._claim = creep.room.name
-          creep.memory.state = EXIT
+          creep.memory.state = State.EXIT
           break
       }
       break;
     default:
-      creep.memory.state = INIT
+      creep.memory.state = State.INIT
   }
 }

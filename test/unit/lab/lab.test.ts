@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import _ from "lodash"
 import lab from "role/lab";
-import { IDLE, LAB_PRODUCING } from "constants/state";
+import State from "constants/state";
 
 describe('Lab system initialization', () => {
   let room: Room
@@ -33,13 +33,13 @@ describe('Lab system initialization', () => {
     room.memory = { labCooldown: 0 }
     room.lab2 = {} as StructureLab
     lab(room)
-    expect(room.memory.labState).to.eql(IDLE)
+    expect(room.memory.labState).to.eql(State.IDLE)
   });
 
   it("should return to LAB_PRODUCING state if recipe is present", function () {
     room.memory = { labCooldown: 0, labRecipe: RESOURCE_UTRIUM_HYDRIDE }
     room.lab2 = {} as StructureLab
     lab(room)
-    expect(room.memory.labState).to.eql(LAB_PRODUCING)
+    expect(room.memory.labState).to.eql(State.LAB_PRODUCING)
   });
 });

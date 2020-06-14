@@ -1,4 +1,4 @@
-import { IDLE, LAB_PENDING } from 'constants/state';
+import State from 'constants/state';
 import { DONE, SUCCESS, NOTHING_DONE } from 'constants/response';
 import { labProductionThreshold } from 'config/terminal';
 
@@ -9,7 +9,7 @@ interface Hash {
 export default {
   run: (term: StructureTerminal) => {
     const mem = term.room.memory
-    if (mem.labState !== IDLE) return NOTHING_DONE
+    if (mem.labState !== State.IDLE) return NOTHING_DONE
     for (const r1 in term.store) {
       const resource1 = r1 as ResourceConstant
       if (term.store[resource1] < TERMINAL_MIN_SEND) continue
@@ -20,7 +20,7 @@ export default {
         if (term.store[resource2] < TERMINAL_MIN_SEND) continue
         const intersection = (REACTIONS[resource1] as Hash)[resource2] as ResourceConstant
         if (term.store[intersection] >= labProductionThreshold) continue
-        mem.labState = LAB_PENDING
+        mem.labState = State.LAB_PENDING
         mem.labRecipe = intersection
         mem.labIndegrient1 = resource1
         mem.labIndegrient2 = resource2

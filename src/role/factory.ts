@@ -1,18 +1,18 @@
 import { infoStyle } from "room/style";
-import { IDLE, FACT_WORKING, FACT_BOARD } from "constants/state";
+import State from "constants/state";
 import handleFactory, { com, factoryStoragePerResource, isProducableByFactory } from "utils/handleFactory";
 
 export default function factory(factory: StructureFactory) {
   const mem = factory.room.memory
   switch (mem.factoryState) {
-    case IDLE:
+    case State.IDLE:
       factory.room.visual.text('Factory: Idle', 0, 6, infoStyle)
       break
-    case FACT_BOARD:
+    case State.FACT_BOARD:
       factory.room.visual.text('Factory: Withdrawing', 0, 6, infoStyle)
-      mem.factoryState = FACT_WORKING
+      mem.factoryState = State.FACT_WORKING
       break
-    case FACT_WORKING:
+    case State.FACT_WORKING:
       if (factory.cooldown) return
       if (!mem.factoryProducing) {
         for (const name in com) {
@@ -24,7 +24,7 @@ export default function factory(factory: StructureFactory) {
             mem.factoryProducing = name as ResourceConstant
           }
         }
-        mem.factoryState = IDLE
+        mem.factoryState = State.IDLE
         if (factory.room.terminal) handleFactory(factory.room.terminal.store, factory)
         else if (factory.room.storage) handleFactory(factory.room.storage.store, factory)
         break
@@ -34,6 +34,6 @@ export default function factory(factory: StructureFactory) {
       factory.room.visual.text('Factory: Producing ' + mem.factoryProducing, 0, 6, infoStyle)
       if (result === ERR_NOT_ENOUGH_RESOURCES) delete mem.factoryProducing
       break
-    default: mem.factoryState = IDLE
+    default: mem.factoryState = State.IDLE
   }
 }

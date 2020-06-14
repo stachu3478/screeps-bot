@@ -1,4 +1,4 @@
-import { RECYCLE, INIT, FIGHT } from 'constants/state'
+import State from 'constants/state'
 import { DONE, NOTHING_TODO } from 'constants/response'
 import recycle from 'routine/recycle';
 import fight from 'routine/military/fight';
@@ -11,21 +11,21 @@ interface FighterMemory extends CreepMemory { }
 
 export default function fighter(creep: Fighter, enemy?: Creep, keepDistance?: boolean) {
   switch (creep.memory.state) {
-    case INIT:
+    case State.INIT:
       creep.notifyWhenAttacked(false)
-      creep.memory.state = FIGHT
+      creep.memory.state = State.FIGHT
       break
-    case RECYCLE:
+    case State.RECYCLE:
       switch (recycle(creep)) {
         case DONE: delete Memory.creeps[creep.name]
       }
       break
-    case FIGHT:
+    case State.FIGHT:
       switch (fight(creep, enemy, keepDistance)) {
-        case NOTHING_TODO: creep.memory.state = RECYCLE; break
+        case NOTHING_TODO: creep.memory.state = State.RECYCLE; break
       }
       break
     default:
-      creep.memory.state = INIT
+      creep.memory.state = State.INIT
   }
 }

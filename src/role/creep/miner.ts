@@ -1,6 +1,6 @@
 import { NOTHING_TODO, NOTHING_DONE, DONE, NO_RESOURCE, FAILED, ACCEPTABLE } from 'constants/response'
 import harvest from 'routine/work/harvest';
-import { HARVESTING, REPAIR, BUILD, INIT } from 'constants/state';
+import State from 'constants/state';
 import autoFill from 'routine/haul/autoFill';
 import autoRepair from 'routine/work/autoRepair';
 import autoBuild from 'routine/work/autoBuild';
@@ -23,11 +23,11 @@ export interface MinerMemory extends CreepMemory {
 
 export default profiler.registerFN(function miner(creep: Miner) {
   switch (creep.memory.state) {
-    case INIT:
+    case State.INIT:
       if (!creep.memory._harvest) creep.memory._harvest = creep.room.memory.colonySourceId
-      else creep.memory.state = HARVESTING
+      else creep.memory.state = State.HARVESTING
       break
-    case HARVESTING:
+    case State.HARVESTING:
       switch (harvest(creep, creep.memory._harvest)) {
         case NOTHING_TODO:
           delete creep.memory._pick_pos
@@ -36,8 +36,8 @@ export default profiler.registerFN(function miner(creep: Miner) {
           const result = autoFill(creep, creep.memory._harvest !== creep.room.memory.colonySourceId)
           if (result in ACCEPTABLE || result === NO_RESOURCE) {
             // nothing to do
-          } else if (creep.memory._draw && autoRepair(creep, 0) in ACCEPTABLE) creep.memory.state = REPAIR
-          else if (autoBuild(creep) in ACCEPTABLE) creep.memory.state = BUILD
+          } else if (creep.memory._draw && autoRepair(creep, 0) in ACCEPTABLE) creep.memory.state = State.REPAIR
+          else if (autoBuild(creep) in ACCEPTABLE) creep.memory.state = State.BUILD
           else if (creep.room.memory.colonySources && creep.memory._harvest) {
             const miningPos = creep.room.memory.colonySources[creep.memory._harvest].charCodeAt(0)
             const x = miningPos & 63
@@ -49,23 +49,23 @@ export default profiler.registerFN(function miner(creep: Miner) {
             const container = getXYContainer(creep.room, x, y)
             if (!container) {
               if (creep.room.createConstructionSite(x, y, STRUCTURE_CONTAINER) === 0) {
-                creep.memory.state = BUILD
+                creep.memory.state = State.BUILD
                 break
               }
             } else if (container.hits < container.hitsMax) {
               creep.memory._auto_repair = container.id
-              creep.memory.state = REPAIR
+              creep.memory.state = State.REPAIR
               break
             }
             const rampart = getXYRampart(creep.room, x, y)
             if (!rampart) {
               if (creep.room.createConstructionSite(x, y, STRUCTURE_RAMPART) === 0) {
-                creep.memory.state = BUILD
+                creep.memory.state = State.BUILD
                 break
               }
             } else {
               creep.memory._auto_repair = rampart.id
-              creep.memory.state = REPAIR
+              creep.memory.state = State.REPAIR
               break
             }
           }
@@ -73,18 +73,18 @@ export default profiler.registerFN(function miner(creep: Miner) {
         case NOTHING_DONE: autoPick(creep); autoRepair(creep)
       }
       break
-    case REPAIR:
+    case State.REPAIR:
       switch (autoRepair(creep)) {
-        case NO_RESOURCE: harvest(creep); creep.memory.state = HARVESTING; break;
-        case NOTHING_TODO: creep.memory.state = BUILD; break;
+        case NO_RESOURCE: harvest(creep); creep.memory.state = State.HARVESTING; break;
+        case NOTHING_TODO: creep.memory.state = State.BUILD; break;
       }
       break
-    case BUILD:
+    case State.BUILD:
       switch (autoBuild(creep)) {
-        case NO_RESOURCE: harvest(creep); creep.memory.state = HARVESTING; break;
-        case NOTHING_TODO: case FAILED: creep.memory.state = HARVESTING; break;
+        case NO_RESOURCE: harvest(creep); creep.memory.state = State.HARVESTING; break;
+        case NOTHING_TODO: case FAILED: creep.memory.state = State.HARVESTING; break;
       }
       break
-    default: creep.memory.state = INIT;
+    default: creep.memory.state = State.INIT;
   }
 }, 'roleMiner')

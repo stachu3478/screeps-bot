@@ -1,5 +1,5 @@
 import mineralFill from "routine/haul/mineralFill";
-import { HARVESTING, STORAGE_FILL, RECYCLE } from "constants/state";
+import State from "constants/state";
 import { SUCCESS, DONE, NOTHING_TODO, NO_RESOURCE, NOTHING_DONE, ACCEPTABLE } from "constants/response";
 import recycle from "routine/recycle";
 import extract from "routine/work/extract";
@@ -16,35 +16,35 @@ export interface ExtractorMemory extends CreepMemory {
 
 export default profiler.registerFN(function extractor(creep: Extractor) {
   switch (creep.memory.state) {
-    case HARVESTING:
+    case State.HARVESTING:
       switch (extract(creep)) {
         case DONE:
-          creep.memory.state = STORAGE_FILL; break
+          creep.memory.state = State.STORAGE_FILL; break
         case NOTHING_TODO:
-          if (creep.store[creep.memory._extract || RESOURCE_ENERGY]) creep.memory.state = STORAGE_FILL
-          else creep.memory.state = RECYCLE; break
+          if (creep.store[creep.memory._extract || RESOURCE_ENERGY]) creep.memory.state = State.STORAGE_FILL
+          else creep.memory.state = State.RECYCLE; break
         case NOTHING_DONE: if (creep.memory._extract) autoPick(creep, creep.memory._extract)
       }
       break
-    case STORAGE_FILL:
+    case State.STORAGE_FILL:
       const mineralType = creep.memory._extract
       if (!mineralType) {
-        creep.memory.state = HARVESTING
+        creep.memory.state = State.HARVESTING
         return
       }
       switch (mineralFill(creep, mineralType)) {
         case SUCCESS: case NO_RESOURCE: {
-          if (creep.memory._extract && autoPick(creep, creep.memory._extract) in ACCEPTABLE) creep.memory.state = STORAGE_FILL
-          else creep.memory.state = HARVESTING
+          if (creep.memory._extract && autoPick(creep, creep.memory._extract) in ACCEPTABLE) creep.memory.state = State.STORAGE_FILL
+          else creep.memory.state = State.HARVESTING
         }
       }
       break
-    case RECYCLE:
+    case State.RECYCLE:
       switch (recycle(creep)) {
         case DONE: delete Memory.creeps[creep.name]
       }
       break
     default:
-      creep.memory.state = HARVESTING
+      creep.memory.state = State.HARVESTING
   }
 }, 'roleExtractor')

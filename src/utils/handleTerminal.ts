@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { TERM_SEND_EXCESS } from 'constants/state';
+import State from 'constants/state';
 import handleLab from './handleLab';
 import handleFactory from './handleFactory';
 
@@ -22,7 +22,7 @@ tradeBlackList.forEach(n => {
 
 export default function handleTerminal(terminal: StructureTerminal, resourceType: ResourceConstant) {
   const mem = terminal.room.memory
-  mem.terminalState = TERM_SEND_EXCESS
+  mem.terminalState = State.TERM_SEND_EXCESS
   mem.terminalDealResourceType = resourceType
   handleLab.run(terminal)
   if (!mem.structs) return

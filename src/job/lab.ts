@@ -1,5 +1,5 @@
 import { LabManager } from "role/creep/labManager.d";
-import { HAUL_LAB_FROM_STORAGE, HAUL_STORAGE_FROM_LAB, LAB_PRODUCING } from "constants/state";
+import State from "constants/state";
 
 const labJobs = {
   prepareReaction: (lab1: StructureLab, lab2: StructureLab, terminal: StructureTerminal, roomMemory: RoomMemory, creep: LabManager) => {
@@ -14,7 +14,7 @@ const labJobs = {
       (lab1.store[resource1] < targetAmount && labJobs.prepareCreepForFilling(creep, lab1, resource1, targetAmount))
       || (lab2.store[resource2] < targetAmount && labJobs.prepareCreepForFilling(creep, lab2, resource2, targetAmount))
     ) return true
-    roomMemory.labState = LAB_PRODUCING
+    roomMemory.labState = State.LAB_PRODUCING
     return false
   },
   collectResources: (creep: LabManager, labs: StructureLab[]) => {
@@ -49,14 +49,14 @@ const labJobs = {
     creep.memory._draw = terminal.id
     creep.memory._fillType = creep.memory._drawType = resourceToFillWith
     creep.memory._targetLab = lab.id
-    creep.memory.state = HAUL_LAB_FROM_STORAGE
+    creep.memory.state = State.HAUL_LAB_FROM_STORAGE
     return true
   },
   prepareCreepForDumping: (creep: LabManager, labId: Id<StructureLab>, mineralType: ResourceConstant) => {
     creep.memory._draw = labId
     delete creep.memory._drawAmount
     creep.memory._fillType = creep.memory._drawType = mineralType
-    creep.memory.state = HAUL_STORAGE_FROM_LAB
+    creep.memory.state = State.HAUL_STORAGE_FROM_LAB
   },
   lookForBoosting: (creep: LabManager, index: number, data: BoostData, lab: StructureLab) => {
     const resourceToFillWith = data.resources.labs[index]

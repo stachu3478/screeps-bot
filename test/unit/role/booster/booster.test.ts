@@ -3,7 +3,7 @@ import _ from 'lodash'
 import sinon from 'sinon'
 import roleBooster, { BoosterCreep } from 'role/creep/booster'
 import routineBooster from 'routine/boost'
-import { BOOST } from 'constants/state';
+import State from 'constants/state';
 import { MINER, BOOSTER } from 'constants/role';
 import { NOTHING_DONE, FAILED, SUCCESS } from 'constants/response';
 
@@ -40,7 +40,7 @@ describe('Creep boost routine', () => {
 
       it('Should have default state BOOSTING', () => {
         roleBooster.run(creep)
-        expect(creep.memory.state).to.eql(BOOST)
+        expect(creep.memory.state).to.eql(State.BOOST)
         expect(creep.memory.role).to.eql(BOOSTER)
         expect(creep.memory._boostLab).to.eql('labId')
         expect(creep.room.getBoostRequest).to.be.called
@@ -65,7 +65,7 @@ describe('Creep boost routine', () => {
 
   describe('boosting state', () => {
     beforeEach(() => {
-      creep.memory.state = BOOST
+      creep.memory.state = State.BOOST
       creep.memory._boostLab = 'labId' as Id<StructureLab>
     })
 
@@ -76,7 +76,7 @@ describe('Creep boost routine', () => {
 
       it('Should run boost routine and keep boosting', () => {
         roleBooster.run(creep)
-        expect(creep.memory.state).to.eql(BOOST, 'Invalid state')
+        expect(creep.memory.state).to.eql(State.BOOST, 'Invalid state')
         expect(creep.memory.role).to.eql(BOOSTER, 'Invalid role')
         expect(routineBooster.run).to.be.calledWithExactly(creep, lab1)
       })

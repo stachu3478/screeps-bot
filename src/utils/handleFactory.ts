@@ -1,4 +1,4 @@
-import { FACT_BOARD } from 'constants/state';
+import State from 'constants/state';
 import { nominalStorage } from 'config/terminal';
 
 export const factoryStoragePerResource = Math.floor(FACTORY_CAPACITY / Object.keys(COMMODITIES).length)
@@ -61,7 +61,7 @@ export default function handleFactory(resources: ResourceMap, factory: Structure
       if (factory.store[name] >= factoryStoragePerResource) continue
       if (isNeededByFactory(resources, name)) {
         mem.factoryNeeds = name
-        mem.factoryState = FACT_BOARD
+        mem.factoryState = State.FACT_BOARD
         break
       }
     }
