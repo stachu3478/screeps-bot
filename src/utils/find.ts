@@ -1,13 +1,23 @@
 import _ from 'lodash'
 import { FIGHTER } from "constants/role";
 import { Fighter } from "role/creep/fighter";
-import { posToChar } from 'planner/pos';
+import { getContainer, getExtension, getSpawn } from './selectFromPos';
+
+function persistFilter<T>(arr: (T | undefined)[]): T[] {
+  return arr.filter(v => v) as T[]
+}
 
 const towerFilter = { filter: (s: Structure) => s.structureType === STRUCTURE_TOWER }
 export const findTowers = (room: Room) => room.find<StructureTower>(FIND_STRUCTURES, towerFilter)
 
-const containerFilter = { filter: (s: Structure) => s.structureType === STRUCTURE_CONTAINER }
-export const findContainers = (room: Room) => room.find<StructureContainer>(FIND_STRUCTURES, containerFilter)
+export const findContainers = (room: Room) => {
+  const colonySources = room.memory.colonySources
+  if (!colonySources) return []
+  const potencialContainers = Object
+    .values(colonySources)
+    .map(char => getContainer(room, char.charCodeAt(0)))
+  return persistFilter(potencialContainers)
+}
 
 const sourceKeepersFilter = { filter: (c: Creep) => c.owner.username === "Source Keeper" }
 export const findSourceKeepers = (room: Room) => room.find(FIND_HOSTILE_CREEPS, sourceKeepersFilter)
@@ -37,8 +47,11 @@ const energyFilter = { filter: (r: Tombstone | Ruin) => r.store[RESOURCE_ENERGY]
 export const findNearEnergyTombstones = (pos: RoomPosition) => pos.findInRange(FIND_TOMBSTONES, 1, energyFilter)
 export const findNearEnergyRuins = (pos: RoomPosition) => pos.findInRange(FIND_RUINS, 1, energyFilter)
 
-const filledContainerFilter = { filter: (s: AnyStoreStructure) => s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY] }
-export const findClosestFilledContainer = (pos: RoomPosition) => pos.findClosestByRange<StructureContainer>(FIND_STRUCTURES, filledContainerFilter)
+const filledContainerFilter = (s: AnyStoreStructure) => s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY]
+export const findClosestFilledContainer = (pos: RoomPosition) => pos.findClosestByRange(
+  findContainers(Game.rooms[pos.roomName])
+    .filter(filledContainerFilter)
+)
 
 const hittableFilter = { filter: (s: Structure) => s.hits }
 export const findClosestHostileHittableStructures = (pos: RoomPosition) => pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, hittableFilter)
@@ -122,4 +135,16 @@ export const findClosestStructureToFillWithPriority = (room: Room, pos: RoomPosi
   const maxPriority = fillPriority[_.max(structures, priorityObfuscator).structureType]
   const prioritized = structures.filter((s) => fillPriority[s.structureType] === maxPriority)
   return pos.findClosestByPath(prioritized) || pos.findClosestByRange(prioritized)
+}
+
+export const getDistanceOrderedHatches = (room: Room) => {
+  const structChars = room.memory.structs
+  if (!structChars) return []
+  const potencialHatches = structChars
+    .split('')
+    .map(char => {
+      const code = char.charCodeAt(0)
+      return getExtension(room, code) || getSpawn(room, code)
+    })
+  return persistFilter(potencialHatches)
 }

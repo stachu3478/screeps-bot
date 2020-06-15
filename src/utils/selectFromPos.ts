@@ -14,6 +14,8 @@ export const getLink = createPosSelector(STRUCTURE_LINK) as PosSelector<Structur
 export const getFactory = createPosSelector(STRUCTURE_FACTORY) as PosSelector<StructureFactory>
 export const getLab = createPosSelector(STRUCTURE_LAB) as PosSelector<StructureLab>
 export const getContainer = createPosSelector(STRUCTURE_CONTAINER) as PosSelector<StructureContainer>
+export const getExtension = createPosSelector(STRUCTURE_EXTENSION) as PosSelector<StructureExtension>
+export const getSpawn = createPosSelector(STRUCTURE_SPAWN) as PosSelector<StructureSpawn>
 
 export const getXYLink = createXYSelector(STRUCTURE_LINK) as XYSelector<StructureLink>
 export const getXYContainer = createXYSelector(STRUCTURE_CONTAINER) as XYSelector<StructureContainer>
