@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import _ from 'lodash'
 import labJobs from 'job/lab';
 import { LabManager } from 'role/creep/labManager.d';
-import { HAUL_STORAGE_FROM_LAB } from 'constants/state';
+import State from 'constants/state';
 
 describe('Preparing creep to empty lab', () => {
   const { prepareCreepForDumping } = labJobs
@@ -20,6 +20,6 @@ describe('Preparing creep to empty lab', () => {
     expect(creep.memory._draw).to.eql('theLab', 'Invalid draw target id')
     expect(creep.memory._drawType).to.eql(RESOURCE_UTRIUM_ACID, 'Invalid resource type to draw from')
     expect(creep.memory._fillType).to.eql(RESOURCE_UTRIUM_ACID, 'Invalid resource type to insert to')
-    expect(creep.memory.state).to.eql(HAUL_STORAGE_FROM_LAB, 'Invalid state selected')
+    expect(creep.memory.state).to.eql(State.HAUL_STORAGE_FROM_LAB, 'Invalid state selected')
   });
 });

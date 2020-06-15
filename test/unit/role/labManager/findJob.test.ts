@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import labJobs from 'job/lab';
 import handleLab from 'utils/handleLab';
 import { findJob } from 'role/creep/labManager'
-import { IDLE, LAB_PENDING, LAB_COLLECTING } from 'constants/state';
+import State from 'constants/state';
 
 describe('Finding job for lab manager', () => {
   let creep: Creep
@@ -44,7 +44,7 @@ describe('Finding job for lab manager', () => {
     sinon.stub(labJobs, 'prepareReaction')
     delete creep.room.lab1
     expect(findJob(creep)).to.eql(false)
-    expect(creep.memory.state).to.eql(IDLE)
+    expect(creep.memory.state).to.eql(State.IDLE)
     expect(labJobs.prepareReaction).to.not.be.called
     expect(labJobs.prepareBoostResources).to.be.calledWithExactly(creep, creep.room.externalLabs)
   })
@@ -54,7 +54,7 @@ describe('Finding job for lab manager', () => {
     sinon.stub(labJobs, 'prepareReaction')
     delete creep.room.terminal
     expect(findJob(creep)).to.eql(false)
-    expect(creep.memory.state).to.eql(IDLE)
+    expect(creep.memory.state).to.eql(State.IDLE)
     expect(labJobs.prepareReaction).to.not.be.called
     expect(labJobs.prepareBoostResources).to.be.calledWithExactly(creep, creep.room.externalLabs)
   })
@@ -62,9 +62,9 @@ describe('Finding job for lab manager', () => {
   it('Returns false for lab state pending and no such job', () => {
     sinon.stub(labJobs, 'prepareBoostResources').returns(false)
     sinon.stub(labJobs, 'prepareReaction').returns(false)
-    creep.room.memory.labState = LAB_PENDING
+    creep.room.memory.labState = State.LAB_PENDING
     expect(findJob(creep)).to.eql(false)
-    expect(creep.memory.state).to.eql(IDLE)
+    expect(creep.memory.state).to.eql(State.IDLE)
     expect(labJobs.prepareReaction).to.be.calledWithExactly(lab1, lab2, creep.room.terminal, creep.room.memory, creep)
     expect(labJobs.prepareBoostResources).to.be.calledWithExactly(creep, creep.room.externalLabs)
   })
@@ -72,7 +72,7 @@ describe('Finding job for lab manager', () => {
   it('Returns true for lab state pending and found job', () => {
     sinon.stub(labJobs, 'prepareBoostResources').returns(false)
     sinon.stub(labJobs, 'prepareReaction').returns(true)
-    creep.room.memory.labState = LAB_PENDING
+    creep.room.memory.labState = State.LAB_PENDING
     expect(findJob(creep)).to.eql(true)
     expect(labJobs.prepareReaction).to.be.calledWithExactly(lab1, lab2, creep.room.terminal, creep.room.memory, creep)
     expect(labJobs.prepareBoostResources).to.be.calledWithExactly(creep, creep.room.externalLabs)
@@ -82,10 +82,10 @@ describe('Finding job for lab manager', () => {
     sinon.stub(labJobs, 'prepareBoostResources').returns(false)
     sinon.stub(labJobs, 'collectResources').returns(false)
     sinon.stub(handleLab, 'run')
-    creep.room.memory.labState = LAB_COLLECTING
+    creep.room.memory.labState = State.LAB_COLLECTING
     expect(findJob(creep)).to.eql(false)
-    expect(creep.memory.state).to.eql(IDLE)
-    expect(creep.room.memory.labState).to.eql(IDLE)
+    expect(creep.memory.state).to.eql(State.IDLE)
+    expect(creep.room.memory.labState).to.eql(State.IDLE)
     expect(labJobs.collectResources).to.be.calledWithExactly(creep, [externalLab, lab1, lab2])
     expect(handleLab.run).to.be.calledWithExactly(creep.room.terminal)
     expect(labJobs.prepareBoostResources).to.be.calledWithExactly(creep, creep.room.externalLabs)
@@ -95,9 +95,9 @@ describe('Finding job for lab manager', () => {
     sinon.stub(labJobs, 'prepareBoostResources').returns(false)
     sinon.stub(labJobs, 'collectResources').returns(true)
     sinon.stub(handleLab, 'run')
-    creep.room.memory.labState = LAB_COLLECTING
+    creep.room.memory.labState = State.LAB_COLLECTING
     expect(findJob(creep)).to.eql(true)
-    expect(creep.room.memory.labState).to.eql(LAB_COLLECTING)
+    expect(creep.room.memory.labState).to.eql(State.LAB_COLLECTING)
     expect(labJobs.collectResources).to.be.calledWithExactly(creep, [externalLab, lab1, lab2])
     expect(handleLab.run).to.not.be.called
     expect(labJobs.prepareBoostResources).to.be.calledWithExactly(creep, creep.room.externalLabs)

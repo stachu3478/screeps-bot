@@ -1,6 +1,6 @@
 import _ from 'lodash'
-import { posToChar } from 'planner/pos'
-import { MINER } from 'constants/role';
+import xyToChar, { posToChar } from 'planner/pos'
+import { MINER, STATIC_UPGRADER } from 'constants/role';
 import { findSourceKeepers } from './find';
 
 interface OffsetByDirection {
@@ -107,26 +107,28 @@ const move = {
       result = creep.moveTo(target, { ignoreCreeps: true, reusePath: 100, costCallback, range })
     }
     const mem = creep.memory
+    const pos = xyToChar(creep.pos.x, creep.pos.y)
+    const moved = mem.lastPos !== pos
+    mem.lastPos = pos
     if (!mem._move) return result
     const path = mem._move.path
     const dir = parseInt(path.charAt(4)) as DirectionConstant
-    const moved = parseInt(path.substr(0, 2)) === creep.pos.x && parseInt(path.substr(2, 2)) === creep.pos.y
-    if (moved) mem._move.stuck = 0
-    let stuck = mem._move.stuck || -1
+    let stuck = mem._move.stuck || 0
+    if (moved) stuck = 0
     if (dir) {
       const creepOnRoad = creep.room.lookForAt(LOOK_CREEPS, creep.pos.x + offsetsByDirection[dir][0], creep.pos.y + offsetsByDirection[dir][1])[0]
       if (creepOnRoad) {
         if (!creepOnRoad.memory) {
           if (!creepOnRoad.my) result = creep.moveTo(target, { costCallback, range })
           else if (move.anywhere(creepOnRoad, dir, creep))
-            stuck = -1
-        } else if (move.check(creepOnRoad) && stuck < 5) {
+            stuck = 0
+          //} else if (move.check(creepOnRoad) && stuck < 5) {
           // this creep is moving we wont do anything
         } else {
-          if (move.anywhere(creepOnRoad, (creepOnRoad.memory.role === MINER || stuck > 10) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep))
-            stuck = -1
+          if (move.anywhere(creepOnRoad, (creepOnRoad.memory.role === STATIC_UPGRADER || creepOnRoad.memory.role === MINER || stuck > 10) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep))
+            stuck = 0
         }
-      } else stuck = -1
+      } else stuck = 0
     }
     mem._move.stuck = stuck + 1
     return result

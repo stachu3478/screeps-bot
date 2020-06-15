@@ -13,6 +13,8 @@ export default function extract(spawn: StructureSpawn) {
     room: spawn.room.name,
     deprivity: 0
   }
-  spawn.trySpawnCreep(progressiveWorker(spawn.room.energyCapacityAvailable), name, memory, false, 25)
+  const body = progressiveWorker(spawn.room.energyCapacityAvailable)
+  const boostRequests = spawn.room.prepareBoostData(memory, [CARRY, WORK], ['capacity', 'harvest'], body)
+  spawn.trySpawnCreep(body, name, memory, false, 25, boostRequests)
   return true
 }

@@ -3,6 +3,10 @@ interface BoostInfo {
   partCount: number
 }
 
+interface BoostKeys {
+
+}
+
 interface Room {
   factory?: StructureFactory
   lab1?: StructureLab
@@ -26,6 +30,7 @@ interface Room {
   getBoostRequest: (creepName: string) => Id<StructureLab> | undefined
   createBoostRequest: (creepName: string, resource: ResourceConstant, partCount: number) => void
   clearBoostRequest: (creepName: string, resource: ResourceConstant | null) => void
+  prepareBoostData: (creepMemory: CreepMemory, parts: BodyPartConstant[], actions: string[], body: BodyPartConstant[]) => BoostInfo[]
 }
 
 interface StructureLab {

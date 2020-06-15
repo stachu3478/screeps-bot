@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import _ from 'lodash'
-import { LAB_PRODUCING } from 'constants/state';
+import State from 'constants/state';
 
 describe('When lab system is in producing state', () => {
   let room: Room
@@ -14,7 +14,7 @@ describe('When lab system is in producing state', () => {
     room.lab1 = {} as StructureLab
     room.lab2 = {} as StructureLab
     room.externalLabs = []
-    room.memory = { labState: LAB_PRODUCING, labCooldown: 0 }
+    room.memory = { labState: State.LAB_PRODUCING, labCooldown: 0 }
     room.visual = new RoomVisual()
   });
 

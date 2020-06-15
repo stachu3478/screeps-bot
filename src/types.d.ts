@@ -6,7 +6,6 @@ interface SourceMap {
 interface CreepMemory {
   role: number
   _targetRole?: number
-  boosting?: 1
   room: string
   state?: number
   _move?: {
@@ -19,6 +18,7 @@ interface CreepMemory {
     stuck?: number
   };
   deprivity: number
+  lastPos?: number
 }
 
 interface SpawnMemory {

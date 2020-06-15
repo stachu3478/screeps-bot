@@ -1,20 +1,25 @@
-import _ from 'lodash'
-
+type PosSelector<T> = (room: Room, charCode: number) => T | undefined
 const createPosSelector = (type: StructureConstant) => (room: Room, charCode: number) =>
-  _.find(room.lookForAt(LOOK_STRUCTURES, charCode & 63, charCode >> 6), s => s.structureType === type)
+  room
+    .lookForAt(LOOK_STRUCTURES, charCode & 63, charCode >> 6)
+    .find(s => s.structureType === type)
 
+type XYSelector<T> = (room: Room, x: number, y: number) => T | undefined
 const createXYSelector = (type: StructureConstant) => (room: Room, x: number, y: number) =>
-  _.find(room.lookForAt(LOOK_STRUCTURES, x, y), s => s.structureType === type)
+  room
+    .lookForAt(LOOK_STRUCTURES, x, y)
+    .find(s => s.structureType === type)
 
-export const getLink = createPosSelector(STRUCTURE_LINK) as (room: Room, charCode: number) => StructureLink | undefined
-export const getFactory = createPosSelector(STRUCTURE_FACTORY) as (room: Room, charCode: number) => StructureFactory | undefined
-export const getLab = createPosSelector(STRUCTURE_LAB) as (room: Room, charCode: number) => StructureLab | undefined
+export const getLink = createPosSelector(STRUCTURE_LINK) as PosSelector<StructureLink>
+export const getFactory = createPosSelector(STRUCTURE_FACTORY) as PosSelector<StructureFactory>
+export const getLab = createPosSelector(STRUCTURE_LAB) as PosSelector<StructureLab>
+export const getContainer = createPosSelector(STRUCTURE_CONTAINER) as PosSelector<StructureContainer>
 
-export const getXYLink = createXYSelector(STRUCTURE_LINK) as (room: Room, x: number, y: number) => StructureLink | undefined
-export const getXYContainer = createXYSelector(STRUCTURE_CONTAINER) as (room: Room, x: number, y: number) => StructureContainer | undefined
-export const getXYSpawn = createXYSelector(STRUCTURE_SPAWN) as (room: Room, x: number, y: number) => StructureSpawn | undefined
-export const getXYTower = createXYSelector(STRUCTURE_TOWER) as (room: Room, x: number, y: number) => StructureTower | undefined
-export const getXYRampart = createXYSelector(STRUCTURE_RAMPART) as (room: Room, x: number, y: number) => StructureRampart | undefined
-export const getXYWall = createXYSelector(STRUCTURE_WALL) as (room: Room, x: number, y: number) => StructureWall | undefined
-export const getXYRoad = createXYSelector(STRUCTURE_ROAD) as (room: Room, x: number, y: number) => StructureRoad | undefined
-export const getXYExtractor = createXYSelector(STRUCTURE_EXTRACTOR) as (room: Room, x: number, y: number) => StructureExtractor | undefined
+export const getXYLink = createXYSelector(STRUCTURE_LINK) as XYSelector<StructureLink>
+export const getXYContainer = createXYSelector(STRUCTURE_CONTAINER) as XYSelector<StructureContainer>
+export const getXYSpawn = createXYSelector(STRUCTURE_SPAWN) as XYSelector<StructureSpawn>
+export const getXYTower = createXYSelector(STRUCTURE_TOWER) as XYSelector<StructureTower>
+export const getXYRampart = createXYSelector(STRUCTURE_RAMPART) as XYSelector<StructureRampart>
+export const getXYWall = createXYSelector(STRUCTURE_WALL) as XYSelector<StructureWall>
+export const getXYRoad = createXYSelector(STRUCTURE_ROAD) as XYSelector<StructureRoad>
+export const getXYExtractor = createXYSelector(STRUCTURE_EXTRACTOR) as XYSelector<StructureExtractor>

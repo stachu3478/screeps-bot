@@ -117,3 +117,16 @@ Room.prototype.clearBoostRequest = function (creepName: string, resource: Resour
   }
   if (toRemove) this.clearBoostRequest(toRemove, resourceToRemove)
 }
+
+Room.prototype.prepareBoostData = function (creepMemory: CreepMemory, parts: BodyPartConstant[], actions: string[], body: BodyPartConstant[]) {
+  const boostRequests: BoostInfo[] = []
+  parts.forEach((part, i) => {
+    const boostInfo = this.getBestAvailableBoost(part, actions[i], body.filter(type => type === part).length)
+    if (boostInfo) boostRequests.push(boostInfo)
+  })
+  if (boostRequests.length) {
+    creepMemory._targetRole = creepMemory.role
+    creepMemory.role = BOOSTER
+  }
+  return boostRequests
+}

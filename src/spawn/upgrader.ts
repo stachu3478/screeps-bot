@@ -27,16 +27,7 @@ export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemo
       }
     }
   }
-  const carryBoostInfo = spawn.room.getBestAvailableBoost('carry', 'capacity', 1)
-  const upgradeBoostInfo = spawn.room.getBestAvailableBoost('work', 'upgradeController', parts.filter(type => type === WORK).length)
-  const boostRequests: BoostInfo[] = []
-  if (carryBoostInfo) boostRequests.push(carryBoostInfo)
-  if (upgradeBoostInfo) boostRequests.push(upgradeBoostInfo)
   const creepMemory: CreepMemory = { role, room: spawn.room.name, deprivity }
-  if (boostRequests.length) {
-    creepMemory.boosting = 1
-    creepMemory._targetRole = creepMemory.role
-    creepMemory.role = BOOSTER
-  }
+  const boostRequests = spawn.room.prepareBoostData(creepMemory, [CARRY, WORK], ['capacity', 'upgradeController'], parts)
   spawn.trySpawnCreep(parts, name, creepMemory, false, 100, boostRequests)
 }

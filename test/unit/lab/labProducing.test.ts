@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import _ from 'lodash'
 import lab from 'role/lab';
-import { LAB_PRODUCING, LAB_COLLECTING } from 'constants/state';
+import State from 'constants/state';
 import sinon from 'sinon';
 
 describe('When lab system is in producing state', () => {
@@ -16,13 +16,13 @@ describe('When lab system is in producing state', () => {
     room.lab1 = {} as StructureLab
     room.lab2 = {} as StructureLab
     room.externalLabs = []
-    room.memory = { labState: LAB_PRODUCING, labCooldown: 0 }
+    room.memory = { labState: State.LAB_PRODUCING, labCooldown: 0 }
     room.visual = new RoomVisual()
   });
 
   it('should switch to collecting state when no recipe is present', function () {
     lab(room)
-    expect(room.memory.labState).to.eql(LAB_COLLECTING)
+    expect(room.memory.labState).to.eql(State.LAB_COLLECTING)
   });
 
   it('should run reaction', function () {
@@ -33,7 +33,7 @@ describe('When lab system is in producing state', () => {
     room.externalLabs.push(externalLab)
     lab(room)
     expect(externalLab.runReaction).to.be.calledOnce
-    expect(room.memory.labState).to.eql(LAB_PRODUCING)
+    expect(room.memory.labState).to.eql(State.LAB_PRODUCING)
     expect(room.memory.labCooldown).to.be.greaterThan(0)
   });
 
@@ -45,7 +45,7 @@ describe('When lab system is in producing state', () => {
     room.externalLabs.push(externalLab)
     lab(room)
     expect(externalLab.runReaction).to.be.calledOnce
-    expect(room.memory.labState).to.eql(LAB_COLLECTING)
+    expect(room.memory.labState).to.eql(State.LAB_COLLECTING)
     expect(room.memory.labCooldown).to.eql(0)
   });
 
@@ -57,7 +57,7 @@ describe('When lab system is in producing state', () => {
     room.externalLabs.push(externalLab)
     lab(room)
     expect(externalLab.runReaction).to.be.calledOnce
-    expect(room.memory.labState).to.eql(LAB_COLLECTING)
+    expect(room.memory.labState).to.eql(State.LAB_COLLECTING)
     expect(room.memory.labCooldown).to.eql(0)
   });
 
@@ -69,7 +69,7 @@ describe('When lab system is in producing state', () => {
     room.externalLabs.push(externalLab)
     lab(room)
     expect(externalLab.runReaction).to.not.be.called
-    expect(room.memory.labState).to.eql(LAB_PRODUCING)
+    expect(room.memory.labState).to.eql(State.LAB_PRODUCING)
     expect(room.memory.labCooldown).to.be.greaterThan(0)
   });
 });

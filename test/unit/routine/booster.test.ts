@@ -18,13 +18,14 @@ describe('Creep work in boost mode', () => {
 
     lab1 = {} as StructureLab
 
-    creep = {} as BoosterCreep
+    creep = { room: { memory: {} } } as BoosterCreep
     sinon.restore()
   });
 
   describe('no lab passed', () => {
     it('Should return nothing todo', () => {
       expect(routineBooster.run(creep, null)).to.eql(NOTHING_TODO)
+      expect(creep.room.memory.priorityFilled).to.be.undefined
     })
   })
 
@@ -38,6 +39,7 @@ describe('Creep work in boost mode', () => {
       expect(routineBooster.run(creep, lab1)).to.eql(NOTHING_DONE)
       expect(move.cheap).to.be.calledWithExactly(creep, lab1)
       expect(lab1.boostCreep).to.be.calledWithExactly(creep)
+      expect(creep.room.memory.priorityFilled).to.be.undefined
     })
   })
 
@@ -49,6 +51,7 @@ describe('Creep work in boost mode', () => {
     it('should report failure', () => {
       expect(routineBooster.run(creep, lab1)).to.eql(FAILED)
       expect(lab1.boostCreep).to.be.calledWithExactly(creep)
+      expect(creep.room.memory.priorityFilled).to.be.undefined
     })
   })
 
@@ -60,6 +63,7 @@ describe('Creep work in boost mode', () => {
     it('should report success', () => {
       expect(routineBooster.run(creep, lab1)).to.eql(SUCCESS)
       expect(lab1.boostCreep).to.be.calledWithExactly(creep)
+      expect(creep.room.memory.priorityFilled).to.eql(0)
     })
   })
 });

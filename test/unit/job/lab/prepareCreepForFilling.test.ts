@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import _ from 'lodash'
 import labJobs from 'job/lab';
 import { LabManager } from 'role/creep/labManager.d';
-import { HAUL_LAB_FROM_STORAGE } from 'constants/state';
+import State from 'constants/state';
 
 describe('Preparing creep to fill lab with speciied resources', () => {
   const { prepareCreepForFilling } = labJobs
@@ -27,7 +27,7 @@ describe('Preparing creep to fill lab with speciied resources', () => {
     expect(creep.memory._targetLab).to.eql('theLab', 'Invalid deliver target')
     expect(creep.memory._drawType).to.eql(RESOURCE_UTRIUM_ACID, 'Invalid resource type to draw from')
     expect(creep.memory._fillType).to.eql(RESOURCE_UTRIUM_ACID, 'Invalid resource type to insert to')
-    expect(creep.memory.state).to.eql(HAUL_LAB_FROM_STORAGE, 'Invalid state selected')
+    expect(creep.memory.state).to.eql(State.HAUL_LAB_FROM_STORAGE, 'Invalid state selected')
   });
 
   it('should limit creep resource amount while lab is some filled', function () {
@@ -40,7 +40,7 @@ describe('Preparing creep to fill lab with speciied resources', () => {
     expect(creep.memory._targetLab).to.eql('theLab')
     expect(creep.memory._drawType).to.eql(RESOURCE_UTRIUM_ACID)
     expect(creep.memory._fillType).to.eql(RESOURCE_UTRIUM_ACID)
-    expect(creep.memory.state).to.eql(HAUL_LAB_FROM_STORAGE)
+    expect(creep.memory.state).to.eql(State.HAUL_LAB_FROM_STORAGE)
   });
 
   it('should limit creep resource amount while creep cannot carry everything at once', function () {
@@ -53,7 +53,7 @@ describe('Preparing creep to fill lab with speciied resources', () => {
     expect(creep.memory._targetLab).to.eql('theLab')
     expect(creep.memory._drawType).to.eql(RESOURCE_UTRIUM_ACID)
     expect(creep.memory._fillType).to.eql(RESOURCE_UTRIUM_ACID)
-    expect(creep.memory.state).to.eql(HAUL_LAB_FROM_STORAGE)
+    expect(creep.memory.state).to.eql(State.HAUL_LAB_FROM_STORAGE)
   });
 
   it('should fail for missing terminal', function () {
