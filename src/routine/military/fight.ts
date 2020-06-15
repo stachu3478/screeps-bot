@@ -10,7 +10,7 @@ interface FightMemory extends CreepMemory { }
 export default function fight(creep: FightCreep, enemy?: Creep, keepDistance: boolean = false) {
   if (!enemy) return NOTHING_TODO
   if (keepDistance) {
-    const range = creep.pos.getRangeTo(enemy)
+    const range = creep.pos.rangeTo(enemy)
     if (range > 4) creep.moveTo(enemy)
     else if (range < 4) move.anywhere(creep, enemy.pos.getDirectionTo(creep))
     return NOTHING_DONE

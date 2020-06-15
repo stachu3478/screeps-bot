@@ -41,3 +41,9 @@ interface StructureSpawn {
   getDirections: () => DirectionConstant[]
   trySpawnCreep: (body: BodyPartConstant[], name: string, memory: CreepMemory, retry?: boolean, cooldown?: number, boost?: BoostInfo[]) => ScreepsReturnCode
 }
+
+interface RoomPosition {
+  rangeXY: (x: number, y: number) => number
+  range: (pos: RoomPosition) => number
+  rangeTo: (obj: _HasRoomPosition) => number
+}

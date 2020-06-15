@@ -38,13 +38,13 @@ export function findMostVulnerableCreep(enemies: Creep[], towers: StructureTower
     enemies.forEach(h => {
       const healParts = h.getActiveBodyparts(HEAL);
       if (!healParts) return
-      const distance = c.pos.getRangeTo(h)
+      const distance = c.pos.rangeTo(h)
       if (distance > 3) return
       if (distance > 1) enemyHealable[i] += getHealPower(h, true)
       else enemyHealable[i] += getHealPower(h)
     })
     towers.forEach(t => {
-      const range = c.pos.getRangeTo(t)
+      const range = c.pos.rangeTo(t)
       if (range >= TOWER_FALLOFF_RANGE) enemyDealable[i] += TOWER_POWER_ATTACK / falloff
       else if (range <= TOWER_OPTIMAL_RANGE) enemyDealable[i] += TOWER_POWER_ATTACK
       else enemyDealable[i] += TOWER_POWER_ATTACK * (TOWER_OPTIMAL_RANGE / range)
