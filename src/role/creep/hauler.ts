@@ -22,7 +22,7 @@ export default profiler.registerFN(function hauler(creep: Hauler) {
         case DONE:
           creep.memory.state = State.STORAGE_FILL
           creep.memory._fillType = RESOURCES_ALL.find(resource => !!creep.store[resource])
-          const room = Game.rooms[creep.memory.room]
+          const room = creep.motherRoom
           const storageStructure = room.terminal || room.storage || room.factory
           if (storageStructure) creep.memory._fill = storageStructure.id
       }
@@ -38,7 +38,7 @@ export default profiler.registerFN(function hauler(creep: Hauler) {
         case DONE:
           creep.memory.state = State.STORAGE_FILL
           creep.memory._fillType = RESOURCES_ALL.find(resource => !!creep.store[resource])
-          const room = Game.rooms[creep.memory.room]
+          const room = creep.motherRoom
           const storageStructure = room.terminal || room.storage || room.factory
           if (storageStructure) creep.memory._fill = storageStructure.id
       }

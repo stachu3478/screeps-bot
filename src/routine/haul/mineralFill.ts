@@ -10,7 +10,7 @@ interface MineralFillCMemory extends CreepMemory { }
 
 export default function mineralFill(creep: MineralFillCreep, mineralType: MineralConstant) {
   if (creep.store[mineralType] === 0) return NO_RESOURCE
-  const room = Game.rooms[creep.memory.room]
+  const room = creep.motherRoom
   let target: AnyStoreStructure | undefined = room.terminal
   if (!target || target.store.getFreeCapacity(mineralType) === 0) target = room.storage
   else if (creep.pos.isNearTo(target)) handleTerminal(target, mineralType)

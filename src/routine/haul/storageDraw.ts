@@ -9,7 +9,7 @@ interface StorageDrawMemory extends CreepMemory { }
 
 export default function drawStorage(creep: StorageDrawCreep) {
   if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return DONE
-  const motherRoom = Game.rooms[creep.memory.room]
+  const motherRoom = creep.motherRoom
   const storage = motherRoom.storage
   const terminal = motherRoom.terminal
   let target: AnyStoreStructure | undefined = storage

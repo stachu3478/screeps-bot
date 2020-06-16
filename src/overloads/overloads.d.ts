@@ -3,10 +3,6 @@ interface BoostInfo {
   partCount: number
 }
 
-interface BoostKeys {
-
-}
-
 interface Room {
   factory?: StructureFactory
   lab1?: StructureLab
@@ -46,4 +42,8 @@ interface RoomPosition {
   rangeXY: (x: number, y: number) => number
   range: (pos: RoomPosition) => number
   rangeTo: (obj: _HasRoomPosition) => number
+}
+
+interface Creep {
+  motherRoom: Room
 }

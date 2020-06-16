@@ -1,3 +1,5 @@
 import './room/Room'
 import './Spawn'
 import './StructureLab'
+import './RoomPosition'
+import './Creep'
