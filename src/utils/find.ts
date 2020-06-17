@@ -146,5 +146,5 @@ export const getDistanceOrderedHatches = (room: Room) => {
       const code = char.charCodeAt(0)
       return getExtension(room, code) || getSpawn(room, code)
     })
-  return persistFilter(potencialHatches)
+  return persistFilter(potencialHatches).reverse() // dunno
 }

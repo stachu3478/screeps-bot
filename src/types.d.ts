@@ -90,6 +90,7 @@ interface RoomMemory {
   workControllerOver?: number
   spawnName?: string
   priorityFilled?: 0 | 1
+  repaired?: 0 | 1
 
   terminalState?: number
   terminalDealResourceType?: ResourceConstant

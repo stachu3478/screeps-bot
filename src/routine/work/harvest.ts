@@ -13,7 +13,8 @@ interface HarvestMemory extends CreepMemory {
 }
 
 export default profiler.registerFN(function harvest(creep: HarvestCreep, sourceId?: Id<Source>) {
-  if (creep.store.getFreeCapacity(RESOURCE_ENERGY) === 0) return DONE
+  const energyStored = creep.store.getFreeCapacity(RESOURCE_ENERGY)
+  if (energyStored === 0) return DONE
   const mem = creep.memory
   let target = mem._harvest && Game.getObjectById(mem._harvest)
   if (!target) {
@@ -31,7 +32,7 @@ export default profiler.registerFN(function harvest(creep: HarvestCreep, sourceI
     return NOTHING_DONE
   }
   const result = creep.harvest(target)
-  const remaining = creep.store.getFreeCapacity(RESOURCE_ENERGY) - creep.getActiveBodyparts(WORK) * HARVEST_POWER
+  const remaining = energyStored - creep.getActiveBodyparts(WORK) * HARVEST_POWER
   if (result === ERR_TIRED) return NOTHING_TODO
   else if (result !== 0) return FAILED
   else {

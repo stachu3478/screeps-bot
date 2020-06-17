@@ -125,7 +125,7 @@ const move = {
           //} else if (move.check(creepOnRoad) && stuck < 5) {
           // this creep is moving we wont do anything
         } else {
-          if (move.anywhere(creepOnRoad, (creepOnRoad.memory.role === STATIC_UPGRADER || creepOnRoad.memory.role === MINER || stuck > 10) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep))
+          if (move.anywhere(creepOnRoad, (creepOnRoad.memory.role === STATIC_UPGRADER || creepOnRoad.memory.role === MINER || Math.random() > 0.8) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep))
             stuck = 0
         }
       } else stuck = 0

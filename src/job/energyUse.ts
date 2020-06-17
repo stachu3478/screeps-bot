@@ -19,7 +19,6 @@ export default function energyUse(creep: Harvester) {
   } else if (result === NO_RESOURCE) {
 
   } else {
-    console.log(result)
     if ((result = fillStorage(creep)) in ACCEPTABLE) creep.memory.state = State.STORAGE_FILL
     creep.memory._noJob = 1
     if (result === NO_RESOURCE) creep.memory.state = State.IDLE

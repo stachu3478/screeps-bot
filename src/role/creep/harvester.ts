@@ -15,12 +15,15 @@ import energyHaul from 'job/energyHaul'
 import energyUse from 'job/energyUse'
 import Harvester from './harvester.d'
 import priorityFill from 'routine/haul/priorityFill';
+import canUtilizeEnergy from 'job/canUtilizeEnergy';
+import { LAB_MANAGER } from 'constants/role';
 
 export default profiler.registerFN(function harvester(creep: Harvester) {
   switch (creep.memory.state) {
     case State.IDLE:
       if (creep.store[RESOURCE_ENERGY]) energyUse(creep)
-      else energyHaul(creep)
+      else if (canUtilizeEnergy(creep)) energyHaul(creep)
+      else creep.memory.role = LAB_MANAGER
       break
     case State.RECYCLE:
       switch (recycle(creep)) {

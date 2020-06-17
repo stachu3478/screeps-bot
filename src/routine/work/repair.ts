@@ -22,6 +22,8 @@ interface RepairMemory extends CreepMemory {
 
 export default function repair(creep: RepairCreep) {
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
+  const motherRoom = creep.motherRoom
+  if (motherRoom.memory.repaired) return NOTHING_TODO
   let target = creep.memory._repair && Game.getObjectById(creep.memory._repair)
   const repairPower = creep.getActiveBodyparts(WORK) * REPAIR_POWER
   if (!target || target.hits === target.hitsMax) {
@@ -29,7 +31,10 @@ export default function repair(creep: RepairCreep) {
       filter: s => toRepair[s.structureType]
         && s.hits + repairPower <= s.hitsMax
     })
-    if (!target) return NOTHING_TODO
+    if (!target) {
+      motherRoom.memory.repaired = 1
+      return NOTHING_TODO
+    }
     creep.memory._repair = target.id
   }
   const result = creep.repair(target)
