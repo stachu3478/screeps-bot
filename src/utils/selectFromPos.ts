@@ -19,6 +19,7 @@ export const getSpawn = createPosSelector(STRUCTURE_SPAWN) as PosSelector<Struct
 
 export const getXYLink = createXYSelector(STRUCTURE_LINK) as XYSelector<StructureLink>
 export const getXYContainer = createXYSelector(STRUCTURE_CONTAINER) as XYSelector<StructureContainer>
+export const getXYExtension = createXYSelector(STRUCTURE_EXTENSION) as XYSelector<StructureExtension>
 export const getXYSpawn = createXYSelector(STRUCTURE_SPAWN) as XYSelector<StructureSpawn>
 export const getXYTower = createXYSelector(STRUCTURE_TOWER) as XYSelector<StructureTower>
 export const getXYRampart = createXYSelector(STRUCTURE_RAMPART) as XYSelector<StructureRampart>

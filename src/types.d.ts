@@ -80,7 +80,7 @@ interface Memory {
   trade_blacklist?: {
     [key: string]: number
   }
-  stats?: Stats
+  _stats?: Stats
   runtimeTicks?: number
   runtimeAvg?: number
   debugStructures?: 0 | 1

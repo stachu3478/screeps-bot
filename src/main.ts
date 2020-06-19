@@ -49,7 +49,7 @@ export const loop = () => {
 
   if (Game.cpu.bucket === 10000) Game.cpu.generatePixel()
 
-  Memory.stats = handleStats(Memory.stats)
+  handleStats()
   RawMemory.set(JSON.stringify(Memory))
   if (error) throw error
 }

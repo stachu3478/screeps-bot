@@ -33,7 +33,7 @@ StructureSpawn.prototype.trySpawnCreep = function (body: BodyPartConstant[], nam
       boost
     }
   } else {
-    this.spawnCreep(body, name, { memory, directions: this.getDirections(), energyStructures: getDistanceOrderedHatches(this.room, creepCost(body)) })
+    this.spawnCreep(body, name, { memory, directions: this.getDirections() /*energyStructures: getDistanceOrderedHatches(this.room, creepCost(body))*/ })
     mem.priorityFilled = 0
     mem.creeps[name] = 0
     if (memory.role === MINER) mem.colonySources[this.memory.spawnSourceId || ''] = mem.colonySources[this.memory.spawnSourceId || ''].slice(0, 2) + name

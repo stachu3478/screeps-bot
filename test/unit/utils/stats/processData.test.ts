@@ -4,7 +4,6 @@ import sinon from 'sinon'
 import { processData, Measurement } from 'utils/stats';
 
 describe('Processing data for statistics', () => {
-  let creep: Creep
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
@@ -15,9 +14,13 @@ describe('Processing data for statistics', () => {
   });
 
   describe('No stats data', () => {
+    beforeEach(() => {
+      delete Memory._stats
+    })
+
     it('Should return true', () => {
       expect(processData(Measurement.CPU_INTERVAL)).to.eql(true)
-      expect(Memory.stats).to.eql({
+      expect(Memory._stats).to.eql({
         timers: [0, 0, 0],
         data: {
           [Measurement.CPU_INTERVAL]: ['\0', '', '', '']
@@ -28,7 +31,7 @@ describe('Processing data for statistics', () => {
 
   describe('Timer is not resetting', () => {
     beforeEach(() => {
-      Memory.stats = {
+      Memory._stats = {
         timers: [0, 0, 0],
         data: {}
       }
@@ -36,12 +39,12 @@ describe('Processing data for statistics', () => {
 
     describe('Data length not enough to truncate', () => {
       beforeEach(() => {
-        (Memory.stats as Stats).data[Measurement.CPU_INTERVAL] = ['123', '', '', '']
+        (Memory._stats as Stats).data[Measurement.CPU_INTERVAL] = ['123', '', '', '']
       })
 
       it('Should return true', () => {
         expect(processData(Measurement.CPU_INTERVAL)).to.eql(true)
-        expect(Memory.stats).to.eql({
+        expect(Memory._stats).to.eql({
           timers: [0, 0, 0],
           data: {
             [Measurement.CPU_INTERVAL]: ['123\0', '', '', '']
@@ -52,12 +55,12 @@ describe('Processing data for statistics', () => {
 
     describe('Data need to be truncated', () => {
       beforeEach(() => {
-        (Memory.stats as Stats).data[Measurement.CPU_INTERVAL] = ['12'.repeat(50), '', '', '']
+        (Memory._stats as Stats).data[Measurement.CPU_INTERVAL] = ['12'.repeat(50), '', '', '']
       })
 
       it('Should return true', () => {
         expect(processData(Measurement.CPU_INTERVAL)).to.eql(true)
-        expect(Memory.stats).to.eql({
+        expect(Memory._stats).to.eql({
           timers: [0, 0, 0],
           data: {
             [Measurement.CPU_INTERVAL]: ['12'.repeat(50).slice(1) + '\0', '', '', '']
@@ -69,7 +72,7 @@ describe('Processing data for statistics', () => {
 
   describe('Timer is resetting', () => {
     beforeEach(() => {
-      Memory.stats = {
+      Memory._stats = {
         timers: [9, 9, 3],
         data: {}
       }
@@ -77,7 +80,7 @@ describe('Processing data for statistics', () => {
 
     it('Should change data', () => {
       expect(processData(Measurement.CPU_INTERVAL)).to.eql(true)
-      expect(Memory.stats).to.eql({
+      expect(Memory._stats).to.eql({
         timers: [9, 9, 3],
         data: {
           [Measurement.CPU_INTERVAL]: ['\0', '', '', '']
@@ -88,7 +91,7 @@ describe('Processing data for statistics', () => {
 
   describe('More timers resetting', () => {
     beforeEach(() => {
-      Memory.stats = {
+      Memory._stats = {
         timers: [9, 9, 9],
         data: {}
       }
@@ -96,7 +99,7 @@ describe('Processing data for statistics', () => {
 
     it('Should return true', () => {
       expect(processData(Measurement.CPU_INTERVAL)).to.eql(true)
-      expect(Memory.stats).to.eql({
+      expect(Memory._stats).to.eql({
         timers: [9, 9, 9],
         data: {
           [Measurement.CPU_INTERVAL]: ['\0', '', '', '']

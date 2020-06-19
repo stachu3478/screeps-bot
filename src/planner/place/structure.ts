@@ -1,4 +1,5 @@
 import { SUCCESS, NOTHING_TODO } from '../../constants/response'
+import { getXYExtension } from 'utils/selectFromPos';
 
 export default function placeStructure(controller: StructureController, structs: string) {
   const room = controller.room
@@ -17,8 +18,12 @@ export default function placeStructure(controller: StructureController, structs:
     else if (iteration < 11) structureToPlace = STRUCTURE_TOWER
     else if (iteration === 11) structureToPlace = STRUCTURE_POWER_SPAWN
     else if (iteration === 12) structureToPlace = STRUCTURE_NUKER
+    else if (iteration < 15) structureToPlace = STRUCTURE_SPAWN
     else structureToPlace = STRUCTURE_EXTENSION
-    if (room.createConstructionSite(x, y, structureToPlace) === 0) {
+    if (iteration < 15) {
+      const extension = getXYExtension(room, x, y)
+      if (extension) extension.destroy()
+    } else if (room.createConstructionSite(x, y, structureToPlace) === 0) {
       room.memory._struct_iteration = iteration
       return SUCCESS
     }
