@@ -12,7 +12,7 @@ export default function energyUse(creep: Harvester) {
   creep.memory._noJob = 0
   if ((result = priorityFill(creep)) in ACCEPTABLE) creep.memory.state = State.FILL_PRIORITY
   else if ((result = repair(creep)) in ACCEPTABLE) creep.memory.state = State.REPAIR
-  else if ((result = build(creep)) in ACCEPTABLE || place(creep.room) in ACCEPTABLE) creep.memory.state = State.BUILD
+  else if (((result = build(creep)) in ACCEPTABLE) || place(creep.room) in ACCEPTABLE) creep.memory.state = State.BUILD
   else if (creep.room.memory._dismantle) {
     creep.memory._arrive = creep.room.memory._dismantle
     creep.memory.state = State.ARRIVE_HOSTILE

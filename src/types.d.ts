@@ -165,7 +165,6 @@ interface RoomMemory {
   _roadBuilt?: number
   _lvl?: number
   _healthy?: boolean
-  _linked?: 0 | 1
   _shielded?: number
 }
 

@@ -140,15 +140,15 @@ export const findClosestStructureToFillWithPriority = (room: Room, pos: RoomPosi
 export const getDistanceOrderedHatches = (room: Room, energyNeeded: number) => {
   const structChars = room.memory.structs
   if (!structChars) return []
-  const potencialHatches = structChars
+  const hatches: (StructureSpawn | StructureExtension)[] = []
+  structChars
     .split('')
-    .map(char => {
+    .forEach(char => {
       const code = char.charCodeAt(0)
-      return getExtension(room, code) || getSpawn(room, code)
+      const hatch = getExtension(room, code) || getSpawn(room, code)
+      if (hatch) hatches.push(hatch)
     })
-  const hatches = persistFilter(potencialHatches)
   let energyStored = 0
   const cutIndex = hatches.findIndex(obj => (energyStored += obj.store[RESOURCE_ENERGY]) >= energyNeeded)
-  console.log(cutIndex)
-  return persistFilter(potencialHatches).slice(0, cutIndex + 1) // dunno
+  return hatches.slice(0, cutIndex + 1) // dunno
 }

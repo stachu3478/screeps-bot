@@ -1,6 +1,6 @@
 import './buildingManagement'
 import './boostManagement'
-import { getFactory, getLab, getXYExtractor } from "utils/selectFromPos";
+import { getFactory, getLab, getXYExtractor, getLink } from "utils/selectFromPos";
 
 Object.defineProperty(Room.prototype, 'factory', {
   get: function () {
@@ -65,5 +65,14 @@ Object.defineProperty(Room.prototype, 'filled', {
   get: function () {
     const self = this as Room
     return self.memory.priorityFilled && self.energyAvailable === self.energyCapacityAvailable
+  }
+})
+
+Object.defineProperty(Room.prototype, 'linked', {
+  get: function () {
+    const self = this as Room
+    const links = self.memory.links
+    if (!links) return false
+    return !!getLink(this, links.charCodeAt(links.length - 1))
   }
 })

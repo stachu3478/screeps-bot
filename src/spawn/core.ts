@@ -37,6 +37,7 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
   const minerCount = creepCountByRole[MINER] || 0
   const maxUpgradersCount = 3
   const containers = findContainers(spawn.room).length || spawn.room.storage
+  const isLinked = spawn.room.linked
   if (minerCount === 0 && !creepCountByRole[RETIRED]) {
     const name = uniqName("M")
     const colonySource = mem.colonySourceId
@@ -67,7 +68,7 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
     const spec = mem.colonySources[freeSource].charCodeAt(1)
     const memory: MinerMemory = { role: MINER, room: spawn.room.name, _harvest: freeSource as Id<Source>, deprivity: spec }
     spawn.trySpawnCreep(parts, name, memory)
-  } else if ((!mem._linked && containers && upgraderCount < maxUpgradersCount && (workPartCountByRole[UPGRADER] || 0) < (mem.maxWorkController || 0)) || (mem._linked && !creepCountByRole[STATIC_UPGRADER])) {
+  } else if ((!isLinked && containers && upgraderCount < maxUpgradersCount && (workPartCountByRole[UPGRADER] || 0) < (mem.maxWorkController || 0)) || (isLinked && !creepCountByRole[STATIC_UPGRADER])) {
     spawnUpgrader(spawn, mem as StableRoomMemory, controller)
   } else if (mem._haul && !creepCountByRole[HAULER]) {
     mem._haulSize = mem._haulSize ? mem._haulSize + 1 : 10

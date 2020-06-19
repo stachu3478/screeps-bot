@@ -13,11 +13,13 @@ export default function dump(room: Room, pm: PlannerMatrix, sourcePositions: Sou
   const links: number[] = []
   const labs: number[] = []
   let totalRoadCost = 0
+  const farSource = Game.getObjectById(farSourceId) || Game.getObjectById(nearSourceId)
+  const { x: sx, y: sy } = farSource ? farSource.pos : { x: 0, y: 0 }
   pm.each((v, xy, x, y) => {
     if (v === -1) {
       structs.push([
         xy,
-        pm.getWeight(x, y)
+        Math.max(pm.getWeight(x, y), d(sx - x, sy - y))
       ])
     } else if (v === -2) {
       links.push(xy)

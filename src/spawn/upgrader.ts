@@ -8,7 +8,7 @@ export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemo
   let role
   let deprivity
   let workPartCount = mem.maxWorkController
-  if (mem._linked) {
+  if (spawn.room.linked) {
     parts = progressiveStaticUpgrader(spawn.room.energyCapacityAvailable, controller.level == 8)
     role = STATIC_UPGRADER
     deprivity = spawn.pos.findPathTo(controller).length

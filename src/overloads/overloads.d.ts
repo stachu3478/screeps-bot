@@ -12,6 +12,7 @@ interface Room {
   mineral?: Mineral
   extractor?: StructureExtractor
   filled: boolean
+  linked: boolean
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void

@@ -25,7 +25,7 @@ export default function plan(room: Room) {
   const sourcePositions: SourceMap = {}
   const costMatrix = new PathFinder.CostMatrix()
   const roomCallback = (roomName: string) => roomName === room.name ? costMatrix : false;
-  sources.forEach(s1 => {
+  /*sources.forEach(s1 => {
     sources.forEach(s2 => {
       if (s1 === s2) return
       const path = s1.pos.findPathTo(s2, { ignoreCreeps: true, ignoreDestructibleStructures: true, ignoreRoads: true })
@@ -33,7 +33,7 @@ export default function plan(room: Room) {
         costMatrix.set(ps.x, ps.y, 1)
       })
     })
-  })
+  })*/
   sources.forEach(obj => {
     const ps = obj.pos
     const { path } = PathFinder.search(
@@ -61,12 +61,13 @@ export default function plan(room: Room) {
     if (path.length > furthestPath.length) {
       furthestSource = obj
       furthestPath = path
-    }
-    if (path.length < shortestPathLength) {
+    } else if (path.length < shortestPathLength) {
       nearestSource = obj
       shortestPathLength = path.length
     }
   })
+
+  if (furthestSource === nearestSource) throw new Error('Sources cannot be identical')
 
   // find path to prospect time to travel to routine place
   sources.forEach(obj => {
@@ -137,7 +138,7 @@ export default function plan(room: Room) {
   const pathPoses = furthestPath.map(({ x, y }) => pos(x, y))
   const pathNewPoses: number[] = []
   let currentPos = pathPoses.shift() || 0
-  let c = 100
+  let c = 1000
   while (c-- > 0) {
     let done = false
     if (done || matrix[currentPos] >= structureCosts[structureCosts.length - 1]) break // optimal solution found

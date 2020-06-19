@@ -32,7 +32,6 @@ export default function handleLog(mem: RoomMemory, controller: StructureControll
           case LOOK_CREEPS: break
           case STRUCTURE_ROAD: mem._roadBuilt = 0; break
           case STRUCTURE_RAMPART: case STRUCTURE_WALL: mem._shielded = 0; break
-          case STRUCTURE_LINK: mem._linked = 0
           default: mem._built = false; console.log("Structure has been destroyed: " + type)
         } break
       case EVENT_UPGRADE_CONTROLLER:

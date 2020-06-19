@@ -18,6 +18,12 @@ Object.assign(global, {
   Structure,
   StructureSpawn: class { },
   StructureLab: class { },
+  PathFinder: {
+    CostMatrix: class {
+      set() { }
+      get() { return 0 }
+    }
+  },
   _
 })
 
