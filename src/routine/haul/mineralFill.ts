@@ -9,14 +9,15 @@ interface MineralFillCreep extends Creep {
 interface MineralFillCMemory extends CreepMemory { }
 
 export default function mineralFill(creep: MineralFillCreep, mineralType: MineralConstant) {
-  if (creep.store[mineralType] === 0) return NO_RESOURCE
+  const storedMineral = creep.store[mineralType]
+  if (storedMineral === 0) return NO_RESOURCE
   const room = creep.motherRoom
   let target: AnyStoreStructure | undefined = room.terminal
   if (!target || target.store.getFreeCapacity(mineralType) === 0) target = room.storage
   else if (creep.pos.isNearTo(target)) handleTerminal(target, mineralType)
   if (!target || target.store.getFreeCapacity(mineralType) === 0) return NOTHING_TODO
   const result = creep.transfer(target, mineralType)
-  const remaining = creep.store[mineralType] - target.store.getFreeCapacity(mineralType)
+  const remaining = storedMineral - target.store.getFreeCapacity(mineralType)
   if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
   else if (result !== 0) return FAILED
   else {

@@ -35,16 +35,14 @@ export function progressiveMobileWorker(energy: number) {
   parts.push(CARRY)
   remaining -= BODYPART_COST[CARRY]
   partsRemaining--
-  while (remaining >= liteWorkPack && partsRemaining >= 2) {
+  const workForMining = SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME / HARVEST_POWER
+  let maxWork = 1 + workForMining / BUILD_POWER + workForMining
+  while (remaining >= liteWorkPack && partsRemaining >= 2 && maxWork-- > 0) {
     parts.push(WORK, MOVE)
     remaining -= liteWorkPack
     partsRemaining -= 2
   }
-  while (remaining >= BODYPART_COST[CARRY] && partsRemaining > 0) {
-    parts.push(CARRY)
-    remaining -= BODYPART_COST[CARRY]
-    partsRemaining--
-  }
+  if (remaining >= BODYPART_COST[CARRY] && partsRemaining > 0) parts.push(CARRY)
   return parts
 }
 

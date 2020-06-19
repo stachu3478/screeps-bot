@@ -2,11 +2,17 @@ import { uniqName } from "./name";
 import { progressiveWorker } from "./body/work";
 import { EXTRACTOR } from "constants/role";
 
+export function needsExtractor(spawn: StructureSpawn, extractorCount?: number) {
+  if (extractorCount) return false
+  const room = spawn.room
+  const mem = room.memory
+  if (!mem.creeps) return false
+  const mineral = room.mineral
+  if (!mineral || !mineral.mineralAmount || !room.extractor) return false
+  return true
+}
+
 export default function extract(spawn: StructureSpawn) {
-  const mem = spawn.room.memory
-  if (!mem._mineral || !mem.creeps || !mem._extractor) return false
-  const mineral = Game.getObjectById(mem._mineral)
-  if (!mineral || !mineral.mineralAmount) return false
   const name = uniqName("D")
   let memory = {
     role: EXTRACTOR,

@@ -16,6 +16,6 @@ export default function heal(creep: HealCreep) {
     }
     result = creep.rangedHeal(nearest)
     if (result === 0) return SUCCESS
-  }
+  } else creep.heal(creep)
   return NOTHING_DONE
 }

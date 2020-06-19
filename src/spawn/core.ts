@@ -7,7 +7,7 @@ import domination from './domination'
 import { uniqName } from './name'
 import { infoStyle } from '../room/style'
 import isRetired from 'utils/retired';
-import extract from './extract';
+import extract, { needsExtractor } from './extract';
 import spawnUpgrader from './upgrader';
 import { MinerMemory, Miner } from 'role/creep/miner';
 import { findContainers } from 'utils/find';
@@ -74,6 +74,6 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
     if (mem._haulSize > 50) mem._haulSize = 50
     spawn.trySpawnCreep(_.times(mem._haulSize, i => i & 1 ? CARRY : MOVE), uniqName("H"), { role: HAULER, room: spawn.room.name, deprivity: 10 })
   } else if (domination(spawn, creepCountByRole)) spawn.room.visual.text("                            in domination", 0, 3, infoStyle)
-  else if (!creepCountByRole[EXTRACTOR]) extract(spawn)
+  else if (needsExtractor(spawn, creepCountByRole[EXTRACTOR])) extract(spawn)
   else spawn.room.visual.text("Spawn is idle.", 0, 3, infoStyle)
 }, 'spawnLoop')

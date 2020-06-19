@@ -1,1 +1,1 @@
-export const energyToUpgradeThreshold = 10000
+export const energyToUpgradeThreshold = 30000

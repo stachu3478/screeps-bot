@@ -2,8 +2,9 @@ import "../constants"
 import { assert } from "chai";
 import _ from "lodash"
 import harvest from "../../../src/routine/work/harvest"
-import { Memory, Creep } from "../mock"
+import { Memory } from "../mock"
 import Game from "../mock/Game"
+import Harvester from "role/creep/harvester.d";
 
 describe("routine/harvest", () => {
   before(() => {
@@ -23,6 +24,12 @@ describe("routine/harvest", () => {
   });
 
   it("should return number when called with no context", function () {
-    assert.isNumber(harvest(_.clone(Creep) as Creep));
+    assert.isNumber(harvest({
+      store: { getFreeCapacity: () => 50 },
+      memory: {} as CreepMemory,
+      pos: {
+        findClosestByPath: (CNST: FindConstant) => null
+      }
+    } as Harvester))
   });
 });

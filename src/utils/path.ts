@@ -31,7 +31,12 @@ interface StructCache {
   [key: string]: string
 }
 const structCache: StructCache = {}
+const blackMatrix = new PathFinder.CostMatrix()
+for (let ox = 0; ox <= 49; ox++)
+  for (let oy = 0; oy <= 49; oy++)
+    blackMatrix.set(ox, oy, 255)
 function roomCallback(roomName: string, costMatrix: CostMatrix) {
+  if (Memory.pathRoomBlacklist && Memory.pathRoomBlacklist[roomName]) return blackMatrix
   const room = Game.rooms[roomName]
   if (!room) {
     const cache = Memory.roomCacheKeepers && Memory.roomCacheKeepers[roomName]

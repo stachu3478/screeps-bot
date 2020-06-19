@@ -7,10 +7,7 @@ export default function placeExtractor(controller: StructureController) {
     const extractor = room.extractor
     if (!extractor) {
       const mineralPos = room.mineral
-      if (mineralPos && mineralPos.pos.createConstructionSite(STRUCTURE_EXTRACTOR) === 0) {
-        mem._mineral = mineralPos.id
-        return SUCCESS
-      }
+      if (mineralPos && mineralPos.pos.createConstructionSite(STRUCTURE_EXTRACTOR) === 0) return SUCCESS
     } else mem._extractor = extractor.id
   }
 

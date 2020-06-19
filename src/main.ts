@@ -47,6 +47,8 @@ export const loop = () => {
     error = err
   }
 
+  if (Game.cpu.bucket === 10000) Game.cpu.generatePixel()
+
   Memory.stats = handleStats(Memory.stats)
   RawMemory.set(JSON.stringify(Memory))
   if (error) throw error

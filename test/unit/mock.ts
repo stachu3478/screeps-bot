@@ -30,12 +30,26 @@ export class RoomTerrain {
   get() { return 0 }
 }
 
-export const Creep = {
-  store: { getFreeCapacity: () => 50 },
-  memory: {} as CreepMemory,
-  pos: {
-    findClosestByPath: (CNST: FindConstant) => null
-  } as RoomPosition
+export class Creep {
+  public name: string
+  public store: Object
+  public memory: Object
+  public pos: Object
+  public motherRoom: Room
+  public room: Room
+
+  constructor(name: string) {
+    this.name = name
+    this.store = {
+      getFreeCapacity: () => 50
+    }
+    this.memory = {}
+    this.pos = {
+      findClosestByPath: (CNST: FindConstant) => null
+    }
+    this.motherRoom = new Room('xd')
+    this.room = this.motherRoom
+  }
 }
 
 export const SourcyCreep = {

@@ -16,7 +16,8 @@ export default function autoRepair(creep: AutoRepairCreep, timeout: number = 6) 
     mem._repair_cooldown = (mem._repair_cooldown || 0) - 1
     return NOTHING_TODO
   }
-  if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
+  const storedEnergy = creep.store[RESOURCE_ENERGY]
+  if (storedEnergy === 0) return NO_RESOURCE
   let target = mem._auto_repair && Game.getObjectById(mem._auto_repair)
   if (!target || target.hits === target.hitsMax || creep.pos.rangeTo(target) > 3) {
     const repairPower = creep.getActiveBodyparts(WORK) * REPAIR_POWER
@@ -28,7 +29,7 @@ export default function autoRepair(creep: AutoRepairCreep, timeout: number = 6) 
     mem._auto_repair = target.id
   }
   const result = creep.repair(target)
-  const remaining = creep.store[RESOURCE_ENERGY] - creep.getActiveBodyparts(WORK)
+  const remaining = storedEnergy - creep.getActiveBodyparts(WORK)
   if (result !== 0) return FAILED
   else {
     if (remaining <= 0) {

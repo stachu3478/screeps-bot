@@ -24,8 +24,8 @@ export default function arrive(creep: ArriveCreep, dumpCarry: boolean = true) {
   const targetRoom = creep.memory._arrive
   if (!targetRoom) return NOTHING_TODO
   const pos = new RoomPosition(25, 25, targetRoom)
-  const result = move.cheap(creep, pos, true)
-  if (result === ERR_NO_PATH) move.anywhere(creep, creep.pos.getDirectionTo(pos))
+  let result = move.cheap(creep, pos, true, 25)
+  if (result === ERR_NO_PATH) result = move.anywhere(creep, creep.pos.getDirectionTo(pos)) ? OK : ERR_NO_PATH
   if (creep.room.name === targetRoom && result === 0) {
     delete creep.memory._arrive
     return DONE

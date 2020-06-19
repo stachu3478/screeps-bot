@@ -1,4 +1,28 @@
 // example declaration file - remove these and add your own custom typings
+interface Game {
+  cpu: {
+    generatePixel: () => OK | ERR_NOT_ENOUGH_RESOURCES,
+    getUsed: () => number
+    bucket: number
+    limit: number
+    tickLimit: number,
+    shardLimits: Object,
+    getHeapStatistics: () => ({
+      total_heap_size: number,
+      total_heap_size_executable: number,
+      total_physical_size: number,
+      total_available_size: number,
+      used_heap_size: number,
+      heap_size_limit: number,
+      malloced_memory: number,
+      peak_malloced_memory: number,
+      does_zap_garbage: number,
+      externally_allocated_size: number,
+    }),
+    setShardLimits: () => ScreepsReturnCode,
+  }
+}
+
 interface SourceMap {
   [id: string]: string
 }
@@ -33,9 +57,8 @@ interface SpawnMemory {
 }
 
 interface Stats {
-  cpuInterval1: string
-  cpuInterval100: string
-  timer100: number
+  timers: number[]
+  data: Record<string, string[] | undefined>
 }
 
 interface Memory {
@@ -61,6 +84,9 @@ interface Memory {
   runtimeTicks?: number
   runtimeAvg?: number
   debugStructures?: 0 | 1
+  pathRoomBlacklist?: {
+    [key: string]: 1
+  }
 }
 
 interface BoostData {
@@ -135,7 +161,6 @@ interface RoomMemory {
   boosts?: BoostData
 
   _extractor?: Id<StructureExtractor>
-  _mineral?: Id<Mineral>
   _built?: boolean
   _roadBuilt?: number
   _lvl?: number

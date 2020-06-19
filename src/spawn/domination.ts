@@ -29,10 +29,12 @@ function autoClaim(spawn: StructureSpawn, creepCountByRole: number[]) {
 export default function domination(spawn: StructureSpawn, creepCountByRole: number[]) {
   const mem = spawn.room.memory
   if (!mem.creeps) mem.creeps = {}
-  if (autoClaim(spawn, creepCountByRole)) return true
-  if (!mem._attack) return false
+  if (!mem._attack) return autoClaim(spawn, creepCountByRole)
   const name = uniqName("X")
-  const result = spawn.trySpawnCreep(progressiveCommander(spawn.room.energyCapacityAvailable, mem._attackLevel || 3), name, { role: COMMANDER, room: spawn.room.name, deprivity: 0 }, false, 10)
+  const memory = { role: COMMANDER, room: spawn.room.name, deprivity: 0 }
+  const body = progressiveCommander(spawn.room.energyCapacityAvailable, mem._attackLevel || 3)
+  const boostRequests = spawn.room.prepareBoostData(memory, [HEAL, TOUGH], ['heal', 'damage'], body)
+  const result = spawn.trySpawnCreep(body, name, memory, false, 10, boostRequests)
   if (result === 0) mem.creeps[name] = 0
   else spawn.room.visual.text("Try to spawn commander.", 0, 3, infoStyle)
   return true

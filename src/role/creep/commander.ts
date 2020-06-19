@@ -14,6 +14,7 @@ interface CommanderMemory extends CreepMemory {
   _prev_hits?: number
   _attack?: Id<Creep | Structure>
   _heal?: Id<Creep>
+  _runTicks?: number
 }
 
 export default function commander(creep: Commander) {
@@ -57,7 +58,9 @@ export default function commander(creep: Commander) {
       }
       break
     case State.FALL_BACK:
-      if (creep.hits < prevHits || !creep.getActiveBodyparts(ATTACK))
+      const runTicks = creep.memory._runTicks || 0
+      if (runTicks > 0 || creep.hits < prevHits || !creep.getActiveBodyparts(ATTACK)) {
+        if (creep.hits < prevHits || !creep.getActiveBodyparts(ATTACK)) creep.memory._runTicks = 5
         switch (arrive(creep)) {
           case SUCCESS: case NOTHING_TODO:
             if (Memory.rooms[creep.memory.room]._attack) {
@@ -69,11 +72,12 @@ export default function commander(creep: Commander) {
               break
             }
           default: creep.heal(creep)
-        } else if (creep.getActiveBodyparts(TOUGH) > 0) {
-          creep.memory._arrive = Memory.rooms[creep.memory.room]._attack
-          if (creep.memory._arrive) creep.memory.state = State.ARRIVE_HOSTILE
-          else creep.memory.state = State.RECYCLE
-        } else creep.heal(creep)
+        }
+      } else if (creep.getActiveBodyparts(TOUGH) > 0) {
+        creep.memory._arrive = Memory.rooms[creep.memory.room]._attack
+        if (creep.memory._arrive) creep.memory.state = State.ARRIVE_HOSTILE
+        else creep.memory.state = State.RECYCLE
+      } else creep.heal(creep)
       break
     default:
       creep.memory.state = State.INIT

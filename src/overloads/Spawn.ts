@@ -20,6 +20,7 @@ StructureSpawn.prototype.getDirections = function () {
   return allDirections
 }
 
+const creepCost = (body: BodyPartConstant[]) => body.reduce((s, part) => s + BODYPART_COST[part], 0)
 StructureSpawn.prototype.trySpawnCreep = function (body: BodyPartConstant[], name: string, memory: CreepMemory, retry: boolean = false, cooldown: number = 100, boost: BoostInfo[] = []) {
   const result = this.spawnCreep(body, name, { memory, directions: this.getDirections(), dryRun: true })
   const mem = this.room.memory as StableRoomMemory
@@ -32,7 +33,7 @@ StructureSpawn.prototype.trySpawnCreep = function (body: BodyPartConstant[], nam
       boost
     }
   } else {
-    this.spawnCreep(body, name, { memory, directions: this.getDirections(), energyStructures: getDistanceOrderedHatches(this.room) })
+    this.spawnCreep(body, name, { memory, directions: this.getDirections(), energyStructures: getDistanceOrderedHatches(this.room, creepCost(body)) })
     mem.priorityFilled = 0
     mem.creeps[name] = 0
     if (memory.role === MINER) mem.colonySources[this.memory.spawnSourceId || ''] = mem.colonySources[this.memory.spawnSourceId || ''].slice(0, 2) + name
