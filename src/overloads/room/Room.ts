@@ -72,7 +72,11 @@ Object.defineProperty(Room.prototype, 'linked', {
   get: function () {
     const self = this as Room
     const links = self.memory.links
-    if (!links) return false
-    return !!getLink(this, links.charCodeAt(links.length - 1))
+    const controllerLink = self.memory.controllerLink
+    if (!links || !controllerLink) return false
+    return !!(
+      getLink(this, links.charCodeAt(links.length - 1))
+      && getLink(this, controllerLink.charCodeAt(0))
+    )
   }
 })

@@ -1,10 +1,10 @@
 import PlannerMatrix from "./matrix";
 import { getMaximumWorkPartsForSource, getWorkSaturation } from "./opts"
+import range from 'utils/range'
 
 interface SourceMap {
   [id: string]: string
 }
-const d = (x: number, y: number): number => Math.max(Math.abs(x), Math.abs(y))
 export default function dump(room: Room, pm: PlannerMatrix, sourcePositions: SourceMap, farSourceId: Id<Source>, nearSourceId: Id<Source>) {
   // dump data to Memory
   const terrain = room.getTerrain()
@@ -19,7 +19,7 @@ export default function dump(room: Room, pm: PlannerMatrix, sourcePositions: Sou
     if (v === -1) {
       structs.push([
         xy,
-        Math.max(pm.getWeight(x, y), d(sx - x, sy - y))
+        Math.max(pm.getWeight(x, y), range(sx - x, sy - y))
       ])
     } else if (v === -2) {
       links.push(xy)
@@ -38,7 +38,7 @@ export default function dump(room: Room, pm: PlannerMatrix, sourcePositions: Sou
   const spawnX = spawnXY & 63
   const spawnY = spawnXY >> 6
   room.memory.totalRoadCost = totalRoadCost
-  room.memory.roads = roads.sort((a, b) => d((a & 63) - spawnX, (a >> 6) - spawnY) - d((b & 63) - spawnX, (b >> 6) - spawnY)).map(n => String.fromCharCode(n)).join('')
+  room.memory.roads = roads.sort((a, b) => range((a & 63) - spawnX, (a >> 6) - spawnY) - range((b & 63) - spawnX, (b >> 6) - spawnY)).map(n => String.fromCharCode(n)).join('')
   room.memory.sourceCount = Object.keys(sourcePositions).length
   room.memory.colonySources = sourcePositions
   room.memory.colonySourceId = farSourceId

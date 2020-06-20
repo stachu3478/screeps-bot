@@ -1,14 +1,14 @@
-import "../constants"
-import { expect } from "chai";
+import '../constants'
+import { expect } from 'chai';
 import sinon from 'sinon'
-import _ from "lodash"
-import placeStructure from "../../../src/planner/place/structure"
-import { Memory } from "../mock"
-import Game from "../mock/Game"
-import RoomPosition from "../mock/RoomPosition"
-import { NOTHING_TODO, SUCCESS } from "constants/response";
+import _ from 'lodash'
+import placeStructure from '../../../src/planner/place/structure'
+import { Memory } from '../mock'
+import Game from '../mock/Game'
+import RoomPosition from '../mock/RoomPosition'
+import { NOTHING_TODO, SUCCESS } from 'constants/response';
 
-describe("planner/place/place", () => {
+describe('planner/place/place', () => {
   const sandbox = sinon.createSandbox();
 
   beforeEach(() => {
@@ -26,16 +26,17 @@ describe("planner/place/place", () => {
     sandbox.restore()
   });
 
-  it("should return NOTHING_TODO number when called with no context", function () {
+  it('should return NOTHING_TODO number when called with no context', () => {
     const controller = { room: { memory: {} } } as StructureController
     expect(placeStructure(controller, '')).to.eql(NOTHING_TODO);
   });
 
-  it("should place a structure", function () {
+  it('should place a structure', () => {
     const controller = {
       level: 8,
       room: { memory: {} }
     } as StructureController
+    controller.room.lookForAt = () => ([])
     controller.room.createConstructionSite = sinon.fake.returns(OK)
     expect(placeStructure(controller, 'a')).to.eql(SUCCESS);
     expect(controller.room.createConstructionSite).to.be.called

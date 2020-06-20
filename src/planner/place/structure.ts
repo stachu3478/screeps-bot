@@ -23,7 +23,8 @@ export default function placeStructure(controller: StructureController, structs:
     if (iteration < 15) {
       const extension = getXYExtension(room, x, y)
       if (extension) extension.destroy()
-    } else if (room.createConstructionSite(x, y, structureToPlace) === 0) {
+    }
+    if (room.createConstructionSite(x, y, structureToPlace) === 0) {
       room.memory._struct_iteration = iteration
       return SUCCESS
     }

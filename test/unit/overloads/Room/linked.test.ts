@@ -34,6 +34,17 @@ describe('Detecting ability to transfer energy with links', () => {
     });
   })
 
+  describe('No controller link in room', () => {
+    beforeEach(() => {
+      room.memory.links = 'def'
+      sinon.stub(room, 'lookForAt').returns([])
+    })
+
+    it('returns false', function () {
+      expect(room.linked).to.eql(false);
+    });
+  })
+
   describe('All links in room', () => {
     beforeEach(() => {
       room.memory.controllerLink = 'a'

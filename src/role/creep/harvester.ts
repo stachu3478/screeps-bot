@@ -45,7 +45,7 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
       break
     case State.HARVESTING:
       switch (drawContainer(creep)) {
-        case DONE: case SUCCESS: energyUse(creep); break
+        case DONE: case SUCCESS: creep.memory.state = State.IDLE; break
         case FAILED:
           if (creep.room.name !== creep.memory.room) {
             creep.memory._arrive = creep.memory.room

@@ -1,5 +1,5 @@
 import Harvester from "role/creep/harvester.d";
-import { ACCEPTABLE, NO_RESOURCE } from "constants/response";
+import { ACCEPTABLE, NO_RESOURCE, NOTHING_TODO } from "constants/response";
 import State from "constants/state";
 import place from "planner/place/place";
 import build from "routine/work/build";
@@ -12,7 +12,7 @@ export default function energyUse(creep: Harvester) {
   creep.memory._noJob = 0
   if ((result = priorityFill(creep)) in ACCEPTABLE) creep.memory.state = State.FILL_PRIORITY
   else if ((result = repair(creep)) in ACCEPTABLE) creep.memory.state = State.REPAIR
-  else if (((result = build(creep)) in ACCEPTABLE) || place(creep.room) in ACCEPTABLE) creep.memory.state = State.BUILD
+  else if (build(creep) !== NOTHING_TODO || place(creep.room) in ACCEPTABLE) creep.memory.state = State.BUILD
   else if (creep.room.memory._dismantle) {
     creep.memory._arrive = creep.room.memory._dismantle
     creep.memory.state = State.ARRIVE_HOSTILE

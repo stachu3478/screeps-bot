@@ -5,6 +5,7 @@ import pos, { posToChar } from './pos'
 import planLink from './links';
 import whirl from 'utils/whirl';
 import xyToChar from './pos';
+import range from 'utils/range'
 
 export default function plan(room: Room) {
   if (!room.controller) return
@@ -67,8 +68,6 @@ export default function plan(room: Room) {
     }
   })
 
-  if (furthestSource === nearestSource) throw new Error('Sources cannot be identical')
-
   // find path to prospect time to travel to routine place
   sources.forEach(obj => {
     if (obj === furthestSource) {
@@ -115,7 +114,8 @@ export default function plan(room: Room) {
         if (matrix[xy] === 0 && terrain.get(x + ox, y + oy) !== 1) {
           pm.setField(x + ox, y + oy, -1)
           structurePoses.push(pos(x + ox, y + oy))
-          structureCosts.push(matrix[pos(x, y)])
+          const minimalDistance = range(x - furthestSource.pos.x, y - furthestSource.pos.y)
+          structureCosts.push(Math.max(matrix[pos(x, y)], minimalDistance))
         }
         if (pm.getStructuresCount() >= structsCountGoal) return
       }
@@ -141,8 +141,10 @@ export default function plan(room: Room) {
   let c = 1000
   while (c-- > 0) {
     let done = false
+    const px = currentPos & 63
+    const py = currentPos >> 6
     if (done || matrix[currentPos] >= structureCosts[structureCosts.length - 1]) break // optimal solution found
-    const result = pm.getBestPos(currentPos & 63, currentPos >> 6)
+    const result = pm.getBestPos(px, py)
     if (result.rank > 1) {
       const x = result.pos & 63
       const y = result.pos >> 6

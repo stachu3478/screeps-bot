@@ -6,6 +6,7 @@ import autoPick from 'routine/haul/autoPick'
 import draw from 'routine/haul/draw';
 import maintainControllerLink from 'utils/controllerLink';
 import profiler from "screeps-profiler"
+import { UPGRADER } from 'constants/role';
 
 export interface StaticUpgrader extends Creep {
   memory: StaticUpgraderMemory
