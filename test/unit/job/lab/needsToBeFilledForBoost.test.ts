@@ -36,4 +36,9 @@ describe('Checking if lab needs to be filled with boosting resources', () => {
     const lab = { mineralType: RESOURCE_UTRIUM_ACID, store: { [RESOURCE_UTRIUM_ACID]: 150 } } as StructureLab
     expect(needsToBeFilledForBoosting(lab, RESOURCE_UTRIUM_ACID, 300)).to.eql(true)
   });
+
+  it('should return false for full lab', function () {
+    const lab = { mineralType: RESOURCE_UTRIUM_ACID, store: { [RESOURCE_UTRIUM_ACID]: LAB_MINERAL_CAPACITY } } as StructureLab
+    expect(needsToBeFilledForBoosting(lab, RESOURCE_UTRIUM_ACID, Infinity)).to.eql(false)
+  });
 });

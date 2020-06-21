@@ -103,7 +103,6 @@ interface BoostData {
 
 interface RoomMemory {
   structs?: string
-  totalRoadCost?: number
   roads?: string
   shields?: string
   walls?: string

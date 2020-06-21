@@ -3,7 +3,7 @@ import _ from 'lodash'
 import sinon from 'sinon'
 import { handleTimers, Measurement } from 'utils/stats';
 
-describe('Processing data for statistics', () => {
+describe('Processing data for statistics - handling timers', () => {
   let creep: Creep
   beforeEach(() => {
     // runs before each test in this block

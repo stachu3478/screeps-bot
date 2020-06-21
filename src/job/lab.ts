@@ -31,7 +31,7 @@ const labJobs = {
     const mineralType = lab.mineralType
     if (!mineralType) return true
     if (lab.mineralType !== resourceToFillWith) return false
-    if (lab.store[mineralType] < amountToFillWith) return true
+    if (lab.store[mineralType] < Math.min(amountToFillWith, LAB_MINERAL_CAPACITY)) return true
     return false
   },
   needsToBeDumpedForBoosting: (lab: StructureLab, resourceToFillWith: ResourceConstant) => {

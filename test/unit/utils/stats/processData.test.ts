@@ -3,7 +3,7 @@ import _ from 'lodash'
 import sinon from 'sinon'
 import { processData, Measurement } from 'utils/stats';
 
-describe('Processing data for statistics', () => {
+describe('Processing data for statistics - processing tick', () => {
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global

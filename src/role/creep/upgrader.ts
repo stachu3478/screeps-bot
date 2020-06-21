@@ -43,7 +43,8 @@ export default profiler.registerFN(function upgrader(creep: UpgraderCreep) {
             break
           }
           creep.memory.state = State.HARVESTING
-        case NOTHING_DONE: autoRepair(creep); break
+          break
+        default: autoRepair(creep); break
       }
       break
     case State.STORAGE_DRAW:
