@@ -1,3 +1,7 @@
+interface Game {
+  simulateCreepFight: (creep1: BodyPartConstant[], creep2: BodyPartConstant[], startHp1: number) => void
+}
+
 interface BoostInfo {
   resource: ResourceConstant
   partCount: number

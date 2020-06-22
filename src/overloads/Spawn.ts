@@ -21,7 +21,6 @@ StructureSpawn.prototype.getDirections = function () {
   return allDirections
 }
 
-const creepCost = (body: BodyPartConstant[]) => body.reduce((s, part) => s + BODYPART_COST[part], 0)
 StructureSpawn.prototype.trySpawnCreep = function (body: BodyPartConstant[], name: string, memory: CreepMemory, retry: boolean = false, cooldown: number = 100, boost: BoostInfo[] = []) {
   const result = this.spawnCreep(body, name, { memory, directions: this.getDirections(), dryRun: true })
   const mem = this.room.memory as StableRoomMemory

@@ -5,7 +5,6 @@ export default (body: BodyPartConstant[]) => {
   partPriorities.forEach(part => {
     const partIndex = body.lastIndexOf(part)
     if (partIndex === -1) return
-    if (partIndex === bodyReplaceIndex) return
     body[partIndex] = body[bodyReplaceIndex]
     body[bodyReplaceIndex--] = part
   })

@@ -17,21 +17,27 @@ describe('Body sanitizing for cpu effciency', () => {
     })
   })
 
-  describe('Should prioritize', () => {
-    it('Should return the same array', () => {
+  describe('MOVE CARRY WORK', () => {
+    it('Should prioritize', () => {
       expect(sanitizeBody([MOVE, CARRY, WORK])).to.eql([CARRY, WORK, MOVE])
     })
   })
 
-  describe('Should prioritize one', () => {
-    it('Should return the same array', () => {
+  describe('More move parts', () => {
+    it('Should prioritize one', () => {
       expect(sanitizeBody([MOVE, MOVE, CARRY, WORK])).to.eql([MOVE, CARRY, WORK, MOVE])
     })
   })
 
-  describe('Should not touch TOUGH part', () => {
-    it('Should return the same array', () => {
+  describe('Contains TOUGH part', () => {
+    it('Should not touch TOUGH part', () => {
       expect(sanitizeBody([TOUGH, MOVE, MOVE, CARRY, WORK])).to.eql([TOUGH, MOVE, CARRY, WORK, MOVE])
+    })
+  })
+
+  describe('Move part already prioritized', () => {
+    it('Should not prioritize WORK', () => {
+      expect(sanitizeBody([CARRY, MOVE, CARRY, WORK, MOVE])).to.eql([CARRY, MOVE, CARRY, WORK, MOVE])
     })
   })
 });
