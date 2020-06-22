@@ -127,7 +127,7 @@ const move = {
           if (!creepOnRoad.my) result = creep.moveTo(target, { costCallback, range })
           else if (move.anywhere(creepOnRoad, dir, creep))
             stuck = 0
-          //} else if (move.check(creepOnRoad) && stuck < 5) {
+        } else if (move.check(creepOnRoad)) {
           // this creep is moving we wont do anything
         } else {
           if (move.anywhere(creepOnRoad, (creepOnRoad.memory.role === STATIC_UPGRADER || creepOnRoad.memory.role === MINER || Math.random() > 0.8) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep))
@@ -136,14 +136,13 @@ const move = {
       } else stuck = 0
     }
     mem._move.stuck = stuck + 1
+    mem._move.t = Game.time
     return result
   },
   check: (creep: Creep) => {
     const moveData = creep.memory._move
     if (!moveData) return false
-    if (creep.pos.roomName !== moveData.dest.room) return true
-    return (creep.pos.x !== moveData.dest.x || creep.pos.y !== moveData.dest.y)
-      && moveData.path.length > 5
+    return (moveData.t || 0) + 1 >= Game.time
   }
 }
 

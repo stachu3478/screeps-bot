@@ -40,6 +40,7 @@ interface CreepMemory {
       y: number,
     },
     stuck?: number
+    t?: number
   };
   deprivity: number
   lastPos?: number
