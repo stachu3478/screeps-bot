@@ -1,4 +1,3 @@
-import { uniqName } from "./name";
 import { progressiveWorker } from "./body/work";
 import Role from "constants/role";
 
@@ -13,7 +12,6 @@ export function needsExtractor(spawn: StructureSpawn, extractorCount?: number) {
 }
 
 export default function extract(spawn: StructureSpawn) {
-  const name = uniqName("D")
   let memory = {
     role: Role.EXTRACTOR,
     room: spawn.room.name,
@@ -21,6 +19,6 @@ export default function extract(spawn: StructureSpawn) {
   }
   const body = progressiveWorker(spawn.room.energyCapacityAvailable)
   const boostRequests = spawn.room.prepareBoostData(memory, [CARRY, WORK], ['capacity', 'harvest'], body)
-  spawn.trySpawnCreep(body, name, memory, false, 25, boostRequests)
+  spawn.trySpawnCreep(body, 'D', memory, false, 25, boostRequests)
   return true
 }

@@ -37,7 +37,7 @@ interface StructureLab {
 
 interface StructureSpawn {
   getDirections: () => DirectionConstant[]
-  trySpawnCreep: (body: BodyPartConstant[], name: string, memory: CreepMemory, retry?: boolean, cooldown?: number, boost?: BoostInfo[]) => ScreepsReturnCode
+  trySpawnCreep: (body: BodyPartConstant[], letter: string, toMemory: CreepMemory, retry?: boolean, cooldown?: number, boost?: BoostInfo[]) => ScreepsReturnCode
 }
 
 interface RoomPosition {

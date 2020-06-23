@@ -1,6 +1,5 @@
 import Role from 'constants/role'
 import { progressiveMobileWorker } from 'spawn/body/work'
-import { uniqName } from 'spawn/name';
 import { ColonizerMemory } from 'role/creep/colonizer';
 
 export default function callRescue(room: Room) {
@@ -23,7 +22,6 @@ export default function callRescue(room: Room) {
       return false
     }
     console.log('Try to spawn creep')
-    const name = uniqName('P')
     const memory: ColonizerMemory = {
       role: Role.COLONIZER,
       room: room.name,
@@ -31,14 +29,12 @@ export default function callRescue(room: Room) {
       _arrive: room.name,
       _targetRole: Role.MINER
     }
-    const result = spawn.spawnCreep(progressiveMobileWorker(Math.max(spawn.room.energyAvailable, SPAWN_ENERGY_START)), name, {
-      memory
-    })
+    const body = progressiveMobileWorker(Math.max(spawn.room.energyAvailable, SPAWN_ENERGY_START))
+    const result = spawn.trySpawnCreep(body, 'P', memory, false, 10)
     if (result === ERR_BUSY) {
       console.log('Spawn is busy', JSON.stringify(spawn))
       return false
     }
-    room.memory.creeps = { [name]: 0 }
     return true
   })
   console.log('No spawn found')

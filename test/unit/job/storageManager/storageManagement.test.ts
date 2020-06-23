@@ -3,19 +3,19 @@ import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
 import storageManagement from 'job/storageManagement';
-import { StorageManager } from 'role/creep/storageManager';
+import { FactoryManager } from 'role/creep/factoryManager';
 
 describe('Checking if terminal needs to be filled from storage', () => {
   const { findJob } = storageManagement
   let storage: StructureStorage
   let terminal: StructureTerminal
-  let creep: StorageManager
+  let creep: FactoryManager
   beforeEach(() => {
     global.Game = _.clone(Game);
     global.Memory = _.clone(Memory);
     storage = { store: {} } as StructureStorage
     terminal = { store: {} } as StructureTerminal
-    creep = { motherRoom: { storage, terminal }, memory: {} } as StorageManager
+    creep = { motherRoom: { storage, terminal }, memory: {} } as FactoryManager
     sinon.restore()
     sinon.stub(storageManagement, 'prepareToTakeResource')
   });

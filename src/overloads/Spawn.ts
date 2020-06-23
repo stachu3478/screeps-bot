@@ -2,6 +2,7 @@ import { getXYRoad } from 'utils/selectFromPos';
 import Role from 'constants/role';
 import { infoStyle } from 'room/style';
 import sanitizeBody from 'utils/sanitizeBody';
+import { uniqName } from 'spawn/name';
 
 const allDirections: DirectionConstant[] = [1, 2, 3, 4, 5, 6, 7, 8]
 StructureSpawn.prototype.getDirections = function () {
@@ -20,9 +21,10 @@ StructureSpawn.prototype.getDirections = function () {
   return allDirections
 }
 
-StructureSpawn.prototype.trySpawnCreep = function (body: BodyPartConstant[], name: string, memory: CreepMemory, retry: boolean = false, cooldown: number = 100, boost: BoostInfo[] = []) {
+StructureSpawn.prototype.trySpawnCreep = function (body: BodyPartConstant[], letter: string, memory: CreepMemory, retry: boolean = false, cooldown: number = 100, boost: BoostInfo[] = []) {
+  const name = uniqName(letter)
   const result = this.spawnCreep(body, name, { memory, directions: this.getDirections(), dryRun: true })
-  const mem = this.room.memory as StableRoomMemory
+  const mem = this.room.memory
   if (result !== 0) {
     if (!retry) this.memory.trySpawn = {
       creep: body,
@@ -32,16 +34,17 @@ StructureSpawn.prototype.trySpawnCreep = function (body: BodyPartConstant[], nam
       boost
     }
   } else {
+    if (!mem.creeps) mem.creeps = {}
     this.spawnCreep(sanitizeBody(body), name, { memory, directions: this.getDirections() /*energyStructures: getDistanceOrderedHatches(this.room, creepCost(body))*/ })
     mem.priorityFilled = 0
     mem.creeps[name] = 0
-    if (memory.role === Role.MINER) mem.colonySources[this.memory.spawnSourceId || ''] = mem.colonySources[this.memory.spawnSourceId || ''].slice(0, 2) + name
+    if (memory.role === Role.MINER && mem.colonySources) mem.colonySources[this.memory.spawnSourceId || ''] = mem.colonySources[this.memory.spawnSourceId || ''].slice(0, 2) + name
     boost.forEach(data => {
       this.room.createBoostRequest(name, data.resource, data.partCount)
     })
     delete this.memory.spawnSourceId
     delete this.memory.trySpawn
   }
-  this.room.visual.text("Try to spawn " + name, 0, 3, infoStyle)
+  this.room.visual.text('Try to spawn ' + name, 0, 3, infoStyle)
   return result
 }

@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
 import storageManagement from 'job/storageManagement';
-import { StorageManager } from 'role/creep/storageManager';
+import { FactoryManager } from 'role/creep/factoryManager';
 
 describe('Preparing creep to transfer lab between terminal and storage', () => {
   const { prepareToTakeResource } = storageManagement
   let storage: StructureStorage
   let terminal: StructureTerminal
-  let creep: StorageManager
+  let creep: FactoryManager
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
@@ -17,7 +17,7 @@ describe('Preparing creep to transfer lab between terminal and storage', () => {
     global.Memory = _.clone(Memory);
     storage = { store: { [RESOURCE_UTRIUM]: 5000 }, id: 'storage' } as StructureStorage
     terminal = { store: { [RESOURCE_UTRIUM]: 1000 }, id: 'terminal' } as StructureTerminal
-    creep = { memory: {}, store: { getFreeCapacity: () => Infinity } } as StorageManager
+    creep = { memory: {}, store: { getFreeCapacity: () => Infinity } } as FactoryManager
     sinon.restore()
   });
 

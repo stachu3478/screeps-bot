@@ -1,13 +1,10 @@
-import Role from "constants/role";
-import { uniqName } from "./name";
-import { progressiveWorker, progressiveStaticUpgrader } from "./body/work";
+import Role from "constants/role"
+import { progressiveWorker, progressiveStaticUpgrader } from "./body/work"
 
 export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemory, controller: StructureController) {
-  const name = uniqName("U")
   let parts
   let role
   let deprivity
-  let workPartCount = mem.maxWorkController
   if (spawn.room.linked) {
     parts = progressiveStaticUpgrader(spawn.room.energyCapacityAvailable, controller.level == 8)
     role = Role.STATIC_UPGRADER
@@ -30,5 +27,5 @@ export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemo
   }
   const creepMemory: CreepMemory = { role, room: spawn.room.name, deprivity }
   const boostRequests = spawn.room.prepareBoostData(creepMemory, [CARRY, WORK], ['capacity', 'upgradeController'], parts)
-  spawn.trySpawnCreep(parts, name, creepMemory, false, 100, boostRequests)
+  spawn.trySpawnCreep(parts, 'U', creepMemory, false, 100, boostRequests)
 }
