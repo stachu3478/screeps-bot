@@ -1,6 +1,6 @@
 import { uniqName } from "./name";
 import { progressiveWorker } from "./body/work";
-import { EXTRACTOR } from "constants/role";
+import Role from "constants/role";
 
 export function needsExtractor(spawn: StructureSpawn, extractorCount?: number) {
   if (extractorCount) return false
@@ -15,7 +15,7 @@ export function needsExtractor(spawn: StructureSpawn, extractorCount?: number) {
 export default function extract(spawn: StructureSpawn) {
   const name = uniqName("D")
   let memory = {
-    role: EXTRACTOR,
+    role: Role.EXTRACTOR,
     room: spawn.room.name,
     deprivity: 0
   }

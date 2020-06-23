@@ -2,7 +2,7 @@ import _ from 'lodash'
 import profiler from "screeps-profiler"
 import { progressiveMiner, progressiveLiteWorker } from './body/work'
 import { progressiveFighter } from './body/body'
-import { HARVESTER, UPGRADER, MINER, RETIRED, FIGHTER, EXTRACTOR, STATIC_UPGRADER, FACTORY_MANAGER, LAB_MANAGER, HAULER, BOOSTER } from '../constants/role'
+import Role from '../constants/role'
 import domination from './domination'
 import { uniqName } from './name'
 import { infoStyle } from '../room/style'
@@ -33,25 +33,25 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
     } else spawn.memory.trySpawn.cooldown--
     return
   }
-  const harvesterCount = (creepCountByRole[HARVESTER] || 0) + (creepCountByRole[FACTORY_MANAGER] || 0) + (creepCountByRole[LAB_MANAGER] || 0) + (mem._haul === spawn.room.name && creepCountByRole[HAULER] || 0)
-  const upgraderCount = creepCountByRole[UPGRADER] || 0
-  const minerCount = creepCountByRole[MINER] || 0
+  const harvesterCount = (creepCountByRole[Role.HARVESTER] || 0) + (creepCountByRole[Role.FACTORY_MANAGER] || 0) + (creepCountByRole[Role.LAB_MANAGER] || 0) + (mem._haul === spawn.room.name && creepCountByRole[Role.HAULER] || 0)
+  const upgraderCount = creepCountByRole[Role.UPGRADER] || 0
+  const minerCount = creepCountByRole[Role.MINER] || 0
   const maxUpgradersCount = 3
   const containers = findContainers(spawn.room).length || spawn.room.storage
   const isLinked = spawn.room.linked
-  if (minerCount === 0 && !creepCountByRole[RETIRED]) {
+  if (minerCount === 0 && !creepCountByRole[Role.RETIRED]) {
     const name = uniqName("M")
     const colonySource = mem.colonySourceId
     spawn.memory.spawnSourceId = colonySource
-    spawn.trySpawnCreep(progressiveMiner(Math.max(SPAWN_ENERGY_START, spawn.room.energyAvailable)), name, { role: MINER, room: spawn.room.name, _harvest: colonySource, deprivity: 0 } as MinerMemory)
+    spawn.trySpawnCreep(progressiveMiner(Math.max(SPAWN_ENERGY_START, spawn.room.energyAvailable)), name, { role: Role.MINER, room: spawn.room.name, _harvest: colonySource, deprivity: 0 } as MinerMemory)
     console.log(`[${spawn.room.name}] Trying spawn a creep @ref`)
   } else if (harvesterCount === 0 && containers) {
     const name = uniqName("J")
-    const energyDeclared = creepCountByRole[RETIRED] ? spawn.room.energyCapacityAvailable : spawn.room.energyAvailable
-    spawn.trySpawnCreep(progressiveLiteWorker(Math.max(SPAWN_ENERGY_START, energyDeclared)), name, { role: HARVESTER, room: spawn.room.name, deprivity: 0 })
+    const energyDeclared = creepCountByRole[Role.RETIRED] ? spawn.room.energyCapacityAvailable : spawn.room.energyAvailable
+    spawn.trySpawnCreep(progressiveLiteWorker(Math.max(SPAWN_ENERGY_START, energyDeclared)), name, { role: Role.HARVESTER, room: spawn.room.name, deprivity: 0 })
   } else if (needsFighters) {
     const name = uniqName("F")
-    spawn.trySpawnCreep(progressiveFighter(Math.max(SPAWN_ENERGY_START, spawn.room.energyAvailable)), name, { role: FIGHTER, room: spawn.room.name, deprivity: 0 })
+    spawn.trySpawnCreep(progressiveFighter(Math.max(SPAWN_ENERGY_START, spawn.room.energyAvailable)), name, { role: Role.FIGHTER, room: spawn.room.name, deprivity: 0 })
   } else if (minerCount < max) {
     const parts = progressiveMiner(spawn.room.energyCapacityAvailable)
     const name = uniqName("M")
@@ -68,15 +68,15 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
     spawn.memory.spawnSourceId = freeSource as Id<Source>
     mem.colonySources[freeSource] = mem.colonySources[freeSource].slice(0, 2) + name
     const spec = mem.colonySources[freeSource].charCodeAt(1)
-    const memory: MinerMemory = { role: MINER, room: spawn.room.name, _harvest: freeSource as Id<Source>, deprivity: spec }
+    const memory: MinerMemory = { role: Role.MINER, room: spawn.room.name, _harvest: freeSource as Id<Source>, deprivity: spec }
     spawn.trySpawnCreep(parts, name, memory)
-  } else if ((!isLinked && containers && upgraderCount < maxUpgradersCount && (workPartCountByRole[UPGRADER] || 0) < (mem.maxWorkController || 0)) || (isLinked && !creepCountByRole[STATIC_UPGRADER])) {
+  } else if ((!isLinked && containers && upgraderCount < maxUpgradersCount && (workPartCountByRole[Role.UPGRADER] || 0) < (mem.maxWorkController || 0)) || (isLinked && !creepCountByRole[Role.STATIC_UPGRADER])) {
     spawnUpgrader(spawn, mem as StableRoomMemory, controller)
-  } else if (mem._haul && mem._haul !== spawn.room.name && !creepCountByRole[HAULER]) {
+  } else if (mem._haul && mem._haul !== spawn.room.name && !creepCountByRole[Role.HAULER]) {
     mem._haulSize = mem._haulSize ? mem._haulSize + 1 : 10
     if (mem._haulSize > 50) mem._haulSize = 50
-    spawn.trySpawnCreep(_.times(mem._haulSize, i => i & 1 ? CARRY : MOVE), uniqName("H"), { role: HAULER, room: spawn.room.name, deprivity: 10 })
+    spawn.trySpawnCreep(_.times(mem._haulSize, i => i & 1 ? CARRY : MOVE), uniqName("H"), { role: Role.HAULER, room: spawn.room.name, deprivity: 10 })
   } else if (domination(spawn, creepCountByRole)) spawn.room.visual.text("                            in domination", 0, 3, infoStyle)
-  else if (needsExtractor(spawn, creepCountByRole[EXTRACTOR])) extract(spawn)
+  else if (needsExtractor(spawn, creepCountByRole[Role.EXTRACTOR])) extract(spawn)
   else spawn.room.visual.text("Spawn is idle.", 0, 3, infoStyle)
 }, 'spawnLoop')

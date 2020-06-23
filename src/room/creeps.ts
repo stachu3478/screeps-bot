@@ -1,4 +1,4 @@
-import { HARVESTER, UPGRADER, CLAIMER, SCOUT, COMMANDER, MINER, RETIRED, EXTRACTOR, FIGHTER, STATIC_UPGRADER, COLONIZER, FACTORY_MANAGER, LAB_MANAGER, HAULER, BOOSTER } from '../constants/role'
+import Role from '../constants/role'
 import roleHarvester from '../role/creep/harvester'
 import roleUpgrader from '../role/creep/upgrader'
 import roleClaimer, { Claimer } from '../role/creep/claimer'
@@ -41,31 +41,31 @@ export default function creeps(creeps: Creeps, room: Room, enemy?: Creep, holdFi
     }
     const role = creep.memory.role || 0
     if (!isRetired(creep)) {
-      if (role === BOOSTER) {
+      if (role === Role.BOOSTER) {
         const targetRole = creep.memory._targetRole || 0
         creepCountByRole[targetRole] = (creepCountByRole[targetRole] || 0) + 1
       } else creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
       workPartCountByRole[role] = (workPartCountByRole[role] || 0) + creep.getActiveBodyparts(WORK)
       count++
-    } else creepCountByRole[RETIRED] = (creepCountByRole[RETIRED] || 0) + 1
+    } else creepCountByRole[Role.RETIRED] = (creepCountByRole[Role.RETIRED] || 0) + 1
     if (creep.spawning) continue
     try {
       switch (creep.memory.role) {
-        case HARVESTER: roleHarvester(creep); break
-        case UPGRADER: roleUpgrader(creep); break
-        case STATIC_UPGRADER: staticUpgrader(creep); break
-        case SCOUT: roleScout(creep as Scout); break
-        case CLAIMER: roleClaimer(creep as Claimer); break
-        case COMMANDER: commander(creep); break
-        case MINER: miner(creep); break
-        case EXTRACTOR: extractor(creep); break
-        case FIGHTER: fighter(creep, enemy, holdFire); break
-        case COLONIZER: colonizer(creep as Colonizer); break
-        case FACTORY_MANAGER: factoryManager(creep); break
-        case LAB_MANAGER: labManager(creep); break
-        case HAULER: hauler(creep); break
-        case BOOSTER: roleBooster.run(creep as BoosterCreep); break
-        default: creep.memory.role = UPGRADER;
+        case Role.HARVESTER: roleHarvester(creep); break
+        case Role.UPGRADER: roleUpgrader(creep); break
+        case Role.STATIC_UPGRADER: staticUpgrader(creep); break
+        case Role.SCOUT: roleScout(creep as Scout); break
+        case Role.CLAIMER: roleClaimer(creep as Claimer); break
+        case Role.COMMANDER: commander(creep); break
+        case Role.MINER: miner(creep); break
+        case Role.EXTRACTOR: extractor(creep); break
+        case Role.FIGHTER: fighter(creep, enemy, holdFire); break
+        case Role.COLONIZER: colonizer(creep as Colonizer); break
+        case Role.FACTORY_MANAGER: factoryManager(creep); break
+        case Role.LAB_MANAGER: labManager(creep); break
+        case Role.HAULER: hauler(creep); break
+        case Role.BOOSTER: roleBooster.run(creep as BoosterCreep); break
+        default: creep.memory.role = Role.UPGRADER;
       }
     } catch (err) {
       console.log(err.message, err.stack)

@@ -4,7 +4,7 @@ import draw from 'routine/haul/draw';
 import fill from 'routine/haul/fill';
 import { factoryStoragePerResource } from 'utils/handleFactory';
 import profiler from "screeps-profiler"
-import { HARVESTER, HAULER } from 'constants/role';
+import Role from 'constants/role';
 import dumpResources from 'job/dumpResources';
 import { getFillableGenericStruture } from 'utils/fill';
 import storageManagement from 'job/storageManagement';
@@ -52,8 +52,8 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
         break
       }
       if (creep.store.getUsedCapacity() === 0) {
-        creep.memory.role = HAULER
-        creep.memory._targetRole = HARVESTER
+        creep.memory.role = Role.HAULER
+        creep.memory._targetRole = Role.HARVESTER
         const motherRoom = creep.motherRoom
         motherRoom.memory._haul = motherRoom.name
         break

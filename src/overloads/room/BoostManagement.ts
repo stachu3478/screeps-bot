@@ -1,4 +1,4 @@
-import { BOOSTER } from "constants/role";
+import Role from 'constants/role';
 
 Room.prototype.getBoosts = function () {
   return this.memory.boosts || (this.memory.boosts = {
@@ -92,7 +92,7 @@ Room.prototype.clearBoostRequest = function (creepName: string, resource: Resour
   const indexToRemove = boostData.creeps.findIndex((name, index) => {
     if (name === creepName) return boostData.resources.creeps[index] === resource
     const creep = Game.creeps[name]
-    if (name && (!creep || creep.memory.role !== BOOSTER)) {
+    if (name && (!creep || creep.memory.role !== Role.BOOSTER)) {
       toRemove = name
       resourceToRemove = boostData.resources.creeps[index]
     }
@@ -126,7 +126,7 @@ Room.prototype.prepareBoostData = function (creepMemory: CreepMemory, parts: Bod
   })
   if (boostRequests.length) {
     creepMemory._targetRole = creepMemory.role
-    creepMemory.role = BOOSTER
+    creepMemory.role = Role.BOOSTER
   }
   return boostRequests
 }

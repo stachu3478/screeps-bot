@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import tower from '../role/tower'
-import { RETIRED } from '../constants/role'
+import Role from '../constants/role'
 import spawnLoop from 'spawn/core'
 import plan from 'planner/core'
 import callRescue from 'planner/rescue';
@@ -62,7 +62,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
   if (!spawn) {
     spawn = room.find(FIND_MY_SPAWNS)[0]
     if (!spawn) {
-      if (count === 0 && !creepCountByRole[RETIRED]) callRescue(room)
+      if (count === 0 && !creepCountByRole[Role.RETIRED]) callRescue(room)
       const sites = room.find(FIND_CONSTRUCTION_SITES)
       const spawnSite = sites.filter(s => s.structureType === STRUCTURE_SPAWN)[0]
       if (!spawnSite) {
@@ -82,7 +82,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
   if (factoryStructure) factory(factoryStructure)
 
   if (spawn) spawnLoop(spawn, controller, creepCountByRole, workPartCountByRole, needFighters)
-  room.visual.text("Population: " + count + " Retired: " + (creepCountByRole[RETIRED] || 0), 0, 0, count === 0 ? dangerStyle : infoStyle)
+  room.visual.text("Population: " + count + " Retired: " + (creepCountByRole[Role.RETIRED] || 0), 0, 0, count === 0 ? dangerStyle : infoStyle)
   room.visual.text("Spawns: " + room.energyAvailable + "/" + room.energyCapacityAvailable, 0, 1, room.energyCapacityAvailable === 0 ? dangerStyle : infoStyle)
   return usage(room, cpuUsed)
 }

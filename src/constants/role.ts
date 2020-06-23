@@ -1,15 +1,19 @@
-export const HARVESTER = 1
-export const UPGRADER = 2
-export const SCOUT = 3
-export const COMMANDER = 4
-export const CLAIMER = 5
-export const MINER = 6
-export const RETIRED = 7
-export const EXTRACTOR = 8
-export const FIGHTER = 9
-export const STATIC_UPGRADER = 10
-export const COLONIZER = 11
-export const FACTORY_MANAGER = 12
-export const LAB_MANAGER = 13
-export const HAULER = 14
-export const BOOSTER = 15
+const enum Role {
+  HARVESTER = 1,
+  UPGRADER = 2,
+  SCOUT = 3,
+  COMMANDER = 4,
+  CLAIMER = 5,
+  MINER = 6,
+  RETIRED = 7,
+  EXTRACTOR = 8,
+  FIGHTER = 9,
+  STATIC_UPGRADER = 10,
+  COLONIZER = 11,
+  FACTORY_MANAGER = 12,
+  LAB_MANAGER = 13,
+  HAULER = 14,
+  BOOSTER = 15,
+}
+
+export default Role

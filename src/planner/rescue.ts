@@ -1,4 +1,4 @@
-import { COLONIZER, MINER } from 'constants/role'
+import Role from 'constants/role'
 import { progressiveMobileWorker } from 'spawn/body/work'
 import { uniqName } from 'spawn/name';
 import { ColonizerMemory } from 'role/creep/colonizer';
@@ -25,11 +25,11 @@ export default function callRescue(room: Room) {
     console.log('Try to spawn creep')
     const name = uniqName('P')
     const memory: ColonizerMemory = {
-      role: COLONIZER,
+      role: Role.COLONIZER,
       room: room.name,
       deprivity: 0,
       _arrive: room.name,
-      _targetRole: MINER
+      _targetRole: Role.MINER
     }
     const result = spawn.spawnCreep(progressiveMobileWorker(Math.max(spawn.room.energyAvailable, SPAWN_ENERGY_START)), name, {
       memory

@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { FIGHTER } from "constants/role";
+import Role from "constants/role";
 import { Fighter } from "role/creep/fighter";
 import { getContainer, getExtension, getSpawn } from './selectFromPos';
 
@@ -22,7 +22,7 @@ export const findContainers = (room: Room) => {
 const sourceKeepersFilter = { filter: (c: Creep) => c.owner.username === "Source Keeper" }
 export const findSourceKeepers = (room: Room) => room.find(FIND_HOSTILE_CREEPS, sourceKeepersFilter)
 
-const fighterFilter = { filter: (c: Creep) => c.memory.role === FIGHTER }
+const fighterFilter = { filter: (c: Creep) => c.memory.role === Role.FIGHTER }
 export const findFighters = (room: Room) => room.find(FIND_MY_CREEPS, fighterFilter) as Fighter[]
 
 const damagedCreepsFilter = { filter: (c: Creep) => c.hits < c.hitsMax }

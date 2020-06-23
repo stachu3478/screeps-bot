@@ -2,7 +2,7 @@ import { expect } from "chai";
 import _ from "lodash"
 import sinon from 'sinon'
 import boostData from "../mock/boostData";
-import { BOOSTER, UPGRADER } from "constants/role";
+import Role from "constants/role";
 
 describe('Removing a boost request', () => {
   let room: Room
@@ -31,7 +31,7 @@ describe('Removing a boost request', () => {
 
   describe('boost data do not have that name', () => {
     it('should do nothing', function () {
-      Game.creeps = { Johny: { memory: { role: BOOSTER } } as Creep }
+      Game.creeps = { Johny: { memory: { role: Role.BOOSTER } } as Creep }
       boosts.creeps.push('Johny')
       boosts.resources.creeps.push(RESOURCE_UTRIUM_ACID)
       boosts.resources.labs.push(RESOURCE_UTRIUM_ACID)
@@ -142,7 +142,7 @@ describe('Removing a boost request', () => {
 
   describe('another boost data exists with other stable', () => {
     it('should not remove existing creeps data', function () {
-      Game.creeps = { Johny: { memory: { role: BOOSTER } } as Creep }
+      Game.creeps = { Johny: { memory: { role: Role.BOOSTER } } as Creep }
       boosts.creeps.push('Johny')
       boosts.resources.labs.push(RESOURCE_UTRIUM_ALKALIDE)
       boosts.amounts.labs.push(400)
@@ -160,7 +160,7 @@ describe('Removing a boost request', () => {
     });
 
     it('should remove existing creeps data', function () {
-      Game.creeps = { Johny: { memory: { role: UPGRADER } } as Creep }
+      Game.creeps = { Johny: { memory: { role: Role.UPGRADER } } as Creep }
       const sameBoosts = _.clone(boosts, true)
       boosts.creeps.push('Johny')
       boosts.resources.labs.push(RESOURCE_UTRIUM_ALKALIDE)

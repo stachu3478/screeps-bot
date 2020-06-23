@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
-import { BOOSTER } from 'constants/role';
+import Role from 'constants/role';
 
 describe('Preparing array of boosting data', () => {
   let room: Room
@@ -22,7 +22,7 @@ describe('Preparing array of boosting data', () => {
     boostInfo2 = {} as BoostInfo
     creepMemory = { role: 123 } as CreepMemory
     sinon.restore()
-    boostedMemory = { _targetRole: 123, role: BOOSTER } as CreepMemory
+    boostedMemory = { _targetRole: 123, role: Role.BOOSTER } as CreepMemory
   });
 
   describe('All boosts rejected', () => {

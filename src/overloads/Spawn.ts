@@ -1,8 +1,7 @@
-import { getXYRoad } from "utils/selectFromPos";
-import { MINER } from "constants/role";
-import { infoStyle } from "room/style";
-import { getDistanceOrderedHatches } from "utils/find";
-import sanitizeBody from "utils/sanitizeBody";
+import { getXYRoad } from 'utils/selectFromPos';
+import Role from 'constants/role';
+import { infoStyle } from 'room/style';
+import sanitizeBody from 'utils/sanitizeBody';
 
 const allDirections: DirectionConstant[] = [1, 2, 3, 4, 5, 6, 7, 8]
 StructureSpawn.prototype.getDirections = function () {
@@ -36,7 +35,7 @@ StructureSpawn.prototype.trySpawnCreep = function (body: BodyPartConstant[], nam
     this.spawnCreep(sanitizeBody(body), name, { memory, directions: this.getDirections() /*energyStructures: getDistanceOrderedHatches(this.room, creepCost(body))*/ })
     mem.priorityFilled = 0
     mem.creeps[name] = 0
-    if (memory.role === MINER) mem.colonySources[this.memory.spawnSourceId || ''] = mem.colonySources[this.memory.spawnSourceId || ''].slice(0, 2) + name
+    if (memory.role === Role.MINER) mem.colonySources[this.memory.spawnSourceId || ''] = mem.colonySources[this.memory.spawnSourceId || ''].slice(0, 2) + name
     boost.forEach(data => {
       this.room.createBoostRequest(name, data.resource, data.partCount)
     })

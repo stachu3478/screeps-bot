@@ -3,7 +3,7 @@ import { DONE, NOTHING_TODO, FAILED, SUCCESS } from 'constants/response'
 import draw from 'routine/haul/draw';
 import fill from 'routine/haul/fill';
 import profiler from "screeps-profiler"
-import { FACTORY_MANAGER } from 'constants/role';
+import Role from 'constants/role';
 import handleLab from 'utils/handleLab';
 import { LabManager } from './labManager.d'
 import labJobs from 'job/lab';
@@ -36,7 +36,7 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
     case State.IDLE:
       if (findJob(creep)) break
       if (creep.store.getUsedCapacity() === 0) {
-        creep.memory.role = FACTORY_MANAGER
+        creep.memory.role = Role.FACTORY_MANAGER
         break
       }
       dumpResources(creep, State.HAUL_LAB_TO_STORAGE)

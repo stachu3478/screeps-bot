@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import xyToChar, { posToChar } from 'planner/pos'
-import { MINER, STATIC_UPGRADER } from 'constants/role';
+import Role from 'constants/role';
 import { findSourceKeepers } from './find';
 
 interface OffsetByDirection {
@@ -130,7 +130,7 @@ const move = {
         } else if (move.check(creepOnRoad)) {
           // this creep is moving we wont do anything
         } else {
-          if (move.anywhere(creepOnRoad, (creepOnRoad.memory.role === STATIC_UPGRADER || creepOnRoad.memory.role === MINER || Math.random() > 0.8) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep))
+          if (move.anywhere(creepOnRoad, (creepOnRoad.memory.role === Role.STATIC_UPGRADER || creepOnRoad.memory.role === Role.MINER || Math.random() > 0.8) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep))
             stuck = 0
         }
       } else stuck = 0

@@ -1,4 +1,4 @@
-import { UPGRADER, STATIC_UPGRADER } from "constants/role";
+import Role from "constants/role";
 import { uniqName } from "./name";
 import { progressiveWorker, progressiveStaticUpgrader } from "./body/work";
 
@@ -10,11 +10,11 @@ export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemo
   let workPartCount = mem.maxWorkController
   if (spawn.room.linked) {
     parts = progressiveStaticUpgrader(spawn.room.energyCapacityAvailable, controller.level == 8)
-    role = STATIC_UPGRADER
+    role = Role.STATIC_UPGRADER
     deprivity = spawn.pos.findPathTo(controller).length
   } else {
     parts = progressiveWorker(spawn.room.energyCapacityAvailable, mem.maxWorkController)
-    role = UPGRADER
+    role = Role.UPGRADER
     deprivity = 0
     if (!mem.workControllerOver) mem.workControllerOver = 0
     if (spawn.room.storage) {
