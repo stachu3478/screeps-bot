@@ -3,7 +3,6 @@ import State from "constants/state";
 import pick from "routine/haul/pick";
 import Hauler from 'role/creep/hauler.d'
 import { findHaulable } from "utils/find";
-import { HARVESTER } from "constants/role";
 
 function getHaulable(structure?: StructureStorage | StructureTerminal) {
   return structure && structure.store.getUsedCapacity() && structure
@@ -13,8 +12,10 @@ export default function resourceHaul(creep: Hauler) {
   const mem = creep.memory
   const haulTarget = Memory.rooms[mem.room]._haul
   if (!haulTarget) {
-    if (mem._tmp) mem.role = HARVESTER
-    else mem.state = State.RECYCLE
+    if (mem._targetRole) {
+      mem.role = mem._targetRole
+      delete mem._targetRole
+    } else mem.state = State.RECYCLE
     return true
   } else if (haulTarget === creep.room.name) {
     if (pick(creep) in ACCEPTABLE) {

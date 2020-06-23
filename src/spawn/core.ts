@@ -72,7 +72,7 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
     spawn.trySpawnCreep(parts, name, memory)
   } else if ((!isLinked && containers && upgraderCount < maxUpgradersCount && (workPartCountByRole[UPGRADER] || 0) < (mem.maxWorkController || 0)) || (isLinked && !creepCountByRole[STATIC_UPGRADER])) {
     spawnUpgrader(spawn, mem as StableRoomMemory, controller)
-  } else if (mem._haul && !creepCountByRole[HAULER]) {
+  } else if (mem._haul && mem._haul !== spawn.room.name && !creepCountByRole[HAULER]) {
     mem._haulSize = mem._haulSize ? mem._haulSize + 1 : 10
     if (mem._haulSize > 50) mem._haulSize = 50
     spawn.trySpawnCreep(_.times(mem._haulSize, i => i & 1 ? CARRY : MOVE), uniqName("H"), { role: HAULER, room: spawn.room.name, deprivity: 10 })

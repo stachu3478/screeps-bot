@@ -72,6 +72,8 @@ export default function creeps(creeps: Creeps, room: Room, enemy?: Creep, holdFi
     }
   }
 
+  if (room.memory._haul === room.name) creepCountByRole[HARVESTER] = (creepCountByRole[HARVESTER] || 0) + (creepCountByRole[HAULER] || 0)
+
   return {
     creepCountByRole,
     workPartCountByRole,
