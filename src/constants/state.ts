@@ -1,6 +1,7 @@
 const enum State {
   HARVESTING = 1,
   BOOST = 2,
+  FILL = 3,
   REPAIR = 4,
   BUILD = 5,
   UPGRADE = 6,

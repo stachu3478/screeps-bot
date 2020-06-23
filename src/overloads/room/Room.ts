@@ -80,3 +80,11 @@ Object.defineProperty(Room.prototype, 'linked', {
     )
   }
 })
+
+Room.prototype.store = function (resource: ResourceConstant) {
+  const storage = this.storage
+  const terminal = this.terminal
+  const inStorage = storage ? storage.store[resource] : 0
+  const inTerminal = terminal ? terminal.store[resource] : 0
+  return inStorage + inTerminal
+}

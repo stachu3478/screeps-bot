@@ -1,12 +1,12 @@
-import "./constants"
+import './constants'
 import 'overloads/all'
-import { assert } from "chai";
-import _ from "lodash"
-import { loop } from "../../src/main";
-import { Memory } from "./mock"
-import Game from "./mock/Game"
+import { assert } from 'chai';
+import _ from 'lodash'
+import { loop } from '../../src/main';
+import { Memory } from './mock'
+import Game from './mock/Game'
 
-describe("main", () => {
+describe('main', () => {
   before(() => {
     // runs before all test in this block
   });
@@ -19,11 +19,11 @@ describe("main", () => {
     global.Memory = _.clone(Memory);
   });
 
-  it("should export a loop function", function () {
+  it('should export a loop function', function () {
     assert.isTrue(typeof loop === "function");
   });
 
-  it("should return void when called with no context", function () {
+  it('should return void when called with no context', function () {
     assert.isUndefined(loop());
   });
 });

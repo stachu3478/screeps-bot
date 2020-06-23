@@ -33,7 +33,7 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
     } else spawn.memory.trySpawn.cooldown--
     return
   }
-  const harvesterCount = (creepCountByRole[HARVESTER] || 0) + (creepCountByRole[FACTORY_MANAGER] || 0) + (creepCountByRole[LAB_MANAGER] || 0)
+  const harvesterCount = (creepCountByRole[HARVESTER] || 0) + (creepCountByRole[FACTORY_MANAGER] || 0) + (creepCountByRole[LAB_MANAGER] || 0) + (mem._haul === spawn.room.name && creepCountByRole[HAULER] || 0)
   const upgraderCount = creepCountByRole[UPGRADER] || 0
   const minerCount = creepCountByRole[MINER] || 0
   const maxUpgradersCount = 3

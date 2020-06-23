@@ -1,7 +1,3 @@
-interface Game {
-  simulateCreepFight: (creep1: BodyPartConstant[], creep2: BodyPartConstant[], startHp1: number) => void
-}
-
 interface BoostInfo {
   resource: ResourceConstant
   partCount: number
@@ -32,6 +28,7 @@ interface Room {
   createBoostRequest: (creepName: string, resource: ResourceConstant, partCount: number) => void
   clearBoostRequest: (creepName: string, resource: ResourceConstant | null) => void
   prepareBoostData: (creepMemory: CreepMemory, parts: BodyPartConstant[], actions: string[], body: BodyPartConstant[]) => BoostInfo[]
+  store: (resource: ResourceConstant) => number
 }
 
 interface StructureLab {

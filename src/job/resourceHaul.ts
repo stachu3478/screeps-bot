@@ -16,7 +16,7 @@ export default function resourceHaul(creep: Hauler) {
       mem.role = mem._targetRole
       delete mem._targetRole
     } else mem.state = State.RECYCLE
-    return true
+    return false
   } else if (haulTarget === creep.room.name) {
     if (pick(creep) in ACCEPTABLE) {
       mem.state = State.PICK
@@ -33,6 +33,10 @@ export default function resourceHaul(creep: Hauler) {
     mem.state = State.ARRIVE
     mem._arrive = mem.room
     delete Memory.rooms[mem.room]._haul
+    if (mem._targetRole) {
+      mem.role = mem._targetRole
+      delete mem._targetRole
+    }
     return false
   } else {
     mem.state = State.ARRIVE

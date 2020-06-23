@@ -1,3 +1,4 @@
+import '../../constants'
 import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
@@ -7,7 +8,7 @@ import State from 'constants/state';
 import { MINER, BOOSTER } from 'constants/role';
 import { NOTHING_DONE, FAILED, SUCCESS } from 'constants/response';
 
-describe('Creep boost routine', () => {
+describe('Creep boost role', () => {
   let creep: BoosterCreep
   let lab1: StructureLab
   let lab2: StructureLab
