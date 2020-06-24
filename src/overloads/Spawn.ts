@@ -34,10 +34,11 @@ StructureSpawn.prototype.trySpawnCreep = function (body: BodyPartConstant[], let
       boost
     }
   } else {
-    if (!mem.creeps) mem.creeps = {}
+    const motherMemory = Memory.rooms[memory.room]
+    if (!motherMemory.creeps) motherMemory.creeps = {}
     this.spawnCreep(sanitizeBody(body), name, { memory, directions: this.getDirections() /*energyStructures: getDistanceOrderedHatches(this.room, creepCost(body))*/ })
     mem.priorityFilled = 0
-    mem.creeps[name] = 0
+    motherMemory.creeps[name] = 0
     if (memory.role === Role.MINER && mem.colonySources) mem.colonySources[this.memory.spawnSourceId || ''] = mem.colonySources[this.memory.spawnSourceId || ''].slice(0, 2) + name
     boost.forEach(data => {
       this.room.createBoostRequest(name, data.resource, data.partCount)

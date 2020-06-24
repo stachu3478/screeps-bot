@@ -52,8 +52,8 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
         break
       }
       if (creep.store.getUsedCapacity() === 0) {
-        creep.memory.role = Role.HAULER
-        creep.memory._targetRole = Role.HARVESTER
+        creep.memory.role = Role.HARVESTER
+        creep.memory._targetRole = Role.HAULER
         const motherRoom = creep.motherRoom
         motherRoom.memory._haul = motherRoom.name
         break
