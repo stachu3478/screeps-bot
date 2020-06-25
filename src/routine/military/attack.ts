@@ -1,4 +1,5 @@
 import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from "constants/response";
+import { hasToughPart } from "role/creep/commander";
 
 const hittable = (obj: Creep | Structure) => obj.hits
 const hittableFilter = {
@@ -11,11 +12,12 @@ interface AttackCreep extends Creep {
 
 interface AttackMemory extends CreepMemory {
   _attack?: Id<Creep | Structure>
+  [Keys.toughHitsThreshold]?: number
 }
 
 export default function attack(creep: AttackCreep) {
   let target: Creep | Structure | null = Game.getObjectById(creep.memory._attack || "")
-  if (creep.getActiveBodyparts(TOUGH) === 0) return FAILED
+  if (hasToughPart(creep)) return FAILED
   if (!target) {
     const list = Memory.whitelist || {}
     let newTarget: Creep | Structure | null = creep.pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, {

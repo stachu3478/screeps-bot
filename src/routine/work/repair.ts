@@ -26,7 +26,7 @@ export default function repair(creep: RepairCreep) {
   const motherRoom = creep.motherRoom
   if (motherRoom.memory.repaired) return NOTHING_TODO
   let target = creep.memory._repair && Game.getObjectById(creep.memory._repair)
-  const repairPower = creep.getActiveBodyparts(WORK) * REPAIR_POWER
+  const repairPower = creep.workpartCount * REPAIR_POWER
   if (!target || target.hits === target.hitsMax) {
     target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: s => toRepair[s.structureType]
@@ -39,7 +39,7 @@ export default function repair(creep: RepairCreep) {
     creep.memory._repair = target.id
   }
   const result = creep.repair(target)
-  const remaining = storedEnergy - creep.getActiveBodyparts(WORK)
+  const remaining = storedEnergy - creep.workpartCount
   if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target, false, 3)
   else if (result !== 0) return FAILED
   else {

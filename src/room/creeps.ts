@@ -14,6 +14,7 @@ import factoryManager from 'role/creep/factoryManager';
 import labManager from 'role/creep/labManager';
 import hauler from 'role/creep/hauler';
 import roleBooster, { BoosterCreep } from 'role/creep/booster';
+import Harvester from 'role/creep/harvester.d';
 
 interface Creeps {
   [key: string]: 0
@@ -45,13 +46,13 @@ export default function creeps(creeps: Creeps, room: Room, enemy?: Creep, holdFi
         const targetRole = creep.memory._targetRole || 0
         creepCountByRole[targetRole] = (creepCountByRole[targetRole] || 0) + 1
       } else creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
-      workPartCountByRole[role] = (workPartCountByRole[role] || 0) + creep.getActiveBodyparts(WORK)
+      workPartCountByRole[role] = (workPartCountByRole[role] || 0) + creep.workpartCount
       count++
     } else creepCountByRole[Role.RETIRED] = (creepCountByRole[Role.RETIRED] || 0) + 1
     if (creep.spawning) continue
     try {
       switch (creep.memory.role) {
-        case Role.HARVESTER: roleHarvester(creep); break
+        case Role.HARVESTER: roleHarvester(creep as Harvester); break
         case Role.UPGRADER: roleUpgrader(creep); break
         case Role.STATIC_UPGRADER: staticUpgrader(creep); break
         case Role.SCOUT: roleScout(creep as Scout); break

@@ -17,17 +17,8 @@ import Harvester from './harvester.d'
 import priorityFill from 'routine/haul/priorityFill';
 import canUtilizeEnergy from 'job/canUtilizeEnergy';
 import Role from 'constants/role';
-import hauler from './hauler';
 
 export default profiler.registerFN(function harvester(creep: Harvester) {
-  if (creep.memory._targetRole === Role.HAULER) {
-    creep.memory.hauling = 1
-    delete creep.memory._targetRole
-  }
-  if (creep.memory.hauling) {
-    hauler(creep)
-    if (creep.memory.state === State.RECYCLE) creep.memory.hauling = 0
-  }
   switch (creep.memory.state) {
     case State.IDLE:
       if (creep.store[RESOURCE_ENERGY]) energyUse(creep)

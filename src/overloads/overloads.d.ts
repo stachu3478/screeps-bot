@@ -13,6 +13,7 @@ interface Room {
   extractor?: StructureExtractor
   filled: boolean
   linked: boolean
+  spawn?: StructureSpawn
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void
@@ -48,4 +49,5 @@ interface RoomPosition {
 
 interface Creep {
   motherRoom: Room
+  workpartCount: number
 }

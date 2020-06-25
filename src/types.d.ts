@@ -44,6 +44,7 @@ interface CreepMemory {
   };
   deprivity: number
   lastPos?: number
+  [Keys.workpartCount]?: number
 }
 
 interface SpawnMemory {

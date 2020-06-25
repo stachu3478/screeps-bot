@@ -81,6 +81,13 @@ Object.defineProperty(Room.prototype, 'linked', {
   }
 })
 
+Object.defineProperty(Room.prototype, 'spawn', {
+  get: function () {
+    const self = this as Room
+    return self.memory.spawnName && Game.spawns[self.memory.spawnName] || self.find(FIND_MY_SPAWNS)[0]
+  }
+})
+
 Room.prototype.store = function (resource: ResourceConstant) {
   const storage = this.storage
   const terminal = this.terminal

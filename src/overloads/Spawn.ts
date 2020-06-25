@@ -23,7 +23,7 @@ StructureSpawn.prototype.getDirections = function () {
 
 StructureSpawn.prototype.trySpawnCreep = function (body: BodyPartConstant[], letter: string, memory: CreepMemory, retry: boolean = false, cooldown: number = 100, boost: BoostInfo[] = []) {
   const name = uniqName(letter)
-  const result = this.spawnCreep(body, name, { memory, directions: this.getDirections(), dryRun: true })
+  const result = this.spawnCreep(body, name, { memory, dryRun: true })
   const mem = this.room.memory
   if (result !== 0) {
     if (!retry) this.memory.trySpawn = {

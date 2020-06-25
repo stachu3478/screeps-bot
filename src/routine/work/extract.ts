@@ -15,7 +15,7 @@ export default function extract(creep: ExtractCreep) {
   if (!target || !target.mineralAmount) return NOTHING_TODO
   creep.memory._extract = target.mineralType
   const result = creep.harvest(target)
-  const remaining = creep.store.getFreeCapacity() - creep.getActiveBodyparts(WORK) * HARVEST_MINERAL_POWER
+  const remaining = creep.store.getFreeCapacity() - creep.workpartCount * HARVEST_MINERAL_POWER
   if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
   else if (result === ERR_TIRED) return NOTHING_DONE
   else if (result === ERR_NOT_FOUND) return NOTHING_TODO

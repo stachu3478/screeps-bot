@@ -15,6 +15,28 @@ interface CommanderMemory extends CreepMemory {
   _attack?: Id<Creep | Structure>
   _heal?: Id<Creep>
   _runTicks?: number
+  [Keys.toughHitsThreshold]?: number
+  [Keys.attackHitsThreshold]?: number
+}
+
+function getHitThreshold(creep: Creep, type: BodyPartConstant) {
+  return creep.body.reverse().findIndex(part => part.type === type) * 100
+}
+
+export function hasToughPart(creep: Commander) {
+  const memory = creep.memory
+  const threshold = memory[Keys.toughHitsThreshold]
+  if (threshold)
+    return creep.hits > threshold
+  return creep.hits > (memory[Keys.toughHitsThreshold] = getHitThreshold(creep, TOUGH))
+}
+
+function hasAttackPart(creep: Commander) {
+  const memory = creep.memory
+  const threshold = memory[Keys.attackHitsThreshold]
+  if (threshold)
+    return creep.hits > threshold
+  return creep.hits > (memory[Keys.attackHitsThreshold] = getHitThreshold(creep, ATTACK))
 }
 
 export default function commander(creep: Commander) {
@@ -24,7 +46,7 @@ export default function commander(creep: Commander) {
     case State.INIT:
       creep.notifyWhenAttacked(false)
       creep.memory.state = State.ARRIVE_HOSTILE
-      creep.memory._arrive = Memory.rooms[creep.memory.room]._attack
+      creep.memory._arrive = creep.motherRoom.memory._attack
       break
     case State.RECYCLE:
       switch (recycle(creep)) {
@@ -37,7 +59,7 @@ export default function commander(creep: Commander) {
         case DONE: creep.memory.state = State.ATTACKING; break
         case NOTHING_TODO: creep.memory.state = State.FALL_BACK; break
         default:
-          if (creep.getActiveBodyparts(TOUGH) === 0) creep.memory.state = State.FALL_BACK
+          if (hasToughPart(creep)) creep.memory.state = State.FALL_BACK
           heal(creep)
       }
       break
@@ -53,19 +75,20 @@ export default function commander(creep: Commander) {
         } break
         case NOTHING_TODO: {
           creep.memory.state = State.RECYCLE
-          delete Memory.rooms[creep.memory.room]._attack
+          delete creep.motherRoom.memory._attack
         }; break
       }
       break
     case State.FALL_BACK:
       const runTicks = creep.memory._runTicks || 0
-      if (runTicks > 0 || creep.hits < prevHits || !creep.getActiveBodyparts(ATTACK)) {
-        if (creep.hits < prevHits || !creep.getActiveBodyparts(ATTACK)) creep.memory._runTicks = 5
+      if (runTicks > 0 || creep.hits < prevHits || !hasAttackPart(creep)) {
+        if (creep.hits < prevHits || !hasAttackPart(creep)) creep.memory._runTicks = 5
         switch (arrive(creep)) {
           case SUCCESS: case NOTHING_TODO:
-            if (Memory.rooms[creep.memory.room]._attack) {
-              if (creep.getActiveBodyparts(TOUGH) > 0) {
-                creep.memory._arrive = Memory.rooms[creep.memory.room]._attack
+            const attackTarget = creep.motherRoom.memory._attack
+            if (attackTarget) {
+              if (hasToughPart(creep)) {
+                creep.memory._arrive = attackTarget
                 creep.memory.state = State.ARRIVE_HOSTILE
               }
               creep.heal(creep)
@@ -73,8 +96,8 @@ export default function commander(creep: Commander) {
             }
           default: creep.heal(creep)
         }
-      } else if (creep.getActiveBodyparts(TOUGH) > 0) {
-        creep.memory._arrive = Memory.rooms[creep.memory.room]._attack
+      } else if (hasToughPart(creep)) {
+        creep.memory._arrive = creep.motherRoom.memory._attack
         if (creep.memory._arrive) creep.memory.state = State.ARRIVE_HOSTILE
         else creep.memory.state = State.RECYCLE
       } else creep.heal(creep)

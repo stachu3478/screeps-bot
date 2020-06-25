@@ -19,7 +19,7 @@ export default function build(creep: BuildCreep) {
     creep.memory._build = target.id
   }
   const result = creep.build(target)
-  const remaining = storedEnergy - creep.getActiveBodyparts(WORK) * BUILD_POWER
+  const remaining = storedEnergy - creep.workpartCount * BUILD_POWER
   if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target, false, 3)
   else if (result !== 0) return FAILED
   else {

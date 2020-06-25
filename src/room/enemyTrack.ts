@@ -1,24 +1,13 @@
 import _ from 'lodash'
-
-function rankCreep(creep: Creep) {
-  return (creep.getActiveBodyparts(HEAL) << 10)
-    + (creep.getActiveBodyparts(CLAIM) << 10)
-    + (creep.getActiveBodyparts(RANGED_ATTACK) << 7)
-    + (creep.getActiveBodyparts(ATTACK) << 5)
-    + (creep.getActiveBodyparts(WORK) << 3)
-}
-
-interface BoostMap {
-  [key: string]: {
-    heal: number
-    rangedHeal: number
-  } | undefined
-}
+import { Fighter } from 'role/creep/fighter';
 
 type BodyPart = Creep['body'][0]
+
+const healBoosts = BOOSTS.heal
 export function getBodypartHealPower(part: BodyPart) {
   if (part.type !== HEAL || !part.hits) return 0
-  const boost = healBoosts[part.boost || ''] || { heal: 1, rangedHeal: 1 }
+  if (!part.boost) return HEAL_POWER
+  const boost = healBoosts[part.boost]
   return boost.heal * HEAL_POWER
 }
 
@@ -52,14 +41,13 @@ export function getHitSummary(body: Creep['body'], dealt: number, healed: number
   return summary - healed + remaining
 }
 
-const healBoosts = BOOSTS.heal as BoostMap
 const distancedFactor = RANGED_HEAL_POWER / HEAL_POWER
 function getHealPower(creep: Creep, distant: boolean = false) {
   const healPower = creep.body.reduce((t, part) => t + getBodypartHealPower(part), 0)
   return distant ? healPower * distancedFactor : healPower
 }
 
-export function findMostVulnerableCreep(enemies: Creep[], towers: StructureTower[], fighters: Creep[]) {
+export function findMostVulnerableCreep(enemies: Creep[], towers: StructureTower[], fighters: Fighter[]) {
   const enemyHealable: number[] = []
   const enemyDealable: number[] = []
   const enemySummary: number[] = []
@@ -84,20 +72,28 @@ export function findMostVulnerableCreep(enemies: Creep[], towers: StructureTower
   }
 }
 
+const harmfulBodyparts: Readonly<Record<BodyPartConstant, 0 | 1>> = {
+  [ATTACK]: 1,
+  [WORK]: 1,
+  [RANGED_ATTACK]: 1,
+  [CLAIM]: 1,
+  [HEAL]: 1,
+  [MOVE]: 0,
+  [CARRY]: 0,
+  [TOUGH]: 0
+}
+function getHarmfulBodyparts(creep: Creep) {
+  return creep.body.reduce((t, part) => t + harmfulBodyparts[part.type], 0)
+}
 export default function trackEnemy(room: Room): Creep[] {
   if (!Memory.whitelist) Memory.whitelist = {}
   const list = Memory.whitelist
   const black = Memory.blacklist || {}
   return room.find(FIND_HOSTILE_CREEPS, {
     filter: (creep) => {
-      const treshold = (list[creep.owner.username] || -black[creep.owner.username] || 0)
-        - creep.getActiveBodyparts(ATTACK)
-        - creep.getActiveBodyparts(WORK)
-        - creep.getActiveBodyparts(RANGED_ATTACK)
-        - creep.getActiveBodyparts(CLAIM)
-        - creep.getActiveBodyparts(HEAL)
+      const treshold = (list[creep.owner.username] || -black[creep.owner.username] || 0) - getHarmfulBodyparts(creep)
       if (treshold < 0) delete list[creep.owner.username]
       return treshold < 0
     }
-  }).sort((a, b) => rankCreep(b) - rankCreep(a))
+  })
 }
