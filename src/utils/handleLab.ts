@@ -19,7 +19,7 @@ export default {
         if (r1 === r2) continue
         if (term.store[resource2] < TERMINAL_MIN_SEND) continue
         const intersection = (REACTIONS[resource1] as Hash)[resource2] as ResourceConstant
-        if (term.store[intersection] >= labProductionThreshold) continue
+        if (term.room.store(intersection) >= labProductionThreshold) continue
         mem.labState = State.LAB_PENDING
         mem.labRecipe = intersection
         mem.labIndegrient1 = resource1

@@ -7,21 +7,27 @@ const internalLabStyle: CircleStyle = { stroke: '#800', fill: '#8004', radius: 0
 const externalLabStyle: CircleStyle = { stroke: '#008', fill: '#0084', radius: 0.4 }
 const termStyle: PolyStyle = { fill: '#aaaaaa' }
 const factoryStyle: PolyStyle = { stroke: '#000', fill: '#0000', strokeWidth: 0.15 }
-const roadStyle: PolyStyle = {
-  fill: '#ccc',
-}
+const roadStyle: PolyStyle = { fill: '#ccc' }
 
 const rect45 = (x: number, y: number): [number, number][] => {
   const last: [number, number] = [x + 0.25, y]
   return [last, [x, y + 0.37], [x - 0.25, y], [x, y - 0.37], last]
 }
 
+const lookupArray = (structs: string, visFunc: (x: number, y: number, index: number) => any) => {
+  const count = structs.length
+  for (let i = 0; i < count; i++) {
+    const pos = structs.charCodeAt(i)
+    visFunc(pos & 63, pos >> 6, i)
+  }
+}
+
 export default function visual(room: Room) {
   const vis = room.visual
   const structs = room.memory.structs
+  let links = ''
   if (structs) {
-    const linkPos = structs.charCodeAt(0)
-    vis.poly(rect45(linkPos & 63, linkPos >> 6), linkStyle)
+    links = structs.charAt(0)
     const spawnPos = structs.charCodeAt(1)
     vis.circle(spawnPos & 63, spawnPos >> 6, spawnStyle)
     const storagePos = structs.charCodeAt(2)
@@ -31,48 +37,18 @@ export default function visual(room: Room) {
     const factoryPos = structs.charCodeAt(4)
     vis.rect((factoryPos & 63) - 0.5, (factoryPos >> 6) - 0.5, 1, 1, factoryStyle)
 
-    const structCount = structs.length
-    for (let i = 5; i < structCount; i++) {
-      const structPos = structs.charCodeAt(i)
-
-      if (i < 11) vis.circle(structPos & 63, structPos >> 6, towerStyle)
-      else vis.circle(structPos & 63, structPos >> 6, extStyle)
-    }
+    lookupArray(structs, (x, y, i) => vis.circle(x, y, i < 11 ? towerStyle : extStyle))
   }
 
-  const roads = room.memory.roads
-  if (roads) {
-    const roadCount = roads.length
-    for (let i = 0; i < roadCount; i++) {
-      const roadPos = roads.charCodeAt(i)
-      vis.circle(roadPos & 63, roadPos >> 6, roadStyle)
-    }
-  }
+  const roads = room.memory.roads || ''
+  lookupArray(roads, (x, y) => vis.circle(x, y, roadStyle))
 
-  const links = (room.memory.controllerLink || '') + (room.memory.links || '')
-  if (links) {
-    const linkCount = links.length
-    for (let i = 0; i < linkCount; i++) {
-      const linkPos = links.charCodeAt(i)
-      vis.poly(rect45(linkPos & 63, linkPos >> 6), linkStyle)
-    }
-  }
+  links += (room.memory.controllerLink || '') + (room.memory.links || '')
+  lookupArray(links, (x, y) => vis.poly(rect45(x, y), linkStyle))
 
-  const internalLabs = room.memory.internalLabs
-  if (internalLabs) {
-    const count = internalLabs.length
-    for (let i = 0; i < count; i++) {
-      const pos = internalLabs.charCodeAt(i)
-      vis.circle(pos & 63, pos >> 6, internalLabStyle)
-    }
-  }
+  const internalLabs = room.memory.internalLabs || ''
+  lookupArray(internalLabs, (x, y) => vis.circle(x, y, internalLabStyle))
 
-  const externalLabs = room.memory.externalLabs
-  if (externalLabs) {
-    const count = externalLabs.length
-    for (let i = 0; i < count; i++) {
-      const pos = externalLabs.charCodeAt(i)
-      vis.circle(pos & 63, pos >> 6, externalLabStyle)
-    }
-  }
+  const externalLabs = room.memory.externalLabs || ''
+  lookupArray(externalLabs, (x, y) => vis.circle(x, y, externalLabStyle))
 }

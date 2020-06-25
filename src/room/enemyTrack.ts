@@ -19,7 +19,7 @@ export function getTowerAttackPower(tower: StructureTower, atRange: number) {
   if (tower.store[RESOURCE_ENERGY] < TOWER_ENERGY_COST) return 0
   if (atRange >= TOWER_FALLOFF_RANGE) return TOWER_FALLOFF_DAMAGE
   if (atRange <= TOWER_OPTIMAL_RANGE) return TOWER_POWER_ATTACK
-  return TOWER_FALLOFF_DAMAGE + attackRangeFactor * (atRange - TOWER_OPTIMAL_RANGE)
+  return TOWER_POWER_ATTACK - attackRangeFactor * (atRange - TOWER_OPTIMAL_RANGE)
 }
 
 export function getHitSummary(body: Creep['body'], dealt: number, healed: number) {

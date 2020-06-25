@@ -9,7 +9,8 @@ export default function sellExcess(terminal: StructureTerminal) {
   if (!resourceType) return NOTHING_TODO
   const averageCost = getAverageCost(resourceType)
   const excessResourceAmount = room.store(resourceType) - storageSellThreshold
-  if (excessResourceAmount <= TERMINAL_MIN_SEND) return NO_RESOURCE
+  const amountInTerminal = terminal.store[resourceType]
+  if (Math.min(excessResourceAmount, amountInTerminal) <= TERMINAL_MIN_SEND) return NO_RESOURCE
   const orders = Game.market.getAllOrders({ type: ORDER_BUY, resourceType }); // fast
   const bestOrder = _.max(orders, (o) => {
     const destRoomName = o.roomName
@@ -17,7 +18,7 @@ export default function sellExcess(terminal: StructureTerminal) {
     return TERMINAL_MIN_SEND * o.price * averageCost - Game.market.calcTransactionCost(TERMINAL_MIN_SEND, room.name, destRoomName) * energyCost
   })
   if (bestOrder) {
-    let amountToDeal = Math.min(excessResourceAmount, terminal.store[resourceType])
+    let amountToDeal = Math.min(excessResourceAmount, amountInTerminal)
     while (Game.market.calcTransactionCost(amountToDeal, room.name, bestOrder.roomName || '') > terminal.store[RESOURCE_ENERGY]) amountToDeal /= 2
     const result = Game.market.deal(bestOrder.id, amountToDeal, room.name)
     if (result !== 0) return FAILED

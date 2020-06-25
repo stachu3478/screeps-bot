@@ -1,4 +1,5 @@
 import '../constants'
+import 'overloads/all'
 import { expect } from 'chai';
 import sinon from 'sinon'
 import _ from 'lodash'
@@ -26,13 +27,13 @@ describe('routine/terminal/sendExcess', () => {
     sandbox.restore()
   });
 
-  it('should return NOTHING_TODO number when called with no context', function () {
+  it('should return NOTHING_TODO number when called with no context', () => {
     const term = { room: { memory: {} }, store: {} } as StructureTerminal
     term.room.store = () => 0
     expect(sendExcess(term)).to.eql(NOTHING_TODO);
   });
 
-  it('should perform send while has excess resources and other term to fill', function () {
+  it('should perform send while has excess resources and other term to fill', () => {
     const term = {
       room: { memory: { terminalDealResourceType: RESOURCE_HYDROGEN } },
       store: { [RESOURCE_HYDROGEN]: Infinity, [RESOURCE_ENERGY]: Infinity }
@@ -40,12 +41,13 @@ describe('routine/terminal/sendExcess', () => {
     term.room.store = () => Infinity
     Memory.myRooms.test = 0
     Game.rooms.test = { terminal: { my: true, store: { [RESOURCE_HYDROGEN]: 0 } } } as Room
+    Game.rooms.test.store = () => 0
     term.send = sinon.fake.returns(OK)
     expect(sendExcess(term)).to.eql(SUCCESS);
     expect(term.send).to.be.called
   });
 
-  it('should do nothing at all', function () {
+  it('should do nothing at all', () => {
     const term = {
       room: { memory: { terminalDealResourceType: RESOURCE_HYDROGEN } },
       store: { [RESOURCE_HYDROGEN]: Infinity, [RESOURCE_ENERGY]: Infinity }
@@ -53,6 +55,7 @@ describe('routine/terminal/sendExcess', () => {
     term.room.store = () => Infinity
     Memory.myRooms.test = 0
     Game.rooms.test = { terminal: { my: true, store: { [RESOURCE_HYDROGEN]: Infinity } } } as Room
+    Game.rooms.test.store = () => Infinity
     term.send = sinon.fake.returns(OK)
     expect(sendExcess(term)).to.eql(DONE);
     expect(term.send).to.not.be.called

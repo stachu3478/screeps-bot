@@ -23,21 +23,15 @@ function getHitThreshold(creep: Creep, type: BodyPartConstant) {
   return creep.body.reverse().findIndex(part => part.type === type) * 100
 }
 
-export function hasToughPart(creep: Commander) {
+const hasPart = (type: BodyPartConstant, property: Keys) => (creep: Commander) => {
   const memory = creep.memory
-  const threshold = memory[Keys.toughHitsThreshold]
+  const threshold = memory[property]
   if (threshold)
     return creep.hits > threshold
-  return creep.hits > (memory[Keys.toughHitsThreshold] = getHitThreshold(creep, TOUGH))
+  return creep.hits > (memory[property] = getHitThreshold(creep, type))
 }
-
-function hasAttackPart(creep: Commander) {
-  const memory = creep.memory
-  const threshold = memory[Keys.attackHitsThreshold]
-  if (threshold)
-    return creep.hits > threshold
-  return creep.hits > (memory[Keys.attackHitsThreshold] = getHitThreshold(creep, ATTACK))
-}
+export const hasToughPart = hasPart(TOUGH, Keys.toughHitsThreshold)
+const hasAttackPart = hasPart(ATTACK, Keys.attackHitsThreshold)
 
 export default function commander(creep: Commander) {
   const prevHits = creep.memory._prev_hits || creep.hits - 1

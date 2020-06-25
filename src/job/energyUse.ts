@@ -6,15 +6,18 @@ import build from "routine/work/build";
 import repair from "routine/work/repair";
 import fillStorage from "routine/haul/storageFill";
 import priorityFill from "routine/haul/priorityFill";
+import { energyToBuildThreshold } from "config/storage";
 
+const shouldBuild = (room: Room) => !room.storage || room.store(RESOURCE_ENERGY) > energyToBuildThreshold
 export default function energyUse(creep: Harvester) {
   let result
   creep.memory._noJob = 0
+  const motherRoom = creep.motherRoom
   if ((result = priorityFill(creep)) in ACCEPTABLE) creep.memory.state = State.FILL_PRIORITY
   else if ((result = repair(creep)) in ACCEPTABLE) creep.memory.state = State.REPAIR
-  else if (build(creep) !== NOTHING_TODO || place(creep.room) in ACCEPTABLE) creep.memory.state = State.BUILD
-  else if (creep.room.memory._dismantle) {
-    creep.memory._arrive = creep.room.memory._dismantle
+  else if (shouldBuild(motherRoom) && (build(creep) !== NOTHING_TODO || place(motherRoom) in ACCEPTABLE)) creep.memory.state = State.BUILD
+  else if (motherRoom.memory._dismantle) {
+    creep.memory._arrive = motherRoom.memory._dismantle
     creep.memory.state = State.ARRIVE_HOSTILE
   } else if (result === NO_RESOURCE) {
 
