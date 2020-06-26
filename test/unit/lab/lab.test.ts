@@ -1,7 +1,6 @@
 import { expect } from "chai";
 import _ from "lodash"
 import lab from "role/lab";
-import State from "constants/state";
 
 describe('Lab system initialization', () => {
   let room: Room

@@ -1,4 +1,3 @@
-import State from "constants/state";
 import { infoStyle } from "room/style";
 
 interface ReactionTimeHash {

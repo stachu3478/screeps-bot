@@ -4,8 +4,6 @@ import _ from 'lodash'
 import sinon from 'sinon'
 import roleBooster, { BoosterCreep } from 'role/creep/booster'
 import routineBooster from 'routine/boost'
-import State from 'constants/state';
-import Role from 'constants/role';
 import { NOTHING_DONE, FAILED, SUCCESS } from 'constants/response';
 
 describe('Creep boost role', () => {

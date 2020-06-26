@@ -46,5 +46,3 @@ const enum State {
   TERM_BUY_MISSING = 46,
   LAB_COLLECTING = 48,
 }
-
-export default State

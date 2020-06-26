@@ -1,4 +1,3 @@
-import Role from 'constants/role'
 import { progressiveMobileWorker } from 'spawn/body/work'
 import { ColonizerMemory } from 'role/creep/colonizer';
 

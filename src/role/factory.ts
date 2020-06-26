@@ -1,5 +1,4 @@
 import { infoStyle } from "room/style";
-import State from "constants/state";
 import handleFactory, { com, factoryStoragePerResource, isProducableByFactory } from "utils/handleFactory";
 
 export default function factory(factory: StructureFactory) {

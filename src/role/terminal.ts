@@ -1,4 +1,3 @@
-import State from "constants/state";
 import sendExcess from "routine/terminal/sendExcess";
 import { DONE, NOTHING_TODO, NO_RESOURCE, FAILED, SUCCESS, NOTHING_DONE } from "constants/response";
 import sellExcess from "routine/terminal/sellExcess";

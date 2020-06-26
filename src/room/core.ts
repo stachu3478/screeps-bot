@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import tower from '../role/tower'
-import Role from '../constants/role'
 import spawnLoop from 'spawn/core'
 import plan from 'planner/core'
 import callRescue from 'planner/rescue';

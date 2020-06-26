@@ -1,4 +1,3 @@
-import State from 'constants/state'
 import { DONE, FAILED } from 'constants/response'
 import exit from 'routine/exit'
 import scout from 'routine/military/scout'

@@ -2,7 +2,6 @@ import { expect } from "chai";
 import _ from "lodash"
 import sinon from 'sinon'
 import boostData from "../mock/boostData";
-import Role from "constants/role";
 
 describe('Removing a boost request', () => {
   let room: Room

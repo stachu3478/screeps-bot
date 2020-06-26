@@ -1,5 +1,4 @@
 import { progressiveClaimer, progressiveCommander } from './body/body'
-import Role from 'constants/role'
 
 function autoClaim(spawn: StructureSpawn, creepCountByRole: number[]) {
   if (spawn.room.energyCapacityAvailable < BODYPART_COST[CLAIM] + BODYPART_COST[MOVE]) return false

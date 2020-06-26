@@ -1,5 +1,4 @@
 import mineralFill from "routine/haul/mineralFill";
-import State from "constants/state";
 import { SUCCESS, DONE, NOTHING_TODO, NO_RESOURCE, NOTHING_DONE, ACCEPTABLE } from "constants/response";
 import recycle from "routine/recycle";
 import extract from "routine/work/extract";

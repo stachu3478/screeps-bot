@@ -28,10 +28,10 @@ interface SourceMap {
 }
 // memory extension samples
 interface CreepMemory {
-  role: number
+  role: Role
   _targetRole?: number
   room: string
-  state?: number
+  state?: State
   _move?: {
     path: string,
     dest: {
@@ -39,11 +39,9 @@ interface CreepMemory {
       x: number,
       y: number,
     },
-    stuck?: number
     t?: number
   };
   deprivity: number
-  lastPos?: number
   [Keys.workpartCount]?: number
 }
 

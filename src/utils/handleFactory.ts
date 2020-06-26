@@ -1,4 +1,3 @@
-import State from 'constants/state';
 import { nominalStorage } from 'config/terminal';
 
 export const factoryStoragePerResource = Math.floor(FACTORY_CAPACITY / Object.keys(COMMODITIES).length)

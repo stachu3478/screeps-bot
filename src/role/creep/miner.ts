@@ -1,6 +1,5 @@
 import { NOTHING_TODO, NOTHING_DONE, DONE, NO_RESOURCE, FAILED, ACCEPTABLE } from 'constants/response'
 import harvest from 'routine/work/harvest';
-import State from 'constants/state';
 import autoFill from 'routine/haul/autoFill';
 import autoRepair from 'routine/work/autoRepair';
 import autoBuild from 'routine/work/autoBuild';

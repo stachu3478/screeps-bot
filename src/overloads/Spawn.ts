@@ -1,5 +1,4 @@
 import { getXYRoad } from 'utils/selectFromPos';
-import Role from 'constants/role';
 import { infoStyle } from 'room/style';
 import sanitizeBody from 'utils/sanitizeBody';
 import { uniqName } from 'spawn/name';

@@ -1,5 +1,4 @@
 import { progressiveWorker } from "./body/work";
-import Role from "constants/role";
 
 export function needsExtractor(spawn: StructureSpawn, extractorCount?: number) {
   if (extractorCount) return false

@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import Role from "constants/role";
 import { Fighter } from "role/creep/fighter";
 import { getContainer, getExtension, getSpawn } from './selectFromPos';
 

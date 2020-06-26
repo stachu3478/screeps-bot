@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
-import Role from 'constants/role';
 
 describe('Preparing array of boosting data', () => {
   let room: Room

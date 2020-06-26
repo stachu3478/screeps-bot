@@ -1,5 +1,3 @@
-import Role from 'constants/role';
-
 Room.prototype.getBoosts = function () {
   return this.memory.boosts || (this.memory.boosts = {
     creeps: [],

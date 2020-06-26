@@ -2,7 +2,6 @@ import { expect } from 'chai';
 import _ from 'lodash'
 import labJobs from 'job/lab';
 import { LabManager } from 'role/creep/labManager.d';
-import State from 'constants/state';
 
 describe('Preparing creep to fill lab with speciied resources', () => {
   const { prepareCreepForFilling } = labJobs

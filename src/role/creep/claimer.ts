@@ -1,4 +1,3 @@
-import State from 'constants/state'
 import { DONE, NOTHING_TODO } from 'constants/response'
 import selfDestruct from 'routine/selfDestruct'
 import arrive from 'routine/arrive'

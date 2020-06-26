@@ -1,5 +1,4 @@
 import { ACCEPTABLE } from "constants/response";
-import State from "constants/state";
 import pick from "routine/haul/pick";
 import Hauler from 'role/creep/hauler.d'
 import { findHaulable } from "utils/find";

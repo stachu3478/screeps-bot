@@ -1,4 +1,3 @@
-import State from 'constants/state'
 import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED, NO_RESOURCE, SUCCESS } from 'constants/response'
 import storageFill from 'routine/haul/storageFill'
 import repair from 'routine/work/repair'
@@ -16,7 +15,6 @@ import energyUse from 'job/energyUse'
 import Harvester from './harvester.d'
 import priorityFill from 'routine/haul/priorityFill';
 import canUtilizeEnergy from 'job/canUtilizeEnergy';
-import Role from 'constants/role';
 
 export default profiler.registerFN(function harvester(creep: Harvester) {
   switch (creep.memory.state) {

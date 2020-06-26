@@ -15,5 +15,3 @@ const enum Role {
   HAULER = 14,
   BOOSTER = 15,
 }
-
-export default Role

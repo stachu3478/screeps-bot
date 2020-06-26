@@ -1,7 +1,6 @@
 import drawStorage from "routine/haul/storageDraw";
 import drawContainer from "routine/haul/containerDraw";
 import { ACCEPTABLE } from "constants/response";
-import State from "constants/state";
 import Harvester from "role/creep/harvester.d";
 
 export default function energyHaul(creep: Harvester) {

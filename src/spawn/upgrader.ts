@@ -1,4 +1,3 @@
-import Role from "constants/role"
 import { progressiveWorker, progressiveStaticUpgrader } from "./body/work"
 
 export default function spawnUpgrader(spawn: StructureSpawn, mem: StableRoomMemory, controller: StructureController) {

@@ -2,7 +2,6 @@ import _ from 'lodash'
 import profiler from "screeps-profiler"
 import { progressiveMiner, progressiveLiteWorker } from './body/work'
 import { progressiveFighter } from './body/body'
-import Role from '../constants/role'
 import domination from './domination'
 import { infoStyle } from '../room/style'
 import isRetired from 'utils/retired';

@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import State from 'constants/state';
 import handleLab from './handleLab';
 import handleFactory from './handleFactory';
 

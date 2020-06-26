@@ -1,10 +1,8 @@
-import State from 'constants/state'
 import { DONE, NOTHING_TODO, FAILED, SUCCESS } from 'constants/response'
 import draw from 'routine/haul/draw';
 import fill from 'routine/haul/fill';
 import { factoryStoragePerResource } from 'utils/handleFactory';
 import profiler from "screeps-profiler"
-import Role from 'constants/role';
 import dumpResources from 'job/dumpResources';
 import { getFillableGenericStruture } from 'utils/fill';
 import storageManagement from 'job/storageManagement';

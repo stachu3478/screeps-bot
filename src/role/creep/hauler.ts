@@ -1,4 +1,3 @@
-import State from 'constants/state'
 import { DONE, NOTHING_DONE, NOTHING_TODO, SUCCESS } from 'constants/response'
 import autoPick from 'routine/haul/autoPick'
 import arrive from 'routine/arrive'

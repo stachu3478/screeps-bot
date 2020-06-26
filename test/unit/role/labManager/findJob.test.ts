@@ -4,7 +4,6 @@ import sinon from 'sinon'
 import labJobs from 'job/lab';
 import handleLab from 'utils/handleLab';
 import { findJob } from 'role/creep/labManager'
-import State from 'constants/state';
 
 describe('Finding job for lab manager', () => {
   let creep: Creep

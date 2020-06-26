@@ -1,6 +1,5 @@
 import Harvester from "role/creep/harvester.d";
 import { ACCEPTABLE, NO_RESOURCE, NOTHING_TODO } from "constants/response";
-import State from "constants/state";
 import place from "planner/place/place";
 import build from "routine/work/build";
 import repair from "routine/work/repair";

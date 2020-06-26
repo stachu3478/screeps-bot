@@ -1,4 +1,3 @@
-import State from "constants/state";
 import routineBooster from "routine/boost";
 import { NOTHING_DONE } from "constants/response";
 

@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import _ from 'lodash'
 import lab from 'role/lab';
-import State from 'constants/state';
 import sinon from 'sinon';
 
 describe('When lab system is in producing state', () => {

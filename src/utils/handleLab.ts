@@ -1,4 +1,3 @@
-import State from 'constants/state';
 import { DONE, SUCCESS, NOTHING_DONE } from 'constants/response';
 import { labProductionThreshold } from 'config/terminal';
 

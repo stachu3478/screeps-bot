@@ -1,5 +1,4 @@
 import { LabManager } from "role/creep/labManager.d";
-import State from "constants/state";
 
 const labJobs = {
   prepareReaction: (lab1: StructureLab, lab2: StructureLab, terminal: StructureTerminal, roomMemory: RoomMemory, creep: LabManager) => {

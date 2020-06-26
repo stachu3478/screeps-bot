@@ -12,5 +12,4 @@ interface HarvesterMemory extends CreepMemory {
   _dismantle?: Id<Structure>
   _pick_pos?: string
   _noJob?: number
-  hauling: 0 | 1
 }
