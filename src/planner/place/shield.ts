@@ -1,6 +1,8 @@
+import _ from 'lodash'
 import { SUCCESS, NOTHING_TODO } from '../../constants/response'
 import { getXYSpawn, getXYTower, getXYRampart, getXYWall } from 'utils/selectFromPos';
 import { roomPos } from '../pos';
+import charPosIterator from 'utils/charPosIterator';
 
 export default function placeShield(controller: StructureController) {
   const room = controller.room
@@ -10,25 +12,22 @@ export default function placeShield(controller: StructureController) {
   const structs = mem.structs
 
   let minDecay = Infinity
-  const times = structs.length
-  for (let i = 0; i < times; i++) {
-    const xy = structs.charCodeAt(i)
-    const x = xy & 63
-    const y = xy >> 6
+  const result = charPosIterator(structs, (x, y, _xy, i): number | void => {
     let structure: Structure | undefined
     if (i === 1) structure = getXYSpawn(room, x, y)
     else if (i > 4 && i < 11) structure = getXYTower(room, x, y)
-    else continue
-    if (!structure) continue
+    else return
+    if (!structure) return
     const rampart = getXYRampart(room, x, y)
     if (rampart) {
       minDecay = Math.min(minDecay, RAMPART_DECAY_TIME * Math.floor(rampart.hits / RAMPART_DECAY_AMOUNT) + rampart.ticksToDecay)
-      continue
+      return
     }
     minDecay = 0
     const result = room.createConstructionSite(x, y, STRUCTURE_RAMPART)
     if (result === 0) return SUCCESS
-  }
+  })
+  if (!_.isUndefined(result)) return result
 
   const controllerPos = controller.pos
   const colonySourcePositions = Object.values(mem.colonySources || {}).map(p => roomPos(p, room.name))

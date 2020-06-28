@@ -1,14 +1,11 @@
+import _ from 'lodash'
 import { SUCCESS, NOTHING_TODO } from '../../constants/response'
 import { getXYExtension } from 'utils/selectFromPos';
+import charPosIterator from 'utils/charPosIterator';
 
 export default function placeStructure(controller: StructureController, structs: string) {
   const room = controller.room
-  const times = structs.length
-  let iteration = room.memory._struct_iteration || 0
-  for (let i = 0; i < times; i++) {
-    const xy = structs.charCodeAt(iteration)
-    const x = xy & 63
-    const y = xy >> 6
+  const result = charPosIterator(structs, (x, y, _xy, _, iteration): number | void => {
     let structureToPlace: StructureConstant
     if (iteration === 0) structureToPlace = STRUCTURE_LINK
     else if (iteration === 1) structureToPlace = STRUCTURE_SPAWN
@@ -28,8 +25,8 @@ export default function placeStructure(controller: StructureController, structs:
       room.memory._struct_iteration = iteration
       return SUCCESS
     }
-    if (++iteration >= times) iteration = 0
-  }
-
-  return NOTHING_TODO
+  })
+  if (_.isUndefined(result))
+    return NOTHING_TODO
+  return result
 }

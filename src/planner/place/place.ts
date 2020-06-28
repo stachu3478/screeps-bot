@@ -32,7 +32,7 @@ export default function place(room: Room) {
       mem.structs = newStructs
       return NOTHING_DONE
     }
-    mem._built = true
+    mem._built = 1
   }
 
   if (!mem.roads) {

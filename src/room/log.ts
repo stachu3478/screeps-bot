@@ -32,12 +32,12 @@ export default function handleLog(mem: RoomMemory, controller: StructureControll
           case LOOK_CREEPS: break
           case STRUCTURE_ROAD: mem._roadBuilt = 0; break
           case STRUCTURE_RAMPART: case STRUCTURE_WALL: mem._shielded = 0; break
-          default: mem._built = false; console.log("Structure has been destroyed: " + type)
+          default: mem._built = 0; console.log("Structure has been destroyed: " + type)
         } break
       case EVENT_UPGRADE_CONTROLLER:
         const controllerLevel = controller.level
         if (controllerLevel !== mem._lvl) {
-          mem._built = false
+          mem._built = 0
           mem._shielded = 0
           mem._lvl = controllerLevel
           mem._struct_iteration = 0

@@ -11,14 +11,13 @@ interface ArriveMemory extends CreepMemory {
 
 export default function arrive(creep: ArriveCreep, dumpCarry: boolean = true) {
   if (dumpCarry && creep.store.getUsedCapacity() > 0) {
-    const resourceCount = RESOURCES_ALL.length
-    for (let i = 0; i < resourceCount; i++) {
-      const r = RESOURCES_ALL[i]
+    RESOURCES_ALL.some(r => {
       if (creep.store[r]) {
         creep.drop(r)
-        break
+        return true
       }
-    }
+      return false
+    })
   }
 
   const targetRoom = creep.memory._arrive

@@ -1,4 +1,3 @@
-import Role from '../constants/role'
 import roleHarvester from '../role/creep/harvester'
 import roleUpgrader from '../role/creep/upgrader'
 import roleClaimer, { Claimer } from '../role/creep/claimer'

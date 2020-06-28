@@ -35,7 +35,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
       towersProcessed = true
     }
     room.visual.text("Enemy tracked: " + enemy.name + " Vulnerability: " + found.vulnerability, 0, 4, dangerStyle)
-    mem._healthy = false
+    mem._healthy = 0
   } else {
     const powerEnemy = room.find(FIND_HOSTILE_POWER_CREEPS)[0]
     if (powerEnemy) {
@@ -46,7 +46,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
   if (!mem._healthy && !towersProcessed) {
     const creeps = findDamagedCreeps(room)
     if (creeps.length) room.find(FIND_MY_STRUCTURES, { filter: s => s.structureType === STRUCTURE_TOWER && tower(s, creeps[_.random(0, creeps.length - 1)]) })
-    else mem._healthy = true
+    else mem._healthy = 1
   }
 
   const {

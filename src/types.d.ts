@@ -160,10 +160,10 @@ interface RoomMemory {
   boosts?: BoostData
 
   _extractor?: Id<StructureExtractor>
-  _built?: boolean
+  _built?: 0 | 1
   _roadBuilt?: number
   _lvl?: number
-  _healthy?: boolean
+  _healthy?: 0 | 1
   _shielded?: number
 }
 
@@ -173,10 +173,6 @@ interface StableRoomMemory extends RoomMemory {
   creeps: {
     [key: string]: 0
   }
-}
-
-interface ControlledRoom extends Room {
-  controller: StructureController
 }
 
 // `global` extension samples

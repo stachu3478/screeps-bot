@@ -1,3 +1,5 @@
+import charPosIterator from "utils/charPosIterator";
+
 const spawnStyle: CircleStyle = { stroke: '#000', strokeWidth: 0.15, radius: 0.5, fill: '#0000' }
 const extStyle: CircleStyle = { stroke: '#000', radius: 0.25, fill: '#0000' }
 const towerStyle: CircleStyle = { stroke: '#8af4', strokeWidth: 0.15, radius: 0.5, fill: '#0000' }
@@ -15,11 +17,7 @@ const rect45 = (x: number, y: number): [number, number][] => {
 }
 
 const lookupArray = (structs: string, visFunc: (x: number, y: number, index: number) => any) => {
-  const count = structs.length
-  for (let i = 0; i < count; i++) {
-    const pos = structs.charCodeAt(i)
-    visFunc(pos & 63, pos >> 6, i)
-  }
+  charPosIterator(structs, (x, y, _, i) => { visFunc(x, y, i) })
 }
 
 export default function visual(room: Room) {
