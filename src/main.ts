@@ -2,12 +2,12 @@ import 'overloads/all'
 import run from "room/core"
 import { infoStyle } from "room/style";
 import profiler from "screeps-profiler"
-import handleStats from 'utils/stats'
+import handleStats, { saveCpuUsage } from 'utils/stats'
 import visual from 'planner/visual'
+import roomVisual from 'utils/visual'
 
 const memory = JSON.parse(RawMemory.get())
 // profiler.enable()
-const roomVisual = new RoomVisual()
 
 let runtimeTicks = 0
 export const loop = () => {
@@ -51,5 +51,6 @@ export const loop = () => {
 
   handleStats()
   RawMemory.set(JSON.stringify(Memory))
+  saveCpuUsage()
   if (error) throw error
 }

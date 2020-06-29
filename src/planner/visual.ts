@@ -11,6 +11,10 @@ const termStyle: PolyStyle = { fill: '#aaaaaa' }
 const factoryStyle: PolyStyle = { stroke: '#000', fill: '#0000', strokeWidth: 0.15 }
 const roadStyle: PolyStyle = { fill: '#ccc' }
 
+export const polyRect = (points: [number, number][]) => {
+  return [points[0], points[1], points[2], points[3], points[0]]
+}
+
 const rect45 = (x: number, y: number): [number, number][] => {
   const last: [number, number] = [x + 0.25, y]
   return [last, [x, y + 0.37], [x - 0.25, y], [x, y - 0.37], last]

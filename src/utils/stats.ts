@@ -1,5 +1,10 @@
+import { charCodeIterator } from './charPosIterator';
+import roomVisual from 'utils/visual'
+import { polyRect } from 'planner/visual';
+
 const timers = [10, 10, 10]
 const dataRetension = 100
+let lastCpuUsage = 0
 
 export const enum Measurement {
   CPU_INTERVAL,
@@ -14,7 +19,7 @@ const timerMeaners: Record<Measurement, number[]> = {
 }
 
 const measurementFunctions: Record<Measurement, () => string> = {
-  [Measurement.CPU_INTERVAL]: () => String.fromCharCode(Math.round((Game.cpu.getUsed() * 100)))
+  [Measurement.CPU_INTERVAL]: () => String.fromCharCode(Math.round(((lastCpuUsage || Game.cpu.getUsed()) * 100)))
 }
 
 function pushData(data: string, nextData: string) {
@@ -62,7 +67,85 @@ export function processData(type: Measurement) {
   return true
 }
 
+function visualizeCpuUsage(charCode: number) {
+  return charCode / 100
+}
+
+function normalize(normMin: number, w: number, current: number, currentMax: number) {
+  return normMin + w * current / currentMax
+}
+
+const statRectStyle: PolyStyle = { stroke: '#2b1', fill: '#0000', strokeWidth: 0.05 }
+const statFillStyle: PolyStyle = { stroke: '#3f34', fill: '#3f34', strokeWidth: 0 }
+const statLineStyle: LineStyle = { color: '#2b1', width: 0.05 }
+function horizontalLine(x1: number, x2: number, y: number) {
+  roomVisual.line(x1, y, x2, y, statLineStyle)
+}
+class Chart {
+  private x1: number
+  private y1: number
+  private x2: number
+  private y2: number
+  private w: number
+  private h: number
+  constructor(x1: number, y1: number, x2: number, y2: number) {
+    this.x1 = x1
+    this.y1 = y1
+    this.x2 = x2
+    this.y2 = y2
+    this.w = x2 - x1
+    this.h = y2 - y1
+  }
+
+  createFrame() {
+    roomVisual.rect(this.x1, this.y1, this.w, this.h, statRectStyle)
+    horizontalLine(this.x1, this.x2, (this.y1 * 3 + this.y2) / 4)
+    horizontalLine(this.x1, this.x2, (this.y1 + this.y2) / 2)
+    horizontalLine(this.x1, this.x2, (this.y1 + this.y2 * 3) / 4)
+  }
+
+  visualizeData(data: string, method: (charCode: number) => number, maxValue: number) {
+    this.createFrame()
+    const count = data.length
+    let prevX = this.x1
+    let prevY = this.y1
+    charCodeIterator(data, (charCode, i) => {
+      const value = method(charCode)
+      const currentX = this.normalizeX(i, count)
+      const currentY = this.normalizeY(-value, maxValue)
+      roomVisual.line(prevX, prevY, currentX, currentY, statLineStyle)
+      prevX = currentX
+      prevY = currentY
+      roomVisual.poly(polyRect([[prevX, prevY], [currentX, currentY], [currentX, this.y2], [prevX, this.y2]]), statFillStyle)
+    })
+  }
+
+  normalizeX(value: number, maxValue: number) {
+    return normalize(this.x1, this.w, value, maxValue)
+  }
+
+  normalizeY(value: number, maxValue: number) {
+    return normalize(this.y2, this.h, value, maxValue)
+  }
+}
+
+const cpu1Visual = new Chart(40, 1, 49, 5)
+const cpu100Visual = new Chart(40, 6, 49, 10)
+export function vizualizeStats(stats: Stats) {
+  const cpuData = stats.data[Measurement.CPU_INTERVAL]
+  if (!cpuData) return
+  const cpu1Data = cpuData[0] || ''
+  cpu1Visual.visualizeData(cpu1Data, visualizeCpuUsage, Game.cpu.limit)
+  const cpu100Data = cpuData[2] || ''
+  cpu100Visual.visualizeData(cpu100Data, visualizeCpuUsage, Game.cpu.limit)
+}
+
+export function saveCpuUsage() {
+  lastCpuUsage = Game.cpu.getUsed()
+}
+
 export default function handleStats() {
   processData(Measurement.CPU_INTERVAL)
   handleTimers(Memory._stats)
+  if (Memory._stats) vizualizeStats(Memory._stats)
 }
