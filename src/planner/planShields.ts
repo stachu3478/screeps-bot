@@ -1,5 +1,6 @@
 import PlannerMatrix from "./matrix";
 import xyToChar from "./pos"
+import charPosIterator from "utils/charPosIterator";
 
 export default function planShields(room: Room) { // TODO finish
   if (!room.controller) return
@@ -28,10 +29,7 @@ export default function planShields(room: Room) { // TODO finish
       }
   })
 
-  mem.structs.split('').forEach(char => {
-    const xypos = char.charCodeAt(0)
-    const xp = xypos & 63
-    const yp = xypos >> 6
+  charPosIterator(mem.structs, (xp, yp) => {
     for (let x = -2; x < 3; x++)
       for (let y = -2; y < 3; y++) {
         let xpos = xp + x

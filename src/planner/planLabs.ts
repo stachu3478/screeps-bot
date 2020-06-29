@@ -1,5 +1,6 @@
 import PlannerMatrix from "./matrix";
 import xyToChar from "./pos";
+import charPosIterator from "utils/charPosIterator";
 
 export default {
   run: function run(room: Room) {
@@ -10,26 +11,19 @@ export default {
     const pm = new PlannerMatrix(terrain)
     pm.coverBorder()
 
-    const structPoses = mem.structs.substr(12).split('').map(char => char.charCodeAt(0))
-    const targetPos = mem.structs[0].charCodeAt(0)
-    structPoses.forEach(xypos => {
-      const xp = xypos & 63
-      const yp = xypos >> 6
-      pm.setField(xp, yp, 3)
-    })
+    const structPoses = mem.structs.substr(12)
+    const targetPos = mem.structs.charCodeAt(0)
+    charPosIterator(structPoses, (xp, yp) => { pm.setField(xp, yp, 3) })
 
     const labRequirement = CONTROLLER_STRUCTURES[STRUCTURE_LAB][8]
     const matrix = pm.getMatrix()
-    let bestPos = structPoses[0]
     let bestInternalPoses: number[] = []
     let bestExternalPoses: number[] = []
     let bestTotalPoses = 0
     let bestDistance = 0
-    structPoses.forEach(xypos => {
+    charPosIterator(structPoses, (xp, yp) => {
       let internalPoses = []
       let externalPoses = []
-      const xp = xypos & 63
-      const yp = xypos >> 6
       for (let x = -1; x < 3; x++)
         for (let y = -1; y < 3; y++) {
           const xpos = xp + x
@@ -44,18 +38,16 @@ export default {
           }
         }
       const totalPoses = internalPoses.length + externalPoses.length
-      const distance = Math.max(Math.abs((xypos & 63) - (targetPos & 63)), Math.abs((xypos >> 6) - (targetPos >> 6)))
+      const distance = Math.max(Math.abs(xp - (targetPos & 63)), Math.abs(yp - (targetPos >> 6)))
       if (internalPoses.length < 2) return
       if (totalPoses >= labRequirement) {
         if (bestDistance > distance || bestTotalPoses < labRequirement) {
-          bestPos = xypos
           bestInternalPoses = internalPoses
           bestExternalPoses = externalPoses
           bestTotalPoses = totalPoses
           bestDistance = distance
         }
       } else if (totalPoses > bestTotalPoses) {
-        bestPos = xypos
         bestInternalPoses = internalPoses
         bestExternalPoses = externalPoses
         bestTotalPoses = totalPoses
