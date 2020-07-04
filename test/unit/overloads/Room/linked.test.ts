@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import sinon from 'sinon'
 import _ from 'lodash'
+import 'overloads/all'
 
 describe('Detecting ability to transfer energy with links', () => {
   let link: StructureLink
@@ -17,7 +18,7 @@ describe('Detecting ability to transfer energy with links', () => {
   });
 
   describe('No links description in memory', () => {
-    it('returns false', function () {
+    it('returns false', () => {
       expect(room.linked).to.eql(false);
     });
   })
@@ -29,7 +30,7 @@ describe('Detecting ability to transfer energy with links', () => {
       sinon.stub(room, 'lookForAt').returns([])
     })
 
-    it('returns false', function () {
+    it('returns false', () => {
       expect(room.linked).to.eql(false);
     });
   })
@@ -40,7 +41,7 @@ describe('Detecting ability to transfer energy with links', () => {
       sinon.stub(room, 'lookForAt').returns([])
     })
 
-    it('returns false', function () {
+    it('returns false', () => {
       expect(room.linked).to.eql(false);
     });
   })
@@ -52,7 +53,7 @@ describe('Detecting ability to transfer energy with links', () => {
       sinon.stub(room, 'lookForAt').returns([link])
     })
 
-    it('returns true', function () {
+    it('returns true', () => {
       expect(room.linked).to.eql(true);
     });
   })

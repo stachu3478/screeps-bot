@@ -22,7 +22,6 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
   if (spawn.room.energyAvailable < spawn.room.energyCapacityAvailable) mem.priorityFilled = 0
   if (spawn.memory.trySpawn) {
     const { creep, memory, name, cooldown, boost } = spawn.memory.trySpawn
-    console.log(`[${spawn.room.name}] Retrying spawn a creep`)
     const result = spawn.trySpawnCreep(creep, name, memory, true, cooldown, boost)
     if (result === 0) return
     if (cooldown <= 0) {

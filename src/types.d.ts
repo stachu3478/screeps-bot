@@ -159,7 +159,6 @@ interface RoomMemory {
 
   boosts?: BoostData
 
-  _extractor?: Id<StructureExtractor>
   _built?: 0 | 1
   _roadBuilt?: number
   _lvl?: number
