@@ -14,7 +14,11 @@ export default profiler.registerFN(function pick(creep: AutoPickCreep) {
   let target = creep.memory._pick && Game.getObjectById(creep.memory._pick)
   let remaining = creep.store.getFreeCapacity()
   if (remaining === 0) return DONE
-  if (!(target = target || getDroppedResource(creep.pos))) return NOTHING_TODO
+  if (!target) {
+    target = target || getDroppedResource(creep.pos)
+    if (!target) return NOTHING_TODO
+    creep.memory._pick = target.id
+  }
   const result = creep.pickup(target)
   remaining -= target.amount
   if (result === ERR_NOT_IN_RANGE) {

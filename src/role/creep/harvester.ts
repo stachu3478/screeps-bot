@@ -6,7 +6,6 @@ import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/haul/autoPick'
 import arrive from 'routine/arrive'
 import dismantle from 'routine/work/dismantle'
-import recycle from 'routine/recycle'
 import drawContainer from 'routine/haul/containerDraw';
 import drawStorage from 'routine/haul/storageDraw';
 import profiler from "screeps-profiler"
@@ -15,18 +14,28 @@ import energyUse from 'job/energyUse'
 import Harvester from './harvester.d'
 import priorityFill from 'routine/haul/priorityFill';
 import canUtilizeEnergy from 'job/canUtilizeEnergy';
+import draw from 'routine/haul/draw';
+import fill from 'routine/haul/fill';
+import dumpResources from 'job/dumpResources';
+import { haulCurrentRoom } from 'job/resourceHaul';
+import pick from 'routine/haul/pick';
+
+function nativeRoutineHandler(creep: Harvester, result: number) {
+  switch (result) {
+    case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
+    case NOTHING_TODO: case FAILED: energyUse(creep)
+    case NOTHING_DONE: autoRepair(creep); break;
+  }
+}
 
 export default profiler.registerFN(function harvester(creep: Harvester) {
   switch (creep.memory.state) {
     case State.IDLE:
       if (creep.store[RESOURCE_ENERGY]) energyUse(creep)
       else if (canUtilizeEnergy(creep)) energyHaul(creep)
+      if (creep.memory.state !== State.IDLE) break
+      if (haulCurrentRoom(creep)) break
       else creep.memory.role = Role.LAB_MANAGER
-      break
-    case State.RECYCLE:
-      switch (recycle(creep)) {
-        case DONE: delete Memory.creeps[creep.name]
-      }
       break
     case State.DISMANTLE:
       switch (dismantle(creep)) {
@@ -59,25 +68,13 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
       }
       break
     case State.FILL_PRIORITY:
-      switch (priorityFill(creep)) {
-        case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
-        case NOTHING_TODO: case FAILED: energyUse(creep)
-        case NOTHING_DONE: autoRepair(creep); break;
-      }
+      nativeRoutineHandler(creep, priorityFill(creep))
       break
     case State.REPAIR:
-      switch (repair(creep)) {
-        case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
-        case NOTHING_TODO: case FAILED: energyUse(creep)
-        case NOTHING_DONE: autoRepair(creep); break;
-      }
+      nativeRoutineHandler(creep, repair(creep))
       break
     case State.BUILD:
-      switch (build(creep)) {
-        case NO_RESOURCE: if (autoPick(creep) !== SUCCESS) energyHaul(creep); break
-        case NOTHING_TODO: case FAILED: energyUse(creep)
-        case NOTHING_DONE: autoRepair(creep); break;
-      }
+      nativeRoutineHandler(creep, build(creep))
       break
     case State.STORAGE_FILL:
       switch (storageFill(creep)) {
@@ -102,7 +99,31 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
         case NOTHING_TODO: case DONE: creep.memory.state = State.DISMANTLE; break
       }
       break
+    case State.PICK:
+      switch (pick(creep)) {
+        case FAILED:
+        case NOTHING_TODO:
+        case DONE: dumpResources(creep, State.FILL)
+      }
+      break
+    case State.DRAW:
+      switch (draw(creep)) {
+        case FAILED:
+        case NOTHING_TODO:
+        case DONE: dumpResources(creep, State.FILL)
+      }
+      break
+    case State.FILL:
+      switch (fill(creep)) {
+        case NOTHING_DONE: break;
+        default:
+          if (creep.store.getUsedCapacity()) dumpResources(creep, State.FILL)
+          else if (autoPick(creep) !== SUCCESS) {
+            if (!haulCurrentRoom(creep)) creep.memory.state = State.IDLE
+          }
+      }
+      break;
     default:
-      energyHaul(creep)
+      creep.memory.state = State.IDLE
   }
 }, 'roleHarvester')

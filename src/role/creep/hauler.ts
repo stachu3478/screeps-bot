@@ -8,6 +8,7 @@ import pick from 'routine/haul/pick';
 import resourceHaul from 'job/resourceHaul';
 import fill from 'routine/haul/fill';
 import draw from 'routine/haul/draw';
+import dumpResources from 'job/dumpResources';
 
 export default profiler.registerFN(function hauler(creep: Hauler) {
   switch (creep.memory.state) {
@@ -18,12 +19,7 @@ export default profiler.registerFN(function hauler(creep: Hauler) {
     case State.PICK:
       switch (pick(creep)) {
         case NOTHING_TODO:
-        case DONE:
-          creep.memory.state = State.STORAGE_FILL
-          creep.memory._fillType = RESOURCES_ALL.find(resource => !!creep.store[resource])
-          const room = creep.motherRoom
-          const storageStructure = room.terminal || room.storage || room.factory
-          if (storageStructure) creep.memory._fill = storageStructure.id
+        case DONE: dumpResources(creep, State.STORAGE_FILL)
       }
       break
     case State.RECYCLE:
@@ -34,19 +30,14 @@ export default profiler.registerFN(function hauler(creep: Hauler) {
     case State.DRAW:
       switch (draw(creep)) {
         case NOTHING_TODO:
-        case DONE:
-          creep.memory.state = State.STORAGE_FILL
-          creep.memory._fillType = RESOURCES_ALL.find(resource => !!creep.store[resource])
-          const room = creep.motherRoom
-          const storageStructure = room.terminal || room.storage || room.factory
-          if (storageStructure) creep.memory._fill = storageStructure.id
+        case DONE: dumpResources(creep, State.STORAGE_FILL)
       }
       break
     case State.STORAGE_FILL:
       switch (fill(creep)) {
         case NOTHING_DONE: break;
         default:
-          if (creep.store.getUsedCapacity()) creep.memory._fillType = RESOURCES_ALL.find(resource => !!creep.store[resource])
+          if (creep.store.getUsedCapacity()) dumpResources(creep, State.STORAGE_FILL)
           else if (autoPick(creep) !== SUCCESS) resourceHaul(creep);
       }
       break;

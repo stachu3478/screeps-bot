@@ -34,10 +34,11 @@ const droppedEnergyFilter = { filter: (r: Resource) => r.resourceType === RESOUR
 export const findNearDroppedEnergy = (pos: RoomPosition) => pos.findInRange(FIND_DROPPED_RESOURCES, 1, droppedEnergyFilter)
 export const getDroppedResource = (pos: RoomPosition) => pos.findClosestByPath(FIND_DROPPED_RESOURCES) || pos.findClosestByRange(FIND_DROPPED_RESOURCES)
 
-const filledFilter = (s: Ruin | Tombstone) => s.store.getUsedCapacity() > 0
+const filledFilter = (s: Ruin | Tombstone | StructureContainer) => s.store.getUsedCapacity() > 0
 export const findHaulable = (room: Room, pos: RoomPosition) => {
-  let potential: (Ruin | Tombstone)[] = room.find(FIND_TOMBSTONES)
+  let potential: (Ruin | Tombstone | StructureContainer)[] = room.find(FIND_TOMBSTONES)
   potential = potential.concat(room.find(FIND_RUINS))
+  potential = potential.concat(room.find<StructureContainer>(FIND_STRUCTURES, { filter: s => s.structureType === STRUCTURE_CONTAINER }))
   potential = potential.filter(filledFilter)
   return pos.findClosestByPath(potential) || pos.findClosestByRange(potential)
 }
