@@ -1,28 +1,3 @@
-// example declaration file - remove these and add your own custom typings
-interface Game {
-  cpu: {
-    generatePixel: () => OK | ERR_NOT_ENOUGH_RESOURCES,
-    getUsed: () => number
-    bucket: number
-    limit: number
-    tickLimit: number,
-    shardLimits: Object,
-    getHeapStatistics: () => ({
-      total_heap_size: number,
-      total_heap_size_executable: number,
-      total_physical_size: number,
-      total_available_size: number,
-      used_heap_size: number,
-      heap_size_limit: number,
-      malloced_memory: number,
-      peak_malloced_memory: number,
-      does_zap_garbage: number,
-      externally_allocated_size: number,
-    }),
-    setShardLimits: () => ScreepsReturnCode,
-  }
-}
-
 interface SourceMap {
   [id: string]: string
 }
