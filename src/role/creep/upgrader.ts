@@ -7,6 +7,7 @@ import drawContainer from 'routine/haul/containerDraw';
 import draw from 'routine/haul/draw';
 import maintainControllerLink from 'utils/controllerLink';
 import profiler from "screeps-profiler"
+import { energyToUpgraderRepairThreshold } from 'config/storage';
 
 export interface UpgraderCreep extends Creep {
   memory: UpgraderMemory
@@ -43,7 +44,7 @@ export default profiler.registerFN(function upgrader(creep: UpgraderCreep) {
           }
           creep.memory.state = State.HARVESTING
           break
-        default: autoRepair(creep); break
+        default: if (creep.room.store(RESOURCE_ENERGY) >= energyToUpgraderRepairThreshold || !creep.room.storage) autoRepair(creep); break
       }
       break
     case State.STORAGE_DRAW:

@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { Fighter } from "role/creep/fighter";
 import { getContainer, getExtension, getSpawn } from './selectFromPos';
+import { energyToNukerThreshold } from 'config/storage';
 
 function persistFilter<T>(arr: (T | undefined)[]): T[] {
   return arr.filter(v => v) as T[]
@@ -127,10 +128,12 @@ export const findNearStructureToFillWithPriority = (room: Room, x: number, y: nu
 
 const priorityObfuscator = (s: AnyStoreStructure) => fillPriority[s.structureType]
 const priorityLimiter = (s: AnyStoreStructure) => fillPriority[s.structureType] > 5
+const notNukerFilter = (s: AnyStoreStructure) => s.structureType !== STRUCTURE_NUKER
 export const findClosestStructureToFillWithPriority = (room: Room, pos: RoomPosition, differ?: AnyStoreStructure) => {
-  const structures = room.find<AnyStoreStructure>(FIND_STRUCTURES)
+  let structures = room.find<AnyStoreStructure>(FIND_STRUCTURES)
     .filter(priorityLimiter)
     .filter(toFillFilter(differ))
+  if (room.store(RESOURCE_ENERGY) < energyToNukerThreshold) structures = structures.filter(notNukerFilter)
   if (!structures.length) return null
   const maxPriority = fillPriority[_.max(structures, priorityObfuscator).structureType]
   const prioritized = structures.filter((s) => fillPriority[s.structureType] === maxPriority)
