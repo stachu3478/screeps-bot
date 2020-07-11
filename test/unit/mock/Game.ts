@@ -19,7 +19,10 @@ export default {
       externally_allocated_size: 38430000,
     }),
     setShardLimits: () => 0,
-    generatePixel: () => OK
+    generatePixel: () => OK,
+    unlocked: false,
+    unlockedTime: undefined,
+    unlock: () => OK
   },
   creeps: {},
   flags: {},

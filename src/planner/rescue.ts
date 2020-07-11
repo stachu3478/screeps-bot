@@ -10,12 +10,7 @@ export default function callRescue(room: Room) {
       console.log('No claimer room')
       return false
     }
-    const spawnName = claimer.memory.spawnName
-    if (!spawnName) {
-      console.log('No spawn registry in claimer room')
-      return false
-    }
-    const spawn = Game.spawns[spawnName]
+    const spawn = claimer.spawn
     if (!spawn) {
       console.log('No spawn in claimer room')
       return false

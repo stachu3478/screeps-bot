@@ -8,7 +8,7 @@ interface RecycleCreep extends Creep {
 interface RecycleMemory extends CreepMemory { }
 
 export default function recycle(creep: RecycleCreep) {
-  const spawn = Game.spawns[Memory.rooms[creep.memory.room].spawnName || '']
+  const spawn = creep.motherRoom.spawn
   if (!spawn) return NOTHING_TODO
   const result = spawn.recycleCreep(creep)
   if (result === ERR_NOT_IN_RANGE) move.cheap(creep, spawn)

@@ -1,6 +1,6 @@
 import { DONE, NOTHING_TODO, SUCCESS, NOTHING_DONE, FAILED } from 'constants/response'
 import arrive from 'routine/arrive'
-import attack from 'routine/military/attack'
+import attack, { hasToughPart, hasAttackPart } from 'routine/military/attack'
 import heal from 'routine/military/heal';
 import recycle from 'routine/recycle';
 
@@ -17,20 +17,6 @@ interface CommanderMemory extends CreepMemory {
   [Keys.toughHitsThreshold]?: number
   [Keys.attackHitsThreshold]?: number
 }
-
-function getHitThreshold(creep: Creep, type: BodyPartConstant) {
-  return creep.body.reverse().findIndex(part => part.type === type) * 100
-}
-
-const hasPart = (type: BodyPartConstant, property: Keys) => (creep: Commander) => {
-  const memory = creep.memory
-  const threshold = memory[property]
-  if (threshold)
-    return creep.hits > threshold
-  return creep.hits > (memory[property] = getHitThreshold(creep, type))
-}
-export const hasToughPart = hasPart(TOUGH, Keys.toughHitsThreshold)
-const hasAttackPart = hasPart(ATTACK, Keys.attackHitsThreshold)
 
 export default function commander(creep: Commander) {
   const prevHits = creep.memory._prev_hits || creep.hits - 1

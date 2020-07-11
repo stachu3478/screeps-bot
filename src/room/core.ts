@@ -57,21 +57,18 @@ export default function run(controller: StructureController, cpuUsed: number) {
 
   handleLog(mem, controller)
 
-  let spawn = Game.spawns[room.memory.spawnName || '']
-  if (!spawn) {
-    spawn = room.find(FIND_MY_SPAWNS)[0]
-    if (!spawn) {
-      if (count === 0 && !creepCountByRole[Role.RETIRED]) callRescue(room)
-      const sites = room.find(FIND_CONSTRUCTION_SITES)
-      const spawnSite = sites.filter(s => s.structureType === STRUCTURE_SPAWN)[0]
-      if (!spawnSite) {
-        sites.forEach(s => s.remove())
-        if (room.memory.structs) {
-          const pos = room.memory.structs.charCodeAt(1)
-          room.createConstructionSite(pos & 63, pos >> 6, STRUCTURE_SPAWN)
-        }
+  const spawns = room.find(FIND_MY_SPAWNS)
+  if (!spawns.length) {
+    if (count === 0 && !creepCountByRole[Role.RETIRED]) callRescue(room)
+    const sites = room.find(FIND_CONSTRUCTION_SITES)
+    const spawnSite = sites.filter(s => s.structureType === STRUCTURE_SPAWN)[0]
+    if (!spawnSite) {
+      sites.forEach(s => s.remove())
+      if (room.memory.structs) {
+        const pos = room.memory.structs.charCodeAt(1)
+        room.createConstructionSite(pos & 63, pos >> 6, STRUCTURE_SPAWN)
       }
-    } else room.memory.spawnName = spawn.name
+    }
   }
 
   if (room.terminal) terminal(room.terminal)
@@ -80,7 +77,9 @@ export default function run(controller: StructureController, cpuUsed: number) {
   const factoryStructure = room.factory
   if (factoryStructure) factory(factoryStructure)
 
+  const spawn = spawns.find(s => !s.spawning)
   if (spawn) spawnLoop(spawn, controller, creepCountByRole, workPartCountByRole, needFighters)
+  else room.visual.text("Spawning creeps...", 0, 3, infoStyle)
   room.visual.text("Population: " + count + " Retired: " + (creepCountByRole[Role.RETIRED] || 0), 0, 0, count === 0 ? dangerStyle : infoStyle)
   room.visual.text("Spawns: " + room.energyAvailable + "/" + room.energyCapacityAvailable, 0, 1, room.energyCapacityAvailable === 0 ? dangerStyle : infoStyle)
   return usage(room, cpuUsed)

@@ -1,5 +1,4 @@
 import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from "constants/response";
-import { hasToughPart } from "role/creep/commander";
 
 const hittable = (obj: Creep | Structure) => obj.hits
 const hittableFilter = {
@@ -13,7 +12,22 @@ interface AttackCreep extends Creep {
 interface AttackMemory extends CreepMemory {
   _attack?: Id<Creep | Structure>
   [Keys.toughHitsThreshold]?: number
+  [Keys.attackHitsThreshold]?: number
 }
+
+function getHitThreshold(creep: Creep, type: BodyPartConstant) {
+  return creep.body.reverse().findIndex(part => part.type === type) * 100
+}
+
+const hasPart = (type: BodyPartConstant, property: Keys) => (creep: AttackCreep) => {
+  const memory = creep.memory
+  const threshold = memory[property]
+  if (threshold)
+    return creep.hits > threshold
+  return creep.hits > (memory[property] = getHitThreshold(creep, type))
+}
+export const hasToughPart = hasPart(TOUGH, Keys.toughHitsThreshold)
+export const hasAttackPart = hasPart(ATTACK, Keys.attackHitsThreshold)
 
 export default function attack(creep: AttackCreep) {
   let target: Creep | Structure | null = Game.getObjectById(creep.memory._attack || "")

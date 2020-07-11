@@ -15,10 +15,6 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
   if (!mem.creeps) mem.creeps = {}
   if (!mem.colonySources || mem.maxWorkController === undefined || !mem.colonySourceId) return
   const max = mem.sourceCount || 0
-  if (spawn.spawning) {
-    spawn.room.visual.text("Spawning " + spawn.spawning.name, 0, 3, infoStyle)
-    return
-  }
   if (spawn.room.energyAvailable < spawn.room.energyCapacityAvailable) mem.priorityFilled = 0
   if (spawn.memory.trySpawn) {
     const { creep, memory, name, cooldown, boost } = spawn.memory.trySpawn

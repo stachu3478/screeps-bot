@@ -60,7 +60,7 @@ defineRoomGetter('linked', self => {
 })
 
 defineRoomGetter('spawn', self => {
-  return self.memory.spawnName && Game.spawns[self.memory.spawnName] || self.find(FIND_MY_SPAWNS)[0]
+  return self.find(FIND_MY_SPAWNS)[0]
 })
 
 Room.prototype.store = function (resource: ResourceConstant) {

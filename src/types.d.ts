@@ -88,7 +88,6 @@ interface RoomMemory {
   sourceCount?: number
   maxWorkController?: number
   workControllerOver?: number
-  spawnName?: string
   priorityFilled?: 0 | 1
   repaired?: 0 | 1
 
