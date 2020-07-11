@@ -17,9 +17,9 @@ const labJobs = {
     return false
   },
   collectResources: (creep: LabManager, labs: StructureLab[]) => {
-    return labs.some(lab => {
+    return labs.some((lab, i) => {
       const mineralType = lab.mineralType
-      if (mineralType && lab.store[mineralType] > 0) {
+      if (mineralType && lab.store[mineralType] > 0 && !lab.room.getBoosts().amounts.labs[i]) {
         labJobs.prepareCreepForDumping(creep, lab.id, mineralType)
         return true
       }

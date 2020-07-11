@@ -113,8 +113,12 @@ const move = {
         if (!creepOnRoad.memory) {
           if (!creepOnRoad.my) result = creep.moveTo(target, { costCallback, range })
           else move.anywhere(creepOnRoad, dir, creep)
-        } else if (!move.check(creepOnRoad))
-          move.anywhere(creepOnRoad, (creepOnRoad.memory.role === Role.STATIC_UPGRADER || creepOnRoad.memory.role === Role.MINER || Math.random() > 0.8) ? creepOnRoad.pos.getDirectionTo(creep) : dir, creep)
+        } else if (!move.check(creepOnRoad)) {
+          const swap = creepOnRoad.memory.role === Role.STATIC_UPGRADER || creepOnRoad.memory.role === Role.MINER || Math.random() > 0.8
+          const dirTo = creepOnRoad.pos.getDirectionTo(creep)
+          move.anywhere(creepOnRoad, swap ? dirTo : dir, creep)
+            || creepOnRoad.move(dirTo)
+        }
       }
     }
     mem._move.t = Game.time
