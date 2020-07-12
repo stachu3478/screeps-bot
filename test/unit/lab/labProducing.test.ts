@@ -1,7 +1,7 @@
-import { expect } from 'chai';
 import _ from 'lodash'
 import lab from 'role/lab';
 import sinon from 'sinon';
+import { expect } from '../../expect';
 
 describe('When lab system is in producing state', () => {
   let room: Room

@@ -1,9 +1,9 @@
-import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
 import labJobs from 'job/lab';
 import handleLab from 'utils/handleLab';
 import { findJob } from 'role/creep/labManager'
+import { expect } from '../../../expect';
 
 describe('Finding job for lab manager', () => {
   let creep: Creep

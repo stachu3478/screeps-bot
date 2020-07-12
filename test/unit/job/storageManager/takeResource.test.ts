@@ -1,8 +1,8 @@
-import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
 import storageManagement from 'job/storageManagement';
 import { FactoryManager } from 'role/creep/factoryManager';
+import { expect } from '../../../expect';
 
 describe('Preparing creep to transfer lab between terminal and storage', () => {
   const { prepareToTakeResource } = storageManagement

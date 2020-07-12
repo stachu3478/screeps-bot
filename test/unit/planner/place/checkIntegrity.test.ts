@@ -1,5 +1,5 @@
-import { expect } from "chai";
 import checkIntegrity from "../../../../src/planner/place/checkIntegrity"
+import { expect } from '../../../expect';
 
 describe("planner/place/place", () => {
 

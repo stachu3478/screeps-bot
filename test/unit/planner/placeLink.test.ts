@@ -1,11 +1,11 @@
 import "../constants"
-import { expect } from "chai";
 import sinon from 'sinon'
 import _ from "lodash"
 import placeLink from "../../../src/planner/place/link"
 import { Memory } from "../mock"
 import Game from "../mock/Game"
 import RoomPosition from "../mock/RoomPosition"
+import { expect } from '../../expect';
 
 describe("planner/place/link", () => {
   const sandbox = sinon.createSandbox();

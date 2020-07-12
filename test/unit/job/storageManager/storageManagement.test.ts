@@ -1,9 +1,9 @@
 import '../../constants'
-import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
 import storageManagement from 'job/storageManagement';
 import { FactoryManager } from 'role/creep/factoryManager';
+import { expect } from '../../../expect';
 
 describe('Checking if terminal needs to be filled from storage', () => {
   const { findJob } = storageManagement
@@ -84,9 +84,9 @@ describe('Checking if terminal needs to be filled from storage', () => {
       sinon.stub(storageManagement, 'shouldBeTakenToStorage').callsFake((resource: ResourceConstant) => resource === RESOURCE_ENERGY ? 1 : 0)
     })
 
-    it('Should not transfer energy', () => {
-      expect(findJob(creep)).to.eql(false)
-      expect(storageManagement.prepareToTakeResource).to.not.be.called
+    it('Should transfer energy', () => {
+      expect(findJob(creep)).to.eql(true)
+      expect(storageManagement.prepareToTakeResource).to.be.calledWithExactly(creep, RESOURCE_ENERGY, 1, creep.motherRoom.terminal, creep.motherRoom.storage)
     })
   })
 });

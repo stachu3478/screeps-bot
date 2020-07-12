@@ -1,6 +1,6 @@
-import { expect } from "chai";
 import _ from "lodash"
 import xyToChar from "planner/pos";
+import { expect } from '../../expect';
 
 describe('Setting building order in order list', () => {
   const expectedChar = String.fromCharCode(xyToChar(25, 25))

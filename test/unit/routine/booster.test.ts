@@ -1,10 +1,10 @@
-import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
 import routineBooster from 'routine/boost'
 import { NOTHING_DONE, FAILED, SUCCESS, NOTHING_TODO } from 'constants/response';
 import { BoosterCreep } from 'role/creep/booster';
 import move from 'utils/path';
+import { expect } from '../../expect';
 
 describe('Creep work in boost mode', () => {
   let creep: BoosterCreep

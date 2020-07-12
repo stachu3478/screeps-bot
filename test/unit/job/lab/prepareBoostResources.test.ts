@@ -1,9 +1,9 @@
-import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
 import labJobs from 'job/lab';
 import boostMock from '../../mock/boostData'
 import { LabManager } from 'role/creep/labManager.d';
+import { expect } from '../../../expect';
 
 describe('Finding boost-preparing job', () => {
   const { prepareBoostResources } = labJobs

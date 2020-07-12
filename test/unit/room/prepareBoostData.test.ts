@@ -1,6 +1,6 @@
-import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
+import { expect } from '../../expect';
 
 describe('Preparing array of boosting data', () => {
   let room: Room

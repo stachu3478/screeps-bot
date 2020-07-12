@@ -1,7 +1,7 @@
-import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
 import move from 'utils/path';
+import { expect } from '../../expect';
 
 describe('Check for creep is moving', () => {
   let creep: Creep

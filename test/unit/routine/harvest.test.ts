@@ -1,10 +1,10 @@
 import "../constants"
-import { assert } from "chai";
 import _ from "lodash"
 import harvest from "../../../src/routine/work/harvest"
 import { Memory } from "../mock"
 import Game from "../mock/Game"
 import Harvester from "role/creep/harvester.d";
+import { assert } from '../../expect';
 
 describe("routine/harvest", () => {
   before(() => {

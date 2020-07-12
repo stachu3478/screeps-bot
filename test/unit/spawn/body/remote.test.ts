@@ -1,8 +1,8 @@
 import "../../constants"
-import { assert } from "chai";
 import { optimalRemoteMiner } from "spawn/body/remote"
 import { Memory } from "../../mock"
 import Game from "../../mock/Game"
+import { assert } from '../../../expect';
 
 describe("spawn/body/remote", () => {
   beforeEach(() => {

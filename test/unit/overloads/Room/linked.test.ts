@@ -1,7 +1,7 @@
-import { expect } from 'chai';
 import sinon from 'sinon'
 import _ from 'lodash'
 import 'overloads/all'
+import { expect } from '../../../expect';
 
 describe('Detecting ability to transfer energy with links', () => {
   let link: StructureLink

@@ -1,5 +1,5 @@
-import { expect } from 'chai';
 import { getTowerAttackPower } from 'room/enemyTrack';
+import { expect } from '../../../expect';
 
 describe('Calculating attack power of tower in place', () => {
   let tower: StructureTower

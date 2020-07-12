@@ -1,5 +1,5 @@
-import { expect } from 'chai';
 import _ from 'lodash'
+import { expect } from '../../expect';
 
 describe('When lab system is in producing state', () => {
   let room: Room

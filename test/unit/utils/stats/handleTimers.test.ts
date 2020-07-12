@@ -1,7 +1,7 @@
-import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
 import { handleTimers, Measurement } from 'utils/stats';
+import { expect } from '../../../expect';
 
 describe('Processing data for statistics - handling timers', () => {
   let creep: Creep

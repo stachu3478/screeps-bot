@@ -1,10 +1,10 @@
 import '../../constants'
-import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
 import roleBooster, { BoosterCreep } from 'role/creep/booster'
 import routineBooster from 'routine/boost'
 import { NOTHING_DONE, FAILED, SUCCESS } from 'constants/response';
+import { expect } from '../../../expect';
 
 describe('Creep boost role', () => {
   let creep: BoosterCreep

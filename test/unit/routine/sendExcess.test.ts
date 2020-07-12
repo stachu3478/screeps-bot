@@ -1,6 +1,5 @@
 import '../constants'
 import 'overloads/all'
-import { expect } from 'chai';
 import sinon from 'sinon'
 import _ from 'lodash'
 import sendExcess from '../../../src/routine/terminal/sendExcess'
@@ -8,6 +7,7 @@ import { Memory } from '../mock'
 import Game from '../mock/Game'
 import RoomPosition from '../mock/RoomPosition'
 import { NOTHING_TODO, SUCCESS, DONE } from 'constants/response';
+import { expect } from '../../expect';
 
 describe('routine/terminal/sendExcess', () => {
   const sandbox = sinon.createSandbox();

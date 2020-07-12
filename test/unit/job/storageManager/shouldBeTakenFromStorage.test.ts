@@ -1,9 +1,9 @@
 import '../../constants'
-import { expect } from 'chai';
 import _ from 'lodash'
 import sinon from 'sinon'
 import storageManagement from 'job/storageManagement';
 import { storageBufferingThreshold } from 'config/terminal';
+import { expect } from '../../../expect';
 
 describe('Checking if terminal needs to be filled from storage', () => {
   const { shouldBeTakenFromStorage } = storageManagement

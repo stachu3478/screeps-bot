@@ -1,6 +1,6 @@
-import { expect } from 'chai';
 import sinon from 'sinon'
 import defineGetter from 'utils/defineGetter';
+import { expect } from '../../expect';
 
 type Test = ObjectConstructor
 describe('Creating getter on given contructor', () => {

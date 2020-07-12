@@ -1,5 +1,5 @@
-import { expect } from "chai";
 import _ from "lodash"
+import { expect } from '../../expect';
 
 describe('Getting amount of mineral reserved for boosting of corresponding type', () => {
   beforeEach(() => {

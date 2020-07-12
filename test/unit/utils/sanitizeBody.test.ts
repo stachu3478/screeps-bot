@@ -1,6 +1,6 @@
-import { expect } from 'chai';
 import _ from 'lodash'
 import sanitizeBody from 'utils/sanitizeBody';
+import { expect } from '../../expect';
 
 describe('Body sanitizing for cpu effciency', () => {
   beforeEach(() => {

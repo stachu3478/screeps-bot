@@ -15,12 +15,11 @@ export default {
     sourcemap: true,
     format: 'iife',
     globals: {
-      chai: 'chai',
       it: 'it',
       describe: 'describe'
     }
   },
-  external: ['chai', 'it', 'describe'],
+  external: ['it', 'describe'],
   plugins: [
     clear({ targets: ["dist/test.bundle.js"] }),
     resolve(),

@@ -1,6 +1,6 @@
-import { expect } from 'chai';
 import sinon from 'sinon'
 import charPosIterator from 'utils/charPosIterator';
+import { expect } from '../../expect';
 
 describe('Check for creep is moving', () => {
   let iterator: () => void

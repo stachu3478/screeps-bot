@@ -4,6 +4,7 @@ export const nominalStorage = Math.floor(TERMINAL_CAPACITY / RESOURCES_ALL.lengt
 export const energyKeep = 30000
 export const labProductionThreshold = 12500
 export const storageBuyThreshold = 3000
+export const energyBufferingThreshold = 30000
 export const storageBufferingThreshold = 5000
 export const resourcesToBuy = [
   RESOURCE_UTRIUM,

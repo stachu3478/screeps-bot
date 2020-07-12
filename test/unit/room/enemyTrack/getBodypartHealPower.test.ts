@@ -1,5 +1,5 @@
-import { expect } from 'chai';
 import { getBodypartHealPower } from 'room/enemyTrack';
+import { expect } from '../../../expect';
 
 describe('Calculating heal power of single part', () => {
   it('should return 0 - not a heal part', () => {

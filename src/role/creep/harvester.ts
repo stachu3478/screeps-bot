@@ -32,12 +32,10 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
   switch (creep.memory.state) {
     case State.IDLE:
       if (creep.store[RESOURCE_ENERGY]) energyUse(creep)
-      else if (canUtilizeEnergy(creep)) {
-        energyHaul(creep)
-        if (creep.memory.state !== State.IDLE) break
-        if (haulCurrentRoom(creep)) break
-        else creep.memory.role = Role.LAB_MANAGER
-      }
+      else if (canUtilizeEnergy(creep)) energyHaul(creep)
+      if (creep.memory.state !== State.IDLE) break
+      if (haulCurrentRoom(creep)) break
+      else creep.memory.role = Role.LAB_MANAGER
       break
     case State.DISMANTLE:
       switch (dismantle(creep)) {

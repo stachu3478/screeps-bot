@@ -1,8 +1,8 @@
-import { expect } from 'chai';
 import _ from 'lodash'
 import labJobs from 'job/lab';
 import sinon from 'sinon'
 import boostMock from '../../mock/boostData'
+import { expect } from '../../../expect';
 
 describe('Checking if lab is used for boosting and does further checks and requests', () => {
   const { lookForBoosting } = labJobs

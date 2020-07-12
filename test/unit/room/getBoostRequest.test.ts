@@ -1,7 +1,7 @@
-import { expect } from "chai";
 import _ from "lodash"
 import sinon from 'sinon'
 import boostData from "../mock/boostData";
+import { expect } from '../../expect';
 
 describe('Getting a boost request', () => {
   let room: Room

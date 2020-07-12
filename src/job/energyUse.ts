@@ -10,7 +10,6 @@ import { energyToBuildThreshold } from "config/storage";
 const shouldBuild = (room: Room) => !room.storage || room.store(RESOURCE_ENERGY) > energyToBuildThreshold
 export default function energyUse(creep: Harvester) {
   let result
-  creep.memory._noJob = 0
   const motherRoom = creep.motherRoom
   if ((result = priorityFill(creep)) in ACCEPTABLE) creep.memory.state = State.FILL_PRIORITY
   else if ((result = repair(creep)) in ACCEPTABLE) creep.memory.state = State.REPAIR
@@ -22,7 +21,6 @@ export default function energyUse(creep: Harvester) {
 
   } else {
     if ((result = fillStorage(creep)) in ACCEPTABLE) creep.memory.state = State.STORAGE_FILL
-    creep.memory._noJob = 1
     if (result === NO_RESOURCE) creep.memory.state = State.IDLE
   }
 }

@@ -1,6 +1,6 @@
-import { expect } from 'chai';
 import _ from 'lodash'
 import labJobs from 'job/lab';
+import { expect } from '../../../expect';
 
 describe('Checking if lab needs to be dumped out of resources for boosting', () => {
   const { needsToBeDumpedForBoosting } = labJobs

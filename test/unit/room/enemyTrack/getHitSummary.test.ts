@@ -1,5 +1,5 @@
-import { expect } from 'chai';
 import { getHitSummary } from 'room/enemyTrack';
+import { expect } from '../../../expect';
 
 describe('Calculating creep damage/heal summary at current body', () => {
   let body: Creep['body']

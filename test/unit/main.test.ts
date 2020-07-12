@@ -1,10 +1,10 @@
 import './constants'
 import 'overloads/all'
-import { assert } from 'chai';
 import _ from 'lodash'
 import { loop } from '../../src/main';
 import { Memory } from './mock'
 import Game from './mock/Game'
+import { assert } from '../expect';
 
 describe('main', () => {
   before(() => {

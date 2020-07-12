@@ -11,7 +11,7 @@ export default function maintainControllerLink(room: Room, drawAmount: number = 
   let canDrawLink = false
   if (link.store[RESOURCE_ENERGY] < drawAmount) {
     let linkPoses = room.memory.links
-    if (room.memory.structs && room.storage && room.storage.store[RESOURCE_ENERGY] > storageThreshold) linkPoses += room.memory.structs[0]
+    if (room.memory.structs && room.store(RESOURCE_ENERGY) > storageThreshold) linkPoses += room.memory.structs[0]
     if (linkPoses) {
       const links = linkPoses.split('').map(p => getLink(room, p.charCodeAt(0))).filter(l => l) as StructureLink[]
       if (links.length) {
