@@ -8,7 +8,7 @@ interface SomeMap {
 
 export function getAverageCost(resourceType: ResourceConstant) {
   const recentHistory = _.max(Game.market.getHistory(resourceType), h => new Date(h.date))
-  if (!recentHistory) return 0.1
+  if (typeof recentHistory == 'number') return 0.1
   return recentHistory.avgPrice
 }
 

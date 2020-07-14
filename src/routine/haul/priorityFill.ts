@@ -29,8 +29,10 @@ export default function priorityFill(creep: PriorityFillCreep) {
   if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
   else if (result !== 0) return FAILED
   else {
-    if (remaining <= 0) return NO_RESOURCE
-    else {
+    delete creep.memory._fill
+    if (remaining <= 0) {
+      return NO_RESOURCE
+    } else {
       const newTarget = findClosestStructureToFillWithPriority(creep.room, creep.pos, target)
       if (!newTarget) return NOTHING_TODO
       target = newTarget

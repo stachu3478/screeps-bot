@@ -39,11 +39,7 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
       break
     case State.DISMANTLE:
       switch (dismantle(creep)) {
-        case NOTHING_TODO: case FAILED: {
-          delete creep.motherRoom.memory._dismantle
-          creep.memory._arrive = creep.memory.room
-          creep.memory.state = State.ARRIVE
-        } break
+        case NOTHING_TODO: case FAILED: delete creep.motherRoom.memory._dismantle
         case DONE: {
           creep.memory._arrive = creep.memory.room
           creep.memory.state = State.ARRIVE
