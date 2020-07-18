@@ -1,6 +1,6 @@
 import './buildingManagement'
 import './boostManagement'
-import { getFactory, getLab, getXYExtractor, getLink } from "utils/selectFromPos";
+import { getFactory, getLab, getXYExtractor, getLink, getPowerSpawn } from "utils/selectFromPos";
 import defineGetter from 'utils/defineGetter';
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
@@ -61,6 +61,11 @@ defineRoomGetter('linked', self => {
 
 defineRoomGetter('spawn', self => {
   return self.find(FIND_MY_SPAWNS)[0]
+})
+
+defineRoomGetter('powerSpawn', self => {
+  const structs = self.memory.structs
+  return structs && getPowerSpawn(self, structs.charCodeAt(11))
 })
 
 Room.prototype.store = function (resource: ResourceConstant) {

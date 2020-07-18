@@ -106,6 +106,8 @@ interface RoomMemory {
   labIndegrient2?: ResourceConstant
   labTargetAmount?: number
 
+  [Keys.powerSpawnIdle]?: 0 | 1
+
   depositRoom?: string
   depositLastCooldown?: number
 

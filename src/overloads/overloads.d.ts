@@ -14,6 +14,7 @@ interface Room {
   filled: boolean
   linked: boolean
   spawn?: StructureSpawn
+  powerSpawn?: StructurePowerSpawn
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void

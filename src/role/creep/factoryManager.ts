@@ -74,6 +74,7 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
       switch (fill(creep)) {
         case DONE: case SUCCESS:
           creep.room.memory.factoryState = State.FACT_BOARD
+          creep.room.memory[Keys.powerSpawnIdle] = 0
           delete creep.room.memory.factoryNeeds
           delete creep.room.memory.factoryDumps
           creep.memory.state = State.IDLE

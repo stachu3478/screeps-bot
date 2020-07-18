@@ -1,5 +1,7 @@
 const enum Keys {
   workpartCount = 'W',
   toughHitsThreshold = 'T',
-  attackHitsThreshold = 'A'
+  attackHitsThreshold = 'A',
+
+  powerSpawnIdle = 'P'
 }

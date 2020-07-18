@@ -12,6 +12,7 @@ import terminal from 'role/terminal';
 import { findTowers, findFighters, findDamagedCreeps } from 'utils/find';
 import lab from 'role/lab';
 import factory from 'role/factory';
+import rolePowerSpawn from 'role/powerSpawn'
 
 export default function run(controller: StructureController, cpuUsed: number) {
   const room = controller.room
@@ -77,9 +78,12 @@ export default function run(controller: StructureController, cpuUsed: number) {
   const factoryStructure = room.factory
   if (factoryStructure) factory(factoryStructure)
 
+  const powerSpawn = room.powerSpawn
+  if (powerSpawn) rolePowerSpawn(powerSpawn)
+
   const spawn = spawns.find(s => !s.spawning)
   if (spawn) spawnLoop(spawn, controller, creepCountByRole, workPartCountByRole, needFighters)
-  else room.visual.text("Spawning creeps...", 0, 3, infoStyle)
+  else room.visual.text("All spawns busy", 0, 3, infoStyle)
   room.visual.text("Population: " + count + " Retired: " + (creepCountByRole[Role.RETIRED] || 0), 0, 0, count === 0 ? dangerStyle : infoStyle)
   room.visual.text("Spawns: " + room.energyAvailable + "/" + room.energyCapacityAvailable, 0, 1, room.energyCapacityAvailable === 0 ? dangerStyle : infoStyle)
   return usage(room, cpuUsed)

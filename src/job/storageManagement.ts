@@ -20,11 +20,15 @@ const storageManagement = {
     mem._fill = to.id
   },
 
-  findJob: (creep: FactoryManager) => {
-    const motherRoom = creep.motherRoom
-    const storage = motherRoom.storage
-    const terminal = motherRoom.terminal
-    if (!storage || !terminal) return false
+  fillPowerSpawn: (creep: FactoryManager, terminal: StructureTerminal, powerSpawn: StructurePowerSpawn) => {
+    if (powerSpawn.store.getFreeCapacity(RESOURCE_POWER) !== POWER_SPAWN_POWER_CAPACITY) return false
+    const toFill = Math.min(terminal.store[RESOURCE_POWER], POWER_SPAWN_POWER_CAPACITY)
+    if (toFill === 0) return false
+    storageManagement.prepareToTakeResource(creep, RESOURCE_POWER, toFill, terminal, powerSpawn)
+    return true
+  },
+
+  exchangeTerminalAndStorage: (creep: FactoryManager, storage: StructureStorage, terminal: StructureTerminal) => {
     return RESOURCES_ALL.some(resource => {
       const toTake = storageManagement.shouldBeTakenToStorage(resource, terminal, storage)
       if (toTake > 0) {
@@ -38,7 +42,18 @@ const storageManagement = {
       }
       return false
     })
+  },
+
+  findJob: (creep: FactoryManager) => {
+    const motherRoom = creep.motherRoom
+    const storage = motherRoom.storage
+    const terminal = motherRoom.terminal
+    const powerSpawn = motherRoom.powerSpawn
+    if (storage && terminal && storageManagement.exchangeTerminalAndStorage(creep, storage, terminal)) return true
+    if (terminal && powerSpawn && storageManagement.fillPowerSpawn(creep, terminal, powerSpawn)) return true
+    return false
   }
+
 }
 
 export default storageManagement

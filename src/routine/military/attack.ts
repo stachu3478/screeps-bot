@@ -19,7 +19,7 @@ function getHitThreshold(creep: Creep, type: BodyPartConstant) {
   return creep.body.reverse().findIndex(part => part.type === type) * 100
 }
 
-const hasPart = (type: BodyPartConstant, property: Keys) => (creep: AttackCreep) => {
+const hasPart = (type: BodyPartConstant, property: Keys.toughHitsThreshold | Keys.attackHitsThreshold) => (creep: AttackCreep) => {
   const memory = creep.memory
   const threshold = memory[property]
   if (threshold)
@@ -50,7 +50,7 @@ export default function attack(creep: AttackCreep) {
     return NOTHING_DONE
   }
   if (creep.hits === creep.hitsMax) {
-    if (creep.attack(target) !== 0) return FAILED
+    if (creep.attack(target) !== OK) return FAILED
   }
   else creep.heal(creep)
   return SUCCESS

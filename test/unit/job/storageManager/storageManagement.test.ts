@@ -6,7 +6,7 @@ import { FactoryManager } from 'role/creep/factoryManager';
 import { expect } from '../../../expect';
 
 describe('Checking if terminal needs to be filled from storage', () => {
-  const { findJob } = storageManagement
+  const { exchangeTerminalAndStorage } = storageManagement
   let storage: StructureStorage
   let terminal: StructureTerminal
   let creep: FactoryManager
@@ -20,28 +20,6 @@ describe('Checking if terminal needs to be filled from storage', () => {
     sinon.stub(storageManagement, 'prepareToTakeResource')
   });
 
-  describe('Storage does not exist', () => {
-    beforeEach(() => {
-      delete creep.motherRoom.storage
-    })
-
-    it('Should return false', () => {
-      expect(findJob(creep)).to.eql(false)
-      expect(storageManagement.prepareToTakeResource).to.not.be.called
-    })
-  })
-
-  describe('Terminal does not exist', () => {
-    beforeEach(() => {
-      delete creep.motherRoom.terminal
-    })
-
-    it('Should return false', () => {
-      expect(findJob(creep)).to.eql(false)
-      expect(storageManagement.prepareToTakeResource).to.not.be.called
-    })
-  })
-
   describe('No resource to transfer', () => {
     beforeEach(() => {
       sinon.stub(storageManagement, 'shouldBeTakenFromStorage').returns(0)
@@ -49,7 +27,7 @@ describe('Checking if terminal needs to be filled from storage', () => {
     })
 
     it('Should return false', () => {
-      expect(findJob(creep)).to.eql(false)
+      expect(exchangeTerminalAndStorage(creep, storage, terminal)).to.eql(false)
       expect(storageManagement.prepareToTakeResource).to.not.be.called
     })
   })
@@ -61,7 +39,7 @@ describe('Checking if terminal needs to be filled from storage', () => {
     })
 
     it('Should return true', () => {
-      expect(findJob(creep)).to.eql(true)
+      expect(exchangeTerminalAndStorage(creep, storage, terminal)).to.eql(true)
       expect(storageManagement.prepareToTakeResource).to.be.calledWithExactly(creep, RESOURCE_POWER, 1, creep.motherRoom.storage, creep.motherRoom.terminal)
     })
   })
@@ -73,7 +51,7 @@ describe('Checking if terminal needs to be filled from storage', () => {
     })
 
     it('Should return true', () => {
-      expect(findJob(creep)).to.eql(true)
+      expect(exchangeTerminalAndStorage(creep, storage, terminal)).to.eql(true)
       expect(storageManagement.prepareToTakeResource).to.be.calledWithExactly(creep, RESOURCE_POWER, 1, creep.motherRoom.terminal, creep.motherRoom.storage)
     })
   })
@@ -85,7 +63,7 @@ describe('Checking if terminal needs to be filled from storage', () => {
     })
 
     it('Should transfer energy', () => {
-      expect(findJob(creep)).to.eql(true)
+      expect(exchangeTerminalAndStorage(creep, storage, terminal)).to.eql(true)
       expect(storageManagement.prepareToTakeResource).to.be.calledWithExactly(creep, RESOURCE_ENERGY, 1, creep.motherRoom.terminal, creep.motherRoom.storage)
     })
   })
