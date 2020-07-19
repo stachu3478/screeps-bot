@@ -108,9 +108,6 @@ interface RoomMemory {
 
   [Keys.powerSpawnIdle]?: 0 | 1
 
-  depositRoom?: string
-  depositLastCooldown?: number
-
   factoryNeeds?: ResourceConstant
   factoryDumps?: ResourceConstant
   factoryState?: number

@@ -1,4 +1,3 @@
-import './Game'
 import './room/Room'
 import './Spawn'
 import './StructureLab'
