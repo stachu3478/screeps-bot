@@ -16,8 +16,11 @@ Object.assign(global, {
   Source,
   Spawn,
   Structure,
-  StructureSpawn: class { },
-  StructureLab: class { },
+  StructureSpawn: class extends Structure { },
+  StructureLab: class extends Structure { },
+  StructureFactory: class extends Structure { },
+  StructurePowerSpawn: class extends Structure { },
+  StructureTerminal: class extends Structure { },
   PathFinder: {
     CostMatrix: class {
       set() { }

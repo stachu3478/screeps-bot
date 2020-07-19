@@ -6,9 +6,10 @@ interface ReactionTimeHash {
 
 export default function lab(room: Room) {
   const mem = room.memory
-  const cooldown = mem.labCooldown || 0
+  const cache = room.cache
+  const cooldown = cache.labCooldown || 0
   if (cooldown > 0) {
-    mem.labCooldown = cooldown - 1
+    cache.labCooldown = cooldown - 1
     return
   }
 
@@ -42,7 +43,7 @@ export default function lab(room: Room) {
         break
       }
       room.visual.text('Labs: Running reaction: ' + recipe, 0, 5, infoStyle)
-      mem.labCooldown = (REACTION_TIME as ReactionTimeHash)[recipe] - 1
+      cache.labCooldown = (REACTION_TIME as ReactionTimeHash)[recipe] - 1
       break
     case State.LAB_PENDING:
       room.visual.text('Labs: Waiting for creeps', 0, 5, infoStyle)

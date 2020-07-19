@@ -18,7 +18,7 @@ export default function priorityFill(creep: PriorityFillCreep) {
   if (!target || target.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
     const newTarget = findClosestStructureToFillWithPriority(creep.room, creep.pos)
     if (!newTarget) {
-      creep.room.memory.priorityFilled = 1
+      creep.room.cache.priorityFilled = 1
       return NOTHING_TODO
     }
     target = newTarget

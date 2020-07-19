@@ -15,7 +15,8 @@ describe('When lab system is in producing state', () => {
     room.lab1 = {} as StructureLab
     room.lab2 = {} as StructureLab
     room.externalLabs = []
-    room.memory = { labState: State.LAB_PRODUCING, labCooldown: 0 }
+    room.memory = { labState: State.LAB_PRODUCING }
+    room.cache = { labCooldown: 0 }
     room.visual = new RoomVisual()
   });
 
@@ -33,7 +34,7 @@ describe('When lab system is in producing state', () => {
     lab(room)
     expect(externalLab.runReaction).to.be.calledOnce
     expect(room.memory.labState).to.eql(State.LAB_PRODUCING)
-    expect(room.memory.labCooldown).to.be.greaterThan(0)
+    expect(room.cache.labCooldown).to.be.greaterThan(0)
   });
 
   it('should run reaction and return to collecting state if no resources', function () {
@@ -45,7 +46,7 @@ describe('When lab system is in producing state', () => {
     lab(room)
     expect(externalLab.runReaction).to.be.calledOnce
     expect(room.memory.labState).to.eql(State.LAB_COLLECTING)
-    expect(room.memory.labCooldown).to.eql(0)
+    expect(room.cache.labCooldown).to.eql(0)
   });
 
   it('should run reaction and return to collecting state if lab is full', function () {
@@ -57,7 +58,7 @@ describe('When lab system is in producing state', () => {
     lab(room)
     expect(externalLab.runReaction).to.be.calledOnce
     expect(room.memory.labState).to.eql(State.LAB_COLLECTING)
-    expect(room.memory.labCooldown).to.eql(0)
+    expect(room.cache.labCooldown).to.eql(0)
   });
 
   it('should not run reaction and trigger cooldown', function () {
@@ -69,6 +70,6 @@ describe('When lab system is in producing state', () => {
     lab(room)
     expect(externalLab.runReaction).to.not.be.called
     expect(room.memory.labState).to.eql(State.LAB_PRODUCING)
-    expect(room.memory.labCooldown).to.be.greaterThan(0)
+    expect(room.cache.labCooldown).to.be.greaterThan(0)
   });
 });

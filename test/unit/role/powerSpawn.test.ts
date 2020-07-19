@@ -4,7 +4,7 @@ import sinon from 'sinon'
 import rolePowerSpawn from 'role/powerSpawn'
 import { expect } from '../../expect';
 
-describe('Creep boost role', () => {
+describe('Role of the power spawn', () => {
   let room: Room
   let powerSpawn: StructurePowerSpawn
   beforeEach(() => {
@@ -14,8 +14,8 @@ describe('Creep boost role', () => {
     // @ts-ignore : allow adding Memory to global
     global.Memory = _.clone(Memory);
 
-    powerSpawn = {} as StructurePowerSpawn
-    room = { memory: {}, powerSpawn: powerSpawn } as Room
+    powerSpawn = { cache: {} } as StructurePowerSpawn
+    room = { memory: {}, cache: {}, powerSpawn: powerSpawn } as Room
     powerSpawn.room = room
 
     sinon.restore()
@@ -30,7 +30,7 @@ describe('Creep boost role', () => {
       it('Should be on by default', () => {
         rolePowerSpawn(powerSpawn)
         expect(powerSpawn.processPower).to.be.called
-        expect(room.memory[Keys.powerSpawnIdle]).to.be.undefined
+        expect(powerSpawn.cache.idle).to.be.undefined
       })
     })
 
@@ -42,20 +42,20 @@ describe('Creep boost role', () => {
       it('Should be off by default', () => {
         rolePowerSpawn(powerSpawn)
         expect(powerSpawn.processPower).to.be.called
-        expect(room.memory[Keys.powerSpawnIdle]).to.eql(1)
-        expect(room.memory.priorityFilled).to.eql(0)
+        expect(powerSpawn.cache.idle).to.eql(1)
+        expect(room.cache.priorityFilled).to.eql(0)
       })
     })
   })
 
   describe('idle state', () => {
     beforeEach(() => {
-      room.memory[Keys.powerSpawnIdle] = 1
+      powerSpawn.cache.idle = 1
     })
 
     it('Should not do anything', () => {
       rolePowerSpawn(powerSpawn)
-      expect(room.memory[Keys.powerSpawnIdle]).to.eql(1)
+      expect(powerSpawn.cache.idle).to.eql(1)
     })
   })
 });

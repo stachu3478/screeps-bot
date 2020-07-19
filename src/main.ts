@@ -1,25 +1,24 @@
 import 'overloads/all'
-import run from "room/core"
-import { infoStyle } from "room/style";
-import profiler from "screeps-profiler"
+import run from 'room/core'
+import { infoStyle } from 'room/style';
+import profiler from 'screeps-profiler'
+import 'utils/profiler'
 import handleStats, { saveCpuUsage } from 'utils/stats'
 import visual from 'planner/visual'
 import roomVisual from 'utils/visual'
+import { memHackBeforeLoop, memHackAfterLoop } from 'utils/memHack';
+import pixelsHandler from 'utils/pixelsHandler';
+import handleRuntimeStats from 'utils/runtime';
 
-const memory = JSON.parse(RawMemory.get())
-// profiler.enable()
-
-let runtimeTicks = 0
 export const loop = () => {
-  delete global.Memory
-  global.Memory = memory
+  memHackBeforeLoop()
 
   let error
   try {
     profiler.wrap(() => {
       Memory.myRooms
       let usage = Game.cpu.getUsed()
-      roomVisual.text("Memory overhead: " + usage.toFixed(3), 0, 49, infoStyle)
+      roomVisual.text('Memory overhead: ' + usage.toFixed(3), 0, 49, infoStyle)
       for (const name in Memory.myRooms) {
         const room = Game.rooms[name]
         if (room) {
@@ -33,24 +32,15 @@ export const loop = () => {
           const room = Game.rooms[name]
           if (room) visual(room)
         }
-
-      if (!Memory.runtimeTicks) Memory.runtimeTicks = runtimeTicks++
-      else if (Memory.runtimeTicks > runtimeTicks) {
-        const currentResetTime = Memory.runtimeTicks;
-        let avg = Memory.runtimeAvg || currentResetTime
-        Memory.runtimeAvg = avg = Math.floor((avg * 9 + currentResetTime) / 10)
-        Memory.runtimeTicks = 0
-      } else Memory.runtimeTicks = runtimeTicks++
-      roomVisual.text("Runtime ticks: " + runtimeTicks + " (avg. " + (Memory.runtimeAvg || 'unknown') + ')', 0, 48, infoStyle)
+      handleRuntimeStats()
     })
   } catch (err) {
     error = err
   }
 
-  if (Game.cpu.bucket === 10000) Game.cpu.generatePixel()
-
+  pixelsHandler()
   handleStats()
-  RawMemory.set(JSON.stringify(Memory))
+  memHackAfterLoop()
   saveCpuUsage()
   if (error) throw error
 }

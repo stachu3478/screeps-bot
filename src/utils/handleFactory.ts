@@ -53,25 +53,25 @@ function isNeededByFactory(resources: ResourceMap, resource: ResourceConstant) {
 }
 
 export default function handleFactory(resources: ResourceMap, factory: StructureFactory) {
-  const mem = factory.room.memory
-  if (!mem.factoryNeeds) {
+  const cache = factory.cache
+  if (!cache.needs) {
     for (const n in resources) {
       const name = n as ResourceConstant
       if (factory.store[name] >= factoryStoragePerResource) continue
       if (isNeededByFactory(resources, name)) {
-        mem.factoryNeeds = name
-        mem.factoryState = State.FACT_BOARD
+        cache.needs = name
+        cache.state = State.FACT_BOARD
         break
       }
     }
   }
 
-  if (!mem.factoryDumps) {
+  if (!cache.dumps) {
     for (const n in factory.store) {
       const name = n as ResourceConstant
       if (resources[name] >= nominalStorage) continue
       if (!isNeededByFactory(factory.store, name)) {
-        mem.factoryDumps = name
+        cache.dumps = name
         break
       }
     }

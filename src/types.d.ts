@@ -17,18 +17,6 @@ interface CreepMemory {
     t?: number
   };
   deprivity: number
-  [Keys.workpartCount]?: number
-}
-
-interface SpawnMemory {
-  trySpawn?: {
-    creep: BodyPartConstant[]
-    cooldown: number
-    name: string
-    memory: CreepMemory
-    boost: BoostInfo[]
-  }
-  spawnSourceId?: Id<Source>
 }
 
 interface Stats {
@@ -49,9 +37,6 @@ interface Memory {
   blacklist?: {
     [key: string]: number
   }
-  roomCacheKeepers?: {
-    [key: string]: string
-  }
   trade_blacklist?: {
     [key: string]: number
   }
@@ -62,6 +47,8 @@ interface Memory {
   pathRoomBlacklist?: {
     [key: string]: 1
   }
+
+  profiler: any
 }
 
 interface BoostData {
@@ -88,33 +75,15 @@ interface RoomMemory {
   sourceCount?: number
   maxWorkController?: number
   workControllerOver?: number
-  priorityFilled?: 0 | 1
-  repaired?: 0 | 1
-
-  terminalState?: number
-  terminalDealResourceType?: ResourceConstant
-  terminalResourceIteration?: number
-  termBusinessSell?: 0 | 1
-  termBusinessAmount?: number
 
   internalLabs?: string
   externalLabs?: string
   labState?: number
-  labCooldown?: number
   labRecipe?: ResourceConstant
   labIndegrient1?: ResourceConstant
   labIndegrient2?: ResourceConstant
   labTargetAmount?: number
 
-  [Keys.powerSpawnIdle]?: 0 | 1
-
-  factoryNeeds?: ResourceConstant
-  factoryDumps?: ResourceConstant
-  factoryState?: number
-  factoryProducing?: ResourceConstant
-
-  _struct_iteration?: number
-  _road_iteration?: number
   creeps?: {
     [key: string]: 0
   }
@@ -122,7 +91,6 @@ interface RoomMemory {
   _claimer?: string
   _claimed?: string[]
   _dismantle?: string
-  averageUsage?: number
 
   _attack?: string
   _attackLevel?: number
@@ -131,12 +99,6 @@ interface RoomMemory {
   _haulSize?: number
 
   boosts?: BoostData
-
-  _built?: 0 | 1
-  _roadBuilt?: number
-  _lvl?: number
-  _healthy?: 0 | 1
-  _shielded?: number
 }
 
 interface StableRoomMemory extends RoomMemory {
@@ -153,5 +115,6 @@ declare namespace NodeJS {
     log: any
     Game: Game
     Memory: Memory
+    Cache: GlobalCache
   }
 }

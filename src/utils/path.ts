@@ -18,18 +18,13 @@ const offsetsByDirection: OffsetByDirection = {
 
 function saveCache(positions: RoomPosition[]) {
   if (!positions.length) return
-  if (!Memory.roomCacheKeepers) Memory.roomCacheKeepers = {}
   let poses = ''
   positions.forEach(p => {
     poses += posToChar(p)
   })
-  Memory.roomCacheKeepers[positions[0].roomName] = poses
+  global.Cache.roomKeepers[positions[0].roomName] = poses
 }
 
-interface StructCache {
-  [key: string]: string
-}
-const structCache: StructCache = {}
 const blackMatrix = new PathFinder.CostMatrix()
 for (let ox = 0; ox <= 49; ox++)
   for (let oy = 0; oy <= 49; oy++)
@@ -38,13 +33,13 @@ function roomCallback(roomName: string, costMatrix: CostMatrix) {
   if (Memory.pathRoomBlacklist && Memory.pathRoomBlacklist[roomName]) return blackMatrix
   const room = Game.rooms[roomName]
   if (!room) {
-    const cache = Memory.roomCacheKeepers && Memory.roomCacheKeepers[roomName]
+    const cache = global.Cache.roomKeepers[roomName]
     if (cache) charPosIterator(cache, (x, y) => {
       for (let ox = -3; ox <= 3; ox++)
         for (let oy = -3; oy <= 3; oy++)
           costMatrix.set(x + ox, y + oy, 25)
     })
-    const structs = structCache[roomName]
+    const structs = global.Cache.roomStructures[roomName]
     if (structs) charPosIterator(structs, (x, y) => costMatrix.set(x, y, 255))
     return costMatrix
   }
@@ -60,7 +55,7 @@ function roomCallback(roomName: string, costMatrix: CostMatrix) {
   room.find(FIND_STRUCTURES).forEach(s => {
     structStr += posToChar(s.pos)
   })
-  structCache[roomName] = structStr
+  global.Cache.roomStructures[roomName] = structStr
   return costMatrix
 }
 

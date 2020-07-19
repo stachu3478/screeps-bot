@@ -27,14 +27,14 @@ describe('planner/place/place', () => {
   });
 
   it('should return NOTHING_TODO number when called with no context', () => {
-    const controller = { room: { memory: {} } } as StructureController
+    const controller = { room: { memory: {}, cache: {} } } as StructureController
     expect(placeStructure(controller, '')).to.eql(NOTHING_TODO);
   });
 
   it('should place a structure', () => {
     const controller = {
       level: 8,
-      room: { memory: {} }
+      room: { memory: {}, cache: {} },
     } as StructureController
     controller.room.lookForAt = () => ([])
     controller.room.createConstructionSite = sinon.fake.returns(OK)

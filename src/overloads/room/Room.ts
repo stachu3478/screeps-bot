@@ -7,6 +7,21 @@ function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
 }
 
+defineRoomGetter('cache', self => {
+  const cache = global.Cache.rooms
+  return cache[self.name] || (cache[self.name] = {})
+})
+
+defineRoomGetter('factoryCache', self => {
+  const cache = global.Cache.factories
+  return cache[self.name] || (cache[self.name] = {})
+})
+
+defineRoomGetter('powerSpawnCache', self => {
+  const cache = global.Cache.powerSpawns
+  return cache[self.name] || (cache[self.name] = {})
+})
+
 defineRoomGetter('factory', self => {
   return getFactory(self, (self.memory.structs || '').charCodeAt(4))
 })
@@ -46,7 +61,7 @@ defineRoomGetter('extractor', self => {
 })
 
 defineRoomGetter('filled', (self) => {
-  return self.memory.priorityFilled && self.energyAvailable === self.energyCapacityAvailable
+  return self.cache.priorityFilled && self.energyAvailable === self.energyCapacityAvailable
 })
 
 defineRoomGetter('linked', self => {

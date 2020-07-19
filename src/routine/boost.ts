@@ -16,7 +16,7 @@ const routineBooster = {
     if (result === ERR_NOT_IN_RANGE) move.cheap(creep, lab)
     else if (result !== 0) return FAILED
     else {
-      creep.room.memory.priorityFilled = 0
+      creep.room.cache.priorityFilled = 0
       return SUCCESS
     }
     return NOTHING_DONE

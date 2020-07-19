@@ -21,8 +21,9 @@ tradeBlackList.forEach(n => {
 
 export default function handleTerminal(terminal: StructureTerminal, resourceType: ResourceConstant) {
   const mem = terminal.room.memory
-  mem.terminalState = State.TERM_SEND_EXCESS
-  mem.terminalDealResourceType = resourceType
+  const cache = terminal.cache
+  cache.state = State.TERM_SEND_EXCESS
+  cache.dealResourceType = resourceType
   handleLab.run(terminal)
   if (!mem.structs) return
   const factory = terminal.room.factory

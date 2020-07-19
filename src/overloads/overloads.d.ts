@@ -15,6 +15,9 @@ interface Room {
   linked: boolean
   spawn?: StructureSpawn
   powerSpawn?: StructurePowerSpawn
+  cache: RoomCache
+  factoryCache: FactoryCache
+  powerSpawnCache: PowerSpawnCache
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void
@@ -40,6 +43,19 @@ interface StructureLab {
 interface StructureSpawn {
   getDirections: () => DirectionConstant[]
   trySpawnCreep: (body: BodyPartConstant[], letter: string, toMemory: CreepMemory, retry?: boolean, cooldown?: number, boost?: BoostInfo[]) => ScreepsReturnCode
+  cache: SpawnCache
+}
+
+interface StructurePowerSpawn {
+  cache: PowerSpawnCache
+}
+
+interface StructureFactory {
+  cache: FactoryCache
+}
+
+interface StructureTerminal {
+  cache: TerminalCache
 }
 
 interface RoomPosition {
@@ -51,4 +67,5 @@ interface RoomPosition {
 interface Creep {
   motherRoom: Room
   workpartCount: number
+  cache: CreepCache
 }

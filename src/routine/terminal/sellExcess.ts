@@ -5,7 +5,8 @@ import { storageSellThreshold } from 'config/terminal'
 
 export default function sellExcess(terminal: StructureTerminal) {
   const room = terminal.room
-  const resourceType = room.memory.terminalDealResourceType
+  const cache = terminal.cache
+  const resourceType = cache.dealResourceType
   if (!resourceType) return NOTHING_TODO
   const averageCost = getAverageCost(resourceType)
   const excessResourceAmount = room.store(resourceType) - storageSellThreshold

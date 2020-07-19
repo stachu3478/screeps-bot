@@ -28,15 +28,16 @@ describe('routine/terminal/sendExcess', () => {
   });
 
   it('should return NOTHING_TODO number when called with no context', () => {
-    const term = { room: { memory: {} }, store: {} } as StructureTerminal
+    const term = { room: { memory: {} }, store: {}, cache: {} } as StructureTerminal
     term.room.store = () => 0
     expect(sendExcess(term)).to.eql(NOTHING_TODO);
   });
 
   it('should perform send while has excess resources and other term to fill', () => {
     const term = {
-      room: { memory: { terminalDealResourceType: RESOURCE_HYDROGEN } },
-      store: { [RESOURCE_HYDROGEN]: Infinity, [RESOURCE_ENERGY]: Infinity }
+      cache: { dealResourceType: RESOURCE_HYDROGEN },
+      store: { [RESOURCE_HYDROGEN]: Infinity, [RESOURCE_ENERGY]: Infinity },
+      room: {}
     } as StructureTerminal
     term.room.store = () => Infinity
     Memory.myRooms.test = 0
@@ -49,8 +50,9 @@ describe('routine/terminal/sendExcess', () => {
 
   it('should do nothing at all', () => {
     const term = {
-      room: { memory: { terminalDealResourceType: RESOURCE_HYDROGEN } },
-      store: { [RESOURCE_HYDROGEN]: Infinity, [RESOURCE_ENERGY]: Infinity }
+      cache: { dealResourceType: RESOURCE_HYDROGEN },
+      store: { [RESOURCE_HYDROGEN]: Infinity, [RESOURCE_ENERGY]: Infinity },
+      room: {}
     } as StructureTerminal
     term.room.store = () => Infinity
     Memory.myRooms.test = 0

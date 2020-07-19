@@ -6,7 +6,7 @@ import { BoosterCreep } from 'role/creep/booster';
 import move from 'utils/path';
 import { expect } from '../../expect';
 
-describe('Creep work in boost mode', () => {
+describe('Creep work in boost mode - routine', () => {
   let creep: BoosterCreep
   let lab1: StructureLab
   beforeEach(() => {
@@ -18,14 +18,14 @@ describe('Creep work in boost mode', () => {
 
     lab1 = {} as StructureLab
 
-    creep = { room: { memory: {} } } as BoosterCreep
+    creep = { room: { memory: {}, cache: {} } } as BoosterCreep
     sinon.restore()
   });
 
   describe('no lab passed', () => {
     it('Should return nothing todo', () => {
       expect(routineBooster.run(creep, null)).to.eql(NOTHING_TODO)
-      expect(creep.room.memory.priorityFilled).to.be.undefined
+      expect(creep.room.cache.priorityFilled).to.be.undefined
     })
   })
 
@@ -39,7 +39,7 @@ describe('Creep work in boost mode', () => {
       expect(routineBooster.run(creep, lab1)).to.eql(NOTHING_DONE)
       expect(move.cheap).to.be.calledWithExactly(creep, lab1)
       expect(lab1.boostCreep).to.be.calledWithExactly(creep)
-      expect(creep.room.memory.priorityFilled).to.be.undefined
+      expect(creep.room.cache.priorityFilled).to.be.undefined
     })
   })
 
@@ -51,7 +51,7 @@ describe('Creep work in boost mode', () => {
     it('should report failure', () => {
       expect(routineBooster.run(creep, lab1)).to.eql(FAILED)
       expect(lab1.boostCreep).to.be.calledWithExactly(creep)
-      expect(creep.room.memory.priorityFilled).to.be.undefined
+      expect(creep.room.cache.priorityFilled).to.be.undefined
     })
   })
 
@@ -63,7 +63,7 @@ describe('Creep work in boost mode', () => {
     it('should report success', () => {
       expect(routineBooster.run(creep, lab1)).to.eql(SUCCESS)
       expect(lab1.boostCreep).to.be.calledWithExactly(creep)
-      expect(creep.room.memory.priorityFilled).to.eql(0)
+      expect(creep.room.cache.priorityFilled).to.eql(0)
     })
   })
 });

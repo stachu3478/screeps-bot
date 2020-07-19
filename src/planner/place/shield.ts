@@ -7,7 +7,8 @@ import charPosIterator from 'utils/charPosIterator';
 export default function placeShield(controller: StructureController) {
   const room = controller.room
   const mem = room.memory
-  if (mem._shielded && mem._shielded > Game.time) return NOTHING_TODO
+  const cache = room.cache
+  if (cache.shielded || 0 > Game.time) return NOTHING_TODO
   if (!mem.structs) return NOTHING_TODO
   const structs = mem.structs
 
@@ -45,7 +46,7 @@ export default function placeShield(controller: StructureController) {
       if (result === 0) return SUCCESS
     }
   if (minDecay === Infinity) minDecay = 1
-  mem._shielded = Game.time + minDecay
+  cache.shielded = Game.time + minDecay
   console.log('Decay ' + room.name + ': ' + minDecay)
   return NOTHING_TODO
 }

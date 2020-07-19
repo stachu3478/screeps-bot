@@ -18,7 +18,8 @@ export default function run(controller: StructureController, cpuUsed: number) {
   const room = controller.room
   if (!room.memory.roads) plan(room)
 
-  let mem = room.memory
+  const mem = room.memory
+  const cache = room.cache
   if (!mem.creeps) mem.creeps = {}
 
   const enemies = trackEnemy(room)
@@ -36,7 +37,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
       towersProcessed = true
     }
     room.visual.text("Enemy tracked: " + enemy.name + " Vulnerability: " + found.vulnerability, 0, 4, dangerStyle)
-    mem._healthy = 0
+    cache.healthy = 0
   } else {
     const powerEnemy = room.find(FIND_HOSTILE_POWER_CREEPS)[0]
     if (powerEnemy) {
@@ -44,10 +45,10 @@ export default function run(controller: StructureController, cpuUsed: number) {
       towersProcessed = true
     }
   }
-  if (!mem._healthy && !towersProcessed) {
+  if (!cache.healthy && !towersProcessed) {
     const creeps = findDamagedCreeps(room)
     if (creeps.length) room.find(FIND_MY_STRUCTURES, { filter: s => s.structureType === STRUCTURE_TOWER && tower(s, creeps[_.random(0, creeps.length - 1)]) })
-    else mem._healthy = 1
+    else cache.healthy = 1
   }
 
   const {
@@ -56,7 +57,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
     count,
   } = creeps(mem.creeps, room, enemy, needFighters)
 
-  handleLog(mem, controller)
+  handleLog(cache, controller)
 
   const spawns = room.find(FIND_MY_SPAWNS)
   if (!spawns.length) {

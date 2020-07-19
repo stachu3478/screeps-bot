@@ -5,6 +5,7 @@ import charPosIterator from 'utils/charPosIterator';
 
 export default function placeStructure(controller: StructureController, structs: string) {
   const room = controller.room
+  const cache = room.cache
   const result = charPosIterator(structs, (x, y, _xy, _, iteration): number | void => {
     let structureToPlace: StructureConstant
     if (iteration === 0) structureToPlace = STRUCTURE_LINK
@@ -22,10 +23,10 @@ export default function placeStructure(controller: StructureController, structs:
       if (extension) extension.destroy()
     }
     if (room.createConstructionSite(x, y, structureToPlace) === 0) {
-      room.memory._struct_iteration = iteration
+      cache.struct_iteration = iteration
       return SUCCESS
     }
-  })
+  }, cache.struct_iteration || 0)
   if (_.isUndefined(result))
     return NOTHING_TODO
   return result

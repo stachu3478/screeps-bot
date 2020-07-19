@@ -1,4 +1,4 @@
-export default function handleLog(mem: RoomMemory, controller: StructureController) {
+export default function handleLog(cache: RoomCache, controller: StructureController) {
   const logs = controller.room.getEventLog()
   logs.forEach(l => {
     switch (l.event) {
@@ -10,7 +10,7 @@ export default function handleLog(mem: RoomMemory, controller: StructureControll
         if (!target) break
         const structure = target as Structure
         if (structure.structureType) {
-          controller.room.memory.repaired = 0
+          cache.repaired = 0
           if (structure.structureType === STRUCTURE_SPAWN) {
             controller.activateSafeMode()
           }
@@ -30,17 +30,17 @@ export default function handleLog(mem: RoomMemory, controller: StructureControll
         const type: EventDestroyType = l.data.type
         switch (type) {
           case LOOK_CREEPS: break
-          case STRUCTURE_ROAD: mem._roadBuilt = 0; break
-          case STRUCTURE_RAMPART: case STRUCTURE_WALL: mem._shielded = 0; break
-          default: mem._built = 0; console.log("Structure has been destroyed: " + type)
+          case STRUCTURE_ROAD: cache.roadBuilt = 0; break
+          case STRUCTURE_RAMPART: case STRUCTURE_WALL: cache.shielded = 0; break
+          default: cache.built = 0; console.log("Structure has been destroyed: " + type)
         } break
       case EVENT_UPGRADE_CONTROLLER:
         const controllerLevel = controller.level
-        if (controllerLevel !== mem._lvl) {
-          mem._built = 0
-          mem._shielded = 0
-          mem._lvl = controllerLevel
-          mem._struct_iteration = 0
+        if (controllerLevel !== cache.lvl) {
+          cache.built = 0
+          cache.shielded = 0
+          cache.lvl = controllerLevel
+          cache.struct_iteration = 0
         }
     }
   })

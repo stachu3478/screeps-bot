@@ -24,7 +24,8 @@ export default function repair(creep: RepairCreep) {
   const storedEnergy = creep.store[RESOURCE_ENERGY]
   if (storedEnergy === 0) return NO_RESOURCE
   const motherRoom = creep.motherRoom
-  if (motherRoom.memory.repaired) return NOTHING_TODO
+  const roomCache = motherRoom.cache
+  if (roomCache.repaired) return NOTHING_TODO
   let target = creep.memory._repair && Game.getObjectById(creep.memory._repair)
   const repairPower = creep.workpartCount * REPAIR_POWER
   if (!target || target.hits === target.hitsMax) {
@@ -33,7 +34,7 @@ export default function repair(creep: RepairCreep) {
         && s.hits + repairPower <= s.hitsMax
     })
     if (!target) {
-      motherRoom.memory.repaired = 1
+      roomCache.repaired = 1
       return NOTHING_TODO
     }
     creep.memory._repair = target.id

@@ -11,9 +11,9 @@ const fromSell = (roomName: string) => (o: Order) => TERMINAL_MIN_SEND * -o.pric
 const fromBuy = (roomName: string) => (o: Order) => TERMINAL_MIN_SEND * o.price - calcCost(roomName, o.roomName) * energyCost
 
 export default function makeBusiness(term: StructureTerminal) {
-  const mem = term.room.memory
-  let iteration = mem.terminalResourceIteration || 0
-  if (!mem.terminalResourceIteration) iteration = mem.terminalResourceIteration = 0
+  const cache = term.cache
+  let iteration = cache.resourceIteration || 0
+  if (!cache.resourceIteration) iteration = cache.resourceIteration = 0
   const resourceType = RESOURCES_ALL[iteration]
   if (!resourceType) return DONE
   const roomName = term.room.name
@@ -21,11 +21,11 @@ export default function makeBusiness(term: StructureTerminal) {
     .filter(o => o.amount >= TERMINAL_MIN_SEND)
   const buyCalc = fromBuy(roomName)
   const bestBuyOrder = _.max(buyOrders, buyCalc)
-  if (mem.termBusinessSell) {
+  if (cache.businessSell) {
     const bestBuyOrder = _.max(buyOrders, buyCalc)
-    const result = Game.market.deal(bestBuyOrder.id, mem.termBusinessAmount || 0, roomName)
-    mem.termBusinessSell = 0
-    mem.terminalResourceIteration++
+    const result = Game.market.deal(bestBuyOrder.id, cache.businessAmount || 0, roomName)
+    cache.businessSell = 0
+    cache.resourceIteration++
     if (result !== 0) {
       console.log('Oh no! Something went wrong during sell!')
       return FAILED
@@ -50,19 +50,19 @@ export default function makeBusiness(term: StructureTerminal) {
       const primaryCost = bestSellOrder.price * amount
       if (primaryCost > Game.market.credits) {
         console.log('But i have not enough money ;-;')
-        mem.terminalResourceIteration++
+        cache.resourceIteration++
         return NOTHING_DONE
       }
       const result = Game.market.deal(bestSellOrder.id, amount, roomName)
       if (result !== 0) {
         console.log('Oh no! Something went wrong!')
-        mem.terminalResourceIteration++
+        cache.resourceIteration++
         return FAILED
       }
-      mem.termBusinessAmount = amount
-      mem.termBusinessSell = 1
+      cache.businessAmount = amount
+      cache.businessSell = 1
     } else {
-      mem.terminalResourceIteration++
+      cache.resourceIteration++
     }
   }
   return NOTHING_DONE

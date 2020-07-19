@@ -13,7 +13,8 @@ describe('When lab system is in producing state', () => {
     room.lab1 = {} as StructureLab
     room.lab2 = {} as StructureLab
     room.externalLabs = []
-    room.memory = { labState: State.LAB_PRODUCING, labCooldown: 0 }
+    room.memory = { labState: State.LAB_PRODUCING }
+    room.cache = { labCooldown: 0 }
     room.visual = new RoomVisual()
   });
 

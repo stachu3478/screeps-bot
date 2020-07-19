@@ -11,9 +11,10 @@ import checkIntegrity from './checkIntegrity';
 
 export default function place(room: Room) {
   const controller = room.controller
+  const cache = room.cache
   if (!controller) return NOTHING_TODO
   const mem = room.memory
-  if (!mem._built) {
+  if (!cache.built) {
     if (!mem.structs) {
       plan(room)
       return NOTHING_DONE
@@ -32,7 +33,7 @@ export default function place(room: Room) {
       mem.structs = newStructs
       return NOTHING_DONE
     }
-    mem._built = 1
+    cache.built = 1
   }
 
   if (!mem.roads) {

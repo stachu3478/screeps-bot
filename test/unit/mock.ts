@@ -65,7 +65,7 @@ export const SourcyCreep = {
   } as RoomPosition
 }
 
-export const Structure = {}
+export const Structure = class {}
 export const Spawn = {}
 export const Source = {}
 export const Flag = {}

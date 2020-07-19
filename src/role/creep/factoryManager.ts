@@ -24,15 +24,16 @@ function findJob(creep: FactoryManager) {
   const motherRoom = creep.motherRoom
   const factory = motherRoom.factory
   if (!factory) return false
+  const cache = factory.cache
   if (!motherRoom.terminal) return false
-  if (motherRoom.memory.factoryNeeds) {
-    const type = motherRoom.memory.factoryNeeds
+  if (cache.needs) {
+    const type = cache.needs
     const amount = factoryStoragePerResource - factory.store[type]
     if (amount > motherRoom.terminal.store[type]) return false
     storageManagement.prepareToTakeResource(creep, type, amount, motherRoom.terminal, factory)
     creep.memory.state = State.DRAW
-  } else if (motherRoom.memory.factoryDumps) {
-    const type = motherRoom.memory.factoryDumps
+  } else if (cache.dumps) {
+    const type = cache.dumps
     const amount = factory.store[type]
     if (amount > motherRoom.terminal.store[type]) return false
     storageManagement.prepareToTakeResource(creep, type, amount, factory, motherRoom.terminal)
@@ -65,18 +66,20 @@ export default profiler.registerFN(function factoryManager(creep: FactoryManager
           break
         case NOTHING_TODO: case FAILED:
           creep.memory.state = State.IDLE
-          delete creep.room.memory.factoryNeeds
-          delete creep.room.memory.factoryDumps
+          const factoryCache = creep.room.factoryCache
+          delete factoryCache.needs
+          delete factoryCache.dumps
           break
       }
       break
     case State.FILL:
       switch (fill(creep)) {
         case DONE: case SUCCESS:
-          creep.room.memory.factoryState = State.FACT_BOARD
-          creep.room.memory[Keys.powerSpawnIdle] = 0
-          delete creep.room.memory.factoryNeeds
-          delete creep.room.memory.factoryDumps
+          const factoryCache = creep.room.factoryCache
+          factoryCache.state = State.FACT_BOARD
+          creep.room.powerSpawnCache.idle = 0
+          delete factoryCache.needs
+          delete factoryCache.dumps
           creep.memory.state = State.IDLE
           break
         case NOTHING_TODO: case FAILED:

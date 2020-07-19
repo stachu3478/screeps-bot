@@ -12,18 +12,19 @@ import { findContainers } from 'utils/find';
 
 export default profiler.registerFN(function loop(spawn: StructureSpawn, controller: StructureController, creepCountByRole: number[], workPartCountByRole: number[], needsFighters: boolean) {
   const mem = spawn.room.memory
+  const cache = spawn.cache
   if (!mem.creeps) mem.creeps = {}
   if (!mem.colonySources || mem.maxWorkController === undefined || !mem.colonySourceId) return
   const max = mem.sourceCount || 0
-  if (spawn.room.energyAvailable < spawn.room.energyCapacityAvailable) mem.priorityFilled = 0
-  if (spawn.memory.trySpawn) {
-    const { creep, memory, name, cooldown, boost } = spawn.memory.trySpawn
+  if (spawn.room.energyAvailable < spawn.room.energyCapacityAvailable) spawn.room.cache.priorityFilled = 0
+  if (cache.trySpawn) {
+    const { creep, memory, name, cooldown, boost } = cache.trySpawn
     const result = spawn.trySpawnCreep(creep, name, memory, true, cooldown, boost)
     if (result === 0) return
     if (cooldown <= 0) {
-      delete spawn.memory.spawnSourceId
-      delete spawn.memory.trySpawn
-    } else spawn.memory.trySpawn.cooldown--
+      delete cache.sourceId
+      delete cache.trySpawn
+    } else cache.trySpawn.cooldown--
     return
   }
   const harvesterCount = (creepCountByRole[Role.HARVESTER] || 0) + (creepCountByRole[Role.FACTORY_MANAGER] || 0) + (creepCountByRole[Role.LAB_MANAGER] || 0)
@@ -34,7 +35,7 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
   const isLinked = spawn.room.linked
   if (minerCount === 0 && !creepCountByRole[Role.RETIRED]) {
     const colonySource = mem.colonySourceId
-    spawn.memory.spawnSourceId = colonySource
+    cache.sourceId = colonySource
     spawn.trySpawnCreep(progressiveMiner(Math.max(SPAWN_ENERGY_START, spawn.room.energyAvailable)), 'M', { role: Role.MINER, room: spawn.room.name, _harvest: colonySource, deprivity: 0 } as MinerMemory)
     console.log(`[${spawn.room.name}] Trying spawn a creep @ref`)
   } else if (harvesterCount === 0 && containers) {
@@ -54,7 +55,7 @@ export default profiler.registerFN(function loop(spawn: StructureSpawn, controll
       }
     }
     if (!freeSource) return
-    spawn.memory.spawnSourceId = freeSource as Id<Source>
+    cache.sourceId = freeSource as Id<Source>
     const spec = mem.colonySources[freeSource].charCodeAt(1)
     const memory: MinerMemory = { role: Role.MINER, room: spawn.room.name, _harvest: freeSource as Id<Source>, deprivity: spec }
     spawn.trySpawnCreep(parts, 'M', memory)
