@@ -13,11 +13,11 @@ const toRepair: ToRepair = {
 }
 
 interface RepairCreep extends Creep {
-  memory: RepairMemory
+  cache: RepairCache
 }
 
-interface RepairMemory extends CreepMemory {
-  _repair?: Id<Structure>
+interface RepairCache extends CreepCache {
+  repair?: Id<Structure>
 }
 
 export default function repair(creep: RepairCreep) {
@@ -25,8 +25,9 @@ export default function repair(creep: RepairCreep) {
   if (storedEnergy === 0) return NO_RESOURCE
   const motherRoom = creep.motherRoom
   const roomCache = motherRoom.cache
+  const cache = creep.cache
   if (roomCache.repaired) return NOTHING_TODO
-  let target = creep.memory._repair && Game.getObjectById(creep.memory._repair)
+  let target = cache.repair && Game.getObjectById(cache.repair)
   const repairPower = creep.workpartCount * REPAIR_POWER
   if (!target || target.hits === target.hitsMax) {
     target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
@@ -37,7 +38,7 @@ export default function repair(creep: RepairCreep) {
       roomCache.repaired = 1
       return NOTHING_TODO
     }
-    creep.memory._repair = target.id
+    cache.repair = target.id
   }
   const result = creep.repair(target)
   const remaining = storedEnergy - creep.workpartCount

@@ -9,6 +9,7 @@ import resourceHaul from 'job/resourceHaul';
 import fill from 'routine/haul/fill';
 import draw from 'routine/haul/draw';
 import dumpResources from 'job/dumpResources';
+import collectGarbage from 'utils/collectGarbage';
 
 export default profiler.registerFN(function hauler(creep: Hauler) {
   switch (creep.memory.state) {
@@ -24,7 +25,7 @@ export default profiler.registerFN(function hauler(creep: Hauler) {
       break
     case State.RECYCLE:
       switch (recycle(creep)) {
-        case DONE: delete Memory.creeps[creep.name]
+        case DONE: collectGarbage(creep.name)
       }
       break;
     case State.DRAW:

@@ -3,11 +3,11 @@ import exit from 'routine/exit'
 import scout from 'routine/military/scout'
 
 export interface Scout extends Creep {
-  memory: ScoutMemory
+  cache: ScoutCache
 }
 
-interface ScoutMemory extends CreepMemory {
-  _exit: string
+interface ScoutCache extends CreepCache {
+  exit: string
 }
 
 export default function run(creep: Scout) {

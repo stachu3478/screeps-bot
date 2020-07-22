@@ -31,8 +31,8 @@ export const findClosestDamagedCreeps = (pos: RoomPosition) => pos.findClosestBy
 
 const lookResultDeobfuscator = ({ structure }: LookForAtAreaResultWithPos<Structure, LOOK_STRUCTURES>) => structure
 
-const droppedEnergyFilter = { filter: (r: Resource) => r.resourceType === RESOURCE_ENERGY }
-export const findNearDroppedEnergy = (pos: RoomPosition) => pos.findInRange(FIND_DROPPED_RESOURCES, 1, droppedEnergyFilter)
+const droppedResourceFilter = (type: ResourceConstant) => (r: Resource) => r.resourceType === type
+export const findNearDroppedResource = (pos: RoomPosition, type: ResourceConstant) => pos.findInRange(FIND_DROPPED_RESOURCES, 1).find(droppedResourceFilter(type))
 export const getDroppedResource = (pos: RoomPosition) => pos.findClosestByPath(FIND_DROPPED_RESOURCES) || pos.findClosestByRange(FIND_DROPPED_RESOURCES)
 
 const filledFilter = (s: Ruin | Tombstone | StructureContainer) => s.store.getUsedCapacity() > 0
@@ -44,9 +44,9 @@ export const findHaulable = (room: Room, pos: RoomPosition) => {
   return pos.findClosestByPath(potential) || pos.findClosestByRange(potential)
 }
 
-const energyFilter = { filter: (r: Tombstone | Ruin) => r.store[RESOURCE_ENERGY] }
-export const findNearEnergyTombstones = (pos: RoomPosition) => pos.findInRange(FIND_TOMBSTONES, 1, energyFilter)
-export const findNearEnergyRuins = (pos: RoomPosition) => pos.findInRange(FIND_RUINS, 1, energyFilter)
+const resourceFilter = (type: ResourceConstant) => (r: Tombstone | Ruin) => r.store[type] > 0
+export const findNearTombstone = (pos: RoomPosition, type: ResourceConstant) => pos.findInRange(FIND_TOMBSTONES, 1).find(resourceFilter(type))
+export const findNearRuin = (pos: RoomPosition, type: ResourceConstant) => pos.findInRange(FIND_RUINS, 1).find(resourceFilter(type))
 
 const filledContainerFilter = (s: AnyStoreStructure) => s.structureType === STRUCTURE_CONTAINER && s.store[RESOURCE_ENERGY]
 export const findClosestFilledContainer = (pos: RoomPosition) => pos.findClosestByRange(

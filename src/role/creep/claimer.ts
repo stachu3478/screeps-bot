@@ -8,7 +8,7 @@ export interface Claimer extends Creep {
 }
 
 interface ClaimerMemory extends CreepMemory {
-  role: 5
+  role: Role.CLAIMER
   _arrive?: string
 }
 

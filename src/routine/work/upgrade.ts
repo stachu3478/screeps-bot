@@ -1,13 +1,7 @@
 import move from '../../utils/path'
 import { SUCCESS, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
 
-interface UpgradeCreep extends Creep {
-  memory: UpgradeMemory
-}
-
-interface UpgradeMemory extends CreepMemory { }
-
-export default function upgrade(creep: UpgradeCreep, staticMode: boolean = false) {
+export default function upgrade(creep: Creep, staticMode: boolean = false) {
   const storedEnergy = creep.store[RESOURCE_ENERGY]
   if (storedEnergy === 0) return NO_RESOURCE
   let target = creep.motherRoom.controller

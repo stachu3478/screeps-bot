@@ -2,13 +2,7 @@ import move from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
 import handleTerminal from 'utils/handleTerminal';
 
-interface MineralFillCreep extends Creep {
-  memory: MineralFillCMemory
-}
-
-interface MineralFillCMemory extends CreepMemory { }
-
-export default function mineralFill(creep: MineralFillCreep, mineralType: MineralConstant) {
+export default function mineralFill(creep: Creep, mineralType: MineralConstant) {
   const storedMineral = creep.store[mineralType]
   if (storedMineral === 0) return NO_RESOURCE
   const room = creep.motherRoom

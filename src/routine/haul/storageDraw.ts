@@ -1,13 +1,6 @@
-import move from '../../utils/path'
 import draw from './draw';
 
-interface StorageDrawCreep extends Creep {
-  memory: StorageDrawMemory
-}
-
-interface StorageDrawMemory extends CreepMemory { }
-
-export default function drawStorage(creep: StorageDrawCreep) {
+export default function drawStorage(creep: Creep) {
   const motherRoom = creep.motherRoom
   const storage = motherRoom.storage
   const terminal = motherRoom.terminal

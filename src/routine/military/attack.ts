@@ -6,11 +6,11 @@ const hittableFilter = {
 }
 
 interface AttackCreep extends Creep {
-  memory: AttackMemory
+  cache: AttackCache
 }
 
-interface AttackMemory extends CreepMemory {
-  _attack?: Id<Creep | Structure>
+interface AttackCache extends CreepCache {
+  attack?: Id<Creep | Structure>
   [Keys.toughHitsThreshold]?: number
   [Keys.attackHitsThreshold]?: number
 }
@@ -20,17 +20,18 @@ function getHitThreshold(creep: Creep, type: BodyPartConstant) {
 }
 
 const hasPart = (type: BodyPartConstant, property: Keys.toughHitsThreshold | Keys.attackHitsThreshold) => (creep: AttackCreep) => {
-  const memory = creep.memory
-  const threshold = memory[property]
+  const cache = creep.cache
+  const threshold = cache[property]
   if (threshold)
     return creep.hits > threshold
-  return creep.hits > (memory[property] = getHitThreshold(creep, type))
+  return creep.hits > (cache[property] = getHitThreshold(creep, type))
 }
 export const hasToughPart = hasPart(TOUGH, Keys.toughHitsThreshold)
 export const hasAttackPart = hasPart(ATTACK, Keys.attackHitsThreshold)
 
 export default function attack(creep: AttackCreep) {
-  let target: Creep | Structure | null = Game.getObjectById(creep.memory._attack || "")
+  const cache = creep.cache
+  let target: Creep | Structure | null = Game.getObjectById(cache.attack || '')
   if (hasToughPart(creep)) return FAILED
   if (!target) {
     const list = Memory.whitelist || {}
@@ -42,7 +43,7 @@ export default function attack(creep: AttackCreep) {
     })
     if (!newTarget) newTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, hittableFilter)
     if (!newTarget) return NOTHING_TODO
-    creep.memory._attack = newTarget.id
+    cache.attack = newTarget.id
     target = newTarget
   }
   if (!creep.pos.isNearTo(target)) {

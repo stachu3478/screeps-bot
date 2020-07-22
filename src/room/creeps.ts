@@ -14,6 +14,7 @@ import labManager from 'role/creep/labManager';
 import hauler from 'role/creep/hauler';
 import roleBooster, { BoosterCreep } from 'role/creep/booster';
 import Harvester from 'role/creep/harvester.d';
+import collectGarbage from 'utils/collectGarbage';
 
 interface Creeps {
   [key: string]: 0
@@ -26,8 +27,7 @@ export default function creeps(creeps: Creeps, room: Room, enemy?: Creep, holdFi
   for (const name in creeps) {
     const creep = Game.creeps[name]
     if (!creep) {
-      if (room.memory.creeps) delete room.memory.creeps[name]
-      delete Memory.creeps[name]
+      collectGarbage(name)
       continue
     }
     if (creep.memory.room !== room.name) {

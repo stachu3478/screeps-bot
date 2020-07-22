@@ -3,6 +3,7 @@ import arrive from 'routine/arrive'
 import attack, { hasToughPart, hasAttackPart } from 'routine/military/attack'
 import heal from 'routine/military/heal';
 import recycle from 'routine/recycle';
+import collectGarbage from 'utils/collectGarbage';
 
 export interface Commander extends Creep {
   memory: CommanderMemory
@@ -30,7 +31,7 @@ export default function commander(creep: Commander) {
     case State.RECYCLE:
       switch (recycle(creep)) {
         case NOTHING_TODO: creep.suicide()
-        case DONE: delete Memory.creeps[creep.name]
+        case DONE: collectGarbage(creep.name)
       }
       break
     case State.ARRIVE_HOSTILE:

@@ -10,23 +10,24 @@ const exits = [
 ]
 
 interface ExitCreep extends Creep {
-  memory: ExitMemory
+  cache: ExitCache
 }
 
-interface ExitMemory extends CreepMemory {
-  _exit: string
+interface ExitCache extends CreepCache {
+  exit: string
 }
 
 export default function exit(creep: ExitCreep) {
   if (creep.fatigue) return NOTHING_DONE
 
-  let target = creep.memory._exit
+  const cache = creep.cache
+  let target = cache.exit
   if (!target) {
     const randDir = _.random(0, 3)
     const newTarget = creep.pos.findClosestByPath(exits[randDir])
     if (!newTarget) return NOTHING_TODO
     if (creep.room.lookForAt(LOOK_STRUCTURES, newTarget.x, newTarget.y).length) return NOTHING_DONE
-    target = creep.memory._exit = String.fromCharCode(pos(newTarget.x, newTarget.y)) + newTarget.roomName
+    target = cache.exit = String.fromCharCode(pos(newTarget.x, newTarget.y)) + newTarget.roomName
   }
 
   const targetNumber = target.charCodeAt(0)
@@ -36,7 +37,7 @@ export default function exit(creep: ExitCreep) {
   if (result === 0) return SUCCESS
   else if (result === ERR_NO_PATH) {
     creep.move(creep.pos.getDirectionTo(25, 25))
-    delete creep.memory._exit
+    delete cache.exit
     return DONE
   }
   return FAILED

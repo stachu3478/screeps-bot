@@ -2,21 +2,22 @@ import move from '../../utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from '../../constants/response'
 
 interface BuildCreep extends Creep {
-  memory: BuildMemory
+  cache: BuildCache
 }
 
-interface BuildMemory extends CreepMemory {
-  _build?: Id<ConstructionSite>
+interface BuildCache extends CreepCache {
+  build?: Id<ConstructionSite>
 }
 
 export default function build(creep: BuildCreep) {
   const storedEnergy = creep.store[RESOURCE_ENERGY]
+  const cache = creep.cache
   if (storedEnergy === 0) return NO_RESOURCE
-  let target = creep.memory._build && Game.getObjectById(creep.memory._build)
+  let target = cache.build && Game.getObjectById(cache.build)
   if (!target) {
     target = creep.pos.findClosestByPath(FIND_CONSTRUCTION_SITES)
     if (!target) return NOTHING_TODO
-    creep.memory._build = target.id
+    cache.build = target.id
   }
   const result = creep.build(target)
   const remaining = storedEnergy - creep.workpartCount * BUILD_POWER

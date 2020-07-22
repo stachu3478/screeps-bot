@@ -1,6 +1,7 @@
 import { DONE, NOTHING_TODO } from 'constants/response'
 import recycle from 'routine/recycle';
 import fight from 'routine/military/fight';
+import collectGarbage from 'utils/collectGarbage';
 
 export interface Fighter extends Creep {
   memory: FighterMemory
@@ -16,7 +17,7 @@ export default function fighter(creep: Fighter, enemy?: Creep, keepDistance?: bo
       break
     case State.RECYCLE:
       switch (recycle(creep)) {
-        case DONE: delete Memory.creeps[creep.name]
+        case DONE: collectGarbage(creep.name)
       }
       break
     case State.FIGHT:

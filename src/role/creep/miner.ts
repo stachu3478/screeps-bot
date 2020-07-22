@@ -9,15 +9,19 @@ import { getXYContainer, getXYRampart } from 'utils/selectFromPos';
 
 export interface Miner extends Creep {
   memory: MinerMemory
+  cache: MinerCache
 }
 
 export interface MinerMemory extends CreepMemory {
   _harvest?: Id<Source>
-  _auto_repair?: Id<Structure>
-  _repair_cooldown?: number
-  _build?: Id<ConstructionSite>
-  _pick_pos?: string
   _draw?: Id<AnyStoreStructure>
+}
+
+interface MinerCache extends CreepCache {
+  auto_repair?: Id<Structure>
+  repair_cooldown?: number
+  pick_pos?: string
+  build?: Id<ConstructionSite>
 }
 
 export default profiler.registerFN(function miner(creep: Miner) {
@@ -29,7 +33,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
     case State.HARVESTING:
       switch (harvest(creep, creep.memory._harvest)) {
         case NOTHING_TODO:
-          delete creep.memory._pick_pos
+          delete creep.cache.pick_pos
           autoPick(creep)
         case DONE:
           const result = creep.motherRoom.spawn ? autoFill(creep, creep.memory._harvest !== creep.room.memory.colonySourceId) : FAILED
@@ -52,7 +56,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
                 break
               }
             } else if (container.hits < container.hitsMax) {
-              creep.memory._auto_repair = container.id
+              creep.cache.auto_repair = container.id
               creep.memory.state = State.REPAIR
               break
             }
@@ -63,7 +67,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
                 break
               }
             } else {
-              creep.memory._auto_repair = rampart.id
+              creep.cache.auto_repair = rampart.id
               creep.memory.state = State.REPAIR
               break
             }

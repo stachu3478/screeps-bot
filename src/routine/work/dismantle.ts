@@ -3,22 +3,23 @@ import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from '../../constan
 import { findClosestHostileHittableStructures } from 'utils/find';
 
 interface DismantleCreep extends Creep {
-  memory: DismantleMemory
+  cache: DismantleCache
 }
 
-interface DismantleMemory extends CreepMemory {
-  _dismantle?: Id<Structure>
+interface DismantleCache extends CreepCache {
+  dismantle?: Id<Structure>
 }
 
 export default function dismantle(creep: DismantleCreep) {
-  let target = creep.memory._dismantle && Game.getObjectById(creep.memory._dismantle)
+  const cache = creep.cache
+  let target = cache.dismantle && Game.getObjectById(cache.dismantle)
   if (!target || !target.hits) {
     const newTarget = findClosestHostileHittableStructures(creep.pos)
     if (newTarget) {
       target = newTarget
-      creep.memory._dismantle = newTarget.id
+      cache.dismantle = newTarget.id
     } else {
-      delete creep.memory._dismantle
+      delete cache.dismantle
       return NOTHING_TODO
     }
   }
@@ -26,7 +27,7 @@ export default function dismantle(creep: DismantleCreep) {
   if (result === 0) {
     const remaining = creep.store.getFreeCapacity() - creep.workpartCount * DISMANTLE_POWER * DISMANTLE_COST
     if (remaining <= 0) {
-      delete creep.memory._dismantle
+      delete cache.dismantle
       return DONE
     }
     return SUCCESS
@@ -34,7 +35,7 @@ export default function dismantle(creep: DismantleCreep) {
     move.cheap(creep, target)
     return NOTHING_DONE
   } else if (result === ERR_NO_BODYPART) {
-    delete creep.memory._dismantle
+    delete cache.dismantle
     return FAILED
   }
   return NOTHING_DONE

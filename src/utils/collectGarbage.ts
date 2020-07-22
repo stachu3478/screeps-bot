@@ -1,4 +1,5 @@
 export default function collectGarbage(name: string) {
+  delete global.Cache.creeps[name]
   const mem = Memory.creeps[name]
   if (!mem) return
   const room = Memory.rooms[mem.room]

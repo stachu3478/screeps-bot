@@ -1,14 +1,17 @@
 export default interface Harvester extends Creep {
   memory: HarvesterMemory
+  cache: HarvesterCache
 }
 
 interface HarvesterMemory extends CreepMemory {
   _arrive?: string
-  _harvest?: Id<Source>
-  _repair?: Id<Structure>
-  _auto_repair?: Id<Structure>
-  _repair_cooldown?: number
-  _build?: Id<ConstructionSite>
-  _dismantle?: Id<Structure>
-  _pick_pos?: string
+}
+
+interface HarvesterCache extends CreepCache {
+  dismantle?: Id<Structure>
+  repair?: Id<Structure>
+  auto_repair?: Id<Structure>
+  repair_cooldown?: number
+  pick_pos?: string
+  build?: Id<ConstructionSite>
 }

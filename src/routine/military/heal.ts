@@ -1,13 +1,7 @@
 import { SUCCESS, NOTHING_DONE } from "constants/response";
 import { findClosestDamagedCreeps } from "utils/find";
 
-interface HealCreep extends Creep {
-  memory: HealMemory
-}
-
-interface HealMemory extends CreepMemory { }
-
-export default function heal(creep: HealCreep) {
+export default function heal(creep: Creep) {
   const nearest = findClosestDamagedCreeps(creep.pos)
   if (nearest) {
     let result
