@@ -7,16 +7,19 @@ import collectGarbage from 'utils/collectGarbage';
 
 export interface Commander extends Creep {
   memory: CommanderMemory
+  cache: CommanderCache
 }
 
 interface CommanderMemory extends CreepMemory {
   _arrive?: string
   _prev_hits?: number
-  _attack?: Id<Creep | Structure>
-  _heal?: Id<Creep>
   _runTicks?: number
-  [Keys.toughHitsThreshold]?: number
-  [Keys.attackHitsThreshold]?: number
+}
+
+interface CommanderCache extends CreepCache {
+  attack?: Id<Creep | Structure>
+  toughHitsThreshold: number
+  attackHitsThreshold: number
 }
 
 export default function commander(creep: Commander) {
@@ -39,7 +42,7 @@ export default function commander(creep: Commander) {
         case DONE: creep.memory.state = State.ATTACKING; break
         case NOTHING_TODO: creep.memory.state = State.FALL_BACK; break
         default:
-          if (hasToughPart(creep)) creep.memory.state = State.FALL_BACK
+          if (!hasToughPart(creep)) creep.memory.state = State.FALL_BACK
           heal(creep)
       }
       break

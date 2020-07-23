@@ -1,13 +1,7 @@
 import { NOTHING_TODO, FAILED, DONE } from '../constants/response'
 import move from 'utils/path'
 
-interface RecycleCreep extends Creep {
-  memory: RecycleMemory
-}
-
-interface RecycleMemory extends CreepMemory { }
-
-export default function recycle(creep: RecycleCreep) {
+export default function recycle(creep: Creep) {
   const spawn = creep.motherRoom.spawn
   if (!spawn) return NOTHING_TODO
   const result = spawn.recycleCreep(creep)
