@@ -19,30 +19,22 @@ describe('Adding a boost request', () => {
   });
 
   describe('no lab entry for resource type', () => {
-    describe('null in lab entry array', () => {
-      it('should add entry in empty field', function () {
-        boosts.resources.labs = [, RESOURCE_UTRIUM_ACID]
-        boosts.amounts.labs = [, 500]
+    describe('zero amount in lab entry array', () => {
+      it('modifies entry in empty amount field', function () {
+        boosts.labs = [[RESOURCE_GHODIUM_ALKALIDE, 0], [RESOURCE_UTRIUM_ACID, 500]]
         const newBoosts = _.clone(boosts, true)
-        newBoosts.resources.labs = [RESOURCE_UTRIUM_ALKALIDE, RESOURCE_UTRIUM_ACID]
-        newBoosts.amounts.labs = [10 * LAB_BOOST_MINERAL, 500]
-        newBoosts.creeps.push('John')
-        newBoosts.resources.creeps.push(RESOURCE_UTRIUM_ALKALIDE)
-        newBoosts.amounts.creeps.push(10 * LAB_BOOST_MINERAL)
+        newBoosts.labs = [[RESOURCE_UTRIUM_ALKALIDE, 10 * LAB_BOOST_MINERAL], [RESOURCE_UTRIUM_ACID, 500]]
+        newBoosts.creeps.push(['John', RESOURCE_UTRIUM_ALKALIDE, 10 * LAB_BOOST_MINERAL, 0])
         room.createBoostRequest('John', RESOURCE_UTRIUM_ALKALIDE, 10)
         expect(boosts).to.eql(newBoosts)
       });
     })
     describe('array needs to be extended', () => {
-      it('should add new entry', function () {
-        boosts.resources.labs = [RESOURCE_UTRIUM_ALKALIDE]
-        boosts.amounts.labs = [500]
+      it('adds new entry', function () {
+        boosts.labs = [[RESOURCE_UTRIUM_ALKALIDE, 500]]
         const newBoosts = _.clone(boosts, true)
-        newBoosts.resources.labs = [RESOURCE_UTRIUM_ALKALIDE, RESOURCE_UTRIUM_ACID]
-        newBoosts.amounts.labs = [500, 10 * LAB_BOOST_MINERAL]
-        newBoosts.creeps.push('John')
-        newBoosts.resources.creeps.push(RESOURCE_UTRIUM_ACID)
-        newBoosts.amounts.creeps.push(10 * LAB_BOOST_MINERAL)
+        newBoosts.labs = [[RESOURCE_UTRIUM_ALKALIDE, 500], [RESOURCE_UTRIUM_ACID, 10 * LAB_BOOST_MINERAL]]
+        newBoosts.creeps.push(['John', RESOURCE_UTRIUM_ACID, 10 * LAB_BOOST_MINERAL, 0])
         room.createBoostRequest('John', RESOURCE_UTRIUM_ACID, 10)
         expect(boosts).to.eql(newBoosts)
       });
@@ -50,15 +42,22 @@ describe('Adding a boost request', () => {
   })
 
   describe('lab entry for resource type exist', () => {
-    it('should change the entry properly', function () {
-      boosts.resources.labs = [, RESOURCE_UTRIUM_ALKALIDE]
-      boosts.amounts.labs = [, 500]
-      const newBoosts = _.clone(boosts, true)
-      newBoosts.amounts.labs = [, 500 + 10 * LAB_BOOST_MINERAL]
-      newBoosts.creeps.push('John')
-      newBoosts.resources.creeps.push(RESOURCE_UTRIUM_ALKALIDE)
-      newBoosts.amounts.creeps.push(10 * LAB_BOOST_MINERAL)
+    let newBoosts: BoostData
+    beforeEach(() => {
+      boosts.labs = [[RESOURCE_GHODIUM_HYDRIDE, 0], [RESOURCE_UTRIUM_ALKALIDE, 500]]
+      newBoosts = _.clone(boosts, true)
+      newBoosts.labs = [[RESOURCE_GHODIUM_HYDRIDE, 0], [RESOURCE_UTRIUM_ALKALIDE, 500 + 10 * LAB_BOOST_MINERAL]]
+    })
+
+    it('changes the entry properly', function () {
+      newBoosts.creeps.push(['John', RESOURCE_UTRIUM_ALKALIDE, 10 * LAB_BOOST_MINERAL, 0])
       room.createBoostRequest('John', RESOURCE_UTRIUM_ALKALIDE, 10)
+      expect(boosts).to.eql(newBoosts)
+    });
+
+    it('creates mandatory boost explicit', function () {
+      newBoosts.creeps.push(['John', RESOURCE_UTRIUM_ALKALIDE, 10 * LAB_BOOST_MINERAL, 1])
+      room.createBoostRequest('John', RESOURCE_UTRIUM_ALKALIDE, 10, true)
       expect(boosts).to.eql(newBoosts)
     });
   })

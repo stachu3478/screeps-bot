@@ -11,6 +11,7 @@ export interface Commander extends Creep {
 }
 
 interface CommanderMemory extends CreepMemory {
+  role: Role.COMMANDER
   _arrive?: string
   _prev_hits?: number
   _runTicks?: number

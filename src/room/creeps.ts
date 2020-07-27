@@ -2,7 +2,7 @@ import roleHarvester from '../role/creep/harvester'
 import roleUpgrader from '../role/creep/upgrader'
 import roleClaimer, { Claimer } from '../role/creep/claimer'
 import roleScout, { Scout } from '../role/creep/scout'
-import commander from '../role/creep/commander'
+import commander, { Commander } from '../role/creep/commander'
 import miner from 'role/creep/miner';
 import isRetired from 'utils/retired';
 import extractor from 'role/creep/extractor';
@@ -56,7 +56,7 @@ export default function creeps(creeps: Creeps, room: Room, enemy?: Creep, holdFi
         case Role.STATIC_UPGRADER: staticUpgrader(creep); break
         case Role.SCOUT: roleScout(creep as Scout); break
         case Role.CLAIMER: roleClaimer(creep as Claimer); break
-        case Role.COMMANDER: commander(creep); break
+        case Role.COMMANDER: commander(creep as Commander); break
         case Role.MINER: miner(creep); break
         case Role.EXTRACTOR: extractor(creep); break
         case Role.FIGHTER: fighter(creep, enemy, holdFire); break

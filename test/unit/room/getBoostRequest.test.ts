@@ -32,11 +32,8 @@ describe('Getting a boost request', () => {
 
   describe('no creep matching', () => {
     it('should return null and call no action', function () {
-      boosts.creeps.push('Johny')
-      boosts.resources.creeps.push(RESOURCE_UTRIUM_ACID)
-      boosts.resources.labs.push(RESOURCE_UTRIUM_ACID)
-      boosts.amounts.creeps.push(300)
-      boosts.amounts.labs.push(300)
+      boosts.creeps.push(['Johny', RESOURCE_UTRIUM_ACID, 300, 0])
+      boosts.labs.push([RESOURCE_UTRIUM_ACID, 300])
       const sameBoosts = _.clone(boosts, true)
       room.getBoostRequest('John')
       expect(room.getBoostRequest('John')).to.be.undefined
@@ -52,11 +49,8 @@ describe('Getting a boost request', () => {
       })
 
       it('should not return boost data', function () {
-        boosts.creeps.push('John')
-        boosts.resources.creeps.push(RESOURCE_UTRIUM_ACID)
-        boosts.resources.labs.push(RESOURCE_UTRIUM_ACID)
-        boosts.amounts.creeps.push(300)
-        boosts.amounts.labs.push(300)
+        boosts.creeps.push(['John', RESOURCE_UTRIUM_ACID, 300, 0])
+        boosts.labs.push([RESOURCE_UTRIUM_ACID, 300])
         room.getBoostRequest('John')
         expect(room.getBoostRequest('John')).to.be.undefined
       });
@@ -68,27 +62,27 @@ describe('Getting a boost request', () => {
       })
 
       it('should not return boost data', function () {
-        boosts.creeps.push('John')
-        boosts.resources.creeps.push(RESOURCE_UTRIUM_ACID)
-        boosts.resources.labs.push(RESOURCE_UTRIUM_ACID)
-        boosts.amounts.creeps.push(300)
-        boosts.amounts.labs.push(300)
+        boosts.creeps.push(['John', RESOURCE_UTRIUM_ACID, 300, 0])
+        boosts.labs.push([RESOURCE_UTRIUM_ACID, 300])
         room.getBoostRequest('John')
         expect(room.clearBoostRequest).to.be.calledOnce
         expect(room.getBoostRequest('John')).to.be.undefined
       });
 
       it('should return null and call delete for all for missing resources', function () {
+        boosts.labs.push(
+          [RESOURCE_UTRIUM_ALKALIDE, 0],
+          [RESOURCE_CATALYZED_GHODIUM_ACID, 0]
+        )
         const sameBoosts = _.clone(boosts, true)
-        boosts.creeps.push('John', 'John')
-        boosts.resources.creeps.push(RESOURCE_UTRIUM_ALKALIDE)
-        boosts.resources.creeps.push(RESOURCE_CATALYZED_GHODIUM_ACID)
-        boosts.resources.labs.push(RESOURCE_UTRIUM_ALKALIDE)
-        boosts.resources.labs.push(RESOURCE_CATALYZED_GHODIUM_ACID)
-        boosts.amounts.creeps.push(300)
-        boosts.amounts.creeps.push(600)
-        boosts.amounts.labs.push(300)
-        boosts.amounts.labs.push(600)
+        boosts.creeps.push(
+          ['John', RESOURCE_UTRIUM_ALKALIDE, 300, 0],
+          ['John', RESOURCE_CATALYZED_GHODIUM_ACID, 600, 0]
+        )
+        boosts.labs = [
+          [RESOURCE_UTRIUM_ALKALIDE, 300],
+          [RESOURCE_CATALYZED_GHODIUM_ACID, 600]
+        ]
         room.getBoostRequest('John')
         expect(room.clearBoostRequest).to.be.calledTwice
         expect(room.getBoostRequest('John')).to.be.undefined
@@ -98,11 +92,8 @@ describe('Getting a boost request', () => {
 
     describe('exact lab exists', () => {
       it('should return boost data', function () {
-        boosts.creeps.push('John')
-        boosts.resources.creeps.push(RESOURCE_UTRIUM_ACID)
-        boosts.resources.labs.push(RESOURCE_UTRIUM_ACID)
-        boosts.amounts.creeps.push(300)
-        boosts.amounts.labs.push(300)
+        boosts.creeps.push(['John', RESOURCE_UTRIUM_ACID, 300, 0])
+        boosts.labs.push([RESOURCE_UTRIUM_ACID, 300])
         room.getBoostRequest('John')
         expect(room.getBoostRequest('John')).to.eql('lab')
       });

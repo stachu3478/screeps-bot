@@ -1,1 +1,1 @@
-export default (): BoostData => ({ resources: { labs: [], creeps: [] }, amounts: { labs: [], creeps: [] }, creeps: [] })
+export default (): BoostData => ({ labs: [], creeps: [] })

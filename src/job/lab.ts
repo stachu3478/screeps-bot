@@ -19,7 +19,8 @@ const labJobs = {
   collectResources: (creep: LabManager, labs: StructureLab[]) => {
     return labs.some((lab, i) => {
       const mineralType = lab.mineralType
-      if (mineralType && lab.store[mineralType] > 0 && !lab.room.getBoosts().amounts.labs[i]) {
+      const labBoostData = lab.room.getBoosts().labs[i]
+      if (mineralType && lab.store[mineralType] > 0 && (!labBoostData || labBoostData[LabBoostDataKeys.amount])) {
         labJobs.prepareCreepForDumping(creep, lab.id, mineralType)
         return true
       }
@@ -57,11 +58,9 @@ const labJobs = {
     creep.memory._fillType = creep.memory._drawType = mineralType
     creep.memory.state = State.HAUL_STORAGE_FROM_LAB
   },
-  lookForBoosting: (creep: LabManager, index: number, data: BoostData, lab: StructureLab) => {
-    const resourceToFillWith = data.resources.labs[index]
-    if (!resourceToFillWith) return false
-    const amountToFillWith = data.amounts.labs[index] || 0
-    if (!amountToFillWith) return false
+  lookForBoosting: (creep: LabManager, labBoostData: BoostData['labs'][0], lab: StructureLab) => {
+    const [resourceToFillWith, amountToFillWith] = labBoostData
+    if (!resourceToFillWith || !amountToFillWith) return false
     if (
       labJobs.needsToBeFilledForBoosting(lab, resourceToFillWith, amountToFillWith)
       && labJobs.prepareCreepForFilling(creep, lab, resourceToFillWith, amountToFillWith)) {
@@ -74,10 +73,10 @@ const labJobs = {
   },
   prepareBoostResources: (creep: LabManager, externalLabs: StructureLab[]) => {
     const boostData = creep.room.getBoosts()
-    if (boostData.resources.labs.length === 0) return false
-    return boostData.resources.labs.some((_resource, index) => {
+    if (boostData.labs.length === 0) return false
+    return boostData.labs.some((labBoostData, index) => {
       const lab = externalLabs[index]
-      if (lab) return labJobs.lookForBoosting(creep, index, boostData, lab)
+      if (lab) return labJobs.lookForBoosting(creep, labBoostData, lab)
       return false
     })
   }

@@ -30,25 +30,22 @@ describe('Finding boost-preparing job', () => {
 
   it('Returns false for no labs', () => {
     sinon.stub(labJobs, 'lookForBoosting')
-    boostData.resources.labs.push(RESOURCE_UTRIUM_ACID)
-    boostData.amounts.labs.push(300)
+    boostData.labs.push([RESOURCE_UTRIUM_ACID, 300])
     expect(prepareBoostResources(creep, [])).to.eql(false)
     expect(labJobs.lookForBoosting).to.not.be.called
   })
 
   it('Returns false if function did not found a job', () => {
     sinon.stub(labJobs, 'lookForBoosting').returns(false)
-    boostData.resources.labs.push(RESOURCE_UTRIUM_ACID)
-    boostData.amounts.labs.push(300)
+    boostData.labs.push([RESOURCE_UTRIUM_ACID, 300])
     expect(prepareBoostResources(creep, [lab])).to.eql(false)
-    expect(labJobs.lookForBoosting).to.be.calledWithExactly(creep, 0, boostData, lab)
+    expect(labJobs.lookForBoosting).to.be.calledWithExactly(creep, [RESOURCE_UTRIUM_ACID, 300], lab)
   })
 
   it('Returns true if function has found a job', () => {
     sinon.stub(labJobs, 'lookForBoosting').returns(true)
-    boostData.resources.labs.push(RESOURCE_UTRIUM_ACID)
-    boostData.amounts.labs.push(300)
+    boostData.labs.push([RESOURCE_UTRIUM_ACID, 300])
     expect(prepareBoostResources(creep, [lab])).to.eql(true)
-    expect(labJobs.lookForBoosting).to.be.calledWithExactly(creep, 0, boostData, lab)
+    expect(labJobs.lookForBoosting).to.be.calledWithExactly(creep, [RESOURCE_UTRIUM_ACID, 300], lab)
   })
 });

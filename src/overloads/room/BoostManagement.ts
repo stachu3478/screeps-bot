@@ -1,20 +1,13 @@
 Room.prototype.getBoosts = function () {
   return this.memory.boosts || (this.memory.boosts = {
     creeps: [],
-    resources: {
-      labs: [],
-      creeps: [],
-    },
-    amounts: {
-      labs: [],
-      creeps: []
-    }
+    labs: []
   })
 }
 
 Room.prototype.getAmountReserved = function (resource: ResourceConstant) {
-  const boosts = this.getBoosts()
-  return boosts.amounts.labs[boosts.resources.labs.findIndex(v => v === resource)] || 0
+  const labBoostData = this.getBoosts().labs.find(labBoostRecord => labBoostRecord[LabBoostDataKeys.resourceType] === resource)
+  return labBoostData ? labBoostData[LabBoostDataKeys.amount] : 0
 }
 
 Room.prototype.getAvailableBoosts = function (resource: ResourceConstant, partCount: number) {
@@ -28,9 +21,9 @@ Room.prototype.getBoostRequest = function (creepName: string) {
   const boosts = this.getBoosts()
   const toBeRemoved: ResourceConstant[] = []
   let labId
-  boosts.creeps.find((name, i) => {
+  boosts.creeps.find((creepBoostData, i) => {
+    const [name, resourceNeeded] = creepBoostData
     if (name !== creepName) return false
-    const resourceNeeded = boosts.resources.creeps[i]
     const lab = this.externalLabs.find(lab => lab.mineralType === resourceNeeded)
     if (lab) {
       labId = lab.id
@@ -68,50 +61,43 @@ Room.prototype.getBestAvailableBoost = function (partType: string, action: strin
   return null
 }
 
-Room.prototype.createBoostRequest = function (creepName: string, resource: ResourceConstant, partCount: number) {
+Room.prototype.createBoostRequest = function (creepName: string, resource: ResourceConstant, partCount: number, mandatory: boolean = false) {
   const boostData = this.getBoosts()
-  let indexToInsert = boostData.resources.labs.findIndex(res => res === resource)
-  if (indexToInsert === -1) indexToInsert = boostData.resources.labs.findIndex(res => !res)
-  if (indexToInsert === -1) indexToInsert = boostData.resources.labs.length
+  let indexToInsert = boostData.labs.findIndex(labBoostData => labBoostData[LabBoostDataKeys.resourceType] === resource)
+  if (indexToInsert === -1) indexToInsert = boostData.labs.findIndex(labBoostData => !labBoostData[LabBoostDataKeys.amount])
+  if (indexToInsert === -1) indexToInsert = boostData.labs.length
+  const potencialRecord = boostData.labs[indexToInsert]
   const amountForCreep = partCount * LAB_BOOST_MINERAL
-  const amountForLab = (boostData.amounts.labs[indexToInsert] || 0) + amountForCreep
-  boostData.amounts.labs[indexToInsert] = amountForLab
-  boostData.resources.labs[indexToInsert] = resource
-  boostData.creeps.push(creepName)
-  boostData.amounts.creeps.push(amountForCreep)
-  boostData.resources.creeps.push(resource)
+  const amountForLab = (potencialRecord ? potencialRecord[LabBoostDataKeys.amount] : 0) + amountForCreep
+  boostData.labs[indexToInsert] = [resource, amountForLab]
+  boostData.creeps.push([creepName, resource, amountForCreep, mandatory ? 1 : 0])
 }
 
-Room.prototype.clearBoostRequest = function (creepName: string, resource: ResourceConstant | null) {
+Room.prototype.clearBoostRequest = function (creepName: string, resource: ResourceConstant | null, done: boolean = false) {
   if (!resource) return
   const boostData = this.getBoosts()
   let toRemove: string | undefined = undefined
   let resourceToRemove: ResourceConstant = RESOURCE_ENERGY
-  const indexToRemove = boostData.creeps.findIndex((name, index) => {
-    if (name === creepName) return boostData.resources.creeps[index] === resource
+  const indexToRemove = boostData.creeps.findIndex(creepBoostData => {
+    const [name, resourceType, , mandatory] = creepBoostData
+    if (name === creepName) return resourceType === resource && (done || !mandatory)
     const creep = Game.creeps[name]
-    if (name && (!creep || creep.memory.role !== Role.BOOSTER)) {
+    if (name && (!creep || creep.memory.role !== Role.BOOSTER) && !mandatory) {
       toRemove = name
-      resourceToRemove = boostData.resources.creeps[index]
+      resourceToRemove = resourceType
     }
     return false
   })
   if (indexToRemove !== -1) {
-    const labIndex = boostData.resources.labs.findIndex((res) => res === resource)
-    const labAmount = boostData.amounts.labs[labIndex]
-    if (labAmount) boostData.amounts.labs[labIndex] = labAmount - boostData.amounts.creeps[indexToRemove]
-    if (boostData.amounts.labs[labIndex] === 0) {
-      if (boostData.amounts.labs.length === labIndex + 1) {
-        boostData.amounts.labs.pop()
-        boostData.resources.labs.pop()
-      } else {
-        delete boostData.amounts.labs[labIndex]
-        delete boostData.resources.labs[labIndex]
-      }
+    const labIndex = boostData.labs.findIndex(labBoostRecord => labBoostRecord[LabBoostDataKeys.resourceType] === resource)
+    const labBoostData = boostData.labs[labIndex]
+    const [resourceType, amount] = labBoostData
+    if (amount) labBoostData[LabBoostDataKeys.amount] = amount - boostData.creeps[indexToRemove][CreepBoostDataKeys.amount]
+    if (amount === 0) {
+      if (boostData.labs.length === labIndex + 1) boostData.labs.pop()
+      else boostData.labs[labIndex] = [resourceType, 0]
     }
     boostData.creeps.splice(indexToRemove, 1)
-    boostData.amounts.creeps.splice(indexToRemove, 1)
-    boostData.resources.creeps.splice(indexToRemove, 1)
   }
   if (toRemove) this.clearBoostRequest(toRemove, resourceToRemove)
 }

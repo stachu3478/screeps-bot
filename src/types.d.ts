@@ -52,15 +52,8 @@ interface Memory {
 }
 
 interface BoostData {
-  creeps: string[]
-  resources: {
-    labs: (ResourceConstant | undefined)[]
-    creeps: ResourceConstant[]
-  }
-  amounts: {
-    labs: (number | undefined)[]
-    creeps: number[]
-  }
+  labs: [ResourceConstant, number][]
+  creeps: [string, ResourceConstant, number, 0 | 1][]
 }
 
 interface RoomMemory {

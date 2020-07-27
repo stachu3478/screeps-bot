@@ -1,5 +1,5 @@
 import routineBooster from "routine/boost";
-import { NOTHING_DONE } from "constants/response";
+import { NOTHING_DONE, SUCCESS } from "constants/response";
 
 export interface BoosterCreep extends Creep {
   memory: BoosterMemory
@@ -18,7 +18,7 @@ const roleBooster = {
         const result = routineBooster.run(creep, lab)
         if (result !== NOTHING_DONE) {
           delete creep.memory.state
-          creep.room.clearBoostRequest(creep.name, lab && lab.mineralType)
+          creep.room.clearBoostRequest(creep.name, lab && lab.mineralType, result === SUCCESS)
         }
         break
       default:

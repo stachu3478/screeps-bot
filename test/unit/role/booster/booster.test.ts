@@ -92,7 +92,7 @@ describe('Creep boost role', () => {
         expect(creep.memory.state).to.be.undefined
         expect(creep.memory.role).to.eql(Role.BOOSTER, 'Invalid role')
         expect(routineBooster.run).to.be.calledWithExactly(creep, lab1)
-        expect(creep.room.clearBoostRequest).to.be.calledWithExactly(creep.name, lab1.mineralType)
+        expect(creep.room.clearBoostRequest).to.be.calledWithExactly(creep.name, lab1.mineralType, true)
       })
     })
 
@@ -106,7 +106,7 @@ describe('Creep boost role', () => {
         roleBooster.run(creep)
         expect(creep.memory.state).to.be.undefined
         expect(routineBooster.run).to.be.calledWithExactly(creep, lab1)
-        expect(creep.room.clearBoostRequest).to.be.calledWithExactly(creep.name, lab1.mineralType)
+        expect(creep.room.clearBoostRequest).to.be.calledWithExactly(creep.name, lab1.mineralType, false)
       })
     })
   })

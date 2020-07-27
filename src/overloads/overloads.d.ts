@@ -30,8 +30,8 @@ interface Room {
   getAvailableBoosts: (resource: ResourceConstant, partCount: number) => number
   getBestAvailableBoost: (partType: string, action: string, partCount: number) => BoostInfo | null
   getBoostRequest: (creepName: string) => Id<StructureLab> | undefined
-  createBoostRequest: (creepName: string, resource: ResourceConstant, partCount: number) => void
-  clearBoostRequest: (creepName: string, resource: ResourceConstant | null) => void
+  createBoostRequest: (creepName: string, resource: ResourceConstant, partCount: number, mandatory?: boolean) => void
+  clearBoostRequest: (creepName: string, resource: ResourceConstant | null, done?: boolean) => void
   prepareBoostData: (creepMemory: CreepMemory, parts: BodyPartConstant[], actions: string[], body: BodyPartConstant[]) => BoostInfo[]
   store: (resource: ResourceConstant) => number
 }
