@@ -74,4 +74,5 @@ interface GlobalCache {
   roomStructures: {
     [key: string]: string
   }
+  ownedRooms?: number
 }

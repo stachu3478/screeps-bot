@@ -25,8 +25,6 @@ interface Stats {
 }
 
 interface Memory {
-  uuid: number
-  log: any
   ticksToProfile?: number
   myRooms: {
     [key: string]: 0
@@ -44,6 +42,7 @@ interface Memory {
   runtimeTicks?: number
   runtimeAvg?: number
   debugStructures?: 0 | 1
+  roomLimit?: number
   pathRoomBlacklist?: {
     [key: string]: 1
   }

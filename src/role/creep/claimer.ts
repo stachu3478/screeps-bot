@@ -28,6 +28,7 @@ export default function run(creep: Claimer) {
         case DONE:
           delete Memory.rooms[creep.memory.room]._claim
           creep.memory.state = State.DESTRUCT
+          global.Cache.ownedRooms = (global.Cache.ownedRooms || 0) + 1
           break
       }
       break;
