@@ -1,48 +1,54 @@
 import './buildingManagement'
 import './boostManagement'
-import { getFactory, getLab, getXYExtractor, getLink, getPowerSpawn } from "utils/selectFromPos";
-import defineGetter from 'utils/defineGetter';
+import {
+  getFactory,
+  getLab,
+  getXYExtractor,
+  getLink,
+  getPowerSpawn,
+} from 'utils/selectFromPos'
+import defineGetter from 'utils/defineGetter'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
 }
 
-defineRoomGetter('cache', self => {
+defineRoomGetter('cache', (self) => {
   const cache = global.Cache.rooms
   return cache[self.name] || (cache[self.name] = {})
 })
 
-defineRoomGetter('factoryCache', self => {
+defineRoomGetter('factoryCache', (self) => {
   const cache = global.Cache.factories
   return cache[self.name] || (cache[self.name] = {})
 })
 
-defineRoomGetter('powerSpawnCache', self => {
+defineRoomGetter('powerSpawnCache', (self) => {
   const cache = global.Cache.powerSpawns
   return cache[self.name] || (cache[self.name] = {})
 })
 
-defineRoomGetter('factory', self => {
+defineRoomGetter('factory', (self) => {
   return getFactory(self, (self.memory.structs || '').charCodeAt(4))
 })
 
-defineRoomGetter('lab1', self => {
+defineRoomGetter('lab1', (self) => {
   return getLab(self, (self.memory.internalLabs || '').charCodeAt(0))
 })
 
-defineRoomGetter('lab2', self => {
+defineRoomGetter('lab2', (self) => {
   return getLab(self, (self.memory.internalLabs || '').charCodeAt(1))
 })
 
-defineRoomGetter('externalLabs', self => {
+defineRoomGetter('externalLabs', (self) => {
   if (!self.memory.externalLabs) return []
   return self.memory.externalLabs
     .split('')
-    .map(char => getLab(self, char.charCodeAt(0)))
-    .filter(l => l) as StructureLab[]
+    .map((char) => getLab(self, char.charCodeAt(0)))
+    .filter((l) => l) as StructureLab[]
 })
 
-defineRoomGetter('allLabs', self => {
+defineRoomGetter('allLabs', (self) => {
   const allLabs = self.externalLabs
   const lab1 = self.lab1
   if (lab1) allLabs.push(lab1)
@@ -51,34 +57,37 @@ defineRoomGetter('allLabs', self => {
   return allLabs
 })
 
-defineRoomGetter('mineral', self => {
+defineRoomGetter('mineral', (self) => {
   return self.find(FIND_MINERALS)[0]
 })
 
-defineRoomGetter('extractor', self => {
+defineRoomGetter('extractor', (self) => {
   const mineral = self.mineral
   return mineral && getXYExtractor(self, mineral.pos.x, mineral.pos.y)
 })
 
 defineRoomGetter('filled', (self) => {
-  return self.cache.priorityFilled && self.energyAvailable === self.energyCapacityAvailable
+  return (
+    self.cache.priorityFilled &&
+    self.energyAvailable === self.energyCapacityAvailable
+  )
 })
 
-defineRoomGetter('linked', self => {
+defineRoomGetter('linked', (self) => {
   const links = self.memory.links
   const controllerLink = self.memory.controllerLink
   if (!links || !controllerLink) return false
   return !!(
-    getLink(self, links.charCodeAt(links.length - 1))
-    && getLink(self, controllerLink.charCodeAt(0))
+    getLink(self, links.charCodeAt(links.length - 1)) &&
+    getLink(self, controllerLink.charCodeAt(0))
   )
 })
 
-defineRoomGetter('spawn', self => {
+defineRoomGetter('spawn', (self) => {
   return self.find(FIND_MY_SPAWNS)[0]
 })
 
-defineRoomGetter('powerSpawn', self => {
+defineRoomGetter('powerSpawn', (self) => {
   const structs = self.memory.structs
   return structs && getPowerSpawn(self, structs.charCodeAt(11))
 })

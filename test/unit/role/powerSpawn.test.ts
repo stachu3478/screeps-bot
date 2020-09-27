@@ -2,7 +2,7 @@ import '../constants'
 import _ from 'lodash'
 import sinon from 'sinon'
 import rolePowerSpawn from 'role/powerSpawn'
-import { expect } from '../../expect';
+import { expect } from '../../expect'
 
 describe('Role of the power spawn', () => {
   let room: Room
@@ -10,16 +10,16 @@ describe('Role of the power spawn', () => {
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
-    global.Game = _.clone(Game);
+    global.Game = _.clone(Game)
     // @ts-ignore : allow adding Memory to global
-    global.Memory = _.clone(Memory);
+    global.Memory = _.clone(Memory)
 
     powerSpawn = { cache: {} } as StructurePowerSpawn
     room = { memory: {}, cache: {}, powerSpawn: powerSpawn } as Room
     powerSpawn.room = room
 
     sinon.restore()
-  });
+  })
 
   describe('no state specified or 0', () => {
     describe('no errors with power processing', () => {
@@ -58,4 +58,4 @@ describe('Role of the power spawn', () => {
       expect(powerSpawn.cache.idle).to.eql(1)
     })
   })
-});
+})

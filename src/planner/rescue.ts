@@ -1,10 +1,11 @@
 import { progressiveMobileWorker } from 'spawn/body/work'
-import { ColonizerMemory } from 'role/creep/colonizer';
+import { ColonizerMemory } from 'role/creep/colonizer'
 
 export default function callRescue(room: Room) {
   console.log(`WARNING: No creeps in room ${room.name}!`)
   const claimers = [Game.rooms[room.memory._claimer || ''] || '']
-  if (room.memory._claimed) claimers.push(...room.memory._claimed.map(n => Game.rooms[n]))
+  if (room.memory._claimed)
+    claimers.push(...room.memory._claimed.map((n) => Game.rooms[n]))
   claimers.find((claimer) => {
     if (!claimer) {
       console.log('No claimer room')
@@ -21,9 +22,11 @@ export default function callRescue(room: Room) {
       room: room.name,
       deprivity: 0,
       _arrive: room.name,
-      _targetRole: Role.MINER
+      _targetRole: Role.MINER,
     }
-    const body = progressiveMobileWorker(Math.max(spawn.room.energyAvailable, SPAWN_ENERGY_START))
+    const body = progressiveMobileWorker(
+      Math.max(spawn.room.energyAvailable, SPAWN_ENERGY_START),
+    )
     const result = spawn.trySpawnCreep(body, 'P', memory, false, 10)
     if (result === ERR_BUSY) {
       console.log('Spawn is busy', JSON.stringify(spawn))

@@ -1,6 +1,6 @@
 import roomVisual from 'utils/visual'
-import { infoStyle } from 'room/style';
-import { collectGarbageAll } from './collectGarbage';
+import { infoStyle } from 'room/style'
+import { collectGarbageAll } from './collectGarbage'
 
 let runtimeTicks = 0
 let wasReset = true
@@ -13,9 +13,17 @@ function handleRuntimeReset() {
   collectGarbageAll()
 }
 
-
 export default function handleRuntimeStats() {
   if (wasReset) handleRuntimeReset()
   Memory.runtimeTicks = runtimeTicks++
-  roomVisual.text("Runtime ticks: " + runtimeTicks + " (avg. " + (Memory.runtimeAvg || 'unknown') + ')', 0, 48, infoStyle)
+  roomVisual.text(
+    'Runtime ticks: ' +
+      runtimeTicks +
+      ' (avg. ' +
+      (Memory.runtimeAvg || 'unknown') +
+      ')',
+    0,
+    48,
+    infoStyle,
+  )
 }

@@ -1,13 +1,17 @@
 import move from '../../utils/path'
-import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from "constants/response";
+import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from 'constants/response'
 
 interface FightCreep extends Creep {
   memory: FightMemory
 }
 
-interface FightMemory extends CreepMemory { }
+interface FightMemory extends CreepMemory {}
 
-export default function fight(creep: FightCreep, enemy?: Creep, keepDistance: boolean = false) {
+export default function fight(
+  creep: FightCreep,
+  enemy?: Creep,
+  keepDistance: boolean = false,
+) {
   if (!enemy) return NOTHING_TODO
   if (keepDistance) {
     const range = creep.pos.rangeTo(enemy)

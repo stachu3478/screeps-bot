@@ -1,4 +1,4 @@
-import { infoStyle } from "room/style";
+import { infoStyle } from 'room/style'
 
 interface ReactionTimeHash {
   [key: string]: number
@@ -19,11 +19,12 @@ export default function lab(room: Room) {
   switch (mem.labState) {
     case State.IDLE:
       room.visual.text('Labs: Idle', 0, 5, infoStyle)
-      if (lab1.mineralType || lab2.mineralType) mem.labState = State.LAB_COLLECTING
-      break;
+      if (lab1.mineralType || lab2.mineralType)
+        mem.labState = State.LAB_COLLECTING
+      break
     case State.LAB_COLLECTING:
       room.visual.text('Labs: Collecting resources...', 0, 5, infoStyle)
-      break;
+      break
     case State.LAB_PRODUCING:
       const recipe = mem.labRecipe
       if (!recipe) {
@@ -34,7 +35,8 @@ export default function lab(room: Room) {
       const labs = room.externalLabs
       let result
       labs.forEach((lab, i) => {
-        if (lab.shouldRunReaction(recipe, i)) result = lab.runReaction(lab1, lab2)
+        if (lab.shouldRunReaction(recipe, i))
+          result = lab.runReaction(lab1, lab2)
       })
       if (result === ERR_NOT_ENOUGH_RESOURCES || result === ERR_FULL) {
         delete mem.labRecipe
@@ -51,8 +53,10 @@ export default function lab(room: Room) {
         mem.labState = State.LAB_COLLECTING
         break
       }
-      if (lab1.mineralType && lab1.mineralType !== mem.labIndegrient1) mem.labState = State.LAB_COLLECTING
-      if (lab2.mineralType && lab2.mineralType !== mem.labIndegrient2) mem.labState = State.LAB_COLLECTING
+      if (lab1.mineralType && lab1.mineralType !== mem.labIndegrient1)
+        mem.labState = State.LAB_COLLECTING
+      if (lab2.mineralType && lab2.mineralType !== mem.labIndegrient2)
+        mem.labState = State.LAB_COLLECTING
       break
     default:
       room.visual.text('Labs: Unknown state: ' + mem.labState, 0, 5, infoStyle)

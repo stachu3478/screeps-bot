@@ -1,6 +1,12 @@
 import move from '../../utils/path'
-import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from '../../constants/response'
-import { findClosestHostileHittableStructures } from 'utils/find';
+import {
+  SUCCESS,
+  NOTHING_TODO,
+  NOTHING_DONE,
+  FAILED,
+  DONE,
+} from '../../constants/response'
+import { findClosestHostileHittableStructures } from 'utils/find'
 
 interface DismantleCreep extends Creep {
   cache: DismantleCache
@@ -25,7 +31,9 @@ export default function dismantle(creep: DismantleCreep) {
   }
   const result = creep.dismantle(target)
   if (result === 0) {
-    const remaining = creep.store.getFreeCapacity() - creep.workpartCount * DISMANTLE_POWER * DISMANTLE_COST
+    const remaining =
+      creep.store.getFreeCapacity() -
+      creep.workpartCount * DISMANTLE_POWER * DISMANTLE_COST
     if (remaining <= 0) {
       delete cache.dismantle
       return DONE

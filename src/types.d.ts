@@ -8,14 +8,14 @@ interface CreepMemory {
   room: string
   state?: State
   _move?: {
-    path: string,
+    path: string
     dest: {
-      room: string,
-      x: number,
-      y: number,
-    },
+      room: string
+      x: number
+      y: number
+    }
     t?: number
-  };
+  }
   deprivity: number
 }
 

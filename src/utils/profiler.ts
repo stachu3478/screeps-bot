@@ -1,5 +1,5 @@
 import profiler from 'screeps-profiler'
-import { profilerEnabled } from 'config/profiler';
+import { profilerEnabled } from 'config/profiler'
 
 if (profilerEnabled) profiler.enable()
 else {

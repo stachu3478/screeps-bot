@@ -1,23 +1,28 @@
 import '../constants'
 import extract from '../../../src/routine/work/extract'
-import { expect } from '../../expect';
-import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
+import { expect } from '../../expect'
+import {
+  SUCCESS,
+  NOTHING_TODO,
+  NOTHING_DONE,
+  FAILED,
+  DONE,
+} from 'constants/response'
 
 let creep: Creep
 describe('routine/extract', () => {
   beforeEach(() => {
     creep = {} as Creep
-  });
+  })
 
   context('when creep is full', () => {
     beforeEach(() => {
       creep.store = { getFreeCapacity: () => 0 } as Creep['store']
     })
 
-
     it('returns DONE', function () {
       expect(extract(creep)).to.eql(DONE)
-    });
+    })
   })
 
   context('when creep is not full', () => {
@@ -32,15 +37,20 @@ describe('routine/extract', () => {
 
       it('returns NOTHING_TODO', function () {
         expect(extract(creep)).to.eql(NOTHING_TODO)
-      });
+      })
     })
 
     context('when target is available', () => {
       beforeEach(() => {
-        creep.motherRoom = { mineral: { mineralAmount: 100, mineralType: 'U' } } as Room
+        creep.motherRoom = {
+          mineral: { mineralAmount: 100, mineralType: 'U' },
+        } as Room
       })
 
-      it('returns NOTHING_DONE when moving') // Need to refactor moveCheap
+      it('returns NOTHING_DONE when moving', () => {
+        creep.harvest = (t: any) => ERR_NOT_IN_RANGE
+        expect(extract(creep, () => OK)).to.eql(NOTHING_DONE)
+      })
 
       it('returns NOTHING_DONE when tired', () => {
         creep.harvest = (t: any) => ERR_TIRED
@@ -74,4 +84,4 @@ describe('routine/extract', () => {
       })
     })
   })
-});
+})

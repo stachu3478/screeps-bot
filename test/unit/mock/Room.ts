@@ -14,9 +14,9 @@ export default class RoomMock {
   public mode: any
 
   constructor(name: string) {
-    this.energyAvailable = 0;
-    this.energyCapacityAvailable = 0;
-    this.memory = {} as RoomMemory;
+    this.energyAvailable = 0
+    this.energyCapacityAvailable = 0
+    this.memory = {} as RoomMemory
     this.name = name
     this.visual = new RoomVisual(name)
   }
@@ -33,7 +33,10 @@ export default class RoomMock {
     return this.getPositionAt(x, y).createConstructionSite(type)
   }
 
-  createFlag(x: number | RoomPosition | _HasRoomPosition, y: number): ScreepsReturnCode {
+  createFlag(
+    x: number | RoomPosition | _HasRoomPosition,
+    y: number,
+  ): ScreepsReturnCode {
     return this.getPositionAt(x as number, y).createFlag()
   }
 
@@ -76,4 +79,4 @@ export default class RoomMock {
   lookForAtArea() {
     return {}
   }
-};
+}

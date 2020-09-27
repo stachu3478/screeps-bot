@@ -42,12 +42,20 @@ export default class PlannerMatrix {
   rankPos(x: number, y: number) {
     const { matrix, terrain } = this
     const matPos = pos(x, y)
-    if ((matrix[matPos] > 0 && matrix[matPos] !== 100) || terrain.get(x, y) === 1) return -Infinity
+    if (
+      (matrix[matPos] > 0 && matrix[matPos] !== 100) ||
+      terrain.get(x, y) === 1
+    )
+      return -Infinity
     let rank = -1
     for (let ox = -1; ox <= 1; ox++)
       for (let oy = -1; oy <= 1; oy++) {
         const xy = pos(x + ox, y + oy)
-        if ((matrix[xy] === 0 || matrix[xy] === 100) && terrain.get(x + ox, y + oy) !== 1) rank++
+        if (
+          (matrix[xy] === 0 || matrix[xy] === 100) &&
+          terrain.get(x + ox, y + oy) !== 1
+        )
+          rank++
       }
     return rank
   }
@@ -65,7 +73,7 @@ export default class PlannerMatrix {
       }
     return {
       pos: bestPos,
-      rank: bestRank
+      rank: bestRank,
     }
   }
 
@@ -84,16 +92,12 @@ export default class PlannerMatrix {
 
   coverBorder(thickness: number = 3) {
     for (let x = 0; x < 50; x++) {
-      for (let i = 0; i < thickness; i++)
-        this.setField(x, i, -127)
-      for (let i = 0; i < thickness; i++)
-        this.setField(x, 49 - i, -127)
+      for (let i = 0; i < thickness; i++) this.setField(x, i, -127)
+      for (let i = 0; i < thickness; i++) this.setField(x, 49 - i, -127)
     }
     for (let y = 0; y < 50; y++) {
-      for (let i = 0; i < thickness; i++)
-        this.setField(i, y, -127)
-      for (let i = 0; i < thickness; i++)
-        this.setField(49 - i, y, -127)
+      for (let i = 0; i < thickness; i++) this.setField(i, y, -127)
+      for (let i = 0; i < thickness; i++) this.setField(49 - i, y, -127)
     }
   }
 

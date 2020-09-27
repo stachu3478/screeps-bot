@@ -1,10 +1,17 @@
-import mineralFill from "routine/haul/mineralFill";
-import { SUCCESS, DONE, NOTHING_TODO, NO_RESOURCE, NOTHING_DONE, ACCEPTABLE } from "constants/response";
-import recycle from "routine/recycle";
-import extract from "routine/work/extract";
-import autoPickResource from "routine/haul/autoPickResource";
-import profiler from "screeps-profiler"
-import collectGarbage from "utils/collectGarbage";
+import mineralFill from 'routine/haul/mineralFill'
+import {
+  SUCCESS,
+  DONE,
+  NOTHING_TODO,
+  NO_RESOURCE,
+  NOTHING_DONE,
+  ACCEPTABLE,
+} from 'constants/response'
+import recycle from 'routine/recycle'
+import extract from 'routine/work/extract'
+import autoPickResource from 'routine/haul/autoPickResource'
+import profiler from 'screeps-profiler'
+import collectGarbage from 'utils/collectGarbage'
 
 export interface Extractor extends Creep {
   memory: ExtractorMemory
@@ -19,11 +26,16 @@ export default profiler.registerFN(function extractor(creep: Extractor) {
     case State.HARVESTING:
       switch (extract(creep)) {
         case DONE:
-          creep.memory.state = State.STORAGE_FILL; break
+          creep.memory.state = State.STORAGE_FILL
+          break
         case NOTHING_TODO:
-          if (creep.store[creep.memory._extract || RESOURCE_ENERGY]) creep.memory.state = State.STORAGE_FILL
-          else creep.memory.state = State.RECYCLE; break
-        case NOTHING_DONE: if (creep.memory._extract) autoPickResource(creep, creep.memory._extract)
+          if (creep.store[creep.memory._extract || RESOURCE_ENERGY])
+            creep.memory.state = State.STORAGE_FILL
+          else creep.memory.state = State.RECYCLE
+          break
+        case NOTHING_DONE:
+          if (creep.memory._extract)
+            autoPickResource(creep, creep.memory._extract)
       }
       break
     case State.STORAGE_FILL:
@@ -33,15 +45,21 @@ export default profiler.registerFN(function extractor(creep: Extractor) {
         return
       }
       switch (mineralFill(creep, mineralType)) {
-        case SUCCESS: case NO_RESOURCE: {
-          if (creep.memory._extract && autoPickResource(creep, creep.memory._extract) in ACCEPTABLE) creep.memory.state = State.STORAGE_FILL
+        case SUCCESS:
+        case NO_RESOURCE: {
+          if (
+            creep.memory._extract &&
+            autoPickResource(creep, creep.memory._extract) in ACCEPTABLE
+          )
+            creep.memory.state = State.STORAGE_FILL
           else creep.memory.state = State.HARVESTING
         }
       }
       break
     case State.RECYCLE:
       switch (recycle(creep)) {
-        case DONE: collectGarbage(creep.name)
+        case DONE:
+          collectGarbage(creep.name)
       }
       break
     default:

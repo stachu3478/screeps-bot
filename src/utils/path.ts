@@ -1,6 +1,6 @@
 import { posToChar } from 'planner/pos'
-import { findSourceKeepers } from './find';
-import charPosIterator from './charPosIterator';
+import { findSourceKeepers } from './find'
+import charPosIterator from './charPosIterator'
 
 interface OffsetByDirection {
   [key: number]: number[]
@@ -13,13 +13,13 @@ const offsetsByDirection: OffsetByDirection = {
   [BOTTOM]: [0, 1],
   [BOTTOM_LEFT]: [-1, 1],
   [LEFT]: [-1, 0],
-  [TOP_LEFT]: [-1, -1]
-};
+  [TOP_LEFT]: [-1, -1],
+}
 
 function saveCache(positions: RoomPosition[]) {
   if (!positions.length) return
   let poses = ''
-  positions.forEach(p => {
+  positions.forEach((p) => {
     poses += posToChar(p)
   })
   global.Cache.roomKeepers[positions[0].roomName] = poses
@@ -27,32 +27,31 @@ function saveCache(positions: RoomPosition[]) {
 
 const blackMatrix = new PathFinder.CostMatrix()
 for (let ox = 0; ox <= 49; ox++)
-  for (let oy = 0; oy <= 49; oy++)
-    blackMatrix.set(ox, oy, 255)
+  for (let oy = 0; oy <= 49; oy++) blackMatrix.set(ox, oy, 255)
 function roomCallback(roomName: string, costMatrix: CostMatrix) {
-  if (Memory.pathRoomBlacklist && Memory.pathRoomBlacklist[roomName]) return blackMatrix
+  if (Memory.pathRoomBlacklist && Memory.pathRoomBlacklist[roomName])
+    return blackMatrix
   const room = Game.rooms[roomName]
   if (!room) {
     const cache = global.Cache.roomKeepers[roomName]
-    if (cache) charPosIterator(cache, (x, y) => {
-      for (let ox = -3; ox <= 3; ox++)
-        for (let oy = -3; oy <= 3; oy++)
-          costMatrix.set(x + ox, y + oy, 25)
-    })
+    if (cache)
+      charPosIterator(cache, (x, y) => {
+        for (let ox = -3; ox <= 3; ox++)
+          for (let oy = -3; oy <= 3; oy++) costMatrix.set(x + ox, y + oy, 25)
+      })
     const structs = global.Cache.roomStructures[roomName]
     if (structs) charPosIterator(structs, (x, y) => costMatrix.set(x, y, 255))
     return costMatrix
   }
   const sourceKeepers = findSourceKeepers(room)
-  sourceKeepers.forEach(c => {
+  sourceKeepers.forEach((c) => {
     const { x, y } = c.pos
     for (let ox = -3; ox <= 3; ox++)
-      for (let oy = -3; oy <= 3; oy++)
-        costMatrix.set(x + ox, y + oy, 25)
+      for (let oy = -3; oy <= 3; oy++) costMatrix.set(x + ox, y + oy, 25)
   })
-  saveCache(sourceKeepers.map(c => c.pos))
+  saveCache(sourceKeepers.map((c) => c.pos))
   let structStr = ''
-  room.find(FIND_STRUCTURES).forEach(s => {
+  room.find(FIND_STRUCTURES).forEach((s) => {
     structStr += posToChar(s.pos)
   })
   global.Cache.roomStructures[roomName] = structStr
@@ -61,9 +60,24 @@ function roomCallback(roomName: string, costMatrix: CostMatrix) {
 
 const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
   if (room.getTerrain().get(x, y) === TERRAIN_MASK_WALL) return false
-  const nonWalkableStruct = room.lookForAt(LOOK_STRUCTURES, x, y).find(s => s.structureType !== STRUCTURE_ROAD && (s.structureType !== STRUCTURE_RAMPART || !(s as StructureRampart).my || !(s as StructureRampart).isPublic) && s.structureType !== STRUCTURE_CONTAINER)
+  const nonWalkableStruct = room
+    .lookForAt(LOOK_STRUCTURES, x, y)
+    .find(
+      (s) =>
+        s.structureType !== STRUCTURE_ROAD &&
+        (s.structureType !== STRUCTURE_RAMPART ||
+          !(s as StructureRampart).my ||
+          !(s as StructureRampart).isPublic) &&
+        s.structureType !== STRUCTURE_CONTAINER,
+    )
   if (nonWalkableStruct) return false
-  const site = room.lookForAt(LOOK_CONSTRUCTION_SITES, x, y).find(s => s.structureType !== STRUCTURE_ROAD && s.structureType !== STRUCTURE_CONTAINER)
+  const site = room
+    .lookForAt(LOOK_CONSTRUCTION_SITES, x, y)
+    .find(
+      (s) =>
+        s.structureType !== STRUCTURE_ROAD &&
+        s.structureType !== STRUCTURE_CONTAINER,
+    )
   if (site) return false
   if (!me) return true
   const creep = room.lookForAt(LOOK_CREEPS, x, y).find((c: Creep) => c !== me)
@@ -73,13 +87,18 @@ const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
 
 const zmod = (a: number, b: number) => a - Math.floor(a / b) * b
 const move = {
-  anywhere: (creep: Creep, preferDirection: DirectionConstant = TOP, me?: Creep) => {
+  anywhere: (
+    creep: Creep,
+    preferDirection: DirectionConstant = TOP,
+    me?: Creep,
+  ) => {
     const room = creep.room
     const { x, y } = creep.pos
     let dirOffset = 0
     for (let i = 0; i < 8; i++) {
-      const dir = zmod(preferDirection + dirOffset - 1, 8) + 1 as DirectionConstant
-      if (dir < 1 || dir > 8) throw new Error("Invalid direction")
+      const dir = (zmod(preferDirection + dirOffset - 1, 8) +
+        1) as DirectionConstant
+      if (dir < 1 || dir > 8) throw new Error('Invalid direction')
       const offset = offsetsByDirection[dir]
       const mx = x + offset[0]
       const my = y + offset[1]
@@ -92,27 +111,50 @@ const move = {
     }
     return false
   },
-  cheap: (creep: Creep, target: RoomPosition | _HasRoomPosition, safe: boolean = false, range: number = 0): ScreepsReturnCode => {
+  cheap: (
+    creep: Creep,
+    target: RoomPosition | _HasRoomPosition,
+    safe: boolean = false,
+    range: number = 0,
+  ): ScreepsReturnCode => {
     if (creep.fatigue) return ERR_TIRED
     const costCallback = safe ? roomCallback : undefined
-    let result = creep.moveTo(target, { noPathFinding: true, reusePath: 100, costCallback, range })
+    let result = creep.moveTo(target, {
+      noPathFinding: true,
+      reusePath: 100,
+      costCallback,
+      range,
+    })
     if (result === ERR_NOT_FOUND)
-      result = creep.moveTo(target, { ignoreCreeps: true, reusePath: 100, costCallback, range })
+      result = creep.moveTo(target, {
+        ignoreCreeps: true,
+        reusePath: 100,
+        costCallback,
+        range,
+      })
     const mem = creep.memory
     if (!mem._move) return result
     const path = mem._move.path
     const dir = parseInt(path.charAt(4)) as DirectionConstant
     if (dir) {
-      const creepOnRoad = creep.room.lookForAt(LOOK_CREEPS, creep.pos.x + offsetsByDirection[dir][0], creep.pos.y + offsetsByDirection[dir][1])[0]
+      const creepOnRoad = creep.room.lookForAt(
+        LOOK_CREEPS,
+        creep.pos.x + offsetsByDirection[dir][0],
+        creep.pos.y + offsetsByDirection[dir][1],
+      )[0]
       if (creepOnRoad) {
         if (!creepOnRoad.memory) {
-          if (!creepOnRoad.my) result = creep.moveTo(target, { costCallback, range })
+          if (!creepOnRoad.my)
+            result = creep.moveTo(target, { costCallback, range })
           else move.anywhere(creepOnRoad, dir, creep)
         } else if (!move.check(creepOnRoad)) {
-          const swap = creepOnRoad.memory.role === Role.STATIC_UPGRADER || creepOnRoad.memory.role === Role.MINER || Math.random() > 0.8
+          const swap =
+            creepOnRoad.memory.role === Role.STATIC_UPGRADER ||
+            creepOnRoad.memory.role === Role.MINER ||
+            Math.random() > 0.8
           const dirTo = creepOnRoad.pos.getDirectionTo(creep)
-          move.anywhere(creepOnRoad, swap ? dirTo : dir, creep)
-            || creepOnRoad.move(dirTo)
+          move.anywhere(creepOnRoad, swap ? dirTo : dir, creep) ||
+            creepOnRoad.move(dirTo)
         }
       }
     }
@@ -123,7 +165,7 @@ const move = {
     const moveData = creep.memory._move
     if (!moveData) return false
     return (moveData.t || 0) + 1 >= Game.time
-  }
+  },
 }
 
 export default move

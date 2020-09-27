@@ -1,6 +1,12 @@
 import move from '../../utils/path'
-import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
-import { findClosestStructureToFillWithPriority } from 'utils/find';
+import {
+  SUCCESS,
+  NOTHING_TODO,
+  NOTHING_DONE,
+  FAILED,
+  NO_RESOURCE,
+} from 'constants/response'
+import { findClosestStructureToFillWithPriority } from 'utils/find'
 
 interface PriorityFillCreep extends Creep {
   memory: PriorityFillMemory
@@ -16,7 +22,10 @@ export default function priorityFill(creep: PriorityFillCreep) {
   if (creep.room.filled) return NOTHING_TODO
   let target = creep.memory._fill && Game.getObjectById(creep.memory._fill)
   if (!target || target.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
-    const newTarget = findClosestStructureToFillWithPriority(creep.room, creep.pos)
+    const newTarget = findClosestStructureToFillWithPriority(
+      creep.room,
+      creep.pos,
+    )
     if (!newTarget) {
       creep.room.cache.priorityFilled = 1
       return NOTHING_TODO
@@ -33,7 +42,11 @@ export default function priorityFill(creep: PriorityFillCreep) {
     if (remaining <= 0) {
       return NO_RESOURCE
     } else {
-      const newTarget = findClosestStructureToFillWithPriority(creep.room, creep.pos, target)
+      const newTarget = findClosestStructureToFillWithPriority(
+        creep.room,
+        creep.pos,
+        target,
+      )
       if (!newTarget) return NOTHING_TODO
       target = newTarget
       creep.memory._fill = target.id

@@ -1,4 +1,7 @@
-export default function tower(tower: StructureTower, enemy?: Creep | PowerCreep) {
+export default function tower(
+  tower: StructureTower,
+  enemy?: Creep | PowerCreep,
+) {
   if (!enemy) return
   if (enemy.my) {
     tower.heal(enemy)

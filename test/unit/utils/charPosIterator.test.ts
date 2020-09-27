@@ -1,13 +1,13 @@
 import sinon from 'sinon'
-import charPosIterator from 'utils/charPosIterator';
-import { expect } from '../../expect';
+import charPosIterator from 'utils/charPosIterator'
+import { expect } from '../../expect'
 
 describe('Check for creep is moving', () => {
   let iterator: () => void
   beforeEach(() => {
     sinon.restore()
     iterator = sinon.stub()
-  });
+  })
 
   describe('starting from 0', () => {
     it('Should start iteration from 0', () => {
@@ -30,4 +30,4 @@ describe('Check for creep is moving', () => {
       expect(iterator).to.be.calledWith(98 & 63, 98 >> 6, 98, 4, 1)
     })
   })
-});
+})

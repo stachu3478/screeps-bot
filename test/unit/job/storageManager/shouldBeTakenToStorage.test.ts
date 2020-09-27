@@ -1,21 +1,21 @@
 import '../../constants'
 import _ from 'lodash'
 import sinon from 'sinon'
-import storageManagement from 'job/storageManagement';
-import { storageBufferingThreshold } from 'config/terminal';
-import { expect } from '../../../expect';
+import storageManagement from 'job/storageManagement'
+import { storageBufferingThreshold } from 'config/terminal'
+import { expect } from '../../../expect'
 
 describe('Checking if terminal needs to be dumped out of resources', () => {
   const { shouldBeTakenToStorage } = storageManagement
   let storage: StructureStorage
   let terminal: StructureTerminal
   beforeEach(() => {
-    global.Game = _.clone(Game);
-    global.Memory = _.clone(Memory);
+    global.Game = _.clone(Game)
+    global.Memory = _.clone(Memory)
     storage = { store: {} } as StructureStorage
     terminal = { store: {} } as StructureTerminal
     sinon.restore()
-  });
+  })
 
   describe('Amount stored in terminal is low', () => {
     beforeEach(() => {
@@ -24,7 +24,9 @@ describe('Checking if terminal needs to be dumped out of resources', () => {
     })
 
     it('Should return false', () => {
-      expect(shouldBeTakenToStorage(RESOURCE_UTRIUM, terminal, storage)).to.eql(0)
+      expect(shouldBeTakenToStorage(RESOURCE_UTRIUM, terminal, storage)).to.eql(
+        0,
+      )
     })
   })
 
@@ -35,7 +37,9 @@ describe('Checking if terminal needs to be dumped out of resources', () => {
     })
 
     it('Should return false', () => {
-      expect(shouldBeTakenToStorage(RESOURCE_UTRIUM, terminal, storage)).to.eql(0)
+      expect(shouldBeTakenToStorage(RESOURCE_UTRIUM, terminal, storage)).to.eql(
+        0,
+      )
     })
   })
 
@@ -50,7 +54,9 @@ describe('Checking if terminal needs to be dumped out of resources', () => {
       })
 
       it('Should return true', () => {
-        expect(shouldBeTakenToStorage(RESOURCE_UTRIUM, terminal, storage)).to.eql(1000)
+        expect(
+          shouldBeTakenToStorage(RESOURCE_UTRIUM, terminal, storage),
+        ).to.eql(1000)
       })
     })
 
@@ -60,8 +66,10 @@ describe('Checking if terminal needs to be dumped out of resources', () => {
       })
 
       it('Should return false', () => {
-        expect(shouldBeTakenToStorage(RESOURCE_UTRIUM, terminal, storage)).to.eql(0)
+        expect(
+          shouldBeTakenToStorage(RESOURCE_UTRIUM, terminal, storage),
+        ).to.eql(0)
       })
     })
   })
-});
+})

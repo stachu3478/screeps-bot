@@ -1,9 +1,12 @@
-export default function handleLog(cache: RoomCache, controller: StructureController) {
+export default function handleLog(
+  cache: RoomCache,
+  controller: StructureController,
+) {
   const logs = controller.room.getEventLog()
-  logs.forEach(l => {
+  logs.forEach((l) => {
     switch (l.event) {
       case EVENT_ATTACK:
-        if (l.data.attackType === EVENT_ATTACK_TYPE_HIT_BACK) break;
+        if (l.data.attackType === EVENT_ATTACK_TYPE_HIT_BACK) break
         const attacker = Game.getObjectById(l.objectId as Id<Creep>)
         if (!attacker || attacker.my) break
         const target = Game.getObjectById(l.data.targetId)
@@ -29,11 +32,20 @@ export default function handleLog(cache: RoomCache, controller: StructureControl
       case EVENT_OBJECT_DESTROYED:
         const type: EventDestroyType = l.data.type
         switch (type) {
-          case LOOK_CREEPS: break
-          case STRUCTURE_ROAD: cache.roadBuilt = 0; break
-          case STRUCTURE_RAMPART: case STRUCTURE_WALL: cache.shielded = 0; break
-          default: cache.built = 0; console.log("Structure has been destroyed: " + type)
-        } break
+          case LOOK_CREEPS:
+            break
+          case STRUCTURE_ROAD:
+            cache.roadBuilt = 0
+            break
+          case STRUCTURE_RAMPART:
+          case STRUCTURE_WALL:
+            cache.shielded = 0
+            break
+          default:
+            cache.built = 0
+            console.log('Structure has been destroyed: ' + type)
+        }
+        break
       case EVENT_UPGRADE_CONTROLLER:
         const controllerLevel = controller.level
         if (controllerLevel !== cache.lvl) {

@@ -1,7 +1,12 @@
-import { liteCarryPack, carryCost, workCost, moveCost } from "./packs";
+import { liteCarryPack, carryCost, workCost, moveCost } from './packs'
 
-function getEfficiency(carryParts: number, workParts: number, distance: number, cooldown: number = EXTRACTOR_COOLDOWN) {
-  return carryParts / (distance + cooldown * carryParts / workParts)
+function getEfficiency(
+  carryParts: number,
+  workParts: number,
+  distance: number,
+  cooldown: number = EXTRACTOR_COOLDOWN,
+) {
+  return carryParts / (distance + (cooldown * carryParts) / workParts)
 }
 
 export function optimalRemoteMiner(energy: number, distance: number) {

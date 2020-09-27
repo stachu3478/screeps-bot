@@ -1,5 +1,9 @@
-import { infoStyle } from "room/style";
-import handleFactory, { com, factoryStoragePerResource, isProducableByFactory } from "utils/handleFactory";
+import { infoStyle } from 'room/style'
+import handleFactory, {
+  com,
+  factoryStoragePerResource,
+  isProducableByFactory,
+} from 'utils/handleFactory'
 
 export default function factory(factory: StructureFactory) {
   const cache = factory.cache
@@ -15,7 +19,10 @@ export default function factory(factory: StructureFactory) {
       if (factory.cooldown) return
       if (!cache.producing) {
         for (const name in com) {
-          if (factory.store[name as ResourceConstant] >= factoryStoragePerResource) continue
+          if (
+            factory.store[name as ResourceConstant] >= factoryStoragePerResource
+          )
+            continue
           if (REACTIONS[name]) continue
           if (name === RESOURCE_ENERGY) continue
           if (com[name].level && factory.level !== com[name].level) continue
@@ -24,15 +31,23 @@ export default function factory(factory: StructureFactory) {
           }
         }
         cache.state = State.IDLE
-        if (factory.room.terminal) handleFactory(factory.room.terminal.store, factory)
-        else if (factory.room.storage) handleFactory(factory.room.storage.store, factory)
+        if (factory.room.terminal)
+          handleFactory(factory.room.terminal.store, factory)
+        else if (factory.room.storage)
+          handleFactory(factory.room.storage.store, factory)
         break
       }
       // @ts-ignore no generic type for produced factory resource
       const result = factory.produce(cache.producing)
-      factory.room.visual.text('Factory: Producing ' + cache.producing, 0, 6, infoStyle)
+      factory.room.visual.text(
+        'Factory: Producing ' + cache.producing,
+        0,
+        6,
+        infoStyle,
+      )
       if (result === ERR_NOT_ENOUGH_RESOURCES) delete cache.producing
       break
-    default: cache.state = State.IDLE
+    default:
+      cache.state = State.IDLE
   }
 }

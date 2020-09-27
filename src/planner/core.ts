@@ -2,9 +2,9 @@ import _ from 'lodash'
 import PlannerMatrix from './matrix'
 import dump from './dump'
 import pos, { posToChar } from './pos'
-import planLink from './links';
-import whirl from 'utils/whirl';
-import xyToChar from './pos';
+import planLink from './links'
+import whirl from 'utils/whirl'
+import xyToChar from './pos'
 import range from 'utils/range'
 
 export default function plan(room: Room) {
@@ -25,22 +25,27 @@ export default function plan(room: Room) {
   let furthestPath: RoomPosition[] = []
   const sourcePositions: SourceMap = {}
   const costMatrix = new PathFinder.CostMatrix()
-  const roomCallback = (roomName: string) => roomName === room.name ? costMatrix : false;
-  sources.forEach(s1 => {
-    sources.forEach(s2 => {
+  const roomCallback = (roomName: string) =>
+    roomName === room.name ? costMatrix : false
+  sources.forEach((s1) => {
+    sources.forEach((s2) => {
       if (s1 === s2) return
-      const path = s1.pos.findPathTo(s2, { ignoreCreeps: true, ignoreDestructibleStructures: true, ignoreRoads: true })
+      const path = s1.pos.findPathTo(s2, {
+        ignoreCreeps: true,
+        ignoreDestructibleStructures: true,
+        ignoreRoads: true,
+      })
       path.forEach((ps) => {
         costMatrix.set(ps.x, ps.y, 1)
       })
     })
   })
-  sources.forEach(obj => {
+  sources.forEach((obj) => {
     const ps = obj.pos
     const { path } = PathFinder.search(
       new RoomPosition(ps.x, ps.y, room.name),
       { pos: controllerPos, range: 3 },
-      { plainCost: 2, roomCallback }
+      { plainCost: 2, roomCallback },
     )
     path.forEach((s: RoomPosition, step: number) => {
       if (s === obj.pos) return
@@ -69,7 +74,7 @@ export default function plan(room: Room) {
   })
 
   // find path to prospect time to travel to routine place
-  sources.forEach(obj => {
+  sources.forEach((obj) => {
     if (obj === furthestSource) {
       sourcePositions[obj.id] += String.fromCharCode(1)
       return
@@ -78,7 +83,10 @@ export default function plan(room: Room) {
     const { path } = PathFinder.search(
       new RoomPosition(ps.x, ps.y, room.name),
       furthestSource.pos,
-      { plainCost: 2, roomCallback }
+      {
+        plainCost: 2,
+        roomCallback,
+      },
     )
     planLink(room, sourcePositions[obj.id][0], matrix, terrain)
     // save path length
@@ -89,10 +97,16 @@ export default function plan(room: Room) {
   const { path } = PathFinder.search(
     furthestSource.pos,
     { pos: controllerPos, range: 3 },
-    { plainCost: 2, roomCallback }
+    { plainCost: 2, roomCallback },
   )
   const lastPos = path[path.length - 1]
-  planLink(room, new RoomPosition(lastPos.x, lastPos.y, room.name), matrix, terrain, -4)
+  planLink(
+    room,
+    new RoomPosition(lastPos.x, lastPos.y, room.name),
+    matrix,
+    terrain,
+    -4,
+  )
 
   pm.coverBorder() // fill the covers to block iteration
 
@@ -114,7 +128,10 @@ export default function plan(room: Room) {
         if (matrix[xy] === 0 && terrain.get(x + ox, y + oy) !== 1) {
           pm.setField(x + ox, y + oy, -1)
           structurePoses.push(pos(x + ox, y + oy))
-          const minimalDistance = range(x - furthestSource.pos.x, y - furthestSource.pos.y)
+          const minimalDistance = range(
+            x - furthestSource.pos.x,
+            y - furthestSource.pos.y,
+          )
           structureCosts.push(Math.max(matrix[pos(x, y)], minimalDistance))
         }
         if (pm.getStructuresCount() >= structsCountGoal) return
@@ -143,7 +160,8 @@ export default function plan(room: Room) {
     let done = false
     const px = currentPos & 63
     const py = currentPos >> 6
-    if (done || matrix[currentPos] >= structureCosts[structureCosts.length - 1]) break // optimal solution found
+    if (done || matrix[currentPos] >= structureCosts[structureCosts.length - 1])
+      break // optimal solution found
     const result = pm.getBestPos(px, py)
     if (result.rank > 1) {
       const x = result.pos & 63
@@ -157,7 +175,9 @@ export default function plan(room: Room) {
         for (let oy = -1; oy <= 1; oy++) {
           const xy = pos(x + ox, y + oy)
           if (matrix[xy] === 0 && terrain.get(x + ox, y + oy) !== 1) {
-            if (matrix[currentPos] >= structureCosts[structureCosts.length - 1]) {
+            if (
+              matrix[currentPos] >= structureCosts[structureCosts.length - 1]
+            ) {
               done = true
               break
             } // optimal solution found
@@ -170,7 +190,10 @@ export default function plan(room: Room) {
       pathNewPoses.push(result.pos)
     } else {
       let newPos
-      if (pathNewPoses[0] && (matrix[pathPoses[0]] || 0) > matrix[pathNewPoses[0]]) {
+      if (
+        pathNewPoses[0] &&
+        (matrix[pathPoses[0]] || 0) > matrix[pathNewPoses[0]]
+      ) {
         newPos = pathNewPoses.shift() || 0
       } else newPos = pathPoses.shift() || 0
       if (typeof newPos !== 'number') return
@@ -180,4 +203,4 @@ export default function plan(room: Room) {
   }
 
   dump(room, pm, sourcePositions, furthestSource.id, nearestSource.id)
-};
+}

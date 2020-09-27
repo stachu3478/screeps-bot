@@ -1,5 +1,5 @@
 import profiler from 'screeps-profiler'
-import autoPickResource from './autoPickResource';
+import autoPickResource from './autoPickResource'
 
 interface AutoPickCreep extends Creep {
   cache: AutoPickCache

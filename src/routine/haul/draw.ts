@@ -1,5 +1,11 @@
 import move from '../../utils/path'
-import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, DONE } from 'constants/response'
+import {
+  SUCCESS,
+  NOTHING_TODO,
+  NOTHING_DONE,
+  FAILED,
+  DONE,
+} from 'constants/response'
 
 interface DrawCreep extends Creep {
   memory: DrawMemory
@@ -13,7 +19,8 @@ interface DrawMemory extends CreepMemory {
 
 export default function draw(
   creep: DrawCreep,
-  target: AnyStoreStructure | Tombstone | Ruin | null | undefined = creep.memory._draw && Game.getObjectById(creep.memory._draw),
+  target: AnyStoreStructure | Tombstone | Ruin | null | undefined = creep.memory
+    ._draw && Game.getObjectById(creep.memory._draw),
   resourceType: ResourceConstant = creep.memory._drawType || RESOURCE_ENERGY,
 ) {
   if (creep.store.getFreeCapacity(resourceType) === 0) return DONE

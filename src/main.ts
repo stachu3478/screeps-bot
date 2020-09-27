@@ -1,14 +1,14 @@
 import 'overloads/all'
 import run from 'room/core'
-import { infoStyle } from 'room/style';
+import { infoStyle } from 'room/style'
 import profiler from 'screeps-profiler'
 import 'utils/profiler'
 import handleStats, { saveCpuUsage } from 'utils/stats'
 import visual from 'planner/visual'
 import roomVisual from 'utils/visual'
-import { memHackBeforeLoop, memHackAfterLoop } from 'utils/memHack';
-import pixelsHandler from 'utils/pixelsHandler';
-import handleRuntimeStats from 'utils/runtime';
+import { memHackBeforeLoop, memHackAfterLoop } from 'utils/memHack'
+import pixelsHandler from 'utils/pixelsHandler'
+import handleRuntimeStats from 'utils/runtime'
 
 export const loop = () => {
   memHackBeforeLoop()

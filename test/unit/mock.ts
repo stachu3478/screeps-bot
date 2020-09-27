@@ -7,12 +7,12 @@ export const Memory = {
   profiler: {},
   powerCreeps: {},
   flags: {},
-  rooms: {}
-} as Memory;
+  rooms: {},
+} as Memory
 
 export const RawMemory = {
   get: () => JSON.stringify(Memory),
-  set: () => { }
+  set: () => {},
 }
 
 export class RoomVisual {
@@ -21,17 +21,33 @@ export class RoomVisual {
   constructor(roomName: string) {
     this.roomName = roomName
   }
-  text() { return this }
-  line() { return this }
-  poly() { return this }
-  rect() { return this }
-  circle() { return this }
-  clear() { return this }
-  getSize() { return 0 }
+  text() {
+    return this
+  }
+  line() {
+    return this
+  }
+  poly() {
+    return this
+  }
+  rect() {
+    return this
+  }
+  circle() {
+    return this
+  }
+  clear() {
+    return this
+  }
+  getSize() {
+    return 0
+  }
 }
 
 export class RoomTerrain {
-  get() { return 0 }
+  get() {
+    return 0
+  }
 }
 
 export class Creep {
@@ -45,11 +61,11 @@ export class Creep {
   constructor(name: string) {
     this.name = name
     this.store = {
-      getFreeCapacity: () => 50
+      getFreeCapacity: () => 50,
     }
     this.memory = {}
     this.pos = {
-      findClosestByPath: (CNST: FindConstant) => null
+      findClosestByPath: (CNST: FindConstant) => null,
     }
     this.motherRoom = new Room('xd')
     this.room = this.motherRoom
@@ -61,15 +77,16 @@ export const SourcyCreep = {
   memory: {} as CreepMemory,
   pos: {
     findClosestByPath: (structure: FindConstant) => {
-      if (structure === FIND_SOURCES_ACTIVE) return {
-        id: "1234"
-      } as Source
+      if (structure === FIND_SOURCES_ACTIVE)
+        return {
+          id: '1234',
+        } as Source
       return null
-    }
-  } as RoomPosition
+    },
+  } as RoomPosition,
 }
 
-export const Structure = class { }
+export const Structure = class {}
 export const Spawn = {}
 export const Source = {}
 export const Flag = {}

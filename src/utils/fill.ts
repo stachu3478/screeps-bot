@@ -1,4 +1,7 @@
-type GenericStoreStructure = StructureStorage | StructureTerminal | StructureFactory
+type GenericStoreStructure =
+  | StructureStorage
+  | StructureTerminal
+  | StructureFactory
 
 function isFillable(amount: number, structure?: GenericStoreStructure) {
   return structure && structure.store.getFreeCapacity() > amount

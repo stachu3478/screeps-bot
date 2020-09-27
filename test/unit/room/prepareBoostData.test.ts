@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import sinon from 'sinon'
-import { expect } from '../../expect';
+import { expect } from '../../expect'
 
 describe('Preparing array of boosting data', () => {
   let room: Room
@@ -12,9 +12,9 @@ describe('Preparing array of boosting data', () => {
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
-    global.Game = _.clone(Game);
+    global.Game = _.clone(Game)
     // @ts-ignore : allow adding Memory to global
-    global.Memory = _.clone(Memory);
+    global.Memory = _.clone(Memory)
     room = {} as Room
     room.prepareBoostData = Room.prototype.prepareBoostData
     boostInfo1 = {} as BoostInfo
@@ -22,7 +22,7 @@ describe('Preparing array of boosting data', () => {
     creepMemory = { role: 123 } as CreepMemory
     sinon.restore()
     boostedMemory = { _targetRole: 123, role: Role.BOOSTER } as CreepMemory
-  });
+  })
 
   describe('All boosts rejected', () => {
     beforeEach(() => {
@@ -39,14 +39,27 @@ describe('Preparing array of boosting data', () => {
 
     it('Returns empty array without modifying creep memory 1 request', () => {
       const oldCreepMemory = _.clone(creepMemory, true)
-      expect(room.prepareBoostData(creepMemory, [CARRY], ['capacity'], creepBody)).to.eql([])
-      expect(room.getBestAvailableBoost).to.be.calledOnceWithExactly(CARRY, 'capacity', 2)
+      expect(
+        room.prepareBoostData(creepMemory, [CARRY], ['capacity'], creepBody),
+      ).to.eql([])
+      expect(room.getBestAvailableBoost).to.be.calledOnceWithExactly(
+        CARRY,
+        'capacity',
+        2,
+      )
       expect(creepMemory).to.eql(oldCreepMemory)
     })
 
     it('Returns empty array without modifying creep memory 2 requests', () => {
       const oldCreepMemory = _.clone(creepMemory, true)
-      expect(room.prepareBoostData(creepMemory, [CARRY, WORK], ['capacity', 'upgradeController'], creepBody)).to.eql([])
+      expect(
+        room.prepareBoostData(
+          creepMemory,
+          [CARRY, WORK],
+          ['capacity', 'upgradeController'],
+          creepBody,
+        ),
+      ).to.eql([])
       expect(room.getBestAvailableBoost).to.be.calledTwice
       expect(creepMemory).to.eql(oldCreepMemory)
     })
@@ -67,13 +80,22 @@ describe('Preparing array of boosting data', () => {
     })
 
     it('Returns empty array without modifying creep memory 1 request', () => {
-      expect(room.prepareBoostData(creepMemory, [CARRY], ['capacity'], creepBody)).to.eql([boostInfo1])
+      expect(
+        room.prepareBoostData(creepMemory, [CARRY], ['capacity'], creepBody),
+      ).to.eql([boostInfo1])
       expect(room.getBestAvailableBoost).to.be.calledOnce
       expect(creepMemory).to.eql(boostedMemory)
     })
 
     it('Returns empty array without modifying creep memory 2 request', () => {
-      expect(room.prepareBoostData(creepMemory, [CARRY, WORK], ['capacity', 'upgradeController'], creepBody)).to.eql([boostInfo1, boostInfo2])
+      expect(
+        room.prepareBoostData(
+          creepMemory,
+          [CARRY, WORK],
+          ['capacity', 'upgradeController'],
+          creepBody,
+        ),
+      ).to.eql([boostInfo1, boostInfo2])
       expect(room.getBestAvailableBoost).to.be.calledTwice
       expect(creepMemory).to.eql(boostedMemory)
     })
@@ -95,13 +117,31 @@ describe('Preparing array of boosting data', () => {
 
     it('Returns empty array without modifying creep memory 1 request', () => {
       const oldCreepMemory = _.clone(creepMemory, true)
-      expect(room.prepareBoostData(creepMemory, [WORK], ['upgradeController'], creepBody)).to.eql([])
-      expect(room.getBestAvailableBoost).to.be.calledOnceWithExactly(WORK, 'upgradeController', 3)
+      expect(
+        room.prepareBoostData(
+          creepMemory,
+          [WORK],
+          ['upgradeController'],
+          creepBody,
+        ),
+      ).to.eql([])
+      expect(room.getBestAvailableBoost).to.be.calledOnceWithExactly(
+        WORK,
+        'upgradeController',
+        3,
+      )
       expect(creepMemory).to.eql(oldCreepMemory)
     })
 
     it('Returns empty array without modifying creep memory 2 request', () => {
-      expect(room.prepareBoostData(creepMemory, [CARRY, WORK], ['capacity', 'upgradeController'], creepBody)).to.eql([boostInfo2])
+      expect(
+        room.prepareBoostData(
+          creepMemory,
+          [CARRY, WORK],
+          ['capacity', 'upgradeController'],
+          creepBody,
+        ),
+      ).to.eql([boostInfo2])
       expect(room.getBestAvailableBoost).to.be.calledTwice
       expect(creepMemory).to.eql(boostedMemory)
     })

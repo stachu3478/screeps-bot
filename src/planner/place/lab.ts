@@ -1,5 +1,5 @@
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE } from '../../constants/response'
-import charPosIterator from 'utils/charPosIterator';
+import charPosIterator from 'utils/charPosIterator'
 
 export default function placeLab(room: Room, labs: string) {
   return charPosIterator(labs, (x, y): number | void => {

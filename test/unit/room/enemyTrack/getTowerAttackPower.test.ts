@@ -1,5 +1,5 @@
-import { getTowerAttackPower } from 'room/enemyTrack';
-import { expect } from '../../../expect';
+import { getTowerAttackPower } from 'room/enemyTrack'
+import { expect } from '../../../expect'
 
 describe('Calculating attack power of tower in place', () => {
   let tower: StructureTower
@@ -15,31 +15,44 @@ describe('Calculating attack power of tower in place', () => {
 
     it('should return 0', () => {
       expect(getTowerAttackPower(tower, 5)).to.eql(0)
-    });
+    })
   })
 
   describe('energy is stored', () => {
     it('should return optimal damage', () => {
-      expect(getTowerAttackPower(tower, TOWER_OPTIMAL_RANGE)).to.eql(TOWER_POWER_ATTACK)
-    });
+      expect(getTowerAttackPower(tower, TOWER_OPTIMAL_RANGE)).to.eql(
+        TOWER_POWER_ATTACK,
+      )
+    })
 
     it('should return bit less than optimal damage', () => {
-      expect(getTowerAttackPower(tower, TOWER_OPTIMAL_RANGE + 1)).to.approximately(TOWER_POWER_ATTACK, 30)
+      expect(getTowerAttackPower(tower, TOWER_OPTIMAL_RANGE + 1))
+        .to.approximately(TOWER_POWER_ATTACK, 30)
         .and.lessThan(TOWER_POWER_ATTACK)
-    });
+    })
 
     it('should return falloff damage', () => {
-      expect(getTowerAttackPower(tower, TOWER_FALLOFF_RANGE)).to.eql(TOWER_POWER_ATTACK * (1 - TOWER_FALLOFF))
-    });
+      expect(getTowerAttackPower(tower, TOWER_FALLOFF_RANGE)).to.eql(
+        TOWER_POWER_ATTACK * (1 - TOWER_FALLOFF),
+      )
+    })
 
     it('should return bit more than falloff damage', () => {
       const faloff = TOWER_POWER_ATTACK * (1 - TOWER_FALLOFF)
-      expect(getTowerAttackPower(tower, TOWER_FALLOFF_RANGE - 1)).to.approximately(faloff, 30)
+      expect(getTowerAttackPower(tower, TOWER_FALLOFF_RANGE - 1))
+        .to.approximately(faloff, 30)
         .and.greaterThan(faloff)
-    });
+    })
 
     it('should return intermediate value', () => {
-      expect(getTowerAttackPower(tower, (TOWER_FALLOFF_RANGE + TOWER_OPTIMAL_RANGE) / 2)).to.eql((TOWER_POWER_ATTACK + TOWER_POWER_ATTACK * (1 - TOWER_FALLOFF)) / 2)
-    });
+      expect(
+        getTowerAttackPower(
+          tower,
+          (TOWER_FALLOFF_RANGE + TOWER_OPTIMAL_RANGE) / 2,
+        ),
+      ).to.eql(
+        (TOWER_POWER_ATTACK + TOWER_POWER_ATTACK * (1 - TOWER_FALLOFF)) / 2,
+      )
+    })
   })
-});
+})

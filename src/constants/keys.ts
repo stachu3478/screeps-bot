@@ -1,15 +1,15 @@
 const enum Keys {
-  mandatory = 'm'
+  mandatory = 'm',
 }
 
 const enum LabBoostDataKeys {
   resourceType,
-  amount
+  amount,
 }
 
 const enum CreepBoostDataKeys {
   name,
   resourceType,
   amount,
-  mandatory
+  mandatory,
 }

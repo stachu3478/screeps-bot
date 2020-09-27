@@ -20,7 +20,7 @@ const routineBooster = {
       return SUCCESS
     }
     return NOTHING_DONE
-  }
+  },
 }
 
 export default routineBooster

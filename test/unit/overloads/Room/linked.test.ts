@@ -1,7 +1,7 @@
 import sinon from 'sinon'
 import _ from 'lodash'
 import 'overloads/all'
-import { expect } from '../../../expect';
+import { expect } from '../../../expect'
 
 describe('Detecting ability to transfer energy with links', () => {
   let link: StructureLink
@@ -9,18 +9,18 @@ describe('Detecting ability to transfer energy with links', () => {
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
-    global.Game = _.clone(Game);
+    global.Game = _.clone(Game)
     // @ts-ignore : allow adding Memory to global
-    global.Memory = _.clone(Memory);
+    global.Memory = _.clone(Memory)
     link = { structureType: STRUCTURE_LINK } as StructureLink
     room = new Room('test')
     sinon.restore()
-  });
+  })
 
   describe('No links description in memory', () => {
     it('returns false', () => {
-      expect(room.linked).to.eql(false);
-    });
+      expect(room.linked).to.eql(false)
+    })
   })
 
   describe('No links in room', () => {
@@ -31,8 +31,8 @@ describe('Detecting ability to transfer energy with links', () => {
     })
 
     it('returns false', () => {
-      expect(room.linked).to.eql(false);
-    });
+      expect(room.linked).to.eql(false)
+    })
   })
 
   describe('No controller link in room', () => {
@@ -42,8 +42,8 @@ describe('Detecting ability to transfer energy with links', () => {
     })
 
     it('returns false', () => {
-      expect(room.linked).to.eql(false);
-    });
+      expect(room.linked).to.eql(false)
+    })
   })
 
   describe('All links in room', () => {
@@ -54,7 +54,7 @@ describe('Detecting ability to transfer energy with links', () => {
     })
 
     it('returns true', () => {
-      expect(room.linked).to.eql(true);
-    });
+      expect(room.linked).to.eql(true)
+    })
   })
-});
+})

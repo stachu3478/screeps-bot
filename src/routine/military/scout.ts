@@ -1,14 +1,20 @@
-import { DONE, FAILED, NOTHING_DONE } from 'constants/response';
+import { DONE, FAILED, NOTHING_DONE } from 'constants/response'
 
 interface ScoutCreep extends Creep {
   memory: ScoutMemory
 }
 
-interface ScoutMemory extends CreepMemory { }
+interface ScoutMemory extends CreepMemory {}
 
 export default function scout(creep: ScoutCreep) {
   const controller = creep.room.controller
-  if (!controller || controller.my || controller.owner || controller.reservation) return FAILED
+  if (
+    !controller ||
+    controller.my ||
+    controller.owner ||
+    controller.reservation
+  )
+    return FAILED
 
   const sources = creep.room.find(FIND_SOURCES)
   if (sources.length < 2) return FAILED

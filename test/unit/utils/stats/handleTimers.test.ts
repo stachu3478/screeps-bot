@@ -1,18 +1,18 @@
 import _ from 'lodash'
 import sinon from 'sinon'
-import { handleTimers, Measurement } from 'utils/stats';
-import { expect } from '../../../expect';
+import { handleTimers, Measurement } from 'utils/stats'
+import { expect } from '../../../expect'
 
 describe('Processing data for statistics - handling timers', () => {
   let creep: Creep
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
-    global.Game = _.clone(Game);
+    global.Game = _.clone(Game)
     // @ts-ignore : allow adding Memory to global
-    global.Memory = _.clone(Memory);
+    global.Memory = _.clone(Memory)
     sinon.restore()
-  });
+  })
 
   describe('No stats data', () => {
     beforeEach(() => {
@@ -30,8 +30,8 @@ describe('Processing data for statistics - handling timers', () => {
       Memory._stats = {
         timers: [0, 0, 0],
         data: {
-          [Measurement.CPU_INTERVAL]: ['123', '', '', '']
-        }
+          [Measurement.CPU_INTERVAL]: ['123', '', '', ''],
+        },
       }
     })
 
@@ -40,8 +40,8 @@ describe('Processing data for statistics - handling timers', () => {
       expect(Memory._stats).to.eql({
         timers: [1, 0, 0],
         data: {
-          [Measurement.CPU_INTERVAL]: ['123', '', '', '']
-        }
+          [Measurement.CPU_INTERVAL]: ['123', '', '', ''],
+        },
       })
     })
   })
@@ -51,8 +51,8 @@ describe('Processing data for statistics - handling timers', () => {
       Memory._stats = {
         timers: [9, 7, 3],
         data: {
-          [Measurement.CPU_INTERVAL]: ['123', '', '', '']
-        }
+          [Measurement.CPU_INTERVAL]: ['123', '', '', ''],
+        },
       }
     })
 
@@ -61,8 +61,8 @@ describe('Processing data for statistics - handling timers', () => {
       expect(Memory._stats).to.eql({
         timers: [0, 8, 3],
         data: {
-          [Measurement.CPU_INTERVAL]: ['123', '', '', '']
-        }
+          [Measurement.CPU_INTERVAL]: ['123', '', '', ''],
+        },
       })
     })
   })
@@ -72,8 +72,8 @@ describe('Processing data for statistics - handling timers', () => {
       Memory._stats = {
         timers: [9, 9, 3],
         data: {
-          [Measurement.CPU_INTERVAL]: ['123', '', '', '']
-        }
+          [Measurement.CPU_INTERVAL]: ['123', '', '', ''],
+        },
       }
     })
 
@@ -82,8 +82,8 @@ describe('Processing data for statistics - handling timers', () => {
       expect(Memory._stats).to.eql({
         timers: [0, 0, 4],
         data: {
-          [Measurement.CPU_INTERVAL]: ['123', '2', '', '']
-        }
+          [Measurement.CPU_INTERVAL]: ['123', '2', '', ''],
+        },
       })
     })
   })
@@ -93,8 +93,8 @@ describe('Processing data for statistics - handling timers', () => {
       Memory._stats = {
         timers: [9, 9, 9],
         data: {
-          [Measurement.CPU_INTERVAL]: ['123', '123', '123', '']
-        }
+          [Measurement.CPU_INTERVAL]: ['123', '123', '123', ''],
+        },
       }
     })
 
@@ -103,9 +103,9 @@ describe('Processing data for statistics - handling timers', () => {
       expect(Memory._stats).to.eql({
         timers: [0, 0, 0],
         data: {
-          [Measurement.CPU_INTERVAL]: ['123', '1232', '1232', '']
-        }
+          [Measurement.CPU_INTERVAL]: ['123', '1232', '1232', ''],
+        },
       })
     })
   })
-});
+})

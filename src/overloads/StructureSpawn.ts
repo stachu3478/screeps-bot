@@ -1,14 +1,21 @@
-import { getXYRoad } from 'utils/selectFromPos';
-import { infoStyle } from 'room/style';
-import sanitizeBody from 'utils/sanitizeBody';
-import { uniqName } from 'spawn/name';
-import defineGetter from 'utils/defineGetter';
+import { getXYRoad } from 'utils/selectFromPos'
+import { infoStyle } from 'room/style'
+import sanitizeBody from 'utils/sanitizeBody'
+import { uniqName } from 'spawn/name'
+import defineGetter from 'utils/defineGetter'
 
-function defineSpawnGetter<T>(property: string, handler: (self: StructureSpawn) => T) {
-  defineGetter<StructureSpawn, StructureSpawnConstructor, T>(StructureSpawn, property, handler)
+function defineSpawnGetter<T>(
+  property: string,
+  handler: (self: StructureSpawn) => T,
+) {
+  defineGetter<StructureSpawn, StructureSpawnConstructor, T>(
+    StructureSpawn,
+    property,
+    handler,
+  )
 }
 
-defineSpawnGetter('cache', self => {
+defineSpawnGetter('cache', (self) => {
   const cache = global.Cache.spawns
   return cache[self.id] || (cache[self.id] = {})
 })
@@ -30,27 +37,40 @@ StructureSpawn.prototype.getDirections = function () {
   return allDirections
 }
 
-StructureSpawn.prototype.trySpawnCreep = function (body: BodyPartConstant[], letter: string, memory: CreepMemory, retry: boolean = false, cooldown: number = 100, boost: BoostInfo[] = []) {
+StructureSpawn.prototype.trySpawnCreep = function (
+  body: BodyPartConstant[],
+  letter: string,
+  memory: CreepMemory,
+  retry: boolean = false,
+  cooldown: number = 100,
+  boost: BoostInfo[] = [],
+) {
   const name = uniqName(letter)
   const result = this.spawnCreep(body, name, { memory, dryRun: true })
   const mem = this.room.memory
   if (result !== 0) {
-    if (!retry) this.cache.trySpawn = {
-      creep: body,
-      name,
-      memory,
-      cooldown,
-      boost
-    }
+    if (!retry)
+      this.cache.trySpawn = {
+        creep: body,
+        name,
+        memory,
+        cooldown,
+        boost,
+      }
   } else {
     const motherMemory = Memory.rooms[memory.room]
     const cache = this.cache
     if (!motherMemory.creeps) motherMemory.creeps = {}
-    this.spawnCreep(sanitizeBody(body), name, { memory, directions: this.getDirections() /*energyStructures: getDistanceOrderedHatches(this.room, creepCost(body))*/ })
+    this.spawnCreep(sanitizeBody(body), name, {
+      memory,
+      directions: this.getDirections() /*energyStructures: getDistanceOrderedHatches(this.room, creepCost(body))*/,
+    })
     this.room.cache.priorityFilled = 0
     motherMemory.creeps[name] = 0
-    if (memory.role === Role.MINER && mem.colonySources) mem.colonySources[cache.sourceId || ''] = mem.colonySources[cache.sourceId || ''].slice(0, 2) + name
-    boost.forEach(data => {
+    if (memory.role === Role.MINER && mem.colonySources)
+      mem.colonySources[cache.sourceId || ''] =
+        mem.colonySources[cache.sourceId || ''].slice(0, 2) + name
+    boost.forEach((data) => {
       this.room.createBoostRequest(name, data.resource, data.partCount)
     })
     delete cache.sourceId

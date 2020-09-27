@@ -1,5 +1,11 @@
 import move from '../../utils/path'
-import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
+import {
+  SUCCESS,
+  NOTHING_TODO,
+  NOTHING_DONE,
+  FAILED,
+  NO_RESOURCE,
+} from 'constants/response'
 
 interface ToRepair {
   [key: string]: number
@@ -9,7 +15,7 @@ const toRepair: ToRepair = {
   [STRUCTURE_EXTENSION]: 1,
   [STRUCTURE_TOWER]: 1,
   [STRUCTURE_STORAGE]: 1,
-  [STRUCTURE_TERMINAL]: 1
+  [STRUCTURE_TERMINAL]: 1,
 }
 
 interface RepairCreep extends Creep {
@@ -31,8 +37,8 @@ export default function repair(creep: RepairCreep) {
   const repairPower = creep.workpartCount * REPAIR_POWER
   if (!target || target.hits === target.hitsMax) {
     target = creep.pos.findClosestByPath(FIND_STRUCTURES, {
-      filter: s => toRepair[s.structureType]
-        && s.hits + repairPower <= s.hitsMax
+      filter: (s) =>
+        toRepair[s.structureType] && s.hits + repairPower <= s.hitsMax,
     })
     if (!target) {
       roomCache.repaired = 1

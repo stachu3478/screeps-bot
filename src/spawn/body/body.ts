@@ -1,6 +1,9 @@
 import { fightPack, liteFightPack, toughPack } from './packs'
 
-export function progressiveClaimer(energy: number, maxParts: number = MAX_CREEP_SIZE) {
+export function progressiveClaimer(
+  energy: number,
+  maxParts: number = MAX_CREEP_SIZE,
+) {
   const parts = [CLAIM, MOVE]
   const dualCost = BODYPART_COST[CLAIM] + BODYPART_COST[MOVE]
   let remaining = energy - dualCost
@@ -41,7 +44,9 @@ export function progressiveFighter(energy: number) {
 export function progressiveCommander(energy: number, level: number = 1) {
   // calc basic level cost
   const parts: BodyPartConstant[] = []
-  const levelCost = level * (BODYPART_COST[TOUGH] + BODYPART_COST[ATTACK] + 2 * BODYPART_COST[MOVE])
+  const levelCost =
+    level *
+    (BODYPART_COST[TOUGH] + BODYPART_COST[ATTACK] + 2 * BODYPART_COST[MOVE])
   let attackParts = level
   let toughParts = level
 

@@ -7,7 +7,9 @@ interface HaulerMemory extends CreepMemory {
   _arrive?: string
   _fill?: Id<AnyStoreStructure>
   _fillType?: ResourceConstant
-  _draw?: Id<Ruin | Tombstone | StructureStorage | StructureTerminal | StructureContainer>
+  _draw?: Id<
+    Ruin | Tombstone | StructureStorage | StructureTerminal | StructureContainer
+  >
   _drawType?: ResourceConstant
 }
 

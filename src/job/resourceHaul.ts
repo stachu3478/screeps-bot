@@ -1,7 +1,7 @@
-import { ACCEPTABLE } from "constants/response";
-import pick from "routine/haul/pick";
+import { ACCEPTABLE } from 'constants/response'
+import pick from 'routine/haul/pick'
 import Hauler from 'role/creep/hauler.d'
-import { findHaulable } from "utils/find";
+import { findHaulable } from 'utils/find'
 
 function getHaulable(structure?: StructureStorage | StructureTerminal) {
   return structure && structure.store.getUsedCapacity() && structure
@@ -14,11 +14,15 @@ export function haulCurrentRoom(creep: Hauler) {
     return true
   }
   const room = creep.room
-  const haulable = findHaulable(room, creep.pos) || (room.controller && !room.controller.my && (getHaulable(room.storage) || getHaulable(room.terminal)))
+  const haulable =
+    findHaulable(room, creep.pos) ||
+    (room.controller &&
+      !room.controller.my &&
+      (getHaulable(room.storage) || getHaulable(room.terminal)))
   if (haulable) {
     mem.state = State.DRAW
     mem._draw = haulable.id
-    mem._drawType = RESOURCES_ALL.find(resource => !!haulable.store[resource])
+    mem._drawType = RESOURCES_ALL.find((resource) => !!haulable.store[resource])
     return true
   }
   return false

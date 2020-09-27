@@ -1,5 +1,5 @@
-import routineBooster from "routine/boost";
-import { NOTHING_DONE, SUCCESS } from "constants/response";
+import routineBooster from 'routine/boost'
+import { NOTHING_DONE, SUCCESS } from 'constants/response'
 
 export interface BoosterCreep extends Creep {
   memory: BoosterMemory
@@ -14,11 +14,17 @@ const roleBooster = {
   run: (creep: BoosterCreep) => {
     switch (creep.memory.state) {
       case State.BOOST:
-        const lab = Game.getObjectById(creep.memory._boostLab || ('' as Id<StructureLab>))
+        const lab = Game.getObjectById(
+          creep.memory._boostLab || ('' as Id<StructureLab>),
+        )
         const result = routineBooster.run(creep, lab)
         if (result !== NOTHING_DONE) {
           delete creep.memory.state
-          creep.room.clearBoostRequest(creep.name, lab && lab.mineralType, result === SUCCESS)
+          creep.room.clearBoostRequest(
+            creep.name,
+            lab && lab.mineralType,
+            result === SUCCESS,
+          )
         }
         break
       default:

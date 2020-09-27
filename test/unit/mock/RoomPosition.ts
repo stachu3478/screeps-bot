@@ -5,9 +5,9 @@ export default class RoomPosition {
   public prototype: any
 
   constructor(x: number, y: number, name: string) {
-    this.x = x;
-    this.y = y;
-    this.roomName = name;
+    this.x = x
+    this.y = y
+    this.roomName = name
   }
 
   createConstructionSite(type: StructureConstant) {
@@ -55,10 +55,12 @@ export default class RoomPosition {
   }
 
   look() {
-    return [{
-      type: 'terrain',
-      terrain: 'plain'
-    }]
+    return [
+      {
+        type: 'terrain',
+        terrain: 'plain',
+      },
+    ]
   }
 
   lookFor(type: LookConstant) {
