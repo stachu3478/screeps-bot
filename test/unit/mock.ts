@@ -3,7 +3,11 @@ export const Memory = {
   log: [],
   myRooms: {},
   spawns: {},
-  creeps: {}
+  creeps: {},
+  profiler: {},
+  powerCreeps: {},
+  flags: {},
+  rooms: {}
 } as Memory;
 
 export const RawMemory = {
@@ -65,7 +69,7 @@ export const SourcyCreep = {
   } as RoomPosition
 }
 
-export const Structure = class {}
+export const Structure = class { }
 export const Spawn = {}
 export const Source = {}
 export const Flag = {}
