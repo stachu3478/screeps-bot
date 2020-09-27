@@ -20,7 +20,7 @@ describe('routine/extract', () => {
       creep.store = { getFreeCapacity: () => 0 } as Creep['store']
     })
 
-    it('returns DONE', function () {
+    it('returns DONE', () => {
       expect(extract(creep)).to.eql(DONE)
     })
   })
@@ -35,7 +35,7 @@ describe('routine/extract', () => {
         creep.motherRoom = {} as Room
       })
 
-      it('returns NOTHING_TODO', function () {
+      it('returns NOTHING_TODO', () => {
         expect(extract(creep)).to.eql(NOTHING_TODO)
       })
     })

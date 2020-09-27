@@ -19,7 +19,7 @@ describe('routine/harvest', () => {
     global.Memory = _.clone(Memory)
   })
 
-  it('should export a loop function', function () {
+  it('should export a loop function', () => {
     assert.isTrue(typeof harvest === 'function')
   })
 
