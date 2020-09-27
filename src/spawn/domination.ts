@@ -1,15 +1,13 @@
 import _ from 'lodash'
 import { progressiveClaimer, progressiveCommander } from './body/body'
+import CacheHandler from 'handler/CacheHandler';
 
-function getOwnedRooms() {
-  const roomCount = global.Cache.ownedRooms
-  return (_.isUndefined(roomCount) ? (global.Cache.ownedRooms = Object.keys(Memory.myRooms).length) : roomCount) || 0
-}
+const cacheHandler = new CacheHandler(global.Cache)
 
 const claimerThreshold = BODYPART_COST[CLAIM] + BODYPART_COST[MOVE]
 function autoClaim(spawn: StructureSpawn, creepCountByRole: number[]) {
   if (spawn.room.energyCapacityAvailable < claimerThreshold) return false
-  if (getOwnedRooms() >= Math.min(Game.gcl.level, Memory.roomLimit || 0)) return false
+  if (cacheHandler.ownedRooms >= Math.min(Game.gcl.level, Memory.roomLimit || 0)) return false
   if (spawn.room.memory._claim) {
     if (!creepCountByRole[Role.CLAIMER]) {
       spawn.trySpawnCreep(progressiveClaimer(spawn.room.energyCapacityAvailable), 'C', { role: Role.CLAIMER, room: spawn.room.name, deprivity: 0 }, false, 20)
