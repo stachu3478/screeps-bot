@@ -76,3 +76,7 @@ interface GlobalCache {
   }
   ownedRooms?: number
 }
+
+interface WrappedGlobalCache extends GlobalCache {
+  ownedRooms: number
+}

@@ -1,4 +1,7 @@
-global.Cache = {
+import CacheHandler from 'handler/CacheHandler'
+import IntershardMemoryHandler from 'handler/IntershardMemoryHandler'
+
+const cache = {
   creeps: {},
   spawns: {},
   powerSpawns: {},
@@ -8,6 +11,11 @@ global.Cache = {
   roomKeepers: {},
   roomStructures: {},
 }
+
+global.Cache = new CacheHandler(
+  cache,
+  new IntershardMemoryHandler(InterShardMemory),
+)
 
 const memory = JSON.parse(RawMemory.get())
 export const memHackBeforeLoop = () => {

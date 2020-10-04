@@ -107,6 +107,6 @@ declare namespace NodeJS {
     log: any
     Game: Game
     Memory: Memory
-    Cache: GlobalCache
+    Cache: WrappedGlobalCache
   }
 }

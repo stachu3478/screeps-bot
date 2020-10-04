@@ -1,14 +1,10 @@
-import _ from 'lodash'
 import { progressiveClaimer, progressiveCommander } from './body/body'
-import CacheHandler from 'handler/CacheHandler'
-
-const cacheHandler = new CacheHandler(global.Cache)
 
 const claimerThreshold = BODYPART_COST[CLAIM] + BODYPART_COST[MOVE]
 function autoClaim(spawn: StructureSpawn, creepCountByRole: number[]) {
   if (spawn.room.energyCapacityAvailable < claimerThreshold) return false
   if (
-    cacheHandler.ownedRooms >= Math.min(Game.gcl.level, Memory.roomLimit || 0)
+    global.Cache.ownedRooms >= Math.min(Game.gcl.level, Memory.roomLimit || 0)
   )
     return false
   if (spawn.room.memory._claim) {

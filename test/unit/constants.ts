@@ -17,6 +17,7 @@ Object.assign(global, {
   Creep,
   Flag,
   Game,
+  InterShardMemory: {},
   Memory,
   RawMemory,
   Room,
