@@ -14,4 +14,5 @@ const enum Role {
   LAB_MANAGER = 13,
   HAULER = 14,
   BOOSTER = 15,
+  MOVE_TO_FLAG = 16,
 }

@@ -100,6 +100,9 @@ export default function creeps(
         case Role.BOOSTER:
           roleBooster.run(creep as BoosterCreep)
           break
+        case Role.MOVE_TO_FLAG:
+          creep.moveTo(Game.flags['flag'])
+          break
         default:
           creep.memory.role = Role.UPGRADER
       }

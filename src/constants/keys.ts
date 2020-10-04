@@ -5,6 +5,7 @@ const enum Keys {
 const enum ShardMemoryKeys {
   ownedRooms = 'r',
   roomLimit = 'R',
+  creeps = 'c',
 }
 
 const enum LabBoostDataKeys {

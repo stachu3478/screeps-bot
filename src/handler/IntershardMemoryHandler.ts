@@ -1,6 +1,9 @@
 interface ShardMemory {
   [ShardMemoryKeys.ownedRooms]: number
   [ShardMemoryKeys.roomLimit]: number
+  [ShardMemoryKeys.creeps]: {
+    [key: string]: CreepMemory
+  }
 }
 
 export default class IntershardMemoryHandler {
@@ -11,7 +14,11 @@ export default class IntershardMemoryHandler {
   constructor(memory: InterShardMemory) {
     this.memory = memory
     this.memoryChanged = true
-    this.parsedMemory = { [ShardMemoryKeys.roomLimit]: Infinity, [ShardMemoryKeys.ownedRooms]: 0 }
+    this.parsedMemory = {
+      [ShardMemoryKeys.roomLimit]: Infinity,
+      [ShardMemoryKeys.ownedRooms]: 0,
+      [ShardMemoryKeys.creeps]: {},
+    }
   }
 
   set roomLimit(v: number) {
