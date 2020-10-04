@@ -1,5 +1,5 @@
 import { DONE, NOTHING_TODO } from 'constants/response'
-import arrive from 'routine/arrive';
+import arrive from 'routine/arrive'
 
 export interface Colonizer extends Creep {
   memory: ColonizerMemory
@@ -14,11 +14,12 @@ export default function colonizer(creep: Colonizer) {
   switch (creep.memory.state) {
     case State.ARRIVE:
       switch (arrive(creep)) {
-        case DONE: case NOTHING_TODO:
+        case DONE:
+        case NOTHING_TODO:
           creep.memory.role = creep.memory._targetRole
           break
       }
-      break;
+      break
     default:
       creep.memory.state = State.ARRIVE
   }

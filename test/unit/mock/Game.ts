@@ -22,7 +22,7 @@ export default {
     generatePixel: () => OK,
     unlocked: false,
     unlockedTime: undefined,
-    unlock: () => OK
+    unlock: () => OK,
   },
   creeps: {},
   flags: {},
@@ -44,9 +44,10 @@ export default {
     getRoomTerrain: (roomName: string) => new Room.Terrain(roomName),
     getTerrainAt: () => 'plain',
     getWorldSize: () => 0,
-    getRoomStatus: () => ({
-      status: 'closed',
-    }) as RoomStatusPermanent,
+    getRoomStatus: () =>
+      ({
+        status: 'closed',
+      } as RoomStatusPermanent),
     isRoomAvailable: () => false,
   },
   market: {
@@ -76,5 +77,5 @@ export default {
   structures: {},
   time: 12345,
   getObjectById: () => null,
-  notify: () => { },
+  notify: () => {},
 } as Game

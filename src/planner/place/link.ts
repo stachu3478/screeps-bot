@@ -1,8 +1,7 @@
-import { getXYLink } from "utils/selectFromPos";
-import charPosIterator from "utils/charPosIterator";
+import { getXYLink } from 'utils/selectFromPos'
+import charPosIterator from 'utils/charPosIterator'
 
 export default function placeLink(room: Room) {
-
   const mem = room.memory
   if (mem.controllerLink && mem.links) {
     charPosIterator(mem.controllerLink + mem.links, (x, y): boolean | void => {

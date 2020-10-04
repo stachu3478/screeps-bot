@@ -1,10 +1,10 @@
 import _ from 'lodash'
 import sinon from 'sinon'
 import routineBooster from 'routine/boost'
-import { NOTHING_DONE, FAILED, SUCCESS, NOTHING_TODO } from 'constants/response';
-import { BoosterCreep } from 'role/creep/booster';
-import move from 'utils/path';
-import { expect } from '../../expect';
+import { NOTHING_DONE, FAILED, SUCCESS, NOTHING_TODO } from 'constants/response'
+import { BoosterCreep } from 'role/creep/booster'
+import move from 'utils/path'
+import { expect } from '../../expect'
 
 describe('Creep work in boost mode - routine', () => {
   let creep: BoosterCreep
@@ -12,15 +12,15 @@ describe('Creep work in boost mode - routine', () => {
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
-    global.Game = _.clone(Game);
+    global.Game = _.clone(Game)
     // @ts-ignore : allow adding Memory to global
-    global.Memory = _.clone(Memory);
+    global.Memory = _.clone(Memory)
 
     lab1 = {} as StructureLab
 
     creep = { room: { memory: {}, cache: {} } } as BoosterCreep
     sinon.restore()
-  });
+  })
 
   describe('no lab passed', () => {
     it('Should return nothing todo', () => {
@@ -66,4 +66,4 @@ describe('Creep work in boost mode - routine', () => {
       expect(creep.room.cache.priorityFilled).to.eql(0)
     })
   })
-});
+})

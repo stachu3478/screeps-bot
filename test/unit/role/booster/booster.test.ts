@@ -3,8 +3,8 @@ import _ from 'lodash'
 import sinon from 'sinon'
 import roleBooster, { BoosterCreep } from 'role/creep/booster'
 import routineBooster from 'routine/boost'
-import { NOTHING_DONE, FAILED, SUCCESS } from 'constants/response';
-import { expect } from '../../../expect';
+import { NOTHING_DONE, FAILED, SUCCESS } from 'constants/response'
+import { expect } from '../../../expect'
 
 describe('Creep boost role', () => {
   let creep: BoosterCreep
@@ -14,14 +14,16 @@ describe('Creep boost role', () => {
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
-    global.Game = _.clone(Game);
+    global.Game = _.clone(Game)
     // @ts-ignore : allow adding Memory to global
-    global.Memory = _.clone(Memory);
+    global.Memory = _.clone(Memory)
 
     lab1 = { mineralType: RESOURCE_UTRIUM_ACID } as StructureLab
-    Game.getObjectById = () => (lab1)
+    Game.getObjectById = () => lab1
 
-    creep = { memory: { role: Role.BOOSTER, _targetRole: Role.MINER } } as BoosterCreep
+    creep = {
+      memory: { role: Role.BOOSTER, _targetRole: Role.MINER },
+    } as BoosterCreep
     creep.room = {} as Room
     creep.room.externalLabs = [externalLab]
     creep.room.lab1 = lab1
@@ -29,7 +31,7 @@ describe('Creep boost role', () => {
     creep.room.memory = {}
     creep.name = 'creepName'
     sinon.restore()
-  });
+  })
 
   describe('no state specified', () => {
     describe('boost job found', () => {
@@ -92,7 +94,11 @@ describe('Creep boost role', () => {
         expect(creep.memory.state).to.be.undefined
         expect(creep.memory.role).to.eql(Role.BOOSTER, 'Invalid role')
         expect(routineBooster.run).to.be.calledWithExactly(creep, lab1)
-        expect(creep.room.clearBoostRequest).to.be.calledWithExactly(creep.name, lab1.mineralType, true)
+        expect(creep.room.clearBoostRequest).to.be.calledWithExactly(
+          creep.name,
+          lab1.mineralType,
+          true,
+        )
       })
     })
 
@@ -106,8 +112,12 @@ describe('Creep boost role', () => {
         roleBooster.run(creep)
         expect(creep.memory.state).to.be.undefined
         expect(routineBooster.run).to.be.calledWithExactly(creep, lab1)
-        expect(creep.room.clearBoostRequest).to.be.calledWithExactly(creep.name, lab1.mineralType, false)
+        expect(creep.room.clearBoostRequest).to.be.calledWithExactly(
+          creep.name,
+          lab1.mineralType,
+          false,
+        )
       })
     })
   })
-});
+})

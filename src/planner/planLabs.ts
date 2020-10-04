@@ -1,6 +1,6 @@
-import PlannerMatrix from "./matrix";
-import xyToChar from "./pos";
-import charPosIterator from "utils/charPosIterator";
+import PlannerMatrix from './matrix'
+import xyToChar from './pos'
+import charPosIterator from 'utils/charPosIterator'
 
 export default {
   run: function run(room: Room) {
@@ -13,7 +13,9 @@ export default {
 
     const structPoses = mem.structs.substr(12)
     const targetPos = mem.structs.charCodeAt(0)
-    charPosIterator(structPoses, (xp, yp) => { pm.setField(xp, yp, 3) })
+    charPosIterator(structPoses, (xp, yp) => {
+      pm.setField(xp, yp, 3)
+    })
 
     const labRequirement = CONTROLLER_STRUCTURES[STRUCTURE_LAB][8]
     const matrix = pm.getMatrix()
@@ -38,7 +40,10 @@ export default {
           }
         }
       const totalPoses = internalPoses.length + externalPoses.length
-      const distance = Math.max(Math.abs(xp - (targetPos & 63)), Math.abs(yp - (targetPos >> 6)))
+      const distance = Math.max(
+        Math.abs(xp - (targetPos & 63)),
+        Math.abs(yp - (targetPos >> 6)),
+      )
       if (internalPoses.length < 2) return
       if (totalPoses >= labRequirement) {
         if (bestDistance > distance || bestTotalPoses < labRequirement) {
@@ -58,10 +63,10 @@ export default {
     while (bestInternalPoses.length > 2) {
       bestExternalPoses.push(bestInternalPoses.pop() || 0)
     }
-    bestInternalPoses.forEach(xy => {
+    bestInternalPoses.forEach((xy) => {
       pm.setField(xy & 63, xy >> 6, 2)
     })
-    bestExternalPoses.forEach(xy => {
+    bestExternalPoses.forEach((xy) => {
       pm.setField(xy & 63, xy >> 6, 1)
     })
 
@@ -72,5 +77,5 @@ export default {
     mem.structs = mem.structs.substr(0, 12) + String.fromCharCode(...newStructs)
     mem.internalLabs = String.fromCharCode(...bestInternalPoses)
     mem.externalLabs = String.fromCharCode(...bestExternalPoses)
-  }
+  },
 }

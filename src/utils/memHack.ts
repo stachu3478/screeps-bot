@@ -6,7 +6,7 @@ global.Cache = {
   terminals: {},
   factories: {},
   roomKeepers: {},
-  roomStructures: {}
+  roomStructures: {},
 }
 
 const memory = JSON.parse(RawMemory.get())

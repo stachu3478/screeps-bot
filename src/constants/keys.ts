@@ -1,20 +1,20 @@
 const enum Keys {
-  mandatory = 'm'
+  mandatory = 'm',
 }
 
 const enum ShardMemoryKeys {
   ownedRooms = 'r',
-  roomLimit = 'R'
+  roomLimit = 'R',
 }
 
 const enum LabBoostDataKeys {
   resourceType,
-  amount
+  amount,
 }
 
 const enum CreepBoostDataKeys {
   name,
   resourceType,
   amount,
-  mandatory
+  mandatory,
 }

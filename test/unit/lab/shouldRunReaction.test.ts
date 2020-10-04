@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { expect } from '../../expect';
+import { expect } from '../../expect'
 
 describe('When lab system is in producing state', () => {
   let room: Room
@@ -7,9 +7,9 @@ describe('When lab system is in producing state', () => {
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
-    global.Game = _.clone(Game);
+    global.Game = _.clone(Game)
     // @ts-ignore : allow adding Memory to global
-    global.Memory = _.clone(Memory);
+    global.Memory = _.clone(Memory)
     room = {} as Room
     room.lab1 = {} as StructureLab
     room.lab2 = {} as StructureLab
@@ -19,28 +19,49 @@ describe('When lab system is in producing state', () => {
     room.visual = new RoomVisual()
     lab = {} as StructureLab
     lab.shouldRunReaction = StructureLab.prototype.shouldRunReaction
-  });
+  })
 
   it('allows running reaction while it is filled with the same mineral type', function () {
     lab.mineralType = RESOURCE_UTRIUM_HYDRIDE
     expect(lab.shouldRunReaction(RESOURCE_UTRIUM_HYDRIDE, 1)).to.eql(true)
-  });
+  })
 
   it('allows running reaction while there is no mineral', function () {
-    const stubBoostData: BoostData = { labs: [[RESOURCE_UTRIUM_LEMERGITE, 300], [RESOURCE_GHODIUM_ALKALIDE, 0], [RESOURCE_UTRIUM_OXIDE, 200]], creeps: [] }
+    const stubBoostData: BoostData = {
+      labs: [
+        [RESOURCE_UTRIUM_LEMERGITE, 300],
+        [RESOURCE_GHODIUM_ALKALIDE, 0],
+        [RESOURCE_UTRIUM_OXIDE, 200],
+      ],
+      creeps: [],
+    }
     lab.room = { getBoosts: () => stubBoostData } as Room
     expect(lab.shouldRunReaction(RESOURCE_UTRIUM_HYDRIDE, 1)).to.eql(true)
-  });
+  })
 
   it('allows running reaction while index is the same mineral', function () {
-    const stubBoostData: BoostData = { labs: [[RESOURCE_UTRIUM_LEMERGITE, 300], [RESOURCE_UTRIUM_HYDRIDE, 1000], [RESOURCE_UTRIUM_OXIDE, 200]], creeps: [] }
+    const stubBoostData: BoostData = {
+      labs: [
+        [RESOURCE_UTRIUM_LEMERGITE, 300],
+        [RESOURCE_UTRIUM_HYDRIDE, 1000],
+        [RESOURCE_UTRIUM_OXIDE, 200],
+      ],
+      creeps: [],
+    }
     lab.room = { getBoosts: () => stubBoostData } as Room
     expect(lab.shouldRunReaction(RESOURCE_UTRIUM_HYDRIDE, 1)).to.eql(true)
-  });
+  })
 
   it('does not allow running reaction while index is not the same mineral', function () {
-    const stubBoostData: BoostData = { labs: [[RESOURCE_UTRIUM_HYDRIDE, 100], [RESOURCE_UTRIUM_LEMERGITE, 100], [RESOURCE_UTRIUM_OXIDE, 300]], creeps: [] }
+    const stubBoostData: BoostData = {
+      labs: [
+        [RESOURCE_UTRIUM_HYDRIDE, 100],
+        [RESOURCE_UTRIUM_LEMERGITE, 100],
+        [RESOURCE_UTRIUM_OXIDE, 300],
+      ],
+      creeps: [],
+    }
     lab.room = { getBoosts: () => stubBoostData } as Room
     expect(lab.shouldRunReaction(RESOURCE_UTRIUM_HYDRIDE, 1)).to.eql(false)
-  });
-});
+  })
+})

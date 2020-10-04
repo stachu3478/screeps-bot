@@ -1,8 +1,13 @@
 import _ from 'lodash'
 import { SUCCESS, NOTHING_TODO } from '../../constants/response'
-import { getXYSpawn, getXYTower, getXYRampart, getXYWall } from 'utils/selectFromPos';
-import { roomPos } from '../pos';
-import charPosIterator from 'utils/charPosIterator';
+import {
+  getXYSpawn,
+  getXYTower,
+  getXYRampart,
+  getXYWall,
+} from 'utils/selectFromPos'
+import { roomPos } from '../pos'
+import charPosIterator from 'utils/charPosIterator'
 
 export default function placeShield(controller: StructureController) {
   const room = controller.room
@@ -21,7 +26,11 @@ export default function placeShield(controller: StructureController) {
     if (!structure) return
     const rampart = getXYRampart(room, x, y)
     if (rampart) {
-      minDecay = Math.min(minDecay, RAMPART_DECAY_TIME * Math.floor(rampart.hits / RAMPART_DECAY_AMOUNT) + rampart.ticksToDecay)
+      minDecay = Math.min(
+        minDecay,
+        RAMPART_DECAY_TIME * Math.floor(rampart.hits / RAMPART_DECAY_AMOUNT) +
+          rampart.ticksToDecay,
+      )
       return
     }
     minDecay = 0
@@ -31,7 +40,9 @@ export default function placeShield(controller: StructureController) {
   if (!_.isUndefined(result)) return result
 
   const controllerPos = controller.pos
-  const colonySourcePositions = Object.values(mem.colonySources || {}).map(p => roomPos(p, room.name))
+  const colonySourcePositions = Object.values(
+    mem.colonySources || {},
+  ).map((p) => roomPos(p, room.name))
   for (let x = -1; x < 2; x++)
     for (let y = -1; y < 2; y++) {
       const xPos = controllerPos.x + x

@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
     "module": "esnext",
-    "lib": [
-      "esnext"
-    ],
+    "lib": ["esnext"],
     "target": "es2017",
     "moduleResolution": "Node",
     "outDir": "dist",
@@ -17,7 +15,5 @@
     "resolveJsonModule": true,
     "removeComments": true
   },
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

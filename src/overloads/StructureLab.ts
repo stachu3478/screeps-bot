@@ -1,4 +1,7 @@
-StructureLab.prototype.shouldRunReaction = function (resource: ResourceConstant, labIndex: number) {
+StructureLab.prototype.shouldRunReaction = function (
+  resource: ResourceConstant,
+  labIndex: number,
+) {
   if (this.mineralType) return true
   const labBoostData = this.room.getBoosts().labs[labIndex]
   if (!labBoostData) return true

@@ -1,5 +1,5 @@
-import { SUCCESS, NOTHING_DONE } from "constants/response";
-import { findClosestDamagedCreeps } from "utils/find";
+import { SUCCESS, NOTHING_DONE } from 'constants/response'
+import { findClosestDamagedCreeps } from 'utils/find'
 
 export default function heal(creep: Creep) {
   const nearest = findClosestDamagedCreeps(creep.pos)

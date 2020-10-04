@@ -1,4 +1,4 @@
-import collectGarbage from "utils/collectGarbage";
+import collectGarbage from 'utils/collectGarbage'
 
 export function uniqName(start: string) {
   let time = 0

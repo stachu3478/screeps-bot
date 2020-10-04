@@ -1,14 +1,17 @@
 import _ from 'lodash'
-import { DONE, NOTHING_DONE, FAILED, SUCCESS } from "constants/response";
-import { energyCost } from 'utils/handleTerminal';
+import { DONE, NOTHING_DONE, FAILED, SUCCESS } from 'constants/response'
+import { energyCost } from 'utils/handleTerminal'
 
 function calcCost(room1: string, room2?: string) {
-  if (room2) return Game.market.calcTransactionCost(TERMINAL_MIN_SEND, room1, room2)
+  if (room2)
+    return Game.market.calcTransactionCost(TERMINAL_MIN_SEND, room1, room2)
   return Infinity
 }
 
-const fromSell = (roomName: string) => (o: Order) => TERMINAL_MIN_SEND * -o.price - calcCost(roomName, o.roomName) * energyCost
-const fromBuy = (roomName: string) => (o: Order) => TERMINAL_MIN_SEND * o.price - calcCost(roomName, o.roomName) * energyCost
+const fromSell = (roomName: string) => (o: Order) =>
+  TERMINAL_MIN_SEND * -o.price - calcCost(roomName, o.roomName) * energyCost
+const fromBuy = (roomName: string) => (o: Order) =>
+  TERMINAL_MIN_SEND * o.price - calcCost(roomName, o.roomName) * energyCost
 
 export default function makeBusiness(term: StructureTerminal) {
   const cache = term.cache
@@ -17,13 +20,18 @@ export default function makeBusiness(term: StructureTerminal) {
   const resourceType = RESOURCES_ALL[iteration]
   if (!resourceType) return DONE
   const roomName = term.room.name
-  const buyOrders = Game.market.getAllOrders({ type: ORDER_BUY, resourceType })
-    .filter(o => o.amount >= TERMINAL_MIN_SEND)
+  const buyOrders = Game.market
+    .getAllOrders({ type: ORDER_BUY, resourceType })
+    .filter((o) => o.amount >= TERMINAL_MIN_SEND)
   const buyCalc = fromBuy(roomName)
   const bestBuyOrder = _.max(buyOrders, buyCalc)
   if (cache.businessSell) {
     const bestBuyOrder = _.max(buyOrders, buyCalc)
-    const result = Game.market.deal(bestBuyOrder.id, cache.businessAmount || 0, roomName)
+    const result = Game.market.deal(
+      bestBuyOrder.id,
+      cache.businessAmount || 0,
+      roomName,
+    )
     cache.businessSell = 0
     cache.resourceIteration++
     if (result !== 0) {
@@ -32,8 +40,9 @@ export default function makeBusiness(term: StructureTerminal) {
     }
     return SUCCESS
   } else {
-    const sellOrders = Game.market.getAllOrders({ type: ORDER_SELL, resourceType })
-      .filter(o => o.amount >= TERMINAL_MIN_SEND)
+    const sellOrders = Game.market
+      .getAllOrders({ type: ORDER_SELL, resourceType })
+      .filter((o) => o.amount >= TERMINAL_MIN_SEND)
 
     const sellCalc = fromSell(roomName)
     const bestSellOrder = _.max(sellOrders, sellCalc)
@@ -42,10 +51,16 @@ export default function makeBusiness(term: StructureTerminal) {
     const cons = Math.floor(sellCalc(bestSellOrder))
     const victims = pros + cons
     if (victims > 0) {
-      console.log('It is a ludicrous occasion! ', pros, cons, energyCost, JSON.stringify({
-        buy: bestBuyOrder,
-        sell: bestSellOrder
-      }))
+      console.log(
+        'It is a ludicrous occasion! ',
+        pros,
+        cons,
+        energyCost,
+        JSON.stringify({
+          buy: bestBuyOrder,
+          sell: bestSellOrder,
+        }),
+      )
       const amount = Math.min(bestBuyOrder.amount, bestSellOrder.amount)
       const primaryCost = bestSellOrder.price * amount
       if (primaryCost > Game.market.credits) {

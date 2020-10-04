@@ -11,5 +11,5 @@ export const DONE = 5
 export const ACCEPTABLE: Object = {
   [SUCCESS]: 0,
   [DONE]: 0,
-  [NOTHING_DONE]: 0
+  [NOTHING_DONE]: 0,
 }

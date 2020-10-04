@@ -1,9 +1,18 @@
-import pos, { roomPos } from "./pos";
-import whirl from "utils/whirl";
+import pos, { roomPos } from './pos'
+import whirl from 'utils/whirl'
 
 // prosper for a link
-export default function planLink(room: Room, sourcePosition: string | RoomPosition, matrix: Int8Array, terrain: RoomTerrain, mark: number = -2) {
-  const miningPos = typeof sourcePosition === 'string' ? roomPos(sourcePosition, room.name) : sourcePosition
+export default function planLink(
+  room: Room,
+  sourcePosition: string | RoomPosition,
+  matrix: Int8Array,
+  terrain: RoomTerrain,
+  mark: number = -2,
+) {
+  const miningPos =
+    typeof sourcePosition === 'string'
+      ? roomPos(sourcePosition, room.name)
+      : sourcePosition
   whirl(miningPos.x, miningPos.y, (x, y) => {
     const plain = terrain.get(x, y)
     if (plain === TERRAIN_MASK_WALL) return false

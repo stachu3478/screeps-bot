@@ -1,7 +1,11 @@
-import { FillCreep } from "routine/haul/fill";
-import { getFillableGenericStruture } from "utils/fill";
+import { FillCreep } from 'routine/haul/fill'
+import { getFillableGenericStruture } from 'utils/fill'
 
-export default function dumpResources(creep: FillCreep, targetState: number, fallbackState: number = State.IDLE) {
+export default function dumpResources(
+  creep: FillCreep,
+  targetState: number,
+  fallbackState: number = State.IDLE,
+) {
   creep.memory.state = fallbackState
   for (const name in creep.store) {
     const resource = name as ResourceConstant

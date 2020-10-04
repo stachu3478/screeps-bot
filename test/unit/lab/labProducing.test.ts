@@ -1,16 +1,16 @@
 import _ from 'lodash'
-import lab from 'role/lab';
-import sinon from 'sinon';
-import { expect } from '../../expect';
+import lab from 'role/lab'
+import sinon from 'sinon'
+import { expect } from '../../expect'
 
 describe('When lab system is in producing state', () => {
   let room: Room
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
-    global.Game = _.clone(Game);
+    global.Game = _.clone(Game)
     // @ts-ignore : allow adding Memory to global
-    global.Memory = _.clone(Memory);
+    global.Memory = _.clone(Memory)
     room = {} as Room
     room.lab1 = {} as StructureLab
     room.lab2 = {} as StructureLab
@@ -18,12 +18,12 @@ describe('When lab system is in producing state', () => {
     room.memory = { labState: State.LAB_PRODUCING }
     room.cache = { labCooldown: 0 }
     room.visual = new RoomVisual()
-  });
+  })
 
   it('should switch to collecting state when no recipe is present', function () {
     lab(room)
     expect(room.memory.labState).to.eql(State.LAB_COLLECTING)
-  });
+  })
 
   it('should run reaction', function () {
     room.memory.labRecipe = RESOURCE_UTRIUM_HYDRIDE
@@ -35,7 +35,7 @@ describe('When lab system is in producing state', () => {
     expect(externalLab.runReaction).to.be.calledOnce
     expect(room.memory.labState).to.eql(State.LAB_PRODUCING)
     expect(room.cache.labCooldown).to.be.greaterThan(0)
-  });
+  })
 
   it('should run reaction and return to collecting state if no resources', function () {
     room.memory.labRecipe = RESOURCE_UTRIUM_HYDRIDE
@@ -47,7 +47,7 @@ describe('When lab system is in producing state', () => {
     expect(externalLab.runReaction).to.be.calledOnce
     expect(room.memory.labState).to.eql(State.LAB_COLLECTING)
     expect(room.cache.labCooldown).to.eql(0)
-  });
+  })
 
   it('should run reaction and return to collecting state if lab is full', function () {
     room.memory.labRecipe = RESOURCE_UTRIUM_HYDRIDE
@@ -59,7 +59,7 @@ describe('When lab system is in producing state', () => {
     expect(externalLab.runReaction).to.be.calledOnce
     expect(room.memory.labState).to.eql(State.LAB_COLLECTING)
     expect(room.cache.labCooldown).to.eql(0)
-  });
+  })
 
   it('should not run reaction and trigger cooldown', function () {
     room.memory.labRecipe = RESOURCE_UTRIUM_HYDRIDE
@@ -71,5 +71,5 @@ describe('When lab system is in producing state', () => {
     expect(externalLab.runReaction).to.not.be.called
     expect(room.memory.labState).to.eql(State.LAB_PRODUCING)
     expect(room.cache.labCooldown).to.be.greaterThan(0)
-  });
-});
+  })
+})

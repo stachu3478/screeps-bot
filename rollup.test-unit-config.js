@@ -1,11 +1,11 @@
-"use strict";
+'use strict'
 
-import clear from 'rollup-plugin-clear';
-import resolve from '@rollup/plugin-node-resolve';
-import commonjs from '@rollup/plugin-commonjs';
-import typescript from 'rollup-plugin-typescript2';
-import buble      from 'rollup-plugin-buble';
-import multiEntry from '@rollup/plugin-multi-entry';
+import clear from 'rollup-plugin-clear'
+import resolve from '@rollup/plugin-node-resolve'
+import commonjs from '@rollup/plugin-commonjs'
+import typescript from 'rollup-plugin-typescript2'
+import buble from 'rollup-plugin-buble'
+import multiEntry from '@rollup/plugin-multi-entry'
 
 export default {
   input: 'test/unit/**/*.test.ts',
@@ -16,16 +16,16 @@ export default {
     format: 'iife',
     globals: {
       it: 'it',
-      describe: 'describe'
-    }
+      describe: 'describe',
+    },
   },
   external: ['it', 'describe'],
   plugins: [
-    clear({ targets: ["dist/test.bundle.js"] }),
+    clear({ targets: ['dist/test.bundle.js'] }),
     resolve(),
     commonjs(),
-    typescript({tsconfig: "./tsconfig.json"}),
+    typescript({ tsconfig: './tsconfig.json' }),
     multiEntry(),
-    buble()
-  ]
+    buble(),
+  ],
 }

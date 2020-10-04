@@ -1,6 +1,8 @@
-import { nominalStorage } from 'config/terminal';
+import { nominalStorage } from 'config/terminal'
 
-export const factoryStoragePerResource = Math.floor(FACTORY_CAPACITY / Object.keys(COMMODITIES).length)
+export const factoryStoragePerResource = Math.floor(
+  FACTORY_CAPACITY / Object.keys(COMMODITIES).length,
+)
 export const com = COMMODITIES as CommoMap
 
 interface ResourceMap {
@@ -16,8 +18,8 @@ interface ComponentMap {
 interface CommoMap {
   [key: string]: {
     level?: number
-    amount: number,
-    cooldown: number,
+    amount: number
+    cooldown: number
     components: {
       [key: string]: number
     }
@@ -34,7 +36,10 @@ for (const name in com) {
   }
 }
 
-export function isProducableByFactory(resources: ResourceMap, resource: ResourceConstant) {
+export function isProducableByFactory(
+  resources: ResourceMap,
+  resource: ResourceConstant,
+) {
   if (REACTIONS[resource]) return false // we don't produce basic components
   const recipe = com[resource]
   for (const name in recipe.components) {
@@ -52,7 +57,10 @@ function isNeededByFactory(resources: ResourceMap, resource: ResourceConstant) {
   return false
 }
 
-export default function handleFactory(resources: ResourceMap, factory: StructureFactory) {
+export default function handleFactory(
+  resources: ResourceMap,
+  factory: StructureFactory,
+) {
   const cache = factory.cache
   if (!cache.needs) {
     for (const n in resources) {

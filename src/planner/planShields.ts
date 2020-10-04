@@ -1,8 +1,9 @@
-import PlannerMatrix from "./matrix";
-import xyToChar from "./pos"
-import charPosIterator from "utils/charPosIterator";
+import PlannerMatrix from './matrix'
+import xyToChar from './pos'
+import charPosIterator from 'utils/charPosIterator'
 
-export default function planShields(room: Room) { // TODO finish
+export default function planShields(room: Room) {
+  // TODO finish
   if (!room.controller) return
   const mem = room.memory
   if (!mem.structs) return
@@ -15,7 +16,7 @@ export default function planShields(room: Room) { // TODO finish
   let activeArray: number[] = []
   let maxDensity = 1
   // cover exits where wall and rampart cannot be placed
-  exits.forEach(position => {
+  exits.forEach((position) => {
     for (let x = -2; x < 3; x++)
       for (let y = -2; y < 3; y++) {
         let xpos = position.x + x
@@ -42,7 +43,7 @@ export default function planShields(room: Room) { // TODO finish
   const matrix = pm.getMatrix()
   while (activeArray.length > 0) {
     const newActive: number[] = []
-    activeArray.forEach(xy => {
+    activeArray.forEach((xy) => {
       const xp = xy & 63
       const yp = xy >> 6
       let lowest: number[] = []
@@ -71,7 +72,7 @@ export default function planShields(room: Room) { // TODO finish
         }
       if (lowestVal >= currentVal || left) return
       const denseIncrease = (currentVal - lowestVal) / lowest.length
-      lowest.forEach(xy => {
+      lowest.forEach((xy) => {
         newActive.push(xy)
         densityArray[xy] += denseIncrease
         if (densityArray[xy] > maxDensity) maxDensity = densityArray[xy]
@@ -84,8 +85,10 @@ export default function planShields(room: Room) { // TODO finish
   for (let x = 0; x < 50; x++)
     for (let y = 0; y < 50; y++) {
       const xy = xyToChar(x, y)
-      if (matrix[xy] === -126) vis.rect(x - 0.25, y - 0.25, 0.5, 0.5, { fill: '#ff8' })
-      else if (matrix[xy] === -127) vis.rect(x - 0.25, y - 0.25, 0.5, 0.5, { fill: '#888' })
+      if (matrix[xy] === -126)
+        vis.rect(x - 0.25, y - 0.25, 0.5, 0.5, { fill: '#ff8' })
+      else if (matrix[xy] === -127)
+        vis.rect(x - 0.25, y - 0.25, 0.5, 0.5, { fill: '#888' })
       else {
         const size = densityArray[xy] / maxDensity
         vis.rect(x - size / 2, y - size / 2, size, size, { fill: '#88f' })

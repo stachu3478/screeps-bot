@@ -10,6 +10,5 @@ export default function collectGarbage(name: string) {
 }
 
 export function collectGarbageAll() {
-  for (const name in Memory.creeps)
-    if (!Game.creeps[name]) collectGarbage(name)
+  for (const name in Memory.creeps) if (!Game.creeps[name]) collectGarbage(name)
 }

@@ -1,6 +1,6 @@
-import { charCodeIterator } from './charPosIterator';
+import { charCodeIterator } from './charPosIterator'
 import roomVisual from 'utils/visual'
-import { polyRect } from 'planner/visual';
+import { polyRect } from 'planner/visual'
 
 const timers = [10, 10, 10]
 const dataRetension = 100
@@ -11,15 +11,16 @@ export const enum Measurement {
 }
 
 const timerIds: Record<Measurement, number[]> = {
-  [Measurement.CPU_INTERVAL]: [1, 2, 3]
+  [Measurement.CPU_INTERVAL]: [1, 2, 3],
 }
 
 const timerMeaners: Record<Measurement, number[]> = {
-  [Measurement.CPU_INTERVAL]: [100, 10, 10]
+  [Measurement.CPU_INTERVAL]: [100, 10, 10],
 }
 
 const measurementFunctions: Record<Measurement, () => string> = {
-  [Measurement.CPU_INTERVAL]: () => String.fromCharCode(Math.round(((lastCpuUsage || Game.cpu.getUsed()) * 100)))
+  [Measurement.CPU_INTERVAL]: () =>
+    String.fromCharCode(Math.round((lastCpuUsage || Game.cpu.getUsed()) * 100)),
 }
 
 function pushData(data: string, nextData: string) {
@@ -31,15 +32,24 @@ function pushData(data: string, nextData: string) {
 
 function handleTimerDataType(i: number, type: Measurement, data?: string[]) {
   if (!data) return
-  const dataIndex = timerIds[type].findIndex(v => v === i)
+  const dataIndex = timerIds[type].findIndex((v) => v === i)
   if (dataIndex === -1) return
   const strData = data[dataIndex].slice(0, timerMeaners[type][dataIndex])
-  const mean = Math.round(strData.split('').reduce((t, v) => t + v.charCodeAt(0), 0) / strData.length)
-  data[dataIndex + 1] = pushData(data[dataIndex + 1] || '', String.fromCharCode(mean))
+  const mean = Math.round(
+    strData.split('').reduce((t, v) => t + v.charCodeAt(0), 0) / strData.length,
+  )
+  data[dataIndex + 1] = pushData(
+    data[dataIndex + 1] || '',
+    String.fromCharCode(mean),
+  )
 }
 
-function handleTimerData(data: Stats["data"], i: number) {
-  handleTimerDataType(i, Measurement.CPU_INTERVAL, data[Measurement.CPU_INTERVAL])
+function handleTimerData(data: Stats['data'], i: number) {
+  handleTimerDataType(
+    i,
+    Measurement.CPU_INTERVAL,
+    data[Measurement.CPU_INTERVAL],
+  )
 }
 
 export function handleTimers(stats?: Stats) {
@@ -57,12 +67,16 @@ export function handleTimers(stats?: Stats) {
 }
 
 export function processData(type: Measurement) {
-  const stats = Memory._stats || (Memory._stats = {
-    timers: timers.map(() => 0),
-    data: {}
-  })
+  const stats =
+    Memory._stats ||
+    (Memory._stats = {
+      timers: timers.map(() => 0),
+      data: {},
+    })
 
-  const data = stats.data[type] || (stats.data[type] = new Array(timers.length + 1).fill(''))
+  const data =
+    stats.data[type] ||
+    (stats.data[type] = new Array(timers.length + 1).fill(''))
   data[0] = pushData(data[0], measurementFunctions[type]())
   return true
 }
@@ -71,12 +85,25 @@ function visualizeCpuUsage(charCode: number) {
   return charCode / 100
 }
 
-function normalize(normMin: number, w: number, current: number, currentMax: number) {
-  return normMin + w * current / currentMax
+function normalize(
+  normMin: number,
+  w: number,
+  current: number,
+  currentMax: number,
+) {
+  return normMin + (w * current) / currentMax
 }
 
-const statRectStyle: PolyStyle = { stroke: '#2b1', fill: '#0000', strokeWidth: 0.05 }
-const statFillStyle: PolyStyle = { stroke: '#3f34', fill: '#3f34', strokeWidth: 0 }
+const statRectStyle: PolyStyle = {
+  stroke: '#2b1',
+  fill: '#0000',
+  strokeWidth: 0.05,
+}
+const statFillStyle: PolyStyle = {
+  stroke: '#3f34',
+  fill: '#3f34',
+  strokeWidth: 0,
+}
 const statLineStyle: LineStyle = { color: '#2b1', width: 0.05 }
 function horizontalLine(x1: number, x2: number, y: number) {
   roomVisual.line(x1, y, x2, y, statLineStyle)
@@ -104,7 +131,11 @@ class Chart {
     horizontalLine(this.x1, this.x2, (this.y1 + this.y2 * 3) / 4)
   }
 
-  visualizeData(data: string, method: (charCode: number) => number, maxValue: number) {
+  visualizeData(
+    data: string,
+    method: (charCode: number) => number,
+    maxValue: number,
+  ) {
     this.createFrame()
     const count = data.length
     let prevX = this.x1
@@ -116,7 +147,15 @@ class Chart {
       roomVisual.line(prevX, prevY, currentX, currentY, statLineStyle)
       prevX = currentX
       prevY = currentY
-      roomVisual.poly(polyRect([[prevX, prevY], [currentX, currentY], [currentX, this.y2], [prevX, this.y2]]), statFillStyle)
+      roomVisual.poly(
+        polyRect([
+          [prevX, prevY],
+          [currentX, currentY],
+          [currentX, this.y2],
+          [prevX, this.y2],
+        ]),
+        statFillStyle,
+      )
     })
   }
 

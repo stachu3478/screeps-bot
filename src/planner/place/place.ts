@@ -1,13 +1,13 @@
 import plan from '../core'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE } from '../../constants/response'
-import planLabs from '../planLabs';
-import placeLink from './link';
-import placeStructure from './structure';
-import placeExtractor from './extractor';
-import placeLab from './lab';
-import placeRoad from './road';
-import placeShield from './shield';
-import checkIntegrity from './checkIntegrity';
+import planLabs from '../planLabs'
+import placeLink from './link'
+import placeStructure from './structure'
+import placeExtractor from './extractor'
+import placeLab from './lab'
+import placeRoad from './road'
+import placeShield from './shield'
+import checkIntegrity from './checkIntegrity'
 
 export default function place(room: Room) {
   const controller = room.controller
@@ -26,9 +26,13 @@ export default function place(room: Room) {
       planLabs.run(room)
       return NOTHING_DONE
     }
-    if (placeLab(room, mem.internalLabs + mem.externalLabs) === SUCCESS) return SUCCESS
+    if (placeLab(room, mem.internalLabs + mem.externalLabs) === SUCCESS)
+      return SUCCESS
 
-    const newStructs = checkIntegrity(mem.structs, mem.internalLabs + mem.externalLabs)
+    const newStructs = checkIntegrity(
+      mem.structs,
+      mem.internalLabs + mem.externalLabs,
+    )
     if (newStructs !== mem.structs) {
       mem.structs = newStructs
       return NOTHING_DONE

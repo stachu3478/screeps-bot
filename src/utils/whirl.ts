@@ -1,4 +1,8 @@
-export default function whirl(sx: number, sy: number, cb: (x: number, y: number) => boolean) {
+export default function whirl(
+  sx: number,
+  sy: number,
+  cb: (x: number, y: number) => boolean,
+) {
   let xPos = sx
   let yPos = sy
   let xDir = 1

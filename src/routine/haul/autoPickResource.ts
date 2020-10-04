@@ -1,6 +1,10 @@
 import { SUCCESS, NOTHING_TODO, FAILED, DONE } from '../../constants/response'
 import { posToChar } from '../../planner/pos'
-import { findNearDroppedResource, findNearTombstone, findNearRuin } from 'utils/find';
+import {
+  findNearDroppedResource,
+  findNearTombstone,
+  findNearRuin,
+} from 'utils/find'
 
 interface AutoPickCreep extends Creep {
   cache: AutoPickCache
@@ -10,7 +14,10 @@ interface AutoPickCache extends CreepCache {
   pick_pos?: string
 }
 
-export default function autoPickResource(creep: AutoPickCreep, resourceType: ResourceConstant) {
+export default function autoPickResource(
+  creep: AutoPickCreep,
+  resourceType: ResourceConstant,
+) {
   let remaining = creep.store.getFreeCapacity(resourceType)
   if (remaining === 0) return NOTHING_TODO
   const cache = creep.cache
@@ -22,7 +29,9 @@ export default function autoPickResource(creep: AutoPickCreep, resourceType: Res
   let ruin: Ruin | Tombstone | undefined
   let drop = findNearDroppedResource(creep.pos, resourceType)
   if (!drop) {
-    ruin = findNearRuin(creep.pos, resourceType) || findNearTombstone(creep.pos, resourceType)
+    ruin =
+      findNearRuin(creep.pos, resourceType) ||
+      findNearTombstone(creep.pos, resourceType)
     if (!ruin) {
       cache.pick_pos = posToChar(creep.pos)
       return NOTHING_TODO

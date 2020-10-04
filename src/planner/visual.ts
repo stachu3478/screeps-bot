@@ -1,14 +1,36 @@
-import charPosIterator from "utils/charPosIterator";
+import charPosIterator from 'utils/charPosIterator'
 
-const spawnStyle: CircleStyle = { stroke: '#000', strokeWidth: 0.15, radius: 0.5, fill: '#0000' }
+const spawnStyle: CircleStyle = {
+  stroke: '#000',
+  strokeWidth: 0.15,
+  radius: 0.5,
+  fill: '#0000',
+}
 const extStyle: CircleStyle = { stroke: '#000', radius: 0.25, fill: '#0000' }
-const towerStyle: CircleStyle = { stroke: '#8af4', strokeWidth: 0.15, radius: 0.5, fill: '#0000' }
+const towerStyle: CircleStyle = {
+  stroke: '#8af4',
+  strokeWidth: 0.15,
+  radius: 0.5,
+  fill: '#0000',
+}
 const linkStyle: PolyStyle = { stroke: '#000', fill: '#0000' }
 const storageStyle: PolyStyle = { fill: '#888888' }
-const internalLabStyle: CircleStyle = { stroke: '#800', fill: '#8004', radius: 0.4 }
-const externalLabStyle: CircleStyle = { stroke: '#008', fill: '#0084', radius: 0.4 }
+const internalLabStyle: CircleStyle = {
+  stroke: '#800',
+  fill: '#8004',
+  radius: 0.4,
+}
+const externalLabStyle: CircleStyle = {
+  stroke: '#008',
+  fill: '#0084',
+  radius: 0.4,
+}
 const termStyle: PolyStyle = { fill: '#aaaaaa' }
-const factoryStyle: PolyStyle = { stroke: '#000', fill: '#0000', strokeWidth: 0.15 }
+const factoryStyle: PolyStyle = {
+  stroke: '#000',
+  fill: '#0000',
+  strokeWidth: 0.15,
+}
 const roadStyle: PolyStyle = { fill: '#ccc' }
 
 export const polyRect = (points: [number, number][]) => {
@@ -20,8 +42,13 @@ const rect45 = (x: number, y: number): [number, number][] => {
   return [last, [x, y + 0.37], [x - 0.25, y], [x, y - 0.37], last]
 }
 
-const lookupArray = (structs: string, visFunc: (x: number, y: number, index: number) => any) => {
-  charPosIterator(structs, (x, y, _, i) => { visFunc(x, y, i) })
+const lookupArray = (
+  structs: string,
+  visFunc: (x: number, y: number, index: number) => any,
+) => {
+  charPosIterator(structs, (x, y, _, i) => {
+    visFunc(x, y, i)
+  })
 }
 
 export default function visual(room: Room) {
@@ -33,13 +60,27 @@ export default function visual(room: Room) {
     const spawnPos = structs.charCodeAt(1)
     vis.circle(spawnPos & 63, spawnPos >> 6, spawnStyle)
     const storagePos = structs.charCodeAt(2)
-    vis.rect((storagePos & 63) - 0.25, (storagePos >> 6) - 0.25, 0.5, 0.5, storageStyle)
+    vis.rect(
+      (storagePos & 63) - 0.25,
+      (storagePos >> 6) - 0.25,
+      0.5,
+      0.5,
+      storageStyle,
+    )
     const termPos = structs.charCodeAt(3)
     vis.rect((termPos & 63) - 0.25, (termPos >> 6) - 0.25, 0.5, 0.5, termStyle)
     const factoryPos = structs.charCodeAt(4)
-    vis.rect((factoryPos & 63) - 0.5, (factoryPos >> 6) - 0.5, 1, 1, factoryStyle)
+    vis.rect(
+      (factoryPos & 63) - 0.5,
+      (factoryPos >> 6) - 0.5,
+      1,
+      1,
+      factoryStyle,
+    )
 
-    lookupArray(structs, (x, y, i) => vis.circle(x, y, i < 11 ? towerStyle : extStyle))
+    lookupArray(structs, (x, y, i) =>
+      vis.circle(x, y, i < 11 ? towerStyle : extStyle),
+    )
   }
 
   const roads = room.memory.roads || ''

@@ -11,7 +11,7 @@ interface ArriveMemory extends CreepMemory {
 
 export default function arrive(creep: ArriveCreep, dumpCarry: boolean = true) {
   if (dumpCarry && creep.store.getUsedCapacity() > 0) {
-    RESOURCES_ALL.some(r => {
+    RESOURCES_ALL.some((r) => {
       if (creep.store[r]) {
         creep.drop(r)
         return true
@@ -24,7 +24,10 @@ export default function arrive(creep: ArriveCreep, dumpCarry: boolean = true) {
   if (!targetRoom) return NOTHING_TODO
   const pos = new RoomPosition(25, 25, targetRoom)
   let result = move.cheap(creep, pos, true, 25)
-  if (result === ERR_NO_PATH) result = move.anywhere(creep, creep.pos.getDirectionTo(pos)) ? OK : ERR_NO_PATH
+  if (result === ERR_NO_PATH)
+    result = move.anywhere(creep, creep.pos.getDirectionTo(pos))
+      ? OK
+      : ERR_NO_PATH
   if (creep.room.name === targetRoom && result === 0) {
     delete creep.memory._arrive
     return DONE

@@ -1,6 +1,6 @@
 import sinon from 'sinon'
-import defineGetter from 'utils/defineGetter';
-import { expect } from '../../expect';
+import defineGetter from 'utils/defineGetter'
+import { expect } from '../../expect'
 
 type Test = ObjectConstructor
 describe('Creating getter on given contructor', () => {
@@ -9,8 +9,8 @@ describe('Creating getter on given contructor', () => {
   beforeEach(() => {
     sinon.restore()
     iterator = sinon.stub()
-    Test = class Test { } as Test
-  });
+    Test = class Test {} as Test
+  })
 
   describe('defining some getter on class using method', () => {
     beforeEach(() => {
@@ -23,4 +23,4 @@ describe('Creating getter on given contructor', () => {
       expect(test.test).to.eql(true)
     })
   })
-});
+})

@@ -1,6 +1,12 @@
 import profiler from 'screeps-profiler'
-import { SUCCESS, NOTHING_TODO, FAILED, DONE, NOTHING_DONE } from '../../constants/response'
-import { getDroppedResource } from 'utils/find';
+import {
+  SUCCESS,
+  NOTHING_TODO,
+  FAILED,
+  DONE,
+  NOTHING_DONE,
+} from '../../constants/response'
+import { getDroppedResource } from 'utils/find'
 
 interface AutoPickCreep extends Creep {
   cache: AutoPickCache

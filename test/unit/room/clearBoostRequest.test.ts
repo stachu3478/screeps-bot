@@ -1,7 +1,7 @@
-import _ from "lodash"
+import _ from 'lodash'
 import sinon from 'sinon'
-import boostData from "../mock/boostData";
-import { expect } from '../../expect';
+import boostData from '../mock/boostData'
+import { expect } from '../../expect'
 
 describe('Removing a boost request', () => {
   let room: Room
@@ -9,15 +9,15 @@ describe('Removing a boost request', () => {
   beforeEach(() => {
     // runs before each test in this block
     // @ts-ignore : allow adding Game to global
-    global.Game = _.clone(Game);
+    global.Game = _.clone(Game)
     // @ts-ignore : allow adding Memory to global
-    global.Memory = _.clone(Memory);
+    global.Memory = _.clone(Memory)
     room = new Room('test')
     boosts = boostData()
     room.getBoosts = () => boosts
     sinon.restore()
     sinon.spy(room, 'clearBoostRequest')
-  });
+  })
 
   describe('empty boost data', () => {
     it('should do nothing', function () {
@@ -25,7 +25,7 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ACID)
       expect(room.clearBoostRequest).to.be.calledOnce
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
   })
 
   describe('boost data do not have that name', () => {
@@ -37,7 +37,7 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ACID)
       expect(room.clearBoostRequest).to.be.calledOnce
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
   })
 
   describe('boost data do not have that resource', () => {
@@ -49,7 +49,7 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ACID)
       expect(room.clearBoostRequest).to.be.calledOnce
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
   })
 
   describe('boost data exists', () => {
@@ -62,7 +62,7 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ACID)
       expect(room.clearBoostRequest).to.be.calledOnce
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
 
     it('should not remove if mandatory', function () {
       Game.creeps = {}
@@ -72,7 +72,7 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ACID)
       expect(room.clearBoostRequest).to.be.calledOnce
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
 
     it('should remove if mandatory and done', function () {
       Game.creeps = {}
@@ -83,7 +83,7 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ACID, true)
       expect(room.clearBoostRequest).to.be.calledOnce
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
 
     it('should remove first lab', function () {
       Game.creeps = {}
@@ -95,7 +95,7 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ALKALIDE)
       expect(room.clearBoostRequest).to.be.calledOnce
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
 
     it('should remove second lab', function () {
       Game.creeps = {}
@@ -107,7 +107,7 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ACID)
       expect(room.clearBoostRequest).to.be.calledOnce
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
   })
 
   describe('boost data exists with other', () => {
@@ -120,7 +120,7 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ACID)
       expect(room.clearBoostRequest).to.be.calledOnce
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
   })
 
   describe('another boost data exists with other unstable', () => {
@@ -136,7 +136,7 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ACID)
       expect(room.clearBoostRequest).to.be.calledTwice
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
   })
 
   describe('another boost data exists with other stable', () => {
@@ -151,7 +151,7 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ACID)
       expect(room.clearBoostRequest).to.be.calledOnce
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
 
     it('should remove existing creeps data', function () {
       Game.creeps = { Johny: { memory: { role: Role.UPGRADER } } as Creep }
@@ -165,6 +165,6 @@ describe('Removing a boost request', () => {
       room.clearBoostRequest('John', RESOURCE_UTRIUM_ACID)
       expect(room.clearBoostRequest).to.be.calledTwice
       expect(boosts).to.eql(sameBoosts)
-    });
+    })
   })
-});
+})

@@ -1,4 +1,9 @@
-import { SUCCESS, NOTHING_TODO, FAILED, NO_RESOURCE } from '../../constants/response'
+import {
+  SUCCESS,
+  NOTHING_TODO,
+  FAILED,
+  NO_RESOURCE,
+} from '../../constants/response'
 
 interface AutoBuildCreep extends Creep {
   cache: AutoBuildCache
