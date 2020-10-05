@@ -17,7 +17,23 @@ global.Cache = new CacheHandler(
   new IntershardMemoryHandler(InterShardMemory),
 )
 
-const memory = JSON.parse(RawMemory.get())
+export function getMemory(): Memory {
+  try {
+    return JSON.parse(RawMemory.get())
+  } catch (e) {
+    return {
+      myRooms: {},
+      profiler: {},
+      creeps: {},
+      powerCreeps: {},
+      flags: {},
+      rooms: {},
+      spawns: {},
+    }
+  }
+}
+
+const memory = getMemory()
 export const memHackBeforeLoop = () => {
   delete global.Memory
   global.Memory = memory
