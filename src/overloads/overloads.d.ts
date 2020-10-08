@@ -54,6 +54,10 @@ interface Room {
   store: (resource: ResourceConstant) => number
 }
 
+interface Structure {
+  isWalkable: boolean
+}
+
 interface StructureLab {
   shouldRunReaction: (resource: ResourceConstant, labIndex: number) => boolean
 }

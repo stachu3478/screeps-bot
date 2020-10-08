@@ -58,31 +58,15 @@ function roomCallback(roomName: string, costMatrix: CostMatrix) {
   return costMatrix
 }
 
-const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
-  if (room.getTerrain().get(x, y) === TERRAIN_MASK_WALL) return false
-  const nonWalkableStruct = room
-    .lookForAt(LOOK_STRUCTURES, x, y)
-    .find(
-      (s) =>
-        s.structureType !== STRUCTURE_ROAD &&
-        (s.structureType !== STRUCTURE_RAMPART ||
-          !(s as StructureRampart).my ||
-          !(s as StructureRampart).isPublic) &&
-        s.structureType !== STRUCTURE_CONTAINER,
-    )
-  if (nonWalkableStruct) return false
-  const site = room
-    .lookForAt(LOOK_CONSTRUCTION_SITES, x, y)
-    .find(
-      (s) =>
-        s.structureType !== STRUCTURE_ROAD &&
-        s.structureType !== STRUCTURE_CONTAINER,
-    )
-  if (site) return false
-  if (!me) return true
-  const creep = room.lookForAt(LOOK_CREEPS, x, y).find((c: Creep) => c !== me)
-  if (creep) return false
-  return true
+export const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
+  const structures = room.lookForAt(LOOK_STRUCTURES, x, y)
+  if (
+    room.getTerrain().get(x, y) === TERRAIN_MASK_WALL &&
+    !structures.some((s) => s.isWalkable)
+  )
+    return false
+  if (!structures.every((s) => s.isWalkable)) return false
+  return room.lookForAt(LOOK_CREEPS, x, y)[0] === me
 }
 
 const zmod = (a: number, b: number) => a - Math.floor(a / b) * b

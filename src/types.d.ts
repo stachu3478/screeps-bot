@@ -108,5 +108,6 @@ declare namespace NodeJS {
     Game: Game
     Memory: Memory
     Cache: WrappedGlobalCache
+    Structure: StructureConstructor
   }
 }

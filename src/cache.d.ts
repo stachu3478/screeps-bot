@@ -9,6 +9,7 @@ interface RoomCache {
   lvl?: number
   healthy?: 0 | 1
   shielded?: number
+  quadSquad?: any // FIXME: QuadSquadHandler
 
   labCooldown?: number
 }
