@@ -1,6 +1,7 @@
 import './room/Room'
 import './Creep'
 import './RoomPosition'
+import './Structure'
 import './StructureFactory'
 import './StructureLab'
 import './StructurePowerSpawn'
