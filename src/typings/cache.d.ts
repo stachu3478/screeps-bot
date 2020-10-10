@@ -1,3 +1,6 @@
+// QuadSquadHandler.d.ts
+
+// cache.d.ts
 interface RoomCache {
   priorityFilled?: 0 | 1
   repaired?: 0 | 1
@@ -9,7 +12,7 @@ interface RoomCache {
   lvl?: number
   healthy?: 0 | 1
   shielded?: number
-  quadSquad?: any // FIXME: QuadSquadHandler
+  quadSquad?: QuadSquadHandler
 
   labCooldown?: number
 }
