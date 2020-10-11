@@ -9,3 +9,7 @@ RoomPosition.prototype.range = function (pos: RoomPosition) {
 RoomPosition.prototype.rangeTo = function (obj: _HasRoomPosition) {
   return this.range(obj.pos)
 }
+
+RoomPosition.prototype.building = function (type: StructureConstant) {
+  return this.lookFor(LOOK_STRUCTURES).find((s) => s.structureType === type)
+}

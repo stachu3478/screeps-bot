@@ -1,5 +1,4 @@
 import plan from 'planner/core'
-import { roomPos } from 'planner/pos'
 import { Miner } from 'role/creep/miner'
 
 export default class SourceHandler {

@@ -3,6 +3,10 @@ interface BoostInfo {
   partCount: number
 }
 
+type BuildingAt<T extends StructureConstant> = (
+  charCode: number,
+  type: T,
+) => Structure<T> | undefined
 interface Room {
   factory?: StructureFactory
   lab1?: StructureLab
@@ -27,6 +31,7 @@ interface Room {
   setBuildingOrder: (x: number, y: number, order: number) => void
   moveBuilding: (x1: number, y1: number, x2: number, y2: number) => void
 
+  buildingAt: BuildingAt<StructureConstant>
   getBoosts: () => BoostData
   getAmountReserved: (resource: ResourceConstant) => number
   getAvailableBoosts: (resource: ResourceConstant, partCount: number) => number
@@ -55,6 +60,7 @@ interface Room {
   ) => BoostInfo[]
   store: (resource: ResourceConstant) => number
   positionFromChar: (char: string) => RoomPosition
+  labsFromChars: (char: string) => StructureLab[]
 }
 
 interface Structure {
@@ -90,10 +96,14 @@ interface StructureTerminal {
   cache: TerminalCache
 }
 
+type Building<T extends StructureConstant> = (
+  type: T,
+) => Structure<T> | undefined
 interface RoomPosition {
   rangeXY: (x: number, y: number) => number
   range: (pos: RoomPosition) => number
   rangeTo: (obj: _HasRoomPosition) => number
+  building: Building<StructureConstant>
 }
 
 interface Creep {

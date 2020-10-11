@@ -1,14 +1,7 @@
 import './buildingManagement'
 import './boostManagement'
-import {
-  getFactory,
-  getLab,
-  getXYExtractor,
-  getLink,
-  getPowerSpawn,
-} from 'utils/selectFromPos'
 import defineGetter from 'utils/defineGetter'
-import { roomPos } from 'planner/pos'
+import SourceHandler from 'handler/SourceHandler'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -30,32 +23,34 @@ defineRoomGetter('powerSpawnCache', (self) => {
 })
 
 defineRoomGetter('factory', (self) => {
-  return getFactory(self, (self.memory.structs || '').charCodeAt(4))
+  return self.buildingAt(
+    (self.memory.structs || '').charCodeAt(4),
+    STRUCTURE_FACTORY,
+  )
 })
 
 defineRoomGetter('lab1', (self) => {
-  return getLab(self, (self.memory.internalLabs || '').charCodeAt(0))
+  return self.buildingAt(
+    (self.memory.internalLabs || '').charCodeAt(0),
+    STRUCTURE_LAB,
+  )
 })
 
 defineRoomGetter('lab2', (self) => {
-  return getLab(self, (self.memory.internalLabs || '').charCodeAt(1))
+  return self.buildingAt(
+    (self.memory.internalLabs || '').charCodeAt(1),
+    STRUCTURE_LAB,
+  )
 })
 
 defineRoomGetter('externalLabs', (self) => {
-  if (!self.memory.externalLabs) return []
-  return self.memory.externalLabs
-    .split('')
-    .map((char) => getLab(self, char.charCodeAt(0)))
-    .filter((l) => l) as StructureLab[]
+  return self.labsFromChars(self.memory.externalLabs || '')
 })
 
 defineRoomGetter('allLabs', (self) => {
-  const allLabs = self.externalLabs
-  const lab1 = self.lab1
-  if (lab1) allLabs.push(lab1)
-  const lab2 = self.lab2
-  if (lab2) allLabs.push(lab2)
-  return allLabs
+  return self.labsFromChars(
+    (self.memory.externalLabs || '') + (self.memory.internalLabs || ''),
+  )
 })
 
 defineRoomGetter('mineral', (self) => {
@@ -64,23 +59,25 @@ defineRoomGetter('mineral', (self) => {
 
 defineRoomGetter('extractor', (self) => {
   const mineral = self.mineral
-  return mineral && getXYExtractor(self, mineral.pos.x, mineral.pos.y)
+  return mineral && mineral.pos.building(STRUCTURE_EXTRACTOR)
 })
 
 defineRoomGetter('filled', (self) => {
   return (
-    self.cache.priorityFilled &&
+    !!self.cache.priorityFilled &&
     self.energyAvailable === self.energyCapacityAvailable
   )
 })
 
 defineRoomGetter('linked', (self) => {
-  const links = self.memory.links
-  const controllerLink = self.memory.controllerLink
-  if (!links || !controllerLink) return false
-  return !!(
-    getLink(self, links.charCodeAt(links.length - 1)) &&
-    getLink(self, controllerLink.charCodeAt(0))
+  const linkCharArray = (self.memory.links || '')
+    .concat(self.memory.controllerLink || '')
+    .split('')
+  return (
+    linkCharArray.length > 0 &&
+    linkCharArray.every(
+      (char) => !!self.buildingAt(char.charCodeAt(0), STRUCTURE_LINK),
+    )
   )
 })
 
@@ -89,8 +86,8 @@ defineRoomGetter('spawn', (self) => {
 })
 
 defineRoomGetter('powerSpawn', (self) => {
-  const structs = self.memory.structs
-  return structs && getPowerSpawn(self, structs.charCodeAt(11))
+  const structs = self.memory.structs || ''
+  return self.buildingAt(structs.charCodeAt(11), STRUCTURE_POWER_SPAWN)
 })
 
 defineRoomGetter('sources', (self) => {
@@ -106,5 +103,25 @@ Room.prototype.store = function (resource: ResourceConstant) {
 }
 
 Room.prototype.positionFromChar = function (char: string) {
-  return roomPos(char, this.name)
+  const charCode = char.charCodeAt(0)
+  return (
+    this.getPositionAt(charCode & 63, charCode >> 6) ||
+    new RoomPosition(-1, -1, this.name)
+  )
+}
+
+Room.prototype.buildingAt = function (
+  charCode: number,
+  type: StructureConstant,
+) {
+  return this.lookForAt(LOOK_STRUCTURES, charCode & 63, charCode >> 6).find(
+    (s) => s.structureType === type,
+  )
+}
+
+Room.prototype.labsFromChars = function (chars: string) {
+  return chars
+    .split('')
+    .map((char) => this.buildingAt(char.charCodeAt(0), STRUCTURE_LAB))
+    .filter((l) => l) as StructureLab[]
 }
