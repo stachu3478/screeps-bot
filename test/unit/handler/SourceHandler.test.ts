@@ -46,20 +46,18 @@ describe('SourceHandler', () => {
 
   describe('#getPosition', () => {
     const returnValue = {}
-    let roomPosition: sinon.SinonStub
     beforeEach(() => {
-      roomPosition = sinon.stub().returns(returnValue)
+      room.positionFromChar = sinon.stub().returns(returnValue)
     })
 
     it('returns mining position', () => {
-      expect(sourceHandler.getPosition('test', roomPosition)).to.eq(returnValue)
+      expect(sourceHandler.getPosition('test')).to.eq(returnValue)
     })
 
     it('calls roomPosition wizard', () => {
-      sourceHandler.getPosition('test', roomPosition)
-      expect(roomPosition).to.be.calledOnceWithExactly(
+      sourceHandler.getPosition('test')
+      expect(room.positionFromChar).to.be.calledOnceWithExactly(
         colonySources['test'],
-        room.name,
       )
     })
   })
@@ -157,8 +155,20 @@ describe('SourceHandler', () => {
   })
 
   describe('#colonyPosition', () => {
+    const returnValue = {}
+    beforeEach(() => {
+      sourceHandler.getPosition = sinon.stub().returns(returnValue)
+    })
+
     it('returns colony source mining position', () => {
-      expect(sourceHandler.colonyPosition).to.eql(roomPos('1', room.name))
+      expect(sourceHandler.colonyPosition).to.eql(returnValue)
+    })
+
+    it('calls #getPosition', () => {
+      sourceHandler.colonyPosition
+      expect(sourceHandler.getPosition).to.be.calledOnceWithExactly(
+        room.memory.colonySourceId,
+      )
     })
   })
 })

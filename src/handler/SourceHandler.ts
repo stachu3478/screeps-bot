@@ -19,11 +19,8 @@ export default class SourceHandler {
     this.memory[sourceId] = this.memory[sourceId].slice(0, 2) + creepName
   }
 
-  getPosition(
-    sourceId: string,
-    roomPosition: (s1: string, s2: string) => RoomPosition = roomPos,
-  ) {
-    return roomPosition(this.memory[sourceId], this.room.name)
+  getPosition(sourceId: string) {
+    return this.room.positionFromChar(this.memory[sourceId])
   }
 
   getDistance(sourceId: string) {
