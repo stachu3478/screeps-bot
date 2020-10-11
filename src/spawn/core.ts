@@ -4,7 +4,6 @@ import { progressiveMiner, progressiveLiteWorker } from './body/work'
 import { progressiveFighter } from './body/body'
 import domination from './domination'
 import { infoStyle } from '../room/style'
-import isRetired from 'utils/retired'
 import extract, { needsExtractor } from './extract'
 import spawnUpgrader from './upgrader'
 import { MinerMemory, Miner } from 'role/creep/miner'
@@ -20,12 +19,7 @@ export default profiler.registerFN(function loop(
   const mem = spawn.room.memory
   const cache = spawn.cache
   if (!mem.creeps) mem.creeps = {}
-  if (
-    !mem.colonySources ||
-    mem.maxWorkController === undefined ||
-    !mem.colonySourceId
-  )
-    return
+  if (mem.maxWorkController === undefined) return
   const max = mem.sourceCount || 0
   if (spawn.room.energyAvailable < spawn.room.energyCapacityAvailable)
     spawn.room.cache.priorityFilled = 0
@@ -98,18 +92,10 @@ export default profiler.registerFN(function loop(
     )
   } else if (minerCount < max) {
     const parts = progressiveMiner(spawn.room.energyCapacityAvailable)
-    let freeSource
-    for (const id in mem.colonySources) {
-      const name = mem.colonySources[id].slice(2)
-      const creep = Game.creeps[name] as Miner
-      if (!creep || creep.memory._harvest !== id || isRetired(creep)) {
-        freeSource = id
-        break
-      }
-    }
+    const freeSource = controller.room.sources.free
     if (!freeSource) return
     cache.sourceId = freeSource as Id<Source>
-    const spec = mem.colonySources[freeSource].charCodeAt(1)
+    const spec = controller.room.sources.getDistance(freeSource)
     const memory: MinerMemory = {
       role: Role.MINER,
       room: spawn.room.name,

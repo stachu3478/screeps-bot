@@ -47,7 +47,6 @@ StructureSpawn.prototype.trySpawnCreep = function (
 ) {
   const name = uniqName(letter)
   const result = this.spawnCreep(body, name, { memory, dryRun: true })
-  const mem = this.room.memory
   if (result !== 0) {
     if (!retry)
       this.cache.trySpawn = {
@@ -67,9 +66,8 @@ StructureSpawn.prototype.trySpawnCreep = function (
     })
     this.room.cache.priorityFilled = 0
     motherMemory.creeps[name] = 0
-    if (memory.role === Role.MINER && mem.colonySources)
-      mem.colonySources[cache.sourceId || ''] =
-        mem.colonySources[cache.sourceId || ''].slice(0, 2) + name
+    if (memory.role === Role.MINER)
+      this.room.sources.assign(name, cache.sourceId)
     boost.forEach((data) => {
       this.room.createBoostRequest(name, data.resource, data.partCount)
     })

@@ -4,7 +4,6 @@ import roleClaimer, { Claimer } from '../role/creep/claimer'
 import roleScout, { Scout } from '../role/creep/scout'
 import commander, { Commander } from '../role/creep/commander'
 import miner from 'role/creep/miner'
-import isRetired from 'utils/retired'
 import extractor from 'role/creep/extractor'
 import fighter from 'role/creep/fighter'
 import staticUpgrader from '../role/creep/staticUpgrader'
@@ -45,7 +44,7 @@ export default function creeps(
       }
     }
     const role = creep.memory.role || 0
-    if (!isRetired(creep)) {
+    if (!creep.isRetired) {
       if (role === Role.BOOSTER) {
         const targetRole = creep.memory._targetRole || 0
         creepCountByRole[targetRole] = (creepCountByRole[targetRole] || 0) + 1

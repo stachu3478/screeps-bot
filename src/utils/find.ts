@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import { Fighter } from 'role/creep/fighter'
-import { getContainer, getExtension, getSpawn } from './selectFromPos'
 import { energyToNukerThreshold } from 'config/storage'
 
 function persistFilter<T>(arr: (T | undefined)[]): T[] {
@@ -14,12 +13,12 @@ export const findTowers = (room: Room) =>
   room.find<StructureTower>(FIND_STRUCTURES, towerFilter)
 
 export const findContainers = (room: Room) => {
-  const colonySources = room.memory.colonySources
-  if (!colonySources) return []
-  const potencialContainers = Object.values(colonySources).map((char) =>
-    getContainer(room, char.charCodeAt(0)),
+  const potencialContainers = room.sources.positions.map((pos) =>
+    pos
+      .lookFor(LOOK_STRUCTURES)
+      .find((s) => s.structureType === STRUCTURE_CONTAINER),
   )
-  return persistFilter(potencialContainers)
+  return persistFilter(potencialContainers) as StructureContainer[]
 }
 
 const sourceKeepersFilter = {

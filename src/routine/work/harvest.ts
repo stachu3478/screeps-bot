@@ -6,7 +6,6 @@ import {
   FAILED,
   DONE,
 } from 'constants/response'
-import { roomPos } from 'planner/pos'
 import profiler from 'screeps-profiler'
 
 interface HarvestCreep extends Creep {
@@ -15,33 +14,16 @@ interface HarvestCreep extends Creep {
 
 interface HarvestMemory extends CreepMemory {
   _harvest?: Id<Source>
-  _targetPos?: string
 }
 
-export default profiler.registerFN(function harvest(
-  creep: HarvestCreep,
-  sourceId?: Id<Source>,
-) {
+export default profiler.registerFN(function harvest(creep: HarvestCreep) {
   const energyStored = creep.store.getFreeCapacity(RESOURCE_ENERGY)
   if (energyStored === 0) return DONE
   const mem = creep.memory
-  let target = mem._harvest && Game.getObjectById(mem._harvest)
-  if (!target) {
-    if (sourceId) target = Game.getObjectById(sourceId)
-    if (!target) return NOTHING_TODO
-    mem._harvest = target.id
-  }
-  let targetPos
-  if (!creep.room.memory.colonySources) return FAILED
-  if (!mem._targetPos)
-    mem._targetPos = creep.room.memory.colonySources[target.id][0]
-  const targetPosCode = mem._targetPos.charCodeAt(0)
-  if (
-    creep.pos.x !== (targetPosCode & 63) ||
-    creep.pos.y !== targetPosCode >> 6 ||
-    creep.room.name !== creep.memory.room
-  ) {
-    targetPos = roomPos(mem._targetPos, creep.motherRoom.name)
+  const target = mem._harvest && Game.getObjectById(mem._harvest)
+  if (!target) return NOTHING_TODO
+  const targetPos = creep.room.sources.getPosition(target.id)
+  if (creep.pos.range(targetPos)) {
     move.cheap(creep, targetPos, false, 0)
     return NOTHING_DONE
   }
@@ -53,5 +35,4 @@ export default profiler.registerFN(function harvest(
     if (remaining <= 0) return DONE
     return SUCCESS
   }
-},
-'routineHarvest')
+}, 'routineHarvest')

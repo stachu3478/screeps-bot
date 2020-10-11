@@ -15,9 +15,6 @@ export default function plan(room: Room) {
   const controllerPos = room.controller.pos
 
   // find all paths and mark in matrix
-  interface SourceMap {
-    [id: string]: string
-  }
   const sources = room.find(FIND_SOURCES)
   let furthestSource = sources[0]
   let nearestSource = sources[0]

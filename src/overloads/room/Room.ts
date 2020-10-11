@@ -8,6 +8,7 @@ import {
   getPowerSpawn,
 } from 'utils/selectFromPos'
 import defineGetter from 'utils/defineGetter'
+import { roomPos } from 'planner/pos'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -92,10 +93,18 @@ defineRoomGetter('powerSpawn', (self) => {
   return structs && getPowerSpawn(self, structs.charCodeAt(11))
 })
 
+defineRoomGetter('sources', (self) => {
+  return self._sourceHandler || (self._sourceHandler = new SourceHandler(self))
+})
+
 Room.prototype.store = function (resource: ResourceConstant) {
   const storage = this.storage
   const terminal = this.terminal
   const inStorage = storage ? storage.store[resource] : 0
   const inTerminal = terminal ? terminal.store[resource] : 0
   return inStorage + inTerminal
+}
+
+Room.prototype.positionFromChar = function (char: string) {
+  return roomPos(char, this.name)
 }

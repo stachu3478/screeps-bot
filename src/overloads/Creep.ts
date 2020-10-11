@@ -19,3 +19,10 @@ defineCreepGetter('workpartCount', (self) => {
     cache.workpartCount || (cache.workpartCount = self.getActiveBodyparts(WORK))
   )
 })
+
+defineCreepGetter('isRetired', (self) => {
+  return (
+    (self.ticksToLive || CREEP_LIFE_TIME) <=
+    self.body.length * CREEP_SPAWN_TIME + self.memory.deprivity
+  )
+})

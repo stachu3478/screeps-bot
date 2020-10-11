@@ -40,9 +40,7 @@ export default function placeShield(controller: StructureController) {
   if (!_.isUndefined(result)) return result
 
   const controllerPos = controller.pos
-  const colonySourcePositions = Object.values(
-    mem.colonySources || {},
-  ).map((p) => roomPos(p, room.name))
+  const colonySourcePositions = room.sources.positions
   for (let x = -1; x < 2; x++)
     for (let y = -1; y < 2; y++) {
       const xPos = controllerPos.x + x

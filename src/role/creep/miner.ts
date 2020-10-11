@@ -12,7 +12,7 @@ import autoRepair from 'routine/work/autoRepair'
 import autoBuild from 'routine/work/autoBuild'
 import autoPick from 'routine/haul/autoPick'
 import profiler from 'screeps-profiler'
-import { getXYContainer, getXYRampart } from 'utils/selectFromPos'
+import { getXYContainer, getXYRampart, getContainer } from 'utils/selectFromPos'
 
 export interface Miner extends Creep {
   memory: MinerMemory
@@ -39,7 +39,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
       else creep.memory.state = State.HARVESTING
       break
     case State.HARVESTING:
-      switch (harvest(creep, creep.memory._harvest)) {
+      switch (harvest(creep)) {
         case NOTHING_TODO:
           delete creep.cache.pick_pos
           autoPick(creep)
@@ -56,21 +56,24 @@ export default profiler.registerFN(function miner(creep: Miner) {
             creep.memory.state = State.REPAIR
           else if (autoBuild(creep) in ACCEPTABLE)
             creep.memory.state = State.BUILD
-          else if (creep.room.memory.colonySources && creep.memory._harvest) {
-            const miningPos = creep.room.memory.colonySources[
-              creep.memory._harvest
-            ].charCodeAt(0)
-            const x = miningPos & 63
-            const y = miningPos >> 6
-            if (x !== creep.pos.x || y !== creep.pos.y) {
+          else if (creep.memory._harvest) {
+            const miningPosition = creep.room.sources.getPosition(
+              creep.memory._harvest,
+            )
+            if (creep.pos.range(miningPosition)) {
               creep.drop(RESOURCE_ENERGY)
               return
             }
-            const container = getXYContainer(creep.room, x, y)
+            const structures = miningPosition.lookFor(LOOK_STRUCTURES)
+            const container = structures.find(
+              (s) => s.structureType === STRUCTURE_CONTAINER,
+            )
             if (!container) {
               if (
-                creep.room.createConstructionSite(x, y, STRUCTURE_CONTAINER) ===
-                0
+                creep.room.createConstructionSite(
+                  miningPosition,
+                  STRUCTURE_CONTAINER,
+                ) === 0
               ) {
                 creep.memory.state = State.BUILD
                 break
@@ -80,10 +83,15 @@ export default profiler.registerFN(function miner(creep: Miner) {
               creep.memory.state = State.REPAIR
               break
             }
-            const rampart = getXYRampart(creep.room, x, y)
+            const rampart = structures.find(
+              (s) => s.structureType === STRUCTURE_RAMPART,
+            )
             if (!rampart) {
               if (
-                creep.room.createConstructionSite(x, y, STRUCTURE_RAMPART) === 0
+                creep.room.createConstructionSite(
+                  miningPosition,
+                  STRUCTURE_RAMPART,
+                ) === 0
               ) {
                 creep.memory.state = State.BUILD
                 break

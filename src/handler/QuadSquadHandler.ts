@@ -26,17 +26,18 @@ export default class QuadSquadHandler {
     if (this.creepPositionsMatch(targetPos)) this.path.shift()
   }
 
-  addCreep(creep: Creep) {
-    this.creeps.push(creep.name)
+  spawnCreep(spawn: StructureSpawn) {
+    const creepCount = this.creeps.length
+    // spawn.trySpawnCreep([MOVE], 'Q', {  })
+  }
+
+  addCreep(name: string) {
+    this.creeps.push(name)
     if (this.creeps.length === 4) this.assembled = true
   }
 
-  isAssembled() {
-    return this.assembled
-  }
-
-  isActive() {
-    return this.active
+  needsCreeps() {
+    return !this.assembled
   }
 
   private creepPositionsMatch(targetPos: PathStep) {

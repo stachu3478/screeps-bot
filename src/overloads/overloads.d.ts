@@ -18,6 +18,8 @@ interface Room {
   cache: RoomCache
   factoryCache: FactoryCache
   powerSpawnCache: PowerSpawnCache
+  sources: SourceHandler
+  _sourceHandler?: SourceHandler
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void
@@ -52,6 +54,7 @@ interface Room {
     body: BodyPartConstant[],
   ) => BoostInfo[]
   store: (resource: ResourceConstant) => number
+  positionFromChar: (char: string) => RoomPosition
 }
 
 interface Structure {
@@ -97,4 +100,5 @@ interface Creep {
   motherRoom: Room
   workpartCount: number
   cache: CreepCache
+  isRetired: boolean
 }
