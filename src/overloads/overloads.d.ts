@@ -94,6 +94,7 @@ interface StructureFactory {
 
 interface StructureTerminal {
   cache: TerminalCache
+  businessHandler: BusinessHandler
 }
 
 type Building<T extends StructureConstant> = (

@@ -37,12 +37,9 @@ interface PowerSpawnCache {
 }
 
 interface TerminalCache {
-  dealResourceType?: ResourceConstant
-  resourceIteration?: number
   state?: number
-
-  businessSell?: 0 | 1
-  businessAmount?: number
+  businessHandler?: BusinessHandler
+  dealResourceType?: ResourceConstant
 }
 
 interface FactoryCache {

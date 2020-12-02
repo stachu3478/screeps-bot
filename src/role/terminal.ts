@@ -5,10 +5,8 @@ import {
   NO_RESOURCE,
   FAILED,
   SUCCESS,
-  NOTHING_DONE,
 } from 'constants/response'
 import sellExcess from 'routine/terminal/sellExcess'
-import makeBusiness from 'routine/terminal/makeBusiness'
 import { infoStyle } from 'room/style'
 import buyMissing from 'routine/terminal/buyMissing'
 
@@ -66,23 +64,7 @@ export default function terminal(term: StructureTerminal) {
       }
       break
     case State.TERM_BUSINESS:
-      switch (makeBusiness(term)) {
-        case DONE:
-          cache.resourceIteration = 0
-          cache.state = State.IDLE
-          break
-        case SUCCESS:
-          console.log('Hooray!')
-          break
-        case NOTHING_DONE:
-          term.room.visual.text(
-            'Terminal: Looking for occasions: ' +
-              RESOURCES_ALL[cache.resourceIteration || -1],
-            0,
-            4,
-            infoStyle,
-          )
-      }
+      if (!term.businessHandler.call()) cache.state = State.IDLE
       break
     default:
       cache.state = State.TERM_BUSINESS

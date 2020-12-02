@@ -10,6 +10,7 @@ export default function canUtilizeEnergy(creep: Creep) {
       cache.built &&
       cache.repaired &&
       !room.memory._dismantle
-    ) || drawContainer(creep) in ACCEPTABLE
+    ) ||
+    (room.storage && drawContainer(creep) in ACCEPTABLE)
   )
 }
