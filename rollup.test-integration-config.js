@@ -21,7 +21,7 @@ export default {
       describe: 'describe',
     },
   },
-  external: ['chai', 'it', 'describe'],
+  external: ['it', 'describe'],
   plugins: [
     clear({ targets: ['dist/test.bundle.js'] }),
     resolve(),

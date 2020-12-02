@@ -1,4 +1,4 @@
-import { assert } from 'chai'
+import { assert } from '../expect'
 import { helper } from './helper'
 
 describe('main', () => {
