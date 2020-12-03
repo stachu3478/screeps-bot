@@ -91,6 +91,23 @@ interface RoomMemory {
   _haulSize?: number
 
   boosts?: BoostData
+  r?: RemoteMemory[] // remotes
+}
+
+interface RemoteMemory {
+  c: RemoteCreepMemory[] // creeps
+  h: RemoteCreepMemory // harvester memory
+  s: {
+    // source
+    x: number
+    y: number
+    n: string // roomName
+  }
+}
+
+interface RemoteCreepMemory {
+  n: string // name
+  s: State // state
 }
 
 interface StableRoomMemory extends RoomMemory {
