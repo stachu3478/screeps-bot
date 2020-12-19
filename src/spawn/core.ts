@@ -8,6 +8,7 @@ import extract, { needsExtractor } from './extract'
 import spawnUpgrader from './upgrader'
 import { MinerMemory, Miner } from 'role/creep/miner'
 import { findContainers } from 'utils/find'
+import { needsRanger, spawnRanger } from './ranger'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -133,6 +134,7 @@ export default profiler.registerFN(function loop(
     )
   else if (needsExtractor(spawn, creepCountByRole[Role.EXTRACTOR]))
     extract(spawn)
+  else if (needsRanger(spawn, creepCountByRole[Role.RANGER])) spawnRanger(spawn)
   else spawn.room.visual.text('Spawn is idle.', 0, 3, infoStyle)
 },
 'spawnLoop')

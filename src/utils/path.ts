@@ -5,7 +5,7 @@ import charPosIterator from './charPosIterator'
 interface OffsetByDirection {
   [key: number]: number[]
 }
-const offsetsByDirection: OffsetByDirection = {
+export const offsetsByDirection: OffsetByDirection = {
   [TOP]: [0, -1],
   [TOP_RIGHT]: [1, -1],
   [RIGHT]: [1, 0],

@@ -85,6 +85,7 @@ interface RoomMemory {
   _dismantle?: string
 
   _attack?: string
+  _rangedAttack?: string
   _attackLevel?: number
 
   _haul?: string

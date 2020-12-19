@@ -1,9 +1,5 @@
 import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from 'constants/response'
-
-const hittable = (obj: Creep | Structure) => obj.hits
-const hittableFilter = {
-  filter: hittable,
-}
+import { findTarget } from './shared'
 
 interface AttackCreep extends Creep {
   cache: AttackCache
@@ -11,8 +7,9 @@ interface AttackCreep extends Creep {
 
 interface AttackCache extends CreepCache {
   attack?: Id<Creep | Structure>
-  toughHitsThreshold: number
-  attackHitsThreshold: number
+  toughHitsThreshold?: number
+  attackHitsThreshold?: number
+  rangedAttackHitsThreshold?: number
 }
 
 function getHitThreshold(creep: Creep, type: BodyPartConstant) {
@@ -21,7 +18,10 @@ function getHitThreshold(creep: Creep, type: BodyPartConstant) {
 
 const hasPart = (
   type: BodyPartConstant,
-  property: 'toughHitsThreshold' | 'attackHitsThreshold',
+  property:
+    | 'toughHitsThreshold'
+    | 'attackHitsThreshold'
+    | 'rangedAttackHitsThreshold',
 ) => (creep: AttackCreep) => {
   const cache = creep.cache
   const threshold = cache[property]
@@ -30,29 +30,17 @@ const hasPart = (
 }
 export const hasToughPart = hasPart(TOUGH, 'toughHitsThreshold')
 export const hasAttackPart = hasPart(ATTACK, 'attackHitsThreshold')
+export const hasRangedAttackPart = hasPart(
+  RANGED_ATTACK,
+  'rangedAttackHitsThreshold',
+)
 
 export default function attack(creep: AttackCreep) {
   const cache = creep.cache
   let target: Creep | Structure | null = Game.getObjectById(cache.attack || '')
   if (!hasToughPart(creep)) return FAILED
   if (!target) {
-    const list = Memory.whitelist || {}
-    let newTarget: Creep | Structure | null = creep.pos.findClosestByPath(
-      FIND_HOSTILE_STRUCTURES,
-      {
-        filter: (s) =>
-          !list[s.owner ? s.owner.username : ''] &&
-          hittable(s) &&
-          s.structureType !== STRUCTURE_STORAGE &&
-          s.structureType !== STRUCTURE_TERMINAL,
-      },
-    )
-    if (!newTarget)
-      newTarget = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
-        filter: (c) => !list[c.owner.username] && hittable(c),
-      })
-    if (!newTarget)
-      newTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, hittableFilter)
+    const newTarget = findTarget(creep)
     if (!newTarget) return NOTHING_TODO
     cache.attack = newTarget.id
     target = newTarget

@@ -14,6 +14,7 @@ import hauler from 'role/creep/hauler'
 import roleBooster, { BoosterCreep } from 'role/creep/booster'
 import Harvester from 'role/creep/harvester.d'
 import collectGarbage from 'utils/collectGarbage'
+import ranger, { Ranger } from 'role/creep/ranger'
 
 interface Creeps {
   [key: string]: 0
@@ -102,6 +103,8 @@ export default function creeps(
         case Role.MOVE_TO_FLAG:
           creep.moveTo(Game.flags['flag'])
           break
+        case Role.RANGER:
+          ranger(creep as Ranger)
         default:
           creep.memory.role = Role.UPGRADER
       }

@@ -15,4 +15,5 @@ const enum Role {
   HAULER = 14,
   BOOSTER = 15,
   MOVE_TO_FLAG = 16,
+  RANGER = 17,
 }

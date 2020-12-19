@@ -1,5 +1,12 @@
 import { fightPack, liteFightPack, toughPack } from './packs'
 
+export function ranger() {
+  return new Array(20)
+    .fill(RANGED_ATTACK)
+    .concat(new Array(25).fill(MOVE))
+    .concat(new Array(5).fill(HEAL))
+}
+
 export function progressiveClaimer(
   energy: number,
   maxParts: number = MAX_CREEP_SIZE,
