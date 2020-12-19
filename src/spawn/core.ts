@@ -9,6 +9,8 @@ import spawnUpgrader from './upgrader'
 import { MinerMemory, Miner } from 'role/creep/miner'
 import { findContainers } from 'utils/find'
 import { needsRanger, spawnRanger } from './ranger'
+import { needsScout, spawnScout } from './scout'
+import { needsClaimer, spawnClaimer } from './claimer'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -113,11 +115,7 @@ export default profiler.registerFN(function loop(
     (isLinked && !creepCountByRole[Role.STATIC_UPGRADER])
   ) {
     spawnUpgrader(spawn, mem as StableRoomMemory, controller)
-  } else if (
-    mem._haul &&
-    mem._haul !== spawn.room.name &&
-    !creepCountByRole[Role.HAULER]
-  ) {
+  } else if (mem._haul && !creepCountByRole[Role.HAULER]) {
     mem._haulSize = mem._haulSize ? mem._haulSize + 1 : 10
     if (mem._haulSize > 50) mem._haulSize = 50
     spawn.trySpawnCreep(
@@ -125,6 +123,10 @@ export default profiler.registerFN(function loop(
       'H',
       { role: Role.HAULER, room: spawn.room.name, deprivity: 10 },
     )
+  } else if (needsScout(spawn, creepCountByRole[Role.SCOUT])) {
+    spawnScout(spawn)
+  } else if (needsClaimer(spawn, creepCountByRole[Role.CLAIMER])) {
+    spawnClaimer(spawn)
   } else if (domination(spawn, creepCountByRole))
     spawn.room.visual.text(
       '                            in domination',

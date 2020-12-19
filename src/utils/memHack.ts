@@ -10,6 +10,7 @@ const cache = {
   factories: {},
   roomKeepers: {},
   roomStructures: {},
+  feromon: {},
 }
 
 global.Cache = new CacheHandler(

@@ -43,6 +43,8 @@ interface Memory {
   runtimeAvg?: number
   debugStructures?: 0 | 1
   roomLimit?: number
+  autoScout?: boolean
+  slimClaimers?: boolean
   pathRoomBlacklist?: {
     [key: string]: 1
   }

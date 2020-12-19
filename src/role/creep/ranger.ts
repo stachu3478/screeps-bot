@@ -29,6 +29,7 @@ function tryArriveToAttackDestination(creep: Ranger) {
 export default function ranger(creep: Ranger) {
   const prevHits = creep.memory._prev_hits || creep.hits - 1
   creep.memory._prev_hits = creep.hits
+  const gettingDamage = creep.hits < prevHits
   switch (creep.memory.state) {
     case State.INIT:
       creep.notifyWhenAttacked(false)
@@ -39,6 +40,10 @@ export default function ranger(creep: Ranger) {
       if (hostiles.length) creep.memory.state = State.ATTACKING
       break
     case State.ARRIVE_HOSTILE:
+      if (gettingDamage) {
+        creep.memory.state = State.ATTACKING
+        break
+      }
       switch (arrive(creep)) {
         case DONE:
           creep.memory.state = State.ATTACKING
@@ -69,12 +74,8 @@ export default function ranger(creep: Ranger) {
       break
     case State.FALL_BACK:
       const runTicks = creep.memory._runTicks || 0
-      if (
-        runTicks > 0 ||
-        creep.hits < prevHits ||
-        !hasRangedAttackPart(creep)
-      ) {
-        if (creep.hits < prevHits || !hasRangedAttackPart(creep))
+      if (runTicks > 0 || gettingDamage || !hasRangedAttackPart(creep)) {
+        if (gettingDamage || !hasRangedAttackPart(creep))
           creep.memory._runTicks = 5
         tryArriveToAttackDestination(creep)
         creep.heal(creep)

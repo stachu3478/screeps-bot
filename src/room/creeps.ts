@@ -105,6 +105,7 @@ export default function creeps(
           break
         case Role.RANGER:
           ranger(creep as Ranger)
+          break
         default:
           creep.memory.role = Role.UPGRADER
       }

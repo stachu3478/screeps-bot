@@ -1,6 +1,7 @@
 import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from 'constants/response'
 import { findTarget } from './shared'
 import { offsetsByDirection, isWalkable } from 'utils/path'
+import _ from 'lodash'
 
 interface AttackCreep extends Creep {
   cache: AttackCache
@@ -42,6 +43,16 @@ export function pickDistancedPosFrom(
   return bestDirection
 }
 
+const attackBodyParts = { [ATTACK]: 1, [RANGED_ATTACK]: 1 }
+const findActiveAttackBodyPart = (hp: number, body: Creep['body']) => {
+  const size = body.length
+  return !_.isUndefined(
+    body.find(
+      (bodypart, i) =>
+        bodypart.type in attackBodyParts && hp - (size - i) * 100 > -100,
+    ),
+  )
+}
 export default function rangedAttack(creep: AttackCreep) {
   const cache = creep.cache
   let target: Creep | Structure | null = Game.getObjectById(cache.attack || '')
@@ -51,10 +62,16 @@ export default function rangedAttack(creep: AttackCreep) {
     cache.attack = newTarget.id
     target = newTarget
   }
-  const hostiles = creep.room.find(FIND_HOSTILE_CREEPS)
-  const leastDistanceFromHostile = Math.min(
-    ...hostiles.map((hostile) => creep.pos.rangeTo(hostile)),
-  )
+  const hostiles = creep.room
+    .find(FIND_HOSTILE_CREEPS)
+    .filter((creep) => findActiveAttackBodyPart(creep.hits, creep.body))
+
+  const isDanger =
+    (target as Creep).body &&
+    findActiveAttackBodyPart((target as Creep).hits, (target as Creep).body)
+  const distances = hostiles.map((hostile) => creep.pos.rangeTo(hostile))
+  console.log(distances)
+  const leastDistanceFromHostile = Math.min(...distances)
   if (creep.hits < creep.hitsMax) {
     creep.heal(creep)
   }
@@ -64,12 +81,22 @@ export default function rangedAttack(creep: AttackCreep) {
       hostiles.map((hostile) => hostile.pos),
     )
     creep.move(direction)
+    creep.cache.attack = (
+      hostiles.find(
+        (hostile) => creep.pos.rangeTo(hostile) === leastDistanceFromHostile,
+      ) || hostiles[0]
+    ).id
     console.log('Moved by predicted offset')
   } else if (!creep.pos.inRangeTo(target, 3)) {
     creep.moveTo(target)
     console.log('Moved to target')
     return NOTHING_DONE
+  } else if (!isDanger && !creep.pos.inRangeTo(target, 1)) {
+    // is a structure
+    creep.moveTo(target)
   }
-  if (creep.rangedAttack(target) !== OK) return FAILED
+  if (creep.pos.inRangeTo(target, 1)) {
+    if (creep.rangedMassAttack() !== OK) return FAILED
+  } else if (creep.rangedAttack(target) !== OK) return FAILED
   return SUCCESS
 }

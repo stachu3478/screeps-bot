@@ -76,6 +76,9 @@ interface GlobalCache {
     [key: string]: string
   }
   ownedRooms?: number
+  feromon: {
+    [key: string]: number
+  }
 }
 
 interface WrappedGlobalCache extends GlobalCache {

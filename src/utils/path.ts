@@ -1,6 +1,7 @@
 import { posToChar } from 'planner/pos'
 import { findSourceKeepers } from './find'
 import charPosIterator from './charPosIterator'
+import { getFeromon, incrementFeromon } from './feromon'
 
 interface OffsetByDirection {
   [key: number]: number[]
@@ -59,6 +60,7 @@ function roomCallback(roomName: string, costMatrix: CostMatrix) {
 }
 
 export const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
+  if (x < 0 || y < 0 || x > 49 || y > 49) return false
   const structures = room.lookForAt(LOOK_STRUCTURES, x, y)
   if (
     room.getTerrain().get(x, y) === TERRAIN_MASK_WALL &&
@@ -79,6 +81,8 @@ const move = {
     const room = creep.room
     const { x, y } = creep.pos
     let dirOffset = 0
+    let bestDir = 0
+    let leastFeromon = Infinity
     for (let i = 0; i < 8; i++) {
       const dir = (zmod(preferDirection + dirOffset - 1, 8) +
         1) as DirectionConstant
@@ -87,13 +91,19 @@ const move = {
       const mx = x + offset[0]
       const my = y + offset[1]
       if (isWalkable(room, mx, my, me)) {
-        creep.move(dir)
-        return true
+        const feromon = getFeromon(room.name, mx, my)
+        if (feromon < leastFeromon) {
+          leastFeromon = feromon
+          bestDir = dir
+        }
       }
       if (dirOffset > -1) dirOffset++
       dirOffset = -dirOffset
     }
-    return false
+    if (bestDir === 0) return false
+    creep.move(bestDir as DirectionConstant)
+    incrementFeromon(room.name, x, y)
+    return true
   },
   cheap: (
     creep: Creep,

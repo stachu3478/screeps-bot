@@ -49,4 +49,8 @@ export default class CacheHandler {
     return (this.cache.ownedRooms = this.intershardMemoryHandler.ownedRooms =
       this.cache.ownedRooms || _.size(Memory.myRooms))
   }
+
+  get feromon() {
+    return this.cache.feromon
+  }
 }
