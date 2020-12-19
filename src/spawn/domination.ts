@@ -19,7 +19,7 @@ function autoClaim(spawn: StructureSpawn, creepCountByRole: number[]) {
       return true
     }
   } else if (!creepCountByRole[Role.SCOUT]) {
-    spawn.trySpawnCreep([MOVE], 'S', {
+    spawn.trySpawnCreep([ATTACK, MOVE], 'S', {
       role: Role.SCOUT,
       room: spawn.room.name,
       deprivity: 0,
