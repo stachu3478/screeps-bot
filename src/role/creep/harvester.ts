@@ -26,6 +26,7 @@ import fill from 'routine/haul/fill'
 import dumpResources from 'job/dumpResources'
 import { haulCurrentRoom } from 'job/resourceHaul'
 import pick from 'routine/haul/pick'
+import { ensureEmpty } from './shared'
 
 function nativeRoutineHandler(creep: Harvester, result: number) {
   switch (result) {
@@ -39,13 +40,6 @@ function nativeRoutineHandler(creep: Harvester, result: number) {
       autoRepair(creep)
       break
   }
-}
-
-function ensureEmpty(creep: Creep) {
-  // still needs that
-  RESOURCES_ALL.find((resource) => {
-    return creep.store[resource] > 0 && creep.drop(resource) === 0
-  })
 }
 
 export default profiler.registerFN(function harvester(creep: Harvester) {

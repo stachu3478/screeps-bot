@@ -9,9 +9,10 @@ import spawnUpgrader from './upgrader'
 import { MinerMemory, Miner } from 'role/creep/miner'
 import { findContainers } from 'utils/find'
 import { needsRanger, spawnRanger } from './ranger'
-import { needsScout, spawnScout } from './scout'
+import { needsScout, spawnScout, needsClaim } from './scout'
 import { needsClaimer, spawnClaimer } from './claimer'
 import { needsScorer, spawnScorer } from './scorer'
+import { needsHauler, spawnHauler } from './hauler'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -116,14 +117,8 @@ export default profiler.registerFN(function loop(
     (isLinked && !creepCountByRole[Role.STATIC_UPGRADER])
   ) {
     spawnUpgrader(spawn, mem as StableRoomMemory, controller)
-  } else if (mem._haul && !creepCountByRole[Role.HAULER]) {
-    mem._haulSize = mem._haulSize ? mem._haulSize + 1 : 10
-    if (mem._haulSize > 50) mem._haulSize = 50
-    spawn.trySpawnCreep(
-      _.times(mem._haulSize, (i) => (i & 1 ? CARRY : MOVE)),
-      'H',
-      { role: Role.HAULER, room: spawn.room.name, deprivity: 10 },
-    )
+  } else if (needsHauler(spawn, creepCountByRole[Role.HAULER])) {
+    spawnHauler(spawn)
   } else if (needsScout(spawn, creepCountByRole[Role.SCOUT])) {
     spawnScout(spawn)
   } else if (needsClaimer(spawn, creepCountByRole[Role.CLAIMER])) {

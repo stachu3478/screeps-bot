@@ -10,6 +10,7 @@ import fill from 'routine/haul/fill'
 import draw from 'routine/haul/draw'
 import dumpResources from 'job/dumpResources'
 import collectGarbage from 'utils/collectGarbage'
+import { followJournal } from 'routine/arrive/journal'
 
 export default profiler.registerFN(function hauler(creep: Hauler) {
   switch (creep.memory.state) {
@@ -21,20 +22,22 @@ export default profiler.registerFN(function hauler(creep: Hauler) {
       switch (pick(creep)) {
         case NOTHING_TODO:
         case DONE:
-          dumpResources(creep, State.STORAGE_FILL)
+          resourceHaul(creep)
       }
       break
     case State.RECYCLE:
-      switch (recycle(creep)) {
-        case DONE:
-          collectGarbage(creep.name)
+      const haulTarget = creep.motherRoom.memory._haul
+      if (haulTarget) {
+        creep.memory.state = State.IDLE
+      } else if (recycle(creep) === DONE) {
+        collectGarbage(creep.name)
       }
       break
     case State.DRAW:
       switch (draw(creep)) {
         case NOTHING_TODO:
         case DONE:
-          dumpResources(creep, State.STORAGE_FILL)
+          resourceHaul(creep)
       }
       break
     case State.STORAGE_FILL:
@@ -48,11 +51,16 @@ export default profiler.registerFN(function hauler(creep: Hauler) {
       }
       break
     case State.ARRIVE:
-      switch (arrive(creep)) {
+      switch (arrive(creep, true, true)) {
         case NOTHING_TODO:
         case DONE:
           resourceHaul(creep)
           break
+      }
+      break
+    case State.ARRIVE_BACK:
+      if (!followJournal(creep)) {
+        dumpResources(creep, State.STORAGE_FILL)
       }
       break
     default:

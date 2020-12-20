@@ -7,6 +7,7 @@ import {
   FAILED,
 } from '../constants/response'
 import pos from '../planner/pos'
+import { isWalkable } from 'utils/path'
 
 const exits = [FIND_EXIT_TOP, FIND_EXIT_BOTTOM, FIND_EXIT_LEFT, FIND_EXIT_RIGHT]
 
@@ -27,7 +28,7 @@ export default function exit(creep: ExitCreep) {
     const randDir = _.random(0, 3)
     const newTarget = creep.pos.findClosestByPath(exits[randDir])
     if (!newTarget) return NOTHING_TODO
-    if (creep.room.lookForAt(LOOK_STRUCTURES, newTarget.x, newTarget.y).length)
+    if (!isWalkable(Game.rooms[newTarget.roomName], newTarget.x, newTarget.y))
       return NOTHING_DONE
     target = cache.exit =
       String.fromCharCode(pos(newTarget.x, newTarget.y)) + newTarget.roomName

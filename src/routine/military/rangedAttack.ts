@@ -1,7 +1,7 @@
 import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from 'constants/response'
 import { findTarget } from './shared'
-import { offsetsByDirection, isWalkable } from 'utils/path'
-import _ from 'lodash'
+import { pickBestDirectionFrom } from '../shared'
+import { findActiveAttackBodyPart } from 'utils/body'
 
 interface AttackCreep extends Creep {
   cache: AttackCache
@@ -11,57 +11,69 @@ interface AttackCache extends CreepCache {
   attack?: Id<Creep | Structure>
 }
 
-/**
- * Tries to find best move direction to keep
- */
-export function pickDistancedPosFrom(
-  creep: Creep,
-  posns: RoomPosition[],
-  distance = 3,
-) {
-  let bestDirection: DirectionConstant = 1
-  let bestDistanceDifference = Infinity
-  for (let i = 1; i <= 8; i++) {
-    const direction = i as DirectionConstant
-    const offset = offsetsByDirection[direction]
-    const newX = creep.pos.x + offset[0]
-    const newY = creep.pos.x + offset[1]
-    if (!isWalkable(creep.room, newX, newY)) continue
-    let worstDistanceDifference = 0
-    posns.forEach((pos) => {
-      const distanceFrom = pos.rangeXY(newX, newY)
-      const difference = Math.abs(distanceFrom - distance)
-      if (difference > worstDistanceDifference) {
-        worstDistanceDifference = difference
-      }
-    })
-    if (worstDistanceDifference < bestDistanceDifference) {
-      bestDistanceDifference = worstDistanceDifference
-      bestDirection = direction
-    }
+class ProtectedArea {
+  private protector: Creep
+  private protect: _HasRoomPosition
+  private protectsSelf: boolean
+
+  constructor(
+    protector: Creep,
+    protect: _HasRoomPosition = ProtectedArea.findForProtection(protector),
+  ) {
+    this.protector = protector
+    this.protect = protect
+    this.protectsSelf = this.protector === this.protect
   }
-  return bestDirection
+
+  canBypass(target: _HasRoomPosition) {
+    return this.protect.pos.getRangeTo(target) <= this.allowedRange
+  }
+
+  private get allowedRange() {
+    if (this.protectsSelf) return 50
+    return Math.max(this.protector.pos.getRangeTo(this.protect), 5)
+  }
+
+  static findForProtection(protector: Creep) {
+    return (
+      protector.room.find(FIND_FLAGS, {
+        filter: (f) => f.name.match(/^[Pp]rotect/),
+      })[0] || protector
+    )
+  }
 }
 
-const attackBodyParts = { [ATTACK]: 1, [RANGED_ATTACK]: 1 }
-const findActiveAttackBodyPart = (hp: number, body: Creep['body']) => {
-  const size = body.length
-  return !_.isUndefined(
-    body.find(
-      (bodypart, i) =>
-        bodypart.type in attackBodyParts && hp - (size - i) * 100 > -100,
-    ),
-  )
-}
-export default function rangedAttack(creep: AttackCreep) {
+export function handleCachedTarget(
+  creep: AttackCreep,
+  protectedArea = new ProtectedArea(creep),
+) {
   const cache = creep.cache
   let target: Creep | Structure | null = Game.getObjectById(cache.attack || '')
   if (!target) {
-    const newTarget = findTarget(creep, true)
-    if (!newTarget) return NOTHING_TODO
+    const newTarget = findTarget(creep, true, (e) => protectedArea.canBypass(e))
+    if (!newTarget) return
     cache.attack = newTarget.id
     target = newTarget
+  } else if (
+    !protectedArea.canBypass(target) ||
+    !(target as Structure).structureType
+  ) {
+    const newTarget = findTarget(
+      creep,
+      true,
+      (e) => !(e as Structure).structureType && protectedArea.canBypass(e),
+    )
+    if (newTarget) {
+      cache.attack = newTarget.id
+      target = newTarget
+    }
   }
+  return target
+}
+
+export default function rangedAttack(creep: AttackCreep) {
+  const target = handleCachedTarget(creep)
+  if (!target) return NOTHING_TODO
   const hostiles = creep.room
     .find(FIND_HOSTILE_CREEPS)
     .filter((creep) => findActiveAttackBodyPart(creep.hits, creep.body))
@@ -70,15 +82,15 @@ export default function rangedAttack(creep: AttackCreep) {
     (target as Creep).body &&
     findActiveAttackBodyPart((target as Creep).hits, (target as Creep).body)
   const distances = hostiles.map((hostile) => creep.pos.rangeTo(hostile))
-  console.log(distances)
   const leastDistanceFromHostile = Math.min(...distances)
   if (creep.hits < creep.hitsMax) {
     creep.heal(creep)
   }
   if (leastDistanceFromHostile < 4) {
-    const direction = pickDistancedPosFrom(
+    const direction = pickBestDirectionFrom(
       creep,
       hostiles.map((hostile) => hostile.pos),
+      (distance) => Math.abs(distance - 3),
     )
     creep.move(direction)
     creep.cache.attack = (
@@ -86,10 +98,8 @@ export default function rangedAttack(creep: AttackCreep) {
         (hostile) => creep.pos.rangeTo(hostile) === leastDistanceFromHostile,
       ) || hostiles[0]
     ).id
-    console.log('Moved by predicted offset')
   } else if (!creep.pos.inRangeTo(target, 3)) {
     creep.moveTo(target)
-    console.log('Moved to target')
     return NOTHING_DONE
   } else if (!isDanger && !creep.pos.inRangeTo(target, 1)) {
     creep.moveTo(target)

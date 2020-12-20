@@ -1,0 +1,16 @@
+import { carryPacks } from './body/body'
+
+export function needsHauler(spawn: StructureSpawn, count: number) {
+  return spawn.room.memory._haul && !count
+}
+
+export function spawnHauler(spawn: StructureSpawn) {
+  const mem = spawn.room.memory
+  mem._haulSize = mem._haulSize ? mem._haulSize + 1 : 10
+  if (mem._haulSize > 50) mem._haulSize = 50
+  spawn.trySpawnCreep(carryPacks(mem._haulSize), 'H', {
+    role: Role.HAULER,
+    room: spawn.room.name,
+    deprivity: 10,
+  })
+}

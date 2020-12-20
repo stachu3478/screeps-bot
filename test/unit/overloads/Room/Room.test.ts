@@ -352,4 +352,21 @@ describe('Room', () => {
       })
     })
   })
+
+  describe('#my', () => {
+    it('returns true when controller my', () => {
+      room.controller = { my: true } as StructureController
+      expect(room.my).to.be.true
+    })
+
+    it('returns false when controller not my', () => {
+      room.controller = {} as StructureController
+      expect(room.my).to.be.false
+    })
+
+    it('returns false when no controller', () => {
+      delete room.controller
+      expect(room.my).to.be.false
+    })
+  })
 })

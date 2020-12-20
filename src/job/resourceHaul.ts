@@ -16,13 +16,13 @@ export function haulCurrentRoom(creep: Hauler) {
   const room = creep.room
   const haulable =
     findHaulable(room, creep.pos) ||
-    (room.controller &&
-      !room.controller.my &&
-      (getHaulable(room.storage) || getHaulable(room.terminal)))
+    (!room.my && (getHaulable(room.storage) || getHaulable(room.terminal)))
   if (haulable) {
     mem.state = State.DRAW
     mem._draw = haulable.id
-    mem._drawType = RESOURCES_ALL.find((resource) => !!haulable.store[resource])
+    mem._drawType = RESOURCES_ALL.reverse().find(
+      (resource) => !!haulable.store[resource],
+    )
     return true
   }
   return false
@@ -30,16 +30,17 @@ export function haulCurrentRoom(creep: Hauler) {
 
 export default function resourceHaul(creep: Hauler) {
   const mem = creep.memory
-  const haulTarget = Memory.rooms[mem.room]._haul
-  if (!haulTarget) {
+  const haulTarget = creep.motherRoom.memory._haul
+  if (creep.store.getFreeCapacity() === 0) {
+    creep.memory.state = State.ARRIVE_BACK
+  } else if (!haulTarget) {
     mem.state = State.RECYCLE
-    return false
   } else if (haulTarget === creep.room.name) {
     const hauling = haulCurrentRoom(creep)
     if (!hauling) {
       mem.state = State.ARRIVE
       mem._arrive = mem.room
-      delete Memory.rooms[mem.room]._haul
+      delete creep.motherRoom.memory._haul
     }
     return hauling
   } else {

@@ -24,6 +24,7 @@ interface Room {
   powerSpawnCache: PowerSpawnCache
   sources: SourceHandler
   _sourceHandler?: SourceHandler
+  my: boolean
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void

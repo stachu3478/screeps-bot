@@ -1,7 +1,6 @@
 import { DONE, NOTHING_TODO, SUCCESS, FAILED } from 'constants/response'
 import arrive from 'routine/arrive'
 import profiler from 'screeps-profiler'
-import Hauler from './hauler.d'
 import fill from 'routine/haul/fill'
 import drawStorage from 'routine/haul/storageDraw'
 

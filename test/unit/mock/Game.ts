@@ -49,6 +49,7 @@ export default {
         status: 'closed',
       } as RoomStatusPermanent),
     isRoomAvailable: () => false,
+    visual: {} as RoomVisual,
   },
   market: {
     credits: 0,

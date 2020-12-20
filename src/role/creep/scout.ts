@@ -14,7 +14,7 @@ export default function run(creep: Scout) {
   switch (creep.memory.state) {
     case State.INIT:
       creep.notifyWhenAttacked(false)
-      creep.memory.state = State.EXIT
+      creep.memory.state = State.SCOUT
       break
     case State.EXIT:
       switch (exit(creep)) {

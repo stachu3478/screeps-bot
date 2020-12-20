@@ -94,6 +94,10 @@ defineRoomGetter('sources', (self) => {
   return self._sourceHandler || (self._sourceHandler = new SourceHandler(self))
 })
 
+defineRoomGetter('my', (self) => {
+  return self.controller ? self.controller.my === true : false
+})
+
 Room.prototype.store = function (resource: ResourceConstant) {
   const storage = this.storage
   const terminal = this.terminal

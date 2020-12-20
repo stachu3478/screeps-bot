@@ -37,6 +37,9 @@ export default function ranger(creep: Ranger) {
     case State.IDLE:
       const hostiles = creep.room.find(FIND_HOSTILE_CREEPS)
       if (hostiles.length) creep.memory.state = State.ATTACKING
+      const location = creep.room.name
+      if (location !== creep.motherRoom.memory._rangedAttack)
+        tryArriveToAttackDestination(creep)
       break
     case State.ARRIVE_HOSTILE:
       if (gettingDamage) {

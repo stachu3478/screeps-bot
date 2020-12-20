@@ -45,4 +45,5 @@ const enum State {
   FILL_PRIORITY = 45,
   TERM_BUY_MISSING = 46,
   LAB_COLLECTING = 48,
+  ARRIVE_BACK = 49,
 }

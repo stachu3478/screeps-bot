@@ -15,5 +15,14 @@ export function spawnScorer(spawn: StructureSpawn) {
     room: spawn.room.name,
     deprivity: 50,
   }
-  spawn.trySpawnCreep(scorer(), 'O', memory, false, 10)
+  spawn.trySpawnCreep(
+    scorer(
+      spawn.room.energyAvailable,
+      spawn.room.store('score' as ResourceConstant),
+    ),
+    'O',
+    memory,
+    false,
+    10,
+  )
 }

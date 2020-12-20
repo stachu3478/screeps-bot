@@ -41,7 +41,7 @@ class ClaimChecker {
 }
 
 function requestHaul(creep: ScoutCreep) {
-  if (creep.motherRoom.memory._haul) return
+  if (creep.motherRoom.memory._haul && !creep.room.my) return
   const haulable = findHaulable(creep.room, creep.pos)
   if (!haulable) return
   if (creep.moveTo(haulable) === ERR_NO_PATH) return

@@ -1,7 +1,9 @@
 import { posToChar } from 'planner/pos'
 import { findSourceKeepers } from './find'
 import charPosIterator from './charPosIterator'
-import { getFeromon, incrementFeromon } from './feromon'
+import Feromon from './feromon'
+import { pickBestDirectionFrom } from 'routine/shared'
+import { findActiveAttackBodyPart } from './body'
 
 interface OffsetByDirection {
   [key: number]: number[]
@@ -91,7 +93,7 @@ const move = {
       const mx = x + offset[0]
       const my = y + offset[1]
       if (isWalkable(room, mx, my, me)) {
-        const feromon = getFeromon(room.name, mx, my)
+        const feromon = Feromon.collect(room.name, mx, my)
         if (feromon < leastFeromon) {
           leastFeromon = feromon
           bestDir = dir
@@ -102,7 +104,60 @@ const move = {
     }
     if (bestDir === 0) return false
     creep.move(bestDir as DirectionConstant)
-    incrementFeromon(room.name, x, y)
+    Feromon.increment(room.name, x, y)
+    return true
+  },
+  handleCreepOnRoad: (
+    creepOnRoad: Creep,
+    creep: Creep,
+    target: RoomPosition | _HasRoomPosition,
+    options: MoveToOpts,
+    dir: DirectionConstant,
+    result: ScreepsReturnCode,
+  ) => {
+    if (!creepOnRoad.memory) {
+      if (!creepOnRoad.my) {
+        options.ignoreCreeps = false
+        options.reusePath = 0
+        return creep.moveTo(target, options)
+      } else move.anywhere(creepOnRoad, dir, creep)
+    } else if (!move.check(creepOnRoad)) {
+      const swap =
+        creepOnRoad.memory.role === Role.STATIC_UPGRADER ||
+        creepOnRoad.memory.role === Role.MINER ||
+        Math.random() > 0.8
+      const dirTo = creepOnRoad.pos.getDirectionTo(creep)
+      move.anywhere(creepOnRoad, swap ? dirTo : dir, creep) ||
+        creepOnRoad.move(dirTo)
+    }
+    return result
+  },
+  getPathDirection: (memory: CreepMemory['_move']) => {
+    if (!memory) return
+    const path = memory.path
+    return parseInt(path.charAt(4)) as DirectionConstant
+  },
+  keepAwayFromHostiles: (creep: Creep) => {
+    const hostiles = creep.room
+      .find(FIND_HOSTILE_CREEPS)
+      .filter(
+        (creep) =>
+          findActiveAttackBodyPart(creep.hits, creep.body) &&
+          creep.owner.username !== 'Source Keeper',
+      )
+      .map((creep) => creep.pos)
+    const leastDistance = Math.min(
+      ...hostiles.map((pos) => creep.pos.getRangeTo(pos)),
+    )
+    if (leastDistance <= 5) {
+      const direction = pickBestDirectionFrom(
+        creep,
+        hostiles,
+        (distance) => -distance,
+      )
+      creep.move(direction)
+      return false
+    }
     return true
   },
   cheap: (
@@ -112,47 +167,41 @@ const move = {
     range: number = 0,
   ): ScreepsReturnCode => {
     if (creep.fatigue) return ERR_TIRED
-    const costCallback = safe ? roomCallback : undefined
-    let result = creep.moveTo(target, {
+    if (safe && !move.keepAwayFromHostiles(creep)) return 0
+    const options = {
+      ignoreCreeps: false,
       noPathFinding: true,
       reusePath: 100,
-      costCallback,
+      costCallback: safe ? roomCallback : undefined,
       range,
-    })
-    if (result === ERR_NOT_FOUND)
-      result = creep.moveTo(target, {
-        ignoreCreeps: true,
-        reusePath: 100,
-        costCallback,
-        range,
-      })
+    }
+    let result: ScreepsReturnCode = creep.moveTo(target, options)
+    if (result === ERR_NOT_FOUND) {
+      delete options.noPathFinding
+      options.ignoreCreeps = true
+      result = creep.moveTo(target, options)
+    }
     const mem = creep.memory
-    if (!mem._move) return result
-    const path = mem._move.path
-    const dir = parseInt(path.charAt(4)) as DirectionConstant
+    const moveMemory = mem._move
+    if (!moveMemory) return result
+    const dir = move.getPathDirection(moveMemory)
     if (dir) {
       const creepOnRoad = creep.room.lookForAt(
         LOOK_CREEPS,
         creep.pos.x + offsetsByDirection[dir][0],
         creep.pos.y + offsetsByDirection[dir][1],
       )[0]
-      if (creepOnRoad) {
-        if (!creepOnRoad.memory) {
-          if (!creepOnRoad.my)
-            result = creep.moveTo(target, { costCallback, range })
-          else move.anywhere(creepOnRoad, dir, creep)
-        } else if (!move.check(creepOnRoad)) {
-          const swap =
-            creepOnRoad.memory.role === Role.STATIC_UPGRADER ||
-            creepOnRoad.memory.role === Role.MINER ||
-            Math.random() > 0.8
-          const dirTo = creepOnRoad.pos.getDirectionTo(creep)
-          move.anywhere(creepOnRoad, swap ? dirTo : dir, creep) ||
-            creepOnRoad.move(dirTo)
-        }
-      }
+      if (creepOnRoad)
+        result = move.handleCreepOnRoad(
+          creepOnRoad,
+          creep,
+          target,
+          options,
+          dir,
+          result,
+        )
     }
-    mem._move.t = Game.time
+    moveMemory.t = Game.time
     return result
   },
   check: (creep: Creep) => {

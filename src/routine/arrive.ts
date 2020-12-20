@@ -1,25 +1,26 @@
 import { SUCCESS, NOTHING_TODO, DONE } from '../constants/response'
 import move from 'utils/path'
+import { keepJournal } from './arrive/journal'
+import { ensureEmpty } from 'role/creep/shared'
 
-interface ArriveCreep extends Creep {
+export interface ArriveCreep extends Creep {
   memory: ArriveMemory
 }
 
 interface ArriveMemory extends CreepMemory {
   _arrive?: string
+  _journal?: string[]
 }
 
-export default function arrive(creep: ArriveCreep, dumpCarry: boolean = true) {
+export default function arrive(
+  creep: ArriveCreep,
+  dumpCarry: boolean = true,
+  journal: boolean = false,
+) {
   if (dumpCarry && creep.store.getUsedCapacity() > 0) {
-    RESOURCES_ALL.some((r) => {
-      if (creep.store[r]) {
-        creep.drop(r)
-        return true
-      }
-      return false
-    })
+    ensureEmpty(creep)
   }
-
+  if (journal) keepJournal(creep)
   const targetRoom = creep.memory._arrive
   if (!targetRoom) return NOTHING_TODO
   const pos = new RoomPosition(25, 25, targetRoom)

@@ -1,7 +1,14 @@
 import { fightPack, liteFightPack, toughPack } from './packs'
 
-export function scorer() {
-  return new Array(4).fill(CARRY).concat(new Array(4).fill(MOVE))
+export function carryPacks(count: number) {
+  return new Array(count * 2)
+    .fill(0)
+    .map((_, i) => (i % 2 === 0 ? CARRY : MOVE))
+}
+
+export function scorer(energy: number, toBeDelivered: number) {
+  const carryParts = Math.floor(Math.min(energy / 100, toBeDelivered / 150, 25))
+  return carryPacks(carryParts)
 }
 
 export function ranger() {
