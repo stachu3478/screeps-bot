@@ -3,6 +3,7 @@ import arrive from 'routine/arrive'
 import profiler from 'screeps-profiler'
 import fill from 'routine/haul/fill'
 import drawStorage from 'routine/haul/storageDraw'
+import draw from 'routine/haul/draw'
 
 export interface Scorer extends Creep {
   memory: ScorerMemory
@@ -31,6 +32,10 @@ function goArrive(creep: Scorer) {
   creep.memory._arrive = creep.motherRoom.memory._score
 }
 
+function findScoreContainer(creep: Scorer) {
+  return creep.room.find(10011 as FindConstant)[0] as StructureContainer | null
+}
+
 export default profiler.registerFN(function scorer(creep: Scorer) {
   switch (creep.memory.state) {
     case State.IDLE:
@@ -41,9 +46,25 @@ export default profiler.registerFN(function scorer(creep: Scorer) {
       score(creep)
       break
     case State.STORAGE_DRAW:
+      const scoreContainer = findScoreContainer(creep)
+      if (scoreContainer) {
+        creep.memory.state = State.DRAW
+        draw(creep, scoreContainer, 'score' as ResourceConstant)
+        break
+      }
       switch (drawStorage(creep, 'score' as ResourceConstant)) {
         case DONE:
         case SUCCESS:
+          creep.memory.state = State.IDLE
+      }
+      break
+    case State.DRAW:
+      switch (
+        draw(creep, findScoreContainer(creep), 'score' as ResourceConstant)
+      ) {
+        case DONE:
+        case SUCCESS:
+        case NOTHING_TODO:
           creep.memory.state = State.IDLE
       }
       break

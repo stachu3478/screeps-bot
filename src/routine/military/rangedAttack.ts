@@ -11,7 +11,7 @@ interface AttackCache extends CreepCache {
   attack?: Id<Creep | Structure>
 }
 
-class ProtectedArea {
+export class ProtectedArea {
   private protector: Creep
   private protect: _HasRoomPosition
   private protectsSelf: boolean
@@ -56,7 +56,7 @@ export function handleCachedTarget(
     target = newTarget
   } else if (
     !protectedArea.canBypass(target) ||
-    !(target as Structure).structureType
+    !!(target as Structure).structureType
   ) {
     const newTarget = findTarget(
       creep,
@@ -72,6 +72,7 @@ export function handleCachedTarget(
 }
 
 export default function rangedAttack(creep: AttackCreep) {
+  creep.say('💵🔫', true)
   const target = handleCachedTarget(creep)
   if (!target) return NOTHING_TODO
   const hostiles = creep.room
