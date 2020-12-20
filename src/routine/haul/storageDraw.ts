@@ -1,6 +1,9 @@
 import draw from './draw'
 
-export default function drawStorage(creep: Creep) {
+export default function drawStorage(
+  creep: Creep,
+  resource: ResourceConstant = RESOURCE_ENERGY,
+) {
   const motherRoom = creep.motherRoom
   const storage = motherRoom.storage
   const terminal = motherRoom.terminal
@@ -8,9 +11,9 @@ export default function drawStorage(creep: Creep) {
   if (
     !storage ||
     (terminal &&
-      storage.store[RESOURCE_ENERGY] < creep.store.getFreeCapacity() &&
-      storage.store[RESOURCE_ENERGY] < terminal.store[RESOURCE_ENERGY])
+      storage.store[resource] < creep.store.getFreeCapacity() &&
+      storage.store[resource] < terminal.store[resource])
   )
     target = terminal
-  return draw(creep, target)
+  return draw(creep, target, resource)
 }

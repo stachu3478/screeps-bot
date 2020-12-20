@@ -43,7 +43,9 @@ class ClaimChecker {
 function requestHaul(creep: ScoutCreep) {
   if (creep.motherRoom.memory._haul) return
   const haulable = findHaulable(creep.room, creep.pos)
-  if (haulable) creep.motherRoom.memory._haul = creep.room.name
+  if (!haulable) return
+  if (creep.moveTo(haulable) === ERR_NO_PATH) return
+  creep.motherRoom.memory._haul = creep.room.name
 }
 
 export default function scout(creep: ScoutCreep) {

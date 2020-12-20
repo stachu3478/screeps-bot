@@ -1,6 +1,5 @@
 import { DONE, NOTHING_TODO, FAILED } from 'constants/response'
 import arrive from 'routine/arrive'
-import { hasRangedAttackPart } from 'routine/military/attack'
 import heal from 'routine/military/heal'
 import rangedAttack from 'routine/military/rangedAttack'
 
@@ -52,7 +51,7 @@ export default function ranger(creep: Ranger) {
           creep.memory.state = State.IDLE
           break
         default:
-          if (!hasRangedAttackPart(creep)) creep.memory.state = State.FALL_BACK
+          if (creep.hits < 4000) creep.memory.state = State.FALL_BACK
           heal(creep)
       }
       break
@@ -74,12 +73,11 @@ export default function ranger(creep: Ranger) {
       break
     case State.FALL_BACK:
       const runTicks = creep.memory._runTicks || 0
-      if (runTicks > 0 || gettingDamage || !hasRangedAttackPart(creep)) {
-        if (gettingDamage || !hasRangedAttackPart(creep))
-          creep.memory._runTicks = 5
+      if (runTicks > 0 || gettingDamage || creep.hits < 4000) {
+        if (gettingDamage || creep.hits < 4000) creep.memory._runTicks = 5
         tryArriveToAttackDestination(creep)
         creep.heal(creep)
-      } else if (hasRangedAttackPart(creep)) {
+      } else if (creep.hits > 4000) {
         tryArriveToAttackDestination(creep)
       } else creep.heal(creep)
       break

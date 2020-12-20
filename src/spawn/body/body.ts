@@ -1,5 +1,9 @@
 import { fightPack, liteFightPack, toughPack } from './packs'
 
+export function scorer() {
+  return new Array(4).fill(CARRY).concat(new Array(4).fill(MOVE))
+}
+
 export function ranger() {
   return new Array(20)
     .fill(RANGED_ATTACK)

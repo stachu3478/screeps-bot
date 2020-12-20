@@ -11,6 +11,7 @@ import { findContainers } from 'utils/find'
 import { needsRanger, spawnRanger } from './ranger'
 import { needsScout, spawnScout } from './scout'
 import { needsClaimer, spawnClaimer } from './claimer'
+import { needsScorer, spawnScorer } from './scorer'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -137,6 +138,7 @@ export default profiler.registerFN(function loop(
   else if (needsExtractor(spawn, creepCountByRole[Role.EXTRACTOR]))
     extract(spawn)
   else if (needsRanger(spawn, creepCountByRole[Role.RANGER])) spawnRanger(spawn)
+  else if (needsScorer(spawn, creepCountByRole[Role.SCORER])) spawnScorer(spawn)
   else spawn.room.visual.text('Spawn is idle.', 0, 3, infoStyle)
 },
 'spawnLoop')

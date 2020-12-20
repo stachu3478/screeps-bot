@@ -16,4 +16,5 @@ const enum Role {
   BOOSTER = 15,
   MOVE_TO_FLAG = 16,
   RANGER = 17,
+  SCORER = 18,
 }

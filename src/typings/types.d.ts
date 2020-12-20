@@ -93,6 +93,8 @@ interface RoomMemory {
   _haul?: string
   _haulSize?: number
 
+  _score?: string
+
   boosts?: BoostData
   r?: RemoteMemory[] // remotes
 }

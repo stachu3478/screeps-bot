@@ -92,7 +92,6 @@ export default function rangedAttack(creep: AttackCreep) {
     console.log('Moved to target')
     return NOTHING_DONE
   } else if (!isDanger && !creep.pos.inRangeTo(target, 1)) {
-    // is a structure
     creep.moveTo(target)
   }
   if (creep.pos.inRangeTo(target, 1)) {

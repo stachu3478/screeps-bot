@@ -29,7 +29,7 @@ export default profiler.registerFN(function pick(creep: AutoPickCreep) {
   const result = creep.pickup(target)
   remaining -= target.amount
   if (result === ERR_NOT_IN_RANGE) {
-    creep.moveTo(target)
+    if (creep.moveTo(target) === ERR_NO_PATH) return NOTHING_TODO
     return NOTHING_DONE
   }
 

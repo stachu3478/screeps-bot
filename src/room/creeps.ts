@@ -15,6 +15,7 @@ import roleBooster, { BoosterCreep } from 'role/creep/booster'
 import Harvester from 'role/creep/harvester.d'
 import collectGarbage from 'utils/collectGarbage'
 import ranger, { Ranger } from 'role/creep/ranger'
+import scorer, { Scorer } from 'role/creep/scorer'
 
 interface Creeps {
   [key: string]: 0
@@ -105,6 +106,9 @@ export default function creeps(
           break
         case Role.RANGER:
           ranger(creep as Ranger)
+          break
+        case Role.SCORER:
+          scorer(creep as Scorer)
           break
         default:
           creep.memory.role = Role.UPGRADER
