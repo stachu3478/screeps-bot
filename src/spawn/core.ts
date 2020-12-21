@@ -5,7 +5,7 @@ import { progressiveFighter } from './body/body'
 import domination from './domination'
 import { infoStyle } from '../room/style'
 import extract, { needsExtractor } from './extract'
-import spawnUpgrader from './upgrader'
+import spawnUpgrader, { needsUpgraders } from './upgrader'
 import { MinerMemory, Miner } from 'role/creep/miner'
 import { findContainers } from 'utils/find'
 import { needsRanger, spawnRanger } from './ranger'
@@ -52,7 +52,9 @@ export default profiler.registerFN(function loop(
   const upgraderCount = creepCountByRole[Role.UPGRADER] || 0
   const minerCount = creepCountByRole[Role.MINER] || 0
   const maxUpgradersCount = 3
-  const containers = findContainers(spawn.room).length || spawn.room.storage
+  const containersPresent = !!(
+    findContainers(spawn.room).length || spawn.room.storage
+  )
   const isLinked = spawn.room.linked
   if (minerCount === 0 && !creepCountByRole[Role.RETIRED]) {
     const colonySource = mem.colonySourceId
@@ -70,7 +72,7 @@ export default profiler.registerFN(function loop(
       } as MinerMemory,
     )
     console.log(`[${spawn.room.name}] Trying spawn a creep @ref`)
-  } else if (harvesterCount === 0 && containers) {
+  } else if (harvesterCount === 0 && containersPresent) {
     const energyDeclared = creepCountByRole[Role.RETIRED]
       ? spawn.room.energyCapacityAvailable
       : spawn.room.energyAvailable
@@ -109,12 +111,12 @@ export default profiler.registerFN(function loop(
     }
     spawn.trySpawnCreep(parts, 'M', memory)
   } else if (
-    (!isLinked &&
-      containers &&
-      upgraderCount < maxUpgradersCount &&
-      (workPartCountByRole[Role.UPGRADER] || 0) <
-        (mem.maxWorkController || 0)) ||
-    (isLinked && !creepCountByRole[Role.STATIC_UPGRADER])
+    needsUpgraders(
+      spawn,
+      creepCountByRole[Role.UPGRADER],
+      workPartCountByRole,
+      containersPresent,
+    )
   ) {
     spawnUpgrader(spawn, mem as StableRoomMemory, controller)
   } else if (needsHauler(spawn, creepCountByRole[Role.HAULER])) {

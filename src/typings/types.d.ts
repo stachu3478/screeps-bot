@@ -45,6 +45,7 @@ interface Memory {
   roomLimit?: number
   autoScout?: boolean
   slimClaimers?: boolean
+  maxUpgradersCount?: number
   pathRoomBlacklist?: {
     [key: string]: 1
   }

@@ -1,5 +1,23 @@
 import { progressiveWorker, progressiveStaticUpgrader } from './body/work'
 
+export function needsUpgraders(
+  spawn: StructureSpawn,
+  count: number,
+  workPartCountByRole: number[],
+  containersPresent: boolean,
+) {
+  const isLinked = spawn.room.linked
+  const maxUpgradersCount = Memory.maxUpgradersCount || 3
+  return (
+    (!isLinked &&
+      containersPresent &&
+      count < maxUpgradersCount &&
+      (workPartCountByRole[Role.UPGRADER] || 0) <
+        (spawn.room.memory.maxWorkController || 0)) ||
+    (isLinked && !workPartCountByRole[Role.STATIC_UPGRADER])
+  )
+}
+
 export default function spawnUpgrader(
   spawn: StructureSpawn,
   mem: StableRoomMemory,

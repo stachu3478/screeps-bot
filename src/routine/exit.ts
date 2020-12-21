@@ -7,7 +7,7 @@ import {
   FAILED,
 } from '../constants/response'
 import pos from '../planner/pos'
-import { isWalkable } from 'utils/path'
+import move, { isWalkable } from 'utils/path'
 
 const exits = [FIND_EXIT_TOP, FIND_EXIT_BOTTOM, FIND_EXIT_LEFT, FIND_EXIT_RIGHT]
 
@@ -41,7 +41,7 @@ export default function exit(creep: ExitCreep) {
     target.slice(1),
   )
 
-  const result = creep.moveTo(targetPos, { reusePath: 100 })
+  const result = move.cheap(creep, targetPos, true)
   if (result === 0) return SUCCESS
   else if (result === ERR_NO_PATH) {
     creep.move(creep.pos.getDirectionTo(25, 25))
