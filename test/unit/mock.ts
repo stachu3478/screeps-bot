@@ -1,3 +1,5 @@
+import RoomPosition from './mock/RoomPosition'
+
 export const Memory = {
   uuid: 0,
   log: [],
@@ -55,8 +57,8 @@ export class Creep {
   public store: Object
   public memory: Object
   public pos: Object
-  public motherRoom: Room
   public room: Room
+  public my: boolean
 
   constructor(name: string) {
     this.name = name
@@ -64,11 +66,13 @@ export class Creep {
       getFreeCapacity: () => 50,
     }
     this.memory = {}
-    this.pos = {
-      findClosestByPath: (CNST: FindConstant) => null,
-    }
-    this.motherRoom = new Room('xd')
-    this.room = this.motherRoom
+    this.pos = new RoomPosition(12, 34, 'test')
+    this.room = new Room('test')
+    this.my = true
+  }
+
+  getActiveBodyparts() {
+    throw new Error('Not implemented')
   }
 }
 

@@ -3,7 +3,6 @@ import { findSourceKeepers } from './find'
 import charPosIterator from './charPosIterator'
 import Feromon from './feromon'
 import { pickBestDirectionFrom } from 'routine/shared'
-import { findActiveAttackBodyPart } from './body'
 
 interface OffsetByDirection {
   [key: number]: number[]
@@ -142,23 +141,17 @@ const move = {
       .find(FIND_HOSTILE_CREEPS)
       .filter(
         (creep) =>
-          findActiveAttackBodyPart(creep.hits, creep.body) &&
+          creep.hasActiveAttackBodyPart &&
           creep.owner.username !== 'Source Keeper',
       )
-      .map((creep) => creep.pos)
-    const leastDistance = Math.min(
-      ...hostiles.map((pos) => creep.pos.getRangeTo(pos)),
+    if (hostiles.every((hostile) => creep.isSafeFrom(hostile))) return true
+    const direction = pickBestDirectionFrom(
+      creep,
+      hostiles,
+      (distance) => distance,
     )
-    if (leastDistance <= 5) {
-      const direction = pickBestDirectionFrom(
-        creep,
-        hostiles,
-        (distance) => -distance,
-      )
-      creep.move(direction)
-      return false
-    }
-    return true
+    creep.move(direction)
+    return false
   },
   cheap: (
     creep: Creep,

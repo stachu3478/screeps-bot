@@ -113,4 +113,10 @@ interface Creep {
   workpartCount: number
   cache: CreepCache
   isRetired: boolean
+  hasActiveAttackBodyPart: boolean
+  safeDistance: number
+  _bodyPartHitThreshold: Record<BodyPartConstant, number>
+  hasActiveBodyPart: (b: BodyPartConstant) => boolean
+  isSafeFrom: (creep: Creep) => boolean
+  safeRangeXY: (x: number, y: number) => number
 }

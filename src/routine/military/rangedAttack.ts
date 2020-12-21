@@ -1,7 +1,6 @@
 import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from 'constants/response'
 import { findTarget } from './shared'
 import { pickBestDirectionFrom } from '../shared'
-import { findActiveAttackBodyPart } from 'utils/body'
 
 interface AttackCreep extends Creep {
   cache: AttackCache
@@ -77,21 +76,17 @@ export default function rangedAttack(creep: AttackCreep) {
   if (!target) return NOTHING_TODO
   const hostiles = creep.room
     .find(FIND_HOSTILE_CREEPS)
-    .filter((creep) => findActiveAttackBodyPart(creep.hits, creep.body))
+    .filter((creep) => creep.hasActiveAttackBodyPart)
 
-  const isDanger =
-    (target as Creep).body &&
-    findActiveAttackBodyPart((target as Creep).hits, (target as Creep).body)
+  const isDanger = (target as Creep).hasActiveAttackBodyPart
   const distances = hostiles.map((hostile) => creep.pos.rangeTo(hostile))
   const leastDistanceFromHostile = Math.min(...distances)
   if (creep.hits < creep.hitsMax) {
     creep.heal(creep)
   }
   if (leastDistanceFromHostile < 4) {
-    const direction = pickBestDirectionFrom(
-      creep,
-      hostiles.map((hostile) => hostile.pos),
-      (distance) => Math.abs(distance - 3),
+    const direction = pickBestDirectionFrom(creep, hostiles, (distance) =>
+      Math.abs(Math.floor(distance / 2)),
     )
     creep.move(direction)
     creep.cache.attack = (

@@ -6,7 +6,7 @@ import {
   FAILED,
 } from 'constants/response'
 import arrive from 'routine/arrive'
-import attack, { hasToughPart, hasAttackPart } from 'routine/military/attack'
+import attack from 'routine/military/attack'
 import heal from 'routine/military/heal'
 import recycle from 'routine/recycle'
 import collectGarbage from 'utils/collectGarbage'
@@ -25,8 +25,6 @@ interface CommanderMemory extends CreepMemory {
 
 interface CommanderCache extends CreepCache {
   attack?: Id<Creep | Structure>
-  toughHitsThreshold: number
-  attackHitsThreshold: number
 }
 
 export default function commander(creep: Commander) {
@@ -55,7 +53,8 @@ export default function commander(creep: Commander) {
           creep.memory.state = State.FALL_BACK
           break
         default:
-          if (!hasToughPart(creep)) creep.memory.state = State.FALL_BACK
+          if (!creep.hasActiveBodyPart(TOUGH))
+            creep.memory.state = State.FALL_BACK
           heal(creep)
       }
       break
@@ -83,15 +82,19 @@ export default function commander(creep: Commander) {
       break
     case State.FALL_BACK:
       const runTicks = creep.memory._runTicks || 0
-      if (runTicks > 0 || creep.hits < prevHits || !hasAttackPart(creep)) {
-        if (creep.hits < prevHits || !hasAttackPart(creep))
+      if (
+        runTicks > 0 ||
+        creep.hits < prevHits ||
+        !creep.hasActiveBodyPart(ATTACK)
+      ) {
+        if (creep.hits < prevHits || !creep.hasActiveBodyPart(ATTACK))
           creep.memory._runTicks = 5
         switch (arrive(creep)) {
           case SUCCESS:
           case NOTHING_TODO:
             const attackTarget = creep.motherRoom.memory._attack
             if (attackTarget) {
-              if (hasToughPart(creep)) {
+              if (creep.hasActiveBodyPart(TOUGH)) {
                 creep.memory._arrive = attackTarget
                 creep.memory.state = State.ARRIVE_HOSTILE
               }
@@ -101,7 +104,7 @@ export default function commander(creep: Commander) {
           default:
             creep.heal(creep)
         }
-      } else if (hasToughPart(creep)) {
+      } else if (creep.hasActiveBodyPart(TOUGH)) {
         creep.memory._arrive = creep.motherRoom.memory._attack
         if (creep.memory._arrive) creep.memory.state = State.ARRIVE_HOSTILE
         else creep.memory.state = State.RECYCLE

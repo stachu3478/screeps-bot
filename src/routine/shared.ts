@@ -5,8 +5,8 @@ import { isWalkable, offsetsByDirection } from 'utils/path'
  */
 export function pickBestDirectionFrom(
   creep: Creep,
-  posns: RoomPosition[],
-  predicate: (leastDistance: number) => number,
+  hostiles: Creep[],
+  predicate: (leastSafeDistance: number) => number,
 ) {
   let bestDirection: DirectionConstant = 1
   let bestPrediction = 0
@@ -17,8 +17,8 @@ export function pickBestDirectionFrom(
     const newY = creep.pos.x + offset[1]
     if (!isWalkable(creep.room, newX, newY)) continue
     let worstPrediction = 0
-    posns.forEach((pos) => {
-      const distanceFrom = pos.rangeXY(newX, newY)
+    hostiles.forEach((hostile) => {
+      const distanceFrom = hostile.safeRangeXY(newX, newY)
       const prediction = predicate(distanceFrom)
       // const difference = Math.abs(distanceFrom - distance)
       if (prediction < worstPrediction) {

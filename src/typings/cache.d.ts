@@ -30,6 +30,7 @@ interface SpawnCache {
 
 interface CreepCache {
   workpartCount?: number
+  _bodypartHitThreshold?: Record<BodyPartConstant, number>
 }
 
 interface PowerSpawnCache {
