@@ -157,10 +157,11 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
         case NOTHING_DONE:
           break
         default:
-          if (creep.store.getUsedCapacity()) dumpResources(creep, State.FILL)
+          creep.memory.state = State.IDLE // still need reset
+        /*if (creep.store.getUsedCapacity()) dumpResources(creep, State.FILL)
           else if (autoPick(creep) !== SUCCESS) {
             if (!haulCurrentRoom(creep)) creep.memory.state = State.IDLE
-          }
+          }*/
       }
       break
     default:

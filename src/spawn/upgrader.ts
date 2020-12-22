@@ -1,4 +1,5 @@
 import { progressiveWorker, progressiveStaticUpgrader } from './body/work'
+import { energyToUpgradeThreshold } from 'config/storage'
 
 export function needsUpgraders(
   spawn: StructureSpawn,
@@ -8,14 +9,27 @@ export function needsUpgraders(
 ) {
   const isLinked = spawn.room.linked
   const maxUpgradersCount = Memory.maxUpgradersCount || 3
-  return (
+  const result =
     (!isLinked &&
       containersPresent &&
       count < maxUpgradersCount &&
       (workPartCountByRole[Role.UPGRADER] || 0) <
         (spawn.room.memory.maxWorkController || 0)) ||
     (isLinked && !workPartCountByRole[Role.STATIC_UPGRADER])
+  if (
+    !result &&
+    !isLinked &&
+    !workPartCountByRole[Role.UPGRADER] &&
+    !workPartCountByRole[Role.STATIC_UPGRADER]
   )
+    console.log(
+      'xd?',
+      count,
+      maxUpgradersCount,
+      spawn.room.memory.maxWorkController,
+      containersPresent,
+    )
+  return result
 }
 
 export default function spawnUpgrader(
@@ -29,7 +43,8 @@ export default function spawnUpgrader(
   if (spawn.room.linked) {
     parts = progressiveStaticUpgrader(
       spawn.room.energyCapacityAvailable,
-      controller.level == 8,
+      controller.level === 8,
+      spawn.room.store(RESOURCE_ENERGY) >= energyToUpgradeThreshold ? 2 : 1,
     )
     role = Role.STATIC_UPGRADER
     deprivity = spawn.pos.findPathTo(controller).length

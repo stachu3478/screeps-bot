@@ -44,7 +44,7 @@ export default function exit(creep: ExitCreep) {
   const result = move.cheap(creep, targetPos, true)
   if (result === 0) return SUCCESS
   else if (result === ERR_NO_PATH) {
-    creep.move(creep.pos.getDirectionTo(25, 25))
+    move.anywhere(creep, creep.pos.getDirectionTo(targetPos))
     delete cache.exit
     return DONE
   }

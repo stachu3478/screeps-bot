@@ -1,9 +1,24 @@
-import { fightPack, liteFightPack, toughPack } from './packs'
+import { fightPack, liteFightPack, toughPack, liteWorkPack } from './packs'
 
-export function carryPacks(count: number) {
+function hybridPack(
+  type1: BodyPartConstant,
+  type2: BodyPartConstant,
+  count: number,
+) {
   return new Array(count * 2)
     .fill(0)
-    .map((_, i) => (i % 2 === 0 ? CARRY : MOVE))
+    .map((_, i) => (i % 2 === 0 ? type1 : type2))
+}
+
+export function carryPacks(count: number) {
+  return hybridPack(CARRY, MOVE, count)
+}
+
+export function scoreDigger(energy: number) {
+  const workPackEnergy = energy - BODYPART_COST[ATTACK]
+  const workPacks = Math.min(Math.floor(workPackEnergy / liteWorkPack), 24)
+  const arr: BodyPartConstant[] = [ATTACK]
+  return arr.concat(hybridPack(WORK, MOVE, workPacks))
 }
 
 export function scorer(energy: number, toBeDelivered: number) {

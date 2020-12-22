@@ -69,7 +69,8 @@ export const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
   )
     return false
   if (!structures.every((s) => s.isWalkable)) return false
-  return room.lookForAt(LOOK_CREEPS, x, y)[0] === me
+  const creep = room.lookForAt(LOOK_CREEPS, x, y)[0]
+  return !creep || creep === me
 }
 
 const zmod = (a: number, b: number) => a - Math.floor(a / b) * b
@@ -97,11 +98,13 @@ const move = {
           leastFeromon = feromon
           bestDir = dir
         }
+        console.log(feromon, dir)
       }
       if (dirOffset > -1) dirOffset++
       dirOffset = -dirOffset
     }
     if (bestDir === 0) return false
+    console.log(bestDir, creep.name)
     creep.move(bestDir as DirectionConstant)
     Feromon.increment(room.name, x, y)
     return true
@@ -118,6 +121,7 @@ const move = {
       if (!creepOnRoad.my) {
         options.ignoreCreeps = false
         options.reusePath = 0
+        if (creep.hasActiveAttackBodyPart) creep.attack(creepOnRoad)
         return creep.moveTo(target, options)
       } else move.anywhere(creepOnRoad, dir, creep)
     } else if (!move.check(creepOnRoad)) {
@@ -150,7 +154,7 @@ const move = {
       hostiles,
       (distance) => distance,
     )
-    creep.move(direction)
+    move.anywhere(creep, direction)
     return false
   },
   cheap: (

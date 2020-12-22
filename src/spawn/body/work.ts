@@ -26,10 +26,13 @@ function progressiveStaticWorker(energy: number, maxWork: number) {
 export function progressiveStaticUpgrader(
   energy: number,
   upgradeLimited: boolean = false,
+  sourcesCount = 2,
 ) {
   let maxWork =
     -1 +
-    (2 * SOURCE_ENERGY_CAPACITY) / ENERGY_REGEN_TIME / UPGRADE_CONTROLLER_POWER
+    (sourcesCount * SOURCE_ENERGY_CAPACITY) /
+      ENERGY_REGEN_TIME /
+      UPGRADE_CONTROLLER_POWER
   if (upgradeLimited)
     maxWork = Math.min(maxWork, CONTROLLER_MAX_UPGRADE_PER_TICK)
   return progressiveStaticWorker(energy, maxWork)

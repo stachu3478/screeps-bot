@@ -7,7 +7,7 @@ export interface ArriveCreep extends Creep {
   memory: ArriveMemory
 }
 
-interface ArriveMemory extends CreepMemory {
+export interface ArriveMemory extends CreepMemory {
   _arrive?: string
   _journal?: string[]
 }

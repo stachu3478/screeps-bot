@@ -9,7 +9,7 @@ function getHaulable(structure?: StructureStorage | StructureTerminal) {
 
 export function haulCurrentRoom(creep: Hauler) {
   const mem = creep.memory
-  if (pick(creep) in ACCEPTABLE) {
+  if (creep.motherRoom.storage && pick(creep) in ACCEPTABLE) {
     mem.state = State.PICK
     return true
   }
@@ -41,6 +41,7 @@ export default function resourceHaul(creep: Hauler) {
       mem.state = State.ARRIVE
       mem._arrive = mem.room
       delete creep.motherRoom.memory._haul
+      delete creep.motherRoom.memory._haulScore
     }
     return hauling
   } else {

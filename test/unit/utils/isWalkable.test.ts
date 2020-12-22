@@ -30,6 +30,10 @@ describe('utils/path.isWalkable', () => {
       it('returns true', () => {
         expect(isWalkable(room, 12, 34)).to.eql(true)
       })
+
+      it('returns true', () => {
+        expect(isWalkable(room, 12, 34, {} as Creep)).to.eql(true)
+      })
     })
   })
 
@@ -42,6 +46,10 @@ describe('utils/path.isWalkable', () => {
 
     it('returns true', () => {
       expect(isWalkable(room, 12, 34)).to.eql(true)
+    })
+
+    it('returns true', () => {
+      expect(isWalkable(room, 12, 34, {} as Creep)).to.eql(true)
     })
 
     context('when tile contains non-walkable structure', () => {

@@ -2,6 +2,7 @@ import { DONE, NOTHING_TODO, FAILED } from 'constants/response'
 import arrive from 'routine/arrive'
 import heal from 'routine/military/heal'
 import rangedAttack from 'routine/military/rangedAttack'
+import { requestHaul } from 'routine/military/scout'
 
 export interface Ranger extends Creep {
   memory: RangerMemory
@@ -55,32 +56,27 @@ export default function ranger(creep: Ranger) {
           break
         default:
           if (creep.hits < 4000) creep.memory.state = State.FALL_BACK
+          // if (creep.memory.r !== creep.room.name) requestHaul(creep) wutda
           heal(creep)
       }
       break
     case State.ATTACKING:
       switch (rangedAttack(creep)) {
-        case FAILED:
-          {
+        case NOTHING_TODO:
+          creep.memory.state = State.IDLE
+          break
+        default:
+          if (creep.hits < 4000) {
             creep.memory.state = State.FALL_BACK
             creep.memory._arrive = creep.memory.room
             arrive(creep)
           }
-          break
-        case NOTHING_TODO:
-          {
-            creep.memory.state = State.IDLE
-          }
-          break
       }
       break
     case State.FALL_BACK:
-      const runTicks = creep.memory._runTicks || 0
-      if (runTicks > 0 || gettingDamage || creep.hits < 4000) {
-        if (gettingDamage || creep.hits < 4000) creep.memory._runTicks = 5
-        tryArriveToAttackDestination(creep)
-        creep.heal(creep)
-      } else if (creep.hits > 4000) {
+      arrive(creep)
+      creep.rangedMassAttack()
+      if (creep.hits > 4000) {
         tryArriveToAttackDestination(creep)
       } else creep.heal(creep)
       break

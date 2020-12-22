@@ -16,9 +16,13 @@ interface DismantleCache extends CreepCache {
   dismantle?: Id<Structure>
 }
 
-export default function dismantle(creep: DismantleCreep) {
+export default function dismantle(
+  creep: DismantleCreep,
+  targetStructure = creep.cache.dismantle &&
+    Game.getObjectById(creep.cache.dismantle),
+) {
   const cache = creep.cache
-  let target = cache.dismantle && Game.getObjectById(cache.dismantle)
+  let target = targetStructure
   if (!target || !target.hits) {
     const newTarget = findClosestHostileHittableStructures(creep.pos)
     if (newTarget) {

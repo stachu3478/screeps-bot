@@ -16,6 +16,7 @@ import Harvester from 'role/creep/harvester.d'
 import collectGarbage from 'utils/collectGarbage'
 import ranger, { Ranger } from 'role/creep/ranger'
 import scorer, { Scorer } from 'role/creep/scorer'
+import scoreDigger from 'role/creep/scoreDigger'
 
 interface Creeps {
   [key: string]: 0
@@ -110,12 +111,17 @@ export default function creeps(
         case Role.SCORER:
           scorer(creep as Scorer)
           break
+        case Role.SCORE_DIGGER:
+          scoreDigger(creep)
+          break
         default:
           creep.memory.role = Role.UPGRADER
       }
     } catch (err) {
       console.log(err.message, err.stack)
     }
+    creep.memory.r = creep.room.name
+    creep.memory.l = creep.ticksToLive
   }
 
   return {

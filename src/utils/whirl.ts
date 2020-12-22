@@ -12,11 +12,12 @@ export default function whirl(
     for (let j = 0; j < toChange; j++) {
       xPos += xDir
       yPos += yDir
-      if (cb(xPos, yPos)) return
+      if (cb(xPos, yPos)) return [xPos, yPos]
     }
     const prevX = xDir
     xDir = yDir
     yDir = -prevX
     toChange += 0.5
   }
+  return false
 }

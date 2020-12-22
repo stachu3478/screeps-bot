@@ -17,6 +17,14 @@ interface CreepMemory {
     t?: number
   }
   deprivity: number
+  /**
+   * Last room where the creep was
+   */
+  r?: string // last room
+  /**
+   * Last ticks to live that the creep had
+   */
+  l?: number
 }
 
 interface Stats {
@@ -93,6 +101,9 @@ interface RoomMemory {
 
   _haul?: string
   _haulSize?: number
+  _haulScore?: 0 | 1
+  _scorePlan?: string
+  _dig?: string
 
   _score?: string
 

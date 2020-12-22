@@ -35,6 +35,9 @@ export const getSpawn = createPosSelector(STRUCTURE_SPAWN) as PosSelector<
 export const getPowerSpawn = createPosSelector(
   STRUCTURE_POWER_SPAWN,
 ) as PosSelector<StructurePowerSpawn>
+export const getWall = createPosSelector(STRUCTURE_WALL) as PosSelector<
+  StructureWall
+>
 
 export const getXYLink = createXYSelector(STRUCTURE_LINK) as XYSelector<
   StructureLink

@@ -13,6 +13,7 @@ import { needsScout, spawnScout, needsClaim } from './scout'
 import { needsClaimer, spawnClaimer } from './claimer'
 import { needsScorer, spawnScorer } from './scorer'
 import { needsHauler, spawnHauler } from './hauler'
+import { needsScoreDigger, spawnScoreDigger } from './scoreDigger'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -49,13 +50,10 @@ export default profiler.registerFN(function loop(
     (creepCountByRole[Role.HARVESTER] || 0) +
     (creepCountByRole[Role.FACTORY_MANAGER] || 0) +
     (creepCountByRole[Role.LAB_MANAGER] || 0)
-  const upgraderCount = creepCountByRole[Role.UPGRADER] || 0
   const minerCount = creepCountByRole[Role.MINER] || 0
-  const maxUpgradersCount = 3
   const containersPresent = !!(
     findContainers(spawn.room).length || spawn.room.storage
   )
-  const isLinked = spawn.room.linked
   if (minerCount === 0 && !creepCountByRole[Role.RETIRED]) {
     const colonySource = mem.colonySourceId
     cache.sourceId = colonySource
@@ -113,7 +111,7 @@ export default profiler.registerFN(function loop(
   } else if (
     needsUpgraders(
       spawn,
-      creepCountByRole[Role.UPGRADER],
+      creepCountByRole[Role.UPGRADER] || 0,
       workPartCountByRole,
       containersPresent,
     )
@@ -136,6 +134,8 @@ export default profiler.registerFN(function loop(
     extract(spawn)
   else if (needsRanger(spawn, creepCountByRole[Role.RANGER])) spawnRanger(spawn)
   else if (needsScorer(spawn, creepCountByRole[Role.SCORER])) spawnScorer(spawn)
+  else if (needsScoreDigger(spawn, creepCountByRole[Role.SCORE_DIGGER]))
+    spawnScoreDigger(spawn)
   else spawn.room.visual.text('Spawn is idle.', 0, 3, infoStyle)
 },
 'spawnLoop')

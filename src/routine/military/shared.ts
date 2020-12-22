@@ -27,7 +27,11 @@ export function findTarget(
   if (!newTarget)
     newTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (s) =>
-        hittable(s) && s.structureType !== STRUCTURE_POWER_BANK && lastFiler(s),
+        hittable(s) &&
+        s.structureType !== STRUCTURE_POWER_BANK &&
+        s.structureType !== STRUCTURE_ROAD &&
+        s.structureType !== STRUCTURE_CONTAINER &&
+        lastFiler(s),
     })
   return newTarget
 }
