@@ -24,7 +24,7 @@ export function findTarget(
     newTarget = creep.pos.findClosestByPath(FIND_HOSTILE_CREEPS, {
       filter: (c) => !list[c.owner.username] && hittable(c) && lastFiler(c),
     })
-  if (!newTarget)
+  if (!newTarget && !creep.room.my)
     newTarget = creep.pos.findClosestByPath(FIND_STRUCTURES, {
       filter: (s) =>
         hittable(s) &&

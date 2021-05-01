@@ -104,6 +104,8 @@ interface RoomMemory {
   _haulScore?: 0 | 1
   _scorePlan?: string
   _dig?: string
+  _digger?: string
+  _moveNeeds?: number
 
   _score?: string
 

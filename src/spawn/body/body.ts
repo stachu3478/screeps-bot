@@ -1,4 +1,4 @@
-import { fightPack, liteFightPack, toughPack, liteWorkPack } from './packs'
+import { fightPack, liteFightPack, toughPack } from './packs'
 
 function hybridPack(
   type1: BodyPartConstant,
@@ -16,9 +16,12 @@ export function carryPacks(count: number) {
 
 export function scoreDigger(energy: number) {
   const workPackEnergy = energy - BODYPART_COST[ATTACK]
-  const workPacks = Math.min(Math.floor(workPackEnergy / liteWorkPack), 24)
+  const workPacks = Math.min(
+    Math.floor(workPackEnergy / BODYPART_COST[WORK]),
+    49,
+  )
   const arr: BodyPartConstant[] = [ATTACK]
-  return arr.concat(hybridPack(WORK, MOVE, workPacks))
+  return arr.concat(new Array(workPacks).fill(WORK))
 }
 
 export function scorer(energy: number, toBeDelivered: number) {
@@ -27,10 +30,10 @@ export function scorer(energy: number, toBeDelivered: number) {
 }
 
 export function ranger() {
-  return new Array(20)
+  return new Array(17)
     .fill(RANGED_ATTACK)
     .concat(new Array(25).fill(MOVE))
-    .concat(new Array(5).fill(HEAL))
+    .concat(new Array(8).fill(HEAL))
 }
 
 export function progressiveClaimer(

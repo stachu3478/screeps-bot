@@ -29,6 +29,7 @@ interface SpawnCache {
 }
 
 interface CreepCache {
+  moverPath?: PathStep[]
   workpartCount?: number
   _bodypartHitThreshold?: Record<BodyPartConstant, number>
 }

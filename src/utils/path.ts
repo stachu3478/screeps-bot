@@ -125,13 +125,18 @@ const move = {
         return creep.moveTo(target, options)
       } else move.anywhere(creepOnRoad, dir, creep)
     } else if (!move.check(creepOnRoad)) {
-      const swap =
-        creepOnRoad.memory.role === Role.STATIC_UPGRADER ||
-        creepOnRoad.memory.role === Role.MINER ||
-        Math.random() > 0.8
-      const dirTo = creepOnRoad.pos.getDirectionTo(creep)
-      move.anywhere(creepOnRoad, swap ? dirTo : dir, creep) ||
-        creepOnRoad.move(dirTo)
+      if (!creepOnRoad.hasActiveBodyPart(MOVE)) {
+        creep.pull(creepOnRoad)
+        creepOnRoad.move(creep)
+      } else {
+        const swap =
+          creepOnRoad.memory.role === Role.STATIC_UPGRADER ||
+          creepOnRoad.memory.role === Role.MINER ||
+          Math.random() > 0.8
+        const dirTo = creepOnRoad.pos.getDirectionTo(creep)
+        move.anywhere(creepOnRoad, swap ? dirTo : dir, creep) ||
+          creepOnRoad.move(dirTo)
+      }
     }
     return result
   },
@@ -157,12 +162,32 @@ const move = {
     move.anywhere(creep, direction)
     return false
   },
+  handleStaticCreep: (
+    creep: Creep,
+    target: RoomPosition | _HasRoomPosition,
+  ) => {
+    const roomMemory = creep.motherRoom.memory
+    roomMemory._moveNeeds = Math.max(
+      roomMemory._moveNeeds || 0,
+      creep.workpartCount + creep.getActiveBodyparts(ATTACK),
+    )
+    if (!creep.cache.moverPath) {
+      console.log('refreshing path')
+      creep.cache.moverPath = creep.pos.findPathTo(target)
+    }
+    return 0
+  },
   cheap: (
     creep: Creep,
     target: RoomPosition | _HasRoomPosition,
     safe: boolean = false,
     range: number = 0,
   ): ScreepsReturnCode => {
+    if (
+      !creep.hasActiveBodyPart(MOVE) &&
+      creep.memory.role === Role.SCORE_DIGGER
+    )
+      return move.handleStaticCreep(creep, target) as ScreepsReturnCode
     if (creep.fatigue) return ERR_TIRED
     if (safe && !move.keepAwayFromHostiles(creep)) return 0
     const options = {

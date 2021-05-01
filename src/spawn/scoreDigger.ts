@@ -1,8 +1,8 @@
-import { scorer, scoreDigger } from './body/body'
+import { scoreDigger } from './body/body'
 
 export function needsScoreDigger(spawn: StructureSpawn, count: number) {
   return (
-    count < 3 &&
+    !count &&
     spawn.room.memory._dig &&
     spawn.room.energyAvailable === spawn.room.energyCapacityAvailable
   )

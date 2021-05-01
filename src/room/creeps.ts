@@ -17,6 +17,7 @@ import collectGarbage from 'utils/collectGarbage'
 import ranger, { Ranger } from 'role/creep/ranger'
 import scorer, { Scorer } from 'role/creep/scorer'
 import scoreDigger from 'role/creep/scoreDigger'
+import mover from 'role/creep/mover'
 
 interface Creeps {
   [key: string]: 0
@@ -113,6 +114,9 @@ export default function creeps(
           break
         case Role.SCORE_DIGGER:
           scoreDigger(creep)
+          break
+        case Role.MOVER:
+          mover(creep)
           break
         default:
           creep.memory.role = Role.UPGRADER

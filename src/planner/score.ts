@@ -80,7 +80,7 @@ export default function scorePlanner(room: Room, roomMemory: RoomMemory) {
   if (!scorePlan) return false
   const cost = getDigCost(room, scorePlan)
   if (cost) {
-    if (!roomMemory._dig) roomMemory._dig = room.name
+    if (!roomMemory._dig && !room.memory._digger) roomMemory._dig = room.name
   } else {
     advanceRoomToCollector(room, roomMemory)
   }

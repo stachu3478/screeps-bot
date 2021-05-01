@@ -14,6 +14,7 @@ import { needsClaimer, spawnClaimer } from './claimer'
 import { needsScorer, spawnScorer } from './scorer'
 import { needsHauler, spawnHauler } from './hauler'
 import { needsScoreDigger, spawnScoreDigger } from './scoreDigger'
+import { needsMover, spawnMover } from './mover'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -136,6 +137,7 @@ export default profiler.registerFN(function loop(
   else if (needsScorer(spawn, creepCountByRole[Role.SCORER])) spawnScorer(spawn)
   else if (needsScoreDigger(spawn, creepCountByRole[Role.SCORE_DIGGER]))
     spawnScoreDigger(spawn)
+  else if (needsMover(spawn, creepCountByRole[Role.MOVER])) spawnMover(spawn)
   else spawn.room.visual.text('Spawn is idle.', 0, 3, infoStyle)
 },
 'spawnLoop')

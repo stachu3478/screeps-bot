@@ -18,4 +18,5 @@ const enum Role {
   RANGER = 17,
   SCORER = 18,
   SCORE_DIGGER = 19,
+  MOVER = 20,
 }
