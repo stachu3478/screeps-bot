@@ -6,8 +6,8 @@ import placeStructure from './structure'
 import placeExtractor from './extractor'
 import placeLab from './lab'
 import placeRoad from './road'
-import placeShield from './shield'
 import checkIntegrity from './checkIntegrity'
+import placeFortification from './fortification'
 
 export default function place(room: Room) {
   const controller = room.controller
@@ -46,7 +46,7 @@ export default function place(room: Room) {
   }
   if (placeRoad(room, mem.roads) === SUCCESS) return SUCCESS
 
-  if (placeShield(controller) === SUCCESS) return SUCCESS
+  if (placeFortification(controller) === SUCCESS) return SUCCESS
 
   return NOTHING_TODO
 }

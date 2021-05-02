@@ -34,17 +34,23 @@ export default class BusinessHandler {
   }
 
   private sellExpensive() {
-    const bestBuyOrder = _.max(this.getOrders(ORDER_BUY), this.orderBuyBalance)
+    const bestBuyOrder = _.max(
+      this.getOrders(ORDER_BUY),
+      this.orderBuyBalance.bind(this),
+    )
     Game.market.deal(bestBuyOrder.id, this.sellAmount, this.roomName)
     this.selling = false
     this.iteration++
   }
 
   private buyCheap() {
-    const bestBuyOrder = _.max(this.getOrders(ORDER_BUY), this.orderBuyBalance)
+    const bestBuyOrder = _.max(
+      this.getOrders(ORDER_BUY),
+      this.orderBuyBalance.bind(this),
+    )
     const bestSellOrder = _.max(
       this.getOrders(ORDER_SELL),
-      this.orderSellBalance,
+      this.orderSellBalance.bind(this),
     )
     const buyBalance = Math.floor(this.orderBuyBalance(bestBuyOrder))
     const sellBalance = Math.floor(this.orderSellBalance(bestSellOrder))
