@@ -1,5 +1,6 @@
 const enum Keys {
   mandatory = 'm',
+  distanceToController = 'd',
 }
 
 const enum ShardMemoryKeys {

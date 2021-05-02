@@ -1,5 +1,4 @@
-import { progressiveWorker, progressiveStaticUpgrader } from './body/work'
-import { energyToUpgradeThreshold } from 'config/storage'
+import { progressiveWorker } from './body/work'
 
 export function needsUpgraders(
   spawn: StructureSpawn,
@@ -14,19 +13,6 @@ export function needsUpgraders(
     count < maxUpgradersCount &&
     count < (spawn.room.memory.maxWorkController || 0)
   )
-  /*if (
-    !result &&
-    !isLinked &&
-    !workPartCountByRole[Role.UPGRADER] &&
-    !workPartCountByRole[Role.STATIC_UPGRADER]
-  )
-    console.log(
-      'xd?',
-      count,
-      maxUpgradersCount,
-      spawn.room.memory.maxWorkController,
-      containersPresent,
-    )*/
 }
 
 export default function spawnUpgrader(

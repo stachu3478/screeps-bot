@@ -15,7 +15,7 @@ export default function spawnStaticUpgrader(
     controller.level === 8,
     room.store(RESOURCE_ENERGY) >= energyToUpgradeThreshold ? 2 : 1,
   )
-  const deprivity = spawn.pos.findPathTo(controller).length
+  const deprivity = spawn.distanceToController
   const creepMemory: CreepMemory = {
     role: Role.STATIC_UPGRADER,
     room: room.name,

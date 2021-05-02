@@ -20,6 +20,16 @@ defineSpawnGetter('cache', (self) => {
   return cache[self.id] || (cache[self.id] = {})
 })
 
+defineSpawnGetter('distanceToController', (self) => {
+  const cache = self.cache
+  return (
+    cache.distanceToController ||
+    (cache.distanceToController = self.pos.findPathTo(
+      self.room.controller!,
+    ).length)
+  )
+})
+
 const allDirections: DirectionConstant[] = [1, 2, 3, 4, 5, 6, 7, 8]
 StructureSpawn.prototype.getDirections = function () {
   const room = this.room

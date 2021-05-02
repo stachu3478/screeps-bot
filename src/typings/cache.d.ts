@@ -26,6 +26,7 @@ interface SpawnCache {
     boost: BoostInfo[]
   }
   sourceId?: Id<Source>
+  distanceToController?: number
 }
 
 interface CreepCache {

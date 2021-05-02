@@ -83,6 +83,7 @@ interface StructureSpawn {
     boost?: BoostInfo[],
   ) => ScreepsReturnCode
   cache: SpawnCache
+  distanceToController: number
 }
 
 interface StructurePowerSpawn {
