@@ -1,4 +1,3 @@
-import { SUCCESS, NOTHING_TODO } from '../../constants/response'
 import { getXYWall } from 'utils/selectFromPos'
 
 // make walls around controller

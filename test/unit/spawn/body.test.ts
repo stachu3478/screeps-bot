@@ -17,43 +17,43 @@ describe('spawn/body', () => {
     global.Memory = _.clone(Memory)
   })
 
-  it('should return array when called with no context', function () {
+  it('returns array when called with no context', () => {
     assert.isArray(progressiveWorker(1000))
   })
 
-  it('should return minimalist worker', function () {
+  it('returns minimalist worker', () => {
     const result = progressiveWorker(0)
     assert.includeMembers(result, [WORK, MOVE, CARRY])
     assert.lengthOf(result, 3)
   })
 
-  it('should return bigger worker', function () {
+  it('returns bigger worker', () => {
     const result = progressiveWorker(300)
     assert.includeMembers(result, [WORK, MOVE, CARRY])
     assert.isAtLeast(result.length, 4)
   })
 
-  it('should return even bigger worker', function () {
+  it('returns even bigger worker', () => {
     assert.notDeepEqual(progressiveWorker(300), progressiveWorker(350))
   })
 
-  it('should return array when called with no context', function () {
+  it('returns array when called with no context', () => {
     assert.isArray(progressiveCommander(1000, 1))
   })
 
-  it('should return commander with at least 1 per MOVE, HEAL, TOUGH, ATTACK parts', function () {
+  it('returns commander with at least 1 per MOVE, HEAL, TOUGH, ATTACK parts', () => {
     const result = progressiveCommander(0, 1)
     assert.includeMembers(result, [MOVE, HEAL, TOUGH, ATTACK])
     assert.lengthOf(result, 6)
   })
 
-  it('should return bigger commander', function () {
+  it('returns bigger commander', () => {
     const result = progressiveCommander(0, 2)
     assert.includeMembers(result, [MOVE, HEAL, TOUGH, ATTACK])
     assert.isAtLeast(result.length, 10)
   })
 
-  it('should return as many heal parts as possible', function () {
+  it('returns as many heal parts as possible', () => {
     const result = progressiveCommander(
       10 * (BODYPART_COST[HEAL] + BODYPART_COST[MOVE]),
       0,
@@ -63,12 +63,12 @@ describe('spawn/body', () => {
     assert.equal(result.filter((p) => p === HEAL).length, 10)
   })
 
-  it('should return commander maxed out', function () {
+  it('returns commander maxed out', () => {
     const result = progressiveCommander(1000000, 2)
     assert.equal(result.length, MAX_CREEP_SIZE)
   })
 
-  it('should return progressive mobile worker', function () {
+  it('returns progressive mobile worker', () => {
     const testMax = SPAWN_ENERGY_START * 10
     for (let e = SPAWN_ENERGY_START; e < testMax; e += 50) {
       const result = progressiveMobileWorker(e)

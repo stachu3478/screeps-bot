@@ -15,6 +15,7 @@ import { needsScorer, spawnScorer } from './scorer'
 import { needsHauler, spawnHauler } from './hauler'
 import { needsScoreDigger, spawnScoreDigger } from './scoreDigger'
 import { needsMover, spawnMover } from './mover'
+import spawnStaticUpgrader, { needsStaticUpgraders } from './staticUpgrader'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -113,11 +114,14 @@ export default profiler.registerFN(function loop(
     needsUpgraders(
       spawn,
       creepCountByRole[Role.UPGRADER] || 0,
-      workPartCountByRole,
       containersPresent,
     )
   ) {
-    spawnUpgrader(spawn, mem as StableRoomMemory, controller)
+    spawnUpgrader(spawn, mem as StableRoomMemory)
+  } else if (
+    needsStaticUpgraders(spawn, creepCountByRole[Role.STATIC_UPGRADER] || 0)
+  ) {
+    spawnStaticUpgrader(spawn, controller)
   } else if (needsHauler(spawn, creepCountByRole[Role.HAULER])) {
     spawnHauler(spawn)
   } else if (needsScout(spawn, creepCountByRole[Role.SCOUT])) {

@@ -4,19 +4,17 @@ import { energyToUpgradeThreshold } from 'config/storage'
 export function needsUpgraders(
   spawn: StructureSpawn,
   count: number,
-  workPartCountByRole: number[],
   containersPresent: boolean,
 ) {
   const isLinked = spawn.room.linked
   const maxUpgradersCount = Memory.maxUpgradersCount || 3
-  const result =
-    (!isLinked &&
-      containersPresent &&
-      count < maxUpgradersCount &&
-      (workPartCountByRole[Role.UPGRADER] || 0) <
-        (spawn.room.memory.maxWorkController || 0)) ||
-    (isLinked && !workPartCountByRole[Role.STATIC_UPGRADER])
-  if (
+  return (
+    !isLinked &&
+    containersPresent &&
+    count < maxUpgradersCount &&
+    count < (spawn.room.memory.maxWorkController || 0)
+  )
+  /*if (
     !result &&
     !isLinked &&
     !workPartCountByRole[Role.UPGRADER] &&
@@ -28,51 +26,36 @@ export function needsUpgraders(
       maxUpgradersCount,
       spawn.room.memory.maxWorkController,
       containersPresent,
-    )
-  return result
+    )*/
 }
 
 export default function spawnUpgrader(
   spawn: StructureSpawn,
   mem: StableRoomMemory,
-  controller: StructureController,
 ) {
-  let parts
-  let role
-  let deprivity
-  if (spawn.room.linked) {
-    parts = progressiveStaticUpgrader(
-      spawn.room.energyCapacityAvailable,
-      controller.level === 8,
-      spawn.room.store(RESOURCE_ENERGY) >= energyToUpgradeThreshold ? 2 : 1,
-    )
-    role = Role.STATIC_UPGRADER
-    deprivity = spawn.pos.findPathTo(controller).length
-  } else {
-    parts = progressiveWorker(
-      spawn.room.energyCapacityAvailable,
-      mem.maxWorkController,
-    )
-    role = Role.UPGRADER
-    deprivity = 0
-    if (!mem.workControllerOver) mem.workControllerOver = 0
-    if (spawn.room.storage) {
-      const stored = spawn.room.storage.store[RESOURCE_ENERGY]
-      if (
-        stored >
-        (4 + mem.workControllerOver) *
-          CREEP_LIFE_TIME *
-          UPGRADE_CONTROLLER_POWER
-      ) {
-        mem.maxWorkController++
-        mem.workControllerOver++
-      } else if (stored < 500) {
-        mem.maxWorkController--
-        mem.workControllerOver--
-      }
+  const parts = progressiveWorker(
+    spawn.room.energyCapacityAvailable,
+    mem.maxWorkController,
+  )
+  if (!mem.workControllerOver) mem.workControllerOver = 0
+  if (spawn.room.storage) {
+    const stored = spawn.room.storage.store[RESOURCE_ENERGY]
+    if (
+      stored >
+      (4 + mem.workControllerOver) * CREEP_LIFE_TIME * UPGRADE_CONTROLLER_POWER
+    ) {
+      mem.maxWorkController++
+      mem.workControllerOver++
+    } else if (stored < 500) {
+      mem.maxWorkController--
+      mem.workControllerOver--
     }
   }
-  const creepMemory: CreepMemory = { role, room: spawn.room.name, deprivity }
+  const creepMemory: CreepMemory = {
+    role: Role.UPGRADER,
+    room: spawn.room.name,
+    deprivity: 0,
+  }
   const boostRequests = spawn.room.prepareBoostData(
     creepMemory,
     [CARRY, WORK],
