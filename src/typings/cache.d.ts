@@ -13,6 +13,7 @@ interface RoomCache {
   healthy?: 0 | 1
   shielded?: number
   quadSquad?: QuadSquadHandler
+  shieldPlanner?: ShieldPlanner
 
   labCooldown?: number
 }

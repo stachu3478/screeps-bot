@@ -1,6 +1,6 @@
 const enum Keys {
   mandatory = 'm',
-  distanceToController = 'd',
+  shields = 's',
 }
 
 const enum ShardMemoryKeys {

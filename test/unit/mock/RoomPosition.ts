@@ -30,8 +30,16 @@ export default class RoomPosition {
     return []
   }
 
-  findPathTo() {
-    return []
+  findPathTo(that: RoomPosition) {
+    return [
+      {
+        x: that.x,
+        y: that.y,
+        direction: 4 as DirectionConstant,
+        dx: 1,
+        dy: -1,
+      },
+    ]
   }
 
   getDirectionTo() {

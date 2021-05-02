@@ -25,6 +25,7 @@ interface Room {
   sources: SourceHandler
   _sourceHandler?: SourceHandler
   my: boolean
+  shieldPositions: RoomPosition[]
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void

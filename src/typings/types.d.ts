@@ -69,7 +69,10 @@ interface BoostData {
 interface RoomMemory {
   structs?: string
   roads?: string
-  shields?: string
+  /**
+   * Shields planned in the room
+   */
+  s?: string
   walls?: string
   colonySources?: SourceMap
   colonySourceId?: Id<Source>

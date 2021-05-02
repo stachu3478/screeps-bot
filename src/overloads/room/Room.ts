@@ -98,6 +98,12 @@ defineRoomGetter('my', (self) => {
   return self.controller ? self.controller.my === true : false
 })
 
+defineRoomGetter('shieldPositions', (self) => {
+  const cache = self.cache
+  if (!cache.shieldPlanner) cache.shieldPlanner = new ShieldPlanner(self)
+  return cache.shieldPlanner.positions
+})
+
 Room.prototype.store = function (resource: ResourceConstant) {
   const storage = this.storage
   const terminal = this.terminal

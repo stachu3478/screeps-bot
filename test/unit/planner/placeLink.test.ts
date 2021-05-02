@@ -25,12 +25,12 @@ describe('planner/place/link', () => {
     sandbox.restore()
   })
 
-  it('should return false when called with no context', function () {
+  it('returns false when called with no context', () => {
     const room = { memory: {} } as Room
     expect(placeLink(room)).to.eql(false)
   })
 
-  it('should mark links as placed', function () {
+  it('marks links as placed', () => {
     const room = {
       memory: { links: 'a', controllerLink: 'b' },
       controller: { level: 8 },

@@ -27,9 +27,14 @@ function saveCache(positions: RoomPosition[]) {
   global.Cache.roomKeepers[positions[0].roomName] = poses
 }
 
-const blackMatrix = new PathFinder.CostMatrix()
-for (let ox = 0; ox <= 49; ox++)
-  for (let oy = 0; oy <= 49; oy++) blackMatrix.set(ox, oy, 255)
+export function createUnwalkableMatrix() {
+  const matrix = new PathFinder.CostMatrix()
+  for (let ox = 0; ox <= 49; ox++)
+    for (let oy = 0; oy <= 49; oy++) matrix.set(ox, oy, 255)
+  return matrix
+}
+
+const blackMatrix = createUnwalkableMatrix()
 function roomCallback(roomName: string, costMatrix: CostMatrix) {
   if (Memory.pathRoomBlacklist && Memory.pathRoomBlacklist[roomName])
     return blackMatrix
