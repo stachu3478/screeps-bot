@@ -28,33 +28,30 @@ export default class CreepResourceRoute {
   }
 
   work() {
-    if (this.creep.memory[Keys.dumping]) {
+    const creep = this.creep
+    if (creep.memory[Keys.dumping]) {
       const structure = this.findMemorizedStructure(
-        this.creep.memory[Keys.fillTarget],
+        creep.memory[Keys.fillTarget],
       )
       const res =
         structure &&
         memoryLessFill(
-          this.creep,
+          creep,
           structure as AnyStoreStructure,
-          this.creep.memory[Keys.fillType] || 'energy',
-          true,
+          creep.memory[Keys.fillType] || 'X',
         )
-      console.log('dumping ' + this.creep.name, structure, res)
       if (res === NOTHING_DONE) return true
       if (!dumpResources(this.creep)) {
-        this.creep.memory[Keys.dumping] = 0
-        delete this.creep.memory[Keys.fillTarget]
-        delete this.creep.memory[Keys.drawSource]
+        creep.memory[Keys.dumping] = 0
+        delete creep.memory[Keys.fillTarget]
+        delete creep.memory[Keys.drawSource]
         return false
       }
     } else if (!this.drawAndFill()) {
-      delete this.creep.memory[Keys.fillTarget]
-      delete this.creep.memory[Keys.drawSource]
+      delete creep.memory[Keys.fillTarget]
+      delete creep.memory[Keys.drawSource]
       if (this.resourceRoute.dump) {
-        return (this.creep.memory[Keys.dumping] = dumpResources(this.creep)
-          ? 1
-          : 0)
+        return !!(creep.memory[Keys.dumping] = dumpResources(creep) ? 1 : 0)
       }
       return false
     }
@@ -62,18 +59,24 @@ export default class CreepResourceRoute {
   }
 
   private drawAndFill() {
+    const creep = this.creep
     const target = this.findStructureToFill() as AnyStoreStructure | null
     if (!target) return false
-    this.creep.memory[Keys.fillTarget] = target.id
+    creep.memory[Keys.fillTarget] = target.id
     const route = this.resourceRoute
-    if (this.creep.store[this.resourceRoute.type]) {
-      const result = memoryLessFill(this.creep, target, route.type, true)
+    if (creep.store[this.resourceRoute.type]) {
+      const result = memoryLessFill(
+        creep,
+        target,
+        route.type,
+        route.fillAmount(target),
+      )
       if (result === SUCCESS) this.moveWithSpeculation(target)
     } else {
       const source = this.findStructureToDraw() as AnyStoreStructure | null
       if (!source) return false
-      this.creep.memory[Keys.drawSource] = source.id
-      memoryLessDraw(this.creep, source, route.type)
+      creep.memory[Keys.drawSource] = source.id
+      memoryLessDraw(creep, source, route.type)
     }
     return true
   }
@@ -85,7 +88,7 @@ export default class CreepResourceRoute {
     ) as AnyStoreStructure | null
     if (nextTarget && !this.creep.pos.isNearTo(nextTarget)) {
       this.creep.memory[Keys.fillTarget] = nextTarget.id
-      move.cheap(this.creep, prevTarget)
+      move.cheap(this.creep, nextTarget)
     }
   }
 
@@ -95,12 +98,12 @@ export default class CreepResourceRoute {
     const memorizedStructure = this.findMemorizedStructure(
       memory[Keys.drawSource],
     )
-    if (memorizedStructure && this.validateSource(memorizedStructure))
+    if (memorizedStructure && route.validateSource(memorizedStructure))
       return memorizedStructure
     return this.creep.pos.findClosestByPath(
       this.room.find(FIND_STRUCTURES).filter((s) => {
         if (s.structureType !== route.from) return false
-        return this.validateSource(s as AnyStoreStructure)
+        return route.validateSource(s as AnyStoreStructure)
       }),
       { ignoreCreeps: true },
     )
@@ -114,13 +117,13 @@ export default class CreepResourceRoute {
     )
     if (
       memorizedStructure &&
-      this.validateTarget(memorizedStructure as AnyStoreStructure)
+      route.validateTarget(memorizedStructure as AnyStoreStructure)
     )
       return memorizedStructure
     return this.creep.pos.findClosestByPath(
       this.room.find(FIND_STRUCTURES).filter((s) => {
         if (s.structureType !== route.to || s === differ) return false
-        return this.validateTarget(s as AnyStoreStructure)
+        return route.validateTarget(s as AnyStoreStructure)
       }),
       { ignoreCreeps: true },
     )
@@ -130,19 +133,6 @@ export default class CreepResourceRoute {
     id?: Id<AnyStoreStructure | Tombstone | Ruin>,
   ) {
     return id && Game.getObjectById(id)
-  }
-
-  private validateSource(s: AnyStoreStructure | Tombstone | Ruin) {
-    const route = this.resourceRoute
-    return (s.store[route.type] || 0) >= route.minimalStoreToDraw
-  }
-
-  private validateTarget(s: AnyStoreStructure) {
-    const route = this.resourceRoute
-    return (
-      (s.store.getFreeCapacity(route.type) || 0) >=
-      route.minimalFreeCapacityToFill
-    )
   }
 
   private get creep() {

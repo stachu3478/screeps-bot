@@ -1,7 +1,9 @@
 import { energyToNukerThreshold } from './storage'
 import ResourceRoute from 'job/resourceRoute/ResourceRoute'
+import { energyBufferingThreshold } from './terminal'
 
 export default [
+  // fill everything with energy from containers when no storage
   {
     from: STRUCTURE_CONTAINER,
     to: STRUCTURE_STORAGE,
@@ -26,11 +28,11 @@ export default [
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
   },
+  // fill everything with energy from storage
   {
     from: STRUCTURE_STORAGE,
     to: STRUCTURE_TOWER,
     type: RESOURCE_ENERGY,
-    minimalStoreToDraw: CONTAINER_CAPACITY / 2,
   },
   {
     from: STRUCTURE_STORAGE,
@@ -53,12 +55,21 @@ export default [
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: 10000,
   },
-  /*{
+  // storage & terminal exchange
+  {
     from: STRUCTURE_STORAGE,
     to: STRUCTURE_TERMINAL,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: 20000,
-  },*/
+    maximumFilledAmount: energyBufferingThreshold,
+  },
+  {
+    from: STRUCTURE_TERMINAL,
+    to: STRUCTURE_STORAGE,
+    type: RESOURCE_ENERGY,
+    maximumFilledAmount: 5000,
+  },
+  // fill more expensive things with energy
   {
     from: STRUCTURE_STORAGE,
     to: STRUCTURE_POWER_SPAWN,
@@ -72,6 +83,7 @@ export default [
     minimalStoreToDraw: energyToNukerThreshold,
     dump: true,
   },
+  // fill powerspawn with power
   {
     from: STRUCTURE_TERMINAL,
     to: STRUCTURE_POWER_SPAWN,
@@ -79,6 +91,7 @@ export default [
     minimalStoreToDraw: 1000,
     dump: true,
   },
+  // fill nuker with ghodium
   {
     from: STRUCTURE_TERMINAL,
     to: STRUCTURE_NUKER,

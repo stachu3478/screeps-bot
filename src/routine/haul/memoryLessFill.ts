@@ -11,15 +11,14 @@ export default function memoryLessFill(
   creep: Creep,
   target: AnyStoreStructure,
   resourceType: ResourceConstant,
-  onlyCurrentRoom: boolean = false,
+  amount: number = 0,
 ) {
   if (creep.store[resourceType] === 0) return DONE
   if (!target.store.getFreeCapacity(resourceType)) return NOTHING_TODO
-  const result = creep.transfer(target, resourceType)
-  if (creep.name === 'J9') console.log(result)
+  const toBeTransfered = Math.min(amount, creep.store[resourceType] || 0)
+  const result = creep.transfer(target, resourceType, toBeTransfered)
   if (result === ERR_NOT_IN_RANGE) {
     const result = move.cheap(creep, target)
-    if (creep.name === 'J9') console.log(result)
     if (result === ERR_NO_PATH) {
       move.anywhere(creep, creep.pos.getDirectionTo(target))
       return 0
