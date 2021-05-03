@@ -6,7 +6,7 @@ interface LabManagerMemory extends CreepMemory {
   _draw?: Id<AnyStoreStructure>
   _drawAmount?: number
   _drawType?: ResourceConstant
-  _fill?: Id<AnyStoreStructure>
-  _fillType?: ResourceConstant
+  [Keys.fillTarget]?: Id<AnyStoreStructure>
+  [Keys.fillType]?: ResourceConstant
   _targetLab?: Id<StructureLab>
 }

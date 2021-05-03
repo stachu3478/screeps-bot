@@ -28,7 +28,7 @@ describe('Preparing creep to empty lab', () => {
       RESOURCE_UTRIUM_ACID,
       'Invalid resource type to draw from',
     )
-    expect(creep.memory._fillType).to.eql(
+    expect(creep.memory[Keys.fillType]).to.eql(
       RESOURCE_UTRIUM_ACID,
       'Invalid resource type to insert to',
     )

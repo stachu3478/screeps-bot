@@ -25,6 +25,10 @@ interface CreepMemory {
    * Last ticks to live that the creep had
    */
   l?: number
+  /**
+   * Current route id that is processed by the creep
+   */
+  R?: number
 }
 
 interface Stats {
@@ -148,5 +152,6 @@ declare namespace NodeJS {
     Memory: Memory
     Cache: WrappedGlobalCache
     Structure: StructureConstructor
+    InterShardMemory: InterShardMemory
   }
 }

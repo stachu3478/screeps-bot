@@ -5,8 +5,8 @@ export default interface Hauler extends Creep {
 
 interface HaulerMemory extends CreepMemory {
   _arrive?: string
-  _fill?: Id<AnyStoreStructure>
-  _fillType?: ResourceConstant
+  [Keys.fillTarget]?: Id<AnyStoreStructure>
+  [Keys.fillType]?: ResourceConstant
   _draw?: Id<
     Ruin | Tombstone | StructureStorage | StructureTerminal | StructureContainer
   >

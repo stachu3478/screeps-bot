@@ -13,14 +13,16 @@ interface PriorityFillCreep extends Creep {
 }
 
 interface PriorityFillMemory extends CreepMemory {
-  _fill?: Id<AnyStoreStructure>
+  [Keys.fillTarget]?: Id<AnyStoreStructure>
 }
 
 export default function priorityFill(creep: PriorityFillCreep) {
   const storedEnergy = creep.store[RESOURCE_ENERGY]
   if (storedEnergy === 0) return NO_RESOURCE
   if (creep.room.filled) return NOTHING_TODO
-  let target = creep.memory._fill && Game.getObjectById(creep.memory._fill)
+  let target =
+    creep.memory[Keys.fillTarget] &&
+    Game.getObjectById(creep.memory[Keys.fillTarget]!)
   if (!target || target.store.getFreeCapacity(RESOURCE_ENERGY) === 0) {
     const newTarget = findClosestStructureToFillWithPriority(
       creep.room,
@@ -31,14 +33,14 @@ export default function priorityFill(creep: PriorityFillCreep) {
       return NOTHING_TODO
     }
     target = newTarget
-    creep.memory._fill = target.id
+    creep.memory[Keys.fillTarget] = target.id
   }
   const result = creep.transfer(target, RESOURCE_ENERGY)
   const remaining = storedEnergy - target.store.getFreeCapacity(RESOURCE_ENERGY)
   if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
   else if (result !== 0) return FAILED
   else {
-    delete creep.memory._fill
+    delete creep.memory[Keys.fillTarget]
     if (remaining <= 0) {
       return NO_RESOURCE
     } else {
@@ -49,7 +51,7 @@ export default function priorityFill(creep: PriorityFillCreep) {
       )
       if (!newTarget) return NOTHING_TODO
       target = newTarget
-      creep.memory._fill = target.id
+      creep.memory[Keys.fillTarget] = target.id
       if (!creep.pos.isNearTo(target)) move.cheap(creep, target)
     }
     return SUCCESS

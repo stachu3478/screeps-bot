@@ -39,8 +39,11 @@ describe('Preparing creep to transfer lab between terminal and storage', () => {
         RESOURCE_UTRIUM,
         'Invalid resource type to draw from',
       )
-      expect(creep.memory._fill).to.eql('terminal', 'Invalid deliver target')
-      expect(creep.memory._fillType).to.eql(
+      expect(creep.memory[Keys.fillTarget]).to.eql(
+        'terminal',
+        'Invalid deliver target',
+      )
+      expect(creep.memory[Keys.fillType]).to.eql(
         RESOURCE_UTRIUM,
         'Invalid resource type to insert to',
       )
@@ -60,8 +63,11 @@ describe('Preparing creep to transfer lab between terminal and storage', () => {
         RESOURCE_UTRIUM,
         'Invalid resource type to draw from',
       )
-      expect(creep.memory._fill).to.eql('terminal', 'Invalid deliver target')
-      expect(creep.memory._fillType).to.eql(
+      expect(creep.memory[Keys.fillTarget]).to.eql(
+        'terminal',
+        'Invalid deliver target',
+      )
+      expect(creep.memory[Keys.fillType]).to.eql(
         RESOURCE_UTRIUM,
         'Invalid resource type to insert to',
       )

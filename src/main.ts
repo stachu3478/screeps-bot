@@ -12,6 +12,7 @@ import handleRuntimeStats from 'utils/runtime'
 
 export const addFirstRoom = (game = Game, memory = Memory) => {
   // Automatically add first room to owned if there are none
+  if (!memory.myRooms) memory.myRooms = {}
   if (!Object.keys(memory.myRooms)[0]) {
     const name = Object.keys(game.rooms)[0]
     if (name) memory.myRooms[name] = 0

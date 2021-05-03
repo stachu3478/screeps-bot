@@ -45,7 +45,7 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
         case SUCCESS:
           const labId = creep.memory._targetLab
           if (labId) {
-            creep.memory._fill = creep.memory._targetLab
+            creep.memory[Keys.fillTarget] = creep.memory._targetLab
             creep.memory.state = State.HAUL_STORAGE_TO_LAB
           } else creep.memory.state = State.HAUL_LAB_TO_STORAGE
           break
@@ -68,7 +68,7 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
             creep.store.getUsedCapacity(),
           )
           if (!storage) break
-          creep.memory._fill = storage.id
+          creep.memory[Keys.fillTarget] = storage.id
           creep.memory.state = State.HAUL_LAB_TO_STORAGE
           break
       }
@@ -83,7 +83,7 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
               creep.store.getUsedCapacity(),
             )
             if (storage) {
-              creep.memory._fill = storage.id
+              creep.memory[Keys.fillTarget] = storage.id
               creep.memory.state = State.HAUL_LAB_TO_STORAGE
             } else creep.memory.state = State.HAUL_STORAGE_TO_LAB
           }
@@ -102,7 +102,8 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
           break
         case NOTHING_TODO:
         case FAILED:
-          if (creep.memory._fillType) creep.drop(creep.memory._fillType)
+          if (creep.memory[Keys.fillType])
+            creep.drop(creep.memory[Keys.fillType]!)
           creep.memory.state = State.IDLE
           break
       }

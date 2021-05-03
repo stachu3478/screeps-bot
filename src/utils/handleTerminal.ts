@@ -7,12 +7,17 @@ interface SomeMap {
 }
 
 export function getAverageCost(resourceType: ResourceConstant) {
-  const recentHistory = _.max(
-    Game.market.getHistory(resourceType),
-    (h) => new Date(h.date),
-  )
-  if (typeof recentHistory == 'number') return 0.1
-  return recentHistory.avgPrice
+  try {
+    const recentHistory = _.max(
+      Game.market.getHistory(resourceType),
+      (h) => new Date(h.date),
+    )
+    if (typeof recentHistory == 'number') return 0.1
+    return recentHistory.avgPrice
+  } catch (e) {
+    console.log('Get avg cost error: ', e)
+    return 0.1
+  }
 }
 
 export const energyCost = getAverageCost(RESOURCE_ENERGY)

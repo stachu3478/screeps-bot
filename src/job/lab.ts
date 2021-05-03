@@ -75,7 +75,7 @@ const labJobs = {
     if (terminal.store[resourceToFillWith] < missing) return false
     creep.memory._drawAmount = Math.min(missing, creep.store.getFreeCapacity())
     creep.memory._draw = terminal.id
-    creep.memory._fillType = creep.memory._drawType = resourceToFillWith
+    creep.memory[Keys.fillType] = creep.memory._drawType = resourceToFillWith
     creep.memory._targetLab = lab.id
     creep.memory.state = State.HAUL_LAB_FROM_STORAGE
     return true
@@ -87,7 +87,7 @@ const labJobs = {
   ) => {
     creep.memory._draw = labId
     delete creep.memory._drawAmount
-    creep.memory._fillType = creep.memory._drawType = mineralType
+    creep.memory[Keys.fillType] = creep.memory._drawType = mineralType
     creep.memory.state = State.HAUL_STORAGE_FROM_LAB
   },
   lookForBoosting: (

@@ -15,8 +15,8 @@ interface FactoryManagerMemory extends CreepMemory {
   _draw?: Id<AnyStoreStructure>
   _drawAmount?: number
   _drawType?: ResourceConstant
-  _fill?: Id<AnyStoreStructure>
-  _fillType?: ResourceConstant
+  [Keys.fillTarget]?: Id<AnyStoreStructure>
+  [Keys.fillType]?: ResourceConstant
 }
 
 function findJob(creep: FactoryManager) {
@@ -106,7 +106,7 @@ export default profiler.registerFN(function factoryManager(
             creep.store.getUsedCapacity(),
           )
           if (!storage) break
-          creep.memory._fill = storage.id
+          creep.memory[Keys.fillTarget] = storage.id
           break
       }
       break

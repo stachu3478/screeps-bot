@@ -48,8 +48,8 @@ const storageManagement = {
     const mem = creep.memory
     mem._draw = from.id
     mem._drawAmount = Math.min(creep.store.getFreeCapacity(), amount)
-    mem._drawType = mem._fillType = resource
-    mem._fill = to.id
+    mem._drawType = mem[Keys.fillType] = resource
+    mem[Keys.fillTarget] = to.id
   },
 
   fillPowerSpawn: (

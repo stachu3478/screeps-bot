@@ -3,6 +3,11 @@ export default interface Harvester extends Creep {
   cache: HarvesterCache
 }
 
+declare class ResourceRouteProcessor {
+  constructor(creep: Creep)
+  process(): boolean
+}
+
 interface HarvesterMemory extends CreepMemory {
   _arrive?: string
 }
@@ -14,4 +19,5 @@ interface HarvesterCache extends CreepCache {
   repair_cooldown?: number
   pick_pos?: string
   build?: Id<ConstructionSite>
+  routeProcessor?: ResourceRouteProcessor
 }

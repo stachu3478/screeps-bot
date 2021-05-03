@@ -1,42 +1,28 @@
-import move from '../../utils/path'
-import {
-  SUCCESS,
-  NOTHING_TODO,
-  NOTHING_DONE,
-  FAILED,
-  DONE,
-} from 'constants/response'
+import { SUCCESS, NOTHING_TODO } from 'constants/response'
+import memoryLessFill from './memoryLessFill'
 
 export interface FillCreep extends Creep {
   memory: FillMemory
 }
 
 interface FillMemory extends CreepMemory {
-  _fill?: Id<AnyStoreStructure>
-  _fillType?: ResourceConstant
+  [Keys.fillTarget]?: Id<AnyStoreStructure>
+  [Keys.fillType]?: ResourceConstant
 }
 
 export default function fill(
   creep: FillCreep,
-  target: AnyStoreStructure | null | undefined = creep.memory._fill &&
-    Game.getObjectById(creep.memory._fill),
-  resourceType: ResourceConstant = creep.memory._fillType || RESOURCE_ENERGY,
+  target: AnyStoreStructure | null | undefined = creep.memory[
+    Keys.fillTarget
+  ] && Game.getObjectById(creep.memory[Keys.fillTarget] || ''),
+  resourceType: ResourceConstant = creep.memory[Keys.fillType] ||
+    RESOURCE_ENERGY,
 ) {
-  if (creep.store[resourceType] === 0) return DONE
-  if (!target || !target.store.getFreeCapacity(resourceType))
-    return NOTHING_TODO
-  const result = creep.transfer(target, resourceType)
-  if (result === ERR_NOT_IN_RANGE) {
-    const result = move.cheap(creep, target, true)
-    if (result === ERR_NO_PATH) {
-      move.anywhere(creep, creep.pos.getDirectionTo(target))
-      return 0
-    }
-  } else if (result !== 0) return FAILED
-  else {
-    delete creep.memory._fill
-    delete creep.memory._fillType
-    return SUCCESS
+  if (!target) return NOTHING_TODO
+  const result = memoryLessFill(creep, target, resourceType)
+  if (result === SUCCESS) {
+    delete creep.memory[Keys.fillTarget]
+    delete creep.memory[Keys.fillType]
   }
-  return NOTHING_DONE
+  return result
 }

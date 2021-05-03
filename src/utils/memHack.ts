@@ -1,6 +1,12 @@
 import CacheHandler from 'handler/CacheHandler'
 import IntershardMemoryHandler from 'handler/IntershardMemoryHandler'
 
+global.InterShardMemory = global.InterShardMemory || {
+  getLocal: () => '',
+  setLocal: () => {},
+  getRemote: () => '',
+}
+
 const cache = {
   creeps: {},
   spawns: {},

@@ -39,7 +39,7 @@ describe('Preparing creep to fill lab with speciied resources', () => {
       RESOURCE_UTRIUM_ACID,
       'Invalid resource type to draw from',
     )
-    expect(creep.memory._fillType).to.eql(
+    expect(creep.memory[Keys.fillType]).to.eql(
       RESOURCE_UTRIUM_ACID,
       'Invalid resource type to insert to',
     )
@@ -66,7 +66,7 @@ describe('Preparing creep to fill lab with speciied resources', () => {
     expect(creep.memory._drawAmount).to.eql(200)
     expect(creep.memory._targetLab).to.eql('theLab')
     expect(creep.memory._drawType).to.eql(RESOURCE_UTRIUM_ACID)
-    expect(creep.memory._fillType).to.eql(RESOURCE_UTRIUM_ACID)
+    expect(creep.memory[Keys.fillType]).to.eql(RESOURCE_UTRIUM_ACID)
     expect(creep.memory.state).to.eql(State.HAUL_LAB_FROM_STORAGE)
   })
 
@@ -87,7 +87,7 @@ describe('Preparing creep to fill lab with speciied resources', () => {
     expect(creep.memory._drawAmount).to.eql(200)
     expect(creep.memory._targetLab).to.eql('theLab')
     expect(creep.memory._drawType).to.eql(RESOURCE_UTRIUM_ACID)
-    expect(creep.memory._fillType).to.eql(RESOURCE_UTRIUM_ACID)
+    expect(creep.memory[Keys.fillType]).to.eql(RESOURCE_UTRIUM_ACID)
     expect(creep.memory.state).to.eql(State.HAUL_LAB_FROM_STORAGE)
   })
 
@@ -109,7 +109,7 @@ describe('Preparing creep to fill lab with speciied resources', () => {
     expect(creep.memory._drawAmount).to.be.undefined
     expect(creep.memory._targetLab).to.be.undefined
     expect(creep.memory._drawType).to.be.undefined
-    expect(creep.memory._fillType).to.be.undefined
+    expect(creep.memory[Keys.fillType]).to.be.undefined
     expect(creep.memory.state).to.be.undefined
   })
 
@@ -131,7 +131,7 @@ describe('Preparing creep to fill lab with speciied resources', () => {
     expect(creep.memory._drawAmount).to.be.undefined
     expect(creep.memory._targetLab).to.be.undefined
     expect(creep.memory._drawType).to.be.undefined
-    expect(creep.memory._fillType).to.be.undefined
+    expect(creep.memory[Keys.fillType]).to.be.undefined
     expect(creep.memory.state).to.be.undefined
   })
 
@@ -153,7 +153,7 @@ describe('Preparing creep to fill lab with speciied resources', () => {
     expect(creep.memory._drawAmount).to.be.undefined
     expect(creep.memory._targetLab).to.be.undefined
     expect(creep.memory._drawType).to.be.undefined
-    expect(creep.memory._fillType).to.be.undefined
+    expect(creep.memory[Keys.fillType]).to.be.undefined
     expect(creep.memory.state).to.be.undefined
   })
 })

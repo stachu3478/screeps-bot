@@ -27,6 +27,7 @@ import dumpResources from 'job/dumpResources'
 import { haulCurrentRoom } from 'job/resourceHaul'
 import pick from 'routine/haul/pick'
 import { ensureEmpty } from './shared'
+import ResourceRouteProcessor from 'job/resourceRoute/ResourceRouteProcessor'
 
 function nativeRoutineHandler(creep: Harvester, result: number) {
   switch (result) {
@@ -45,14 +46,15 @@ function nativeRoutineHandler(creep: Harvester, result: number) {
 export default profiler.registerFN(function harvester(creep: Harvester) {
   switch (creep.memory.state) {
     case State.IDLE:
-      if (creep.store[RESOURCE_ENERGY]) energyUse(creep)
+      /*if (creep.store[RESOURCE_ENERGY]) energyUse(creep)
       else if (canUtilizeEnergy(creep)) {
         ensureEmpty(creep)
         energyHaul(creep)
       }
       if (creep.memory.state !== State.IDLE) break
       if (haulCurrentRoom(creep)) break
-      else creep.memory.role = Role.LAB_MANAGER
+      else creep.memory.role = Role.LAB_MANAGER*/
+      creep.memory.state = State.HARVESTING
       break
     case State.DISMANTLE:
       switch (dismantle(creep)) {
@@ -68,17 +70,26 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
       }
       break
     case State.HARVESTING:
-      switch (drawContainer(creep)) {
+      const routeProcessor =
+        creep.cache.routeProcessor ||
+        (creep.cache.routeProcessor = new ResourceRouteProcessor(creep))
+      if (routeProcessor.process()) {
+        autoPick(creep)
+      } else {
+        if (creep.room.name !== creep.memory.room) {
+          creep.memory._arrive = creep.memory.room
+          creep.memory.state = State.ARRIVE
+        }
+        creep.memory.state = State.IDLE
+      }
+      /*switch (drawContainer(creep)) {
         case DONE:
         case SUCCESS:
-          creep.memory.state = State.IDLE
+
           break
         case FAILED:
-          if (creep.room.name !== creep.memory.room) {
-            creep.memory._arrive = creep.memory.room
-            creep.memory.state = State.ARRIVE
-          }
-          autoPick(creep)
+
+
           break
         case NOTHING_TODO:
           energyHaul(creep)
@@ -86,7 +97,7 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
           break
         case NOTHING_DONE:
           autoPick(creep)
-      }
+      }*/
       break
     case State.FILL_PRIORITY:
       nativeRoutineHandler(creep, priorityFill(creep))
