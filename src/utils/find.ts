@@ -59,16 +59,16 @@ export const findHaulable = (room: Room, pos: RoomPosition) => {
     FIND_TOMBSTONES,
   )
   potential = potential.concat(room.find(FIND_RUINS))
-  potential = potential
-    .concat(
+  if (!room.my)
+    potential = potential.concat(
       room.find<StructureContainer>(FIND_STRUCTURES, {
         filter: (s) => s.structureType === STRUCTURE_CONTAINER,
       }),
     )
-    .concat(room.find(10011 as FindConstant) as StructureContainer[])
-  console.log(potential)
+  potential = potential.concat(
+    room.find(10011 as FindConstant) as StructureContainer[],
+  )
   potential = potential.filter(filledFilter)
-  console.log(potential)
   return pos.findClosestByPath(potential) || pos.findClosestByRange(potential)
 }
 
