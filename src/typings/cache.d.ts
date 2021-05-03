@@ -1,4 +1,7 @@
-// QuadSquadHandler.d.ts
+declare class ResourceRouteProcessor {
+  constructor(creep: Creep)
+  process(): boolean
+}
 
 // cache.d.ts
 interface RoomCache {
@@ -33,6 +36,7 @@ interface SpawnCache {
 interface CreepCache {
   moverPath?: PathStep[]
   workpartCount?: number
+  routeProcessor?: ResourceRouteProcessor
   _bodypartHitThreshold?: Record<BodyPartConstant, number>
 }
 

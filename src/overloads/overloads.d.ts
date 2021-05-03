@@ -118,6 +118,7 @@ interface Creep {
   hasActiveAttackBodyPart: boolean
   safeDistance: number
   _bodyPartHitThreshold: Record<BodyPartConstant, number>
+  routeProcessor: ResourceRouteProcessor
   hasActiveBodyPart: (b: BodyPartConstant) => boolean
   isSafeFrom: (creep: Creep) => boolean
   safeRangeXY: (x: number, y: number) => number

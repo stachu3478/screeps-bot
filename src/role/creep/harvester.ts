@@ -19,7 +19,6 @@ import profiler from 'screeps-profiler'
 import energyHaul from 'job/energyHaul'
 import energyUse from 'job/energyUse'
 import Harvester from './harvester.d'
-import priorityFill from 'routine/haul/priorityFill'
 import canUtilizeEnergy from 'job/canUtilizeEnergy'
 import draw from 'routine/haul/draw'
 import fill from 'routine/haul/fill'
@@ -51,10 +50,13 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
         ensureEmpty(creep)
         energyHaul(creep)
       }
-      if (creep.memory.state !== State.IDLE) break
+      if (creep.memory.state !== State.IDLE) break*/
       if (haulCurrentRoom(creep)) break
-      else creep.memory.role = Role.LAB_MANAGER*/
-      creep.memory.state = State.HARVESTING
+      else if (creep.routeProcessor.process()) {
+        creep.memory.state = State.HARVESTING
+      } else {
+        creep.memory.role = Role.LAB_MANAGER
+      }
       break
     case State.DISMANTLE:
       switch (dismantle(creep)) {
@@ -70,10 +72,7 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
       }
       break
     case State.HARVESTING:
-      const routeProcessor =
-        creep.cache.routeProcessor ||
-        (creep.cache.routeProcessor = new ResourceRouteProcessor(creep))
-      if (routeProcessor.process()) {
+      if (creep.routeProcessor.process()) {
         autoPick(creep)
       } else {
         if (creep.room.name !== creep.memory.room) {
@@ -82,25 +81,6 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
         }
         creep.memory.state = State.IDLE
       }
-      /*switch (drawContainer(creep)) {
-        case DONE:
-        case SUCCESS:
-
-          break
-        case FAILED:
-
-
-          break
-        case NOTHING_TODO:
-          energyHaul(creep)
-          autoPick(creep)
-          break
-        case NOTHING_DONE:
-          autoPick(creep)
-      }*/
-      break
-    case State.FILL_PRIORITY:
-      nativeRoutineHandler(creep, priorityFill(creep))
       break
     case State.REPAIR:
       nativeRoutineHandler(creep, repair(creep))

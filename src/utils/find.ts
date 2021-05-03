@@ -179,31 +179,3 @@ export const findNearStructureToFillWithPriority = (
       .filter(toFillFilter()),
     toFillPrioritySelector,
   ) as AnyStoreStructure
-
-const priorityObfuscator = (s: AnyStoreStructure) =>
-  fillPriority[s.structureType]
-const priorityLimiter = (s: AnyStoreStructure) =>
-  fillPriority[s.structureType] > 5
-const notNukerFilter = (s: AnyStoreStructure) =>
-  s.structureType !== STRUCTURE_NUKER
-export const findClosestStructureToFillWithPriority = (
-  room: Room,
-  pos: RoomPosition,
-  differ?: AnyStoreStructure,
-) => {
-  let structures = room
-    .find<AnyStoreStructure>(FIND_STRUCTURES)
-    .filter(priorityLimiter)
-    .filter(toFillFilter(differ))
-  if (room.store(RESOURCE_ENERGY) < energyToNukerThreshold)
-    structures = structures.filter(notNukerFilter)
-  if (!structures.length) return null
-  const maxPriority =
-    fillPriority[_.max(structures, priorityObfuscator).structureType]
-  const prioritized = structures.filter(
-    (s) => fillPriority[s.structureType] === maxPriority,
-  )
-  return (
-    pos.findClosestByPath(prioritized) || pos.findClosestByRange(prioritized)
-  )
-}

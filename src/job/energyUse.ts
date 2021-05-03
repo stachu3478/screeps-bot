@@ -4,7 +4,6 @@ import place from 'planner/place/place'
 import build from 'routine/work/build'
 import repair from 'routine/work/repair'
 import fillStorage from 'routine/haul/storageFill'
-import priorityFill from 'routine/haul/priorityFill'
 import { energyToBuildThreshold } from 'config/storage'
 
 const shouldBuild = (room: Room) =>
@@ -12,10 +11,7 @@ const shouldBuild = (room: Room) =>
 export default function energyUse(creep: Harvester) {
   let result
   const motherRoom = creep.motherRoom
-  if ((result = priorityFill(creep)) in ACCEPTABLE)
-    creep.memory.state = State.FILL_PRIORITY
-  else if ((result = repair(creep)) in ACCEPTABLE)
-    creep.memory.state = State.REPAIR
+  if ((result = repair(creep)) in ACCEPTABLE) creep.memory.state = State.REPAIR
   else if (
     shouldBuild(motherRoom) &&
     (build(creep) !== NOTHING_TODO || place(motherRoom) in ACCEPTABLE)

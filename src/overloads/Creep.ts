@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import defineGetter from 'utils/defineGetter'
+import ResourceRouteProcessor from 'job/resourceRoute/ResourceRouteProcessor'
 
 function defineCreepGetter<T>(property: string, handler: (self: Creep) => T) {
   defineGetter<Creep, CreepConstructor, T>(Creep, property, handler)
@@ -59,6 +60,13 @@ defineCreepGetter('_bodyPartHitThreshold', (self) => {
     )
   })
   return bodypartMap as Record<BodyPartConstant, number>
+})
+
+defineCreepGetter('routeProcessor', (self) => {
+  return (
+    self.cache.routeProcessor ||
+    (self.cache.routeProcessor = new ResourceRouteProcessor(self))
+  )
 })
 
 Creep.prototype.hasActiveBodyPart = function (bodyPartType: BodyPartConstant) {
