@@ -31,13 +31,14 @@ export default function run(controller: StructureController, cpuUsed: number) {
     const fighters = findFighters(room)
     const found = findMostVulnerableCreep(enemies, towers, fighters)
     enemy = found.enemy
-    if (found.vulnerability <= 0) needFighters = true
+    const canDeal = found.vulnerability <= 0
+    if (room.defencePolicy.shouldAttack(canDeal)) needFighters = true
     else {
       towers.forEach((t) => tower(t, found.enemy))
       towersProcessed = true
     }
     room.visual.text(
-      'Enemy tracked: ' + enemy.name + ' Vulnerability: ' + found.vulnerability,
+      `Enemy tracked: ${enemy.name} Vulnerability: ${found.vulnerability}`,
       0,
       4,
       dangerStyle,
@@ -51,6 +52,8 @@ export default function run(controller: StructureController, cpuUsed: number) {
           s.structureType === STRUCTURE_TOWER && tower(s, powerEnemy),
       })
       towersProcessed = true
+    } else {
+      room.defencePolicy.reset()
     }
   }
   if (!cache.healthy && !towersProcessed) {

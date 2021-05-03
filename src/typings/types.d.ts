@@ -118,6 +118,16 @@ interface RoomMemory {
 
   boosts?: BoostData
   r?: RemoteMemory[] // remotes
+  /**
+   * During that many ticks defence units
+   * will hold fire when they have positive
+   * breach calculated
+   */
+  d?: number
+  /**
+   * Currently apllied timeout for defence
+   */
+  D?: number
 }
 
 interface RemoteMemory {

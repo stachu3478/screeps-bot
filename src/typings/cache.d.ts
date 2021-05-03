@@ -1,8 +1,3 @@
-declare class ResourceRouteProcessor {
-  constructor(creep: Creep)
-  process(): boolean
-}
-
 // cache.d.ts
 interface RoomCache {
   priorityFilled?: 0 | 1
@@ -17,6 +12,7 @@ interface RoomCache {
   shielded?: number
   quadSquad?: QuadSquadHandler
   shieldPlanner?: ShieldPlanner
+  defencePolicy?: DefencePolicy
 
   labCooldown?: number
 }

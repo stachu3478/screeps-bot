@@ -3,6 +3,7 @@ import './boostManagement'
 import defineGetter from 'utils/defineGetter'
 import SourceHandler from 'handler/SourceHandler'
 import ShieldPlanner from 'planner/shieldPlanner'
+import DefencePolicy from 'room/DefencePolicy'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -103,6 +104,12 @@ defineRoomGetter('shieldPositions', (self) => {
   const cache = self.cache
   if (!cache.shieldPlanner) cache.shieldPlanner = new ShieldPlanner(self)
   return cache.shieldPlanner.roomPositions
+})
+
+defineRoomGetter('defencePolicy', (self) => {
+  const cache = self.cache
+  if (!cache.defencePolicy) cache.defencePolicy = new DefencePolicy(self)
+  return cache.defencePolicy
 })
 
 Room.prototype.store = function (resource: ResourceConstant) {

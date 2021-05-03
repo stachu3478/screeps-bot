@@ -25,7 +25,7 @@ describe('ShieldPlanner', () => {
   it('room positions match those in memory', () => {
     const shieldPlanner = new ShieldPlanner(room)
     expect(shieldPlanner.roomPositions.map(posToChar).join('')).to.equal(
-      room.memory[Keys.shields],
+      room.memory[RoomMemoryKeys.shields],
     )
     expect(shieldPlanner.roomPositions).to.not.be.empty
   })

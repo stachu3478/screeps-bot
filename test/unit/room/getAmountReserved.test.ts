@@ -10,18 +10,18 @@ describe('Getting amount of mineral reserved for boosting of corresponding type'
     global.Memory = _.clone(Memory)
   })
 
-  it('should return 0 for missing boost data', function () {
+  it('returns 0 for missing boost data', () => {
     const room = new Room('test')
     expect(room.getAmountReserved(RESOURCE_UTRIUM_OXIDE)).to.eql(0)
   })
 
-  it('should return 0 for not existing part', function () {
+  it('returns 0 for not existing part', () => {
     const room = new Room('test')
     room.memory.boosts = { labs: [[RESOURCE_UTRIUM_OXIDE, 300]], creeps: [] }
     expect(room.getAmountReserved(RESOURCE_UTRIUM_HYDRIDE)).to.eql(0)
   })
 
-  it('should find and return reserved amount', function () {
+  it('finds and returns reserved amount', () => {
     const room = new Room('test')
     room.memory.boosts = {
       labs: [

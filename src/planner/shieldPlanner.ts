@@ -9,7 +9,7 @@ export default class ShieldPlanner {
   constructor(room: Room) {
     this.room = room
     this.positions = []
-    const shieldsMemory = room.memory[Keys.shields]
+    const shieldsMemory = room.memory[RoomMemoryKeys.shields]
     if (shieldsMemory) this.generateFromMemory(shieldsMemory)
     else this.generate()
   }
@@ -34,7 +34,9 @@ export default class ShieldPlanner {
     })
 
     this.generateFromPathTargets(positionsToBeShielded)
-    this.room.memory[Keys.shields] = this.positions.map(posToChar).join('')
+    this.room.memory[RoomMemoryKeys.shields] = this.positions
+      .map(posToChar)
+      .join('')
   }
 
   private generateFromPathTargets(targets: RoomPosition[]) {
