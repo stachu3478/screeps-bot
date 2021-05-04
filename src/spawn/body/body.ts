@@ -56,22 +56,28 @@ export function progressiveClaimer(
 export function progressiveFighter(energy: number) {
   const parts: BodyPartConstant[] = []
   let remaining = energy - fightPack
-  let partsRemaining = MAX_CREEP_SIZE - 1
   let attackParts = 2
+  let moveParts = 1
+  let partsRemaining = MAX_CREEP_SIZE - attackParts - moveParts
+  let toughParts = 0
   while (remaining >= fightPack && partsRemaining >= 3) {
     attackParts += 2
     remaining -= fightPack
     partsRemaining -= 3
+    moveParts++
   }
   if (remaining >= liteFightPack && partsRemaining >= 2) {
     attackParts++
     remaining -= liteFightPack
     partsRemaining -= 2
+    moveParts++
   }
   if (remaining >= toughPack && partsRemaining >= 3) {
-    parts.push(TOUGH, TOUGH, MOVE)
+    partsRemaining -= 3
+    toughParts += 2
+    moveParts++
   }
-  const moveParts = Math.ceil(attackParts / 2)
+  for (let i = 0; i < toughParts; i++) parts.push(TOUGH)
   for (let i = 0; i < moveParts; i++) parts.push(MOVE)
   for (let i = 0; i < attackParts; i++) parts.push(ATTACK)
   return parts

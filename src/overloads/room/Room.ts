@@ -112,6 +112,19 @@ defineRoomGetter('defencePolicy', (self) => {
   return cache.defencePolicy
 })
 
+const spawnOrExtension: Record<string, number> = {
+  [STRUCTURE_SPAWN]: 1,
+  [STRUCTURE_EXTENSION]: 1,
+}
+defineRoomGetter('spawnsAndExtensions', (self) => {
+  return self
+    .find(FIND_STRUCTURES)
+    .filter((s) => spawnOrExtension[s.structureType]) as (
+    | StructureSpawn
+    | StructureExtension
+  )[]
+})
+
 Room.prototype.store = function (resource: ResourceConstant) {
   const storage = this.storage
   const terminal = this.terminal

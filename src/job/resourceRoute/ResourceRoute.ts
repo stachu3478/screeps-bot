@@ -1,6 +1,7 @@
+type StructureSelector = (r: Room) => AnyStoreStructure[]
 interface ResourceRouteOptions {
   from: StructureConstant
-  to: StructureConstant
+  to: AnyStoreStructure['structureType'] | StructureSelector
   type: ResourceConstant
   minimalFreeCapacityToFill?: number
   maximumFilledAmount?: number
@@ -16,32 +17,46 @@ export default class ResourceRoute {
     this.options = options
   }
 
+  findTargets(room: Room, differ?: Structure) {
+    const matcher = this.options.to
+    let match: AnyStoreStructure[]
+    if (typeof matcher === 'function') {
+      match = matcher(room)
+    } else {
+      match = room
+        .find(FIND_STRUCTURES)
+        .filter((s) => s.structureType !== matcher) as AnyStoreStructure[]
+    }
+    return match.filter((s) => s !== differ && this.validateTarget(s))
+  }
+
+  /**
+   * Validates previously selected source
+   */
   validateSource(s: AnyStoreStructure | Tombstone | Ruin) {
     return (s.store[this.type] || 0) >= this.minimalStoreToDraw
   }
 
+  /**
+   * Validates previously selected target
+   */
   validateTarget(s: AnyStoreStructure) {
     return (
       (s.store.getFreeCapacity(this.type) || 0) >=
-        this.minimalFreeCapacityToFill &&
-      s.store[this.type] < this.fillAmount(s)
+        this.minimalFreeCapacityToFill && this.fillAmount(s) > 0
     )
   }
 
   fillAmount(target: AnyStoreStructure) {
     if (!this.options.maximumFilledAmount)
-      return target.store.getFreeCapacity(this.options.type) || 0
+      return target.store.getFreeCapacity(this.type) || 0
     const amount =
-      this.options.maximumFilledAmount - (target.store[this.options.type] || 0)
+      this.options.maximumFilledAmount - (target.store[this.type] || 0)
     return amount
   }
 
   get from() {
     return this.options.from
-  }
-
-  get to() {
-    return this.options.to
   }
 
   get type() {

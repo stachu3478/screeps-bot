@@ -16,6 +16,7 @@ interface TransferMemory extends CreepMemory {
   [Keys.dumping]?: 0 | 1
 }
 
+const ignoreCreeps = { ignoreCreeps: true }
 export default class CreepResourceRoute {
   private creepName: string
   private room: Room
@@ -105,7 +106,7 @@ export default class CreepResourceRoute {
         if (s.structureType !== route.from) return false
         return route.validateSource(s as AnyStoreStructure)
       }),
-      { ignoreCreeps: true },
+      ignoreCreeps,
     )
   }
 
@@ -121,11 +122,8 @@ export default class CreepResourceRoute {
     )
       return memorizedStructure
     return this.creep.pos.findClosestByPath(
-      this.room.find(FIND_STRUCTURES).filter((s) => {
-        if (s.structureType !== route.to || s === differ) return false
-        return route.validateTarget(s as AnyStoreStructure)
-      }),
-      { ignoreCreeps: true },
+      route.findTargets(this.room, differ),
+      ignoreCreeps,
     )
   }
 

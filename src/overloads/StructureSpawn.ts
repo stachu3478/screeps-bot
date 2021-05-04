@@ -58,6 +58,8 @@ StructureSpawn.prototype.trySpawnCreep = function (
   const name = uniqName(letter)
   const result = this.spawnCreep(body, name, { memory, dryRun: true })
   if (result !== 0) {
+    if (result !== ERR_NOT_ENOUGH_ENERGY)
+      throw new Error('Uncaught spawning error! ' + result)
     if (!retry)
       this.cache.trySpawn = {
         creep: body,

@@ -3,13 +3,14 @@ import ResourceRoute from 'job/resourceRoute/ResourceRoute'
 import { energyBufferingThreshold } from './terminal'
 
 export default [
-  // fill everything with energy from containers when no storage
+  // collect energy to storage
   {
     from: STRUCTURE_CONTAINER,
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
   },
+  // fill everything with energy from containers when no storage
   {
     from: STRUCTURE_CONTAINER,
     to: STRUCTURE_TOWER,
@@ -18,13 +19,7 @@ export default [
   },
   {
     from: STRUCTURE_CONTAINER,
-    to: STRUCTURE_SPAWN,
-    type: RESOURCE_ENERGY,
-    minimalStoreToDraw: CONTAINER_CAPACITY / 2,
-  },
-  {
-    from: STRUCTURE_CONTAINER,
-    to: STRUCTURE_EXTENSION,
+    to: (room: Room) => room.spawnsAndExtensions,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
   },
@@ -36,17 +31,7 @@ export default [
   },
   {
     from: STRUCTURE_STORAGE,
-    to: STRUCTURE_TOWER,
-    type: RESOURCE_ENERGY,
-  },
-  {
-    from: STRUCTURE_STORAGE,
-    to: STRUCTURE_SPAWN,
-    type: RESOURCE_ENERGY,
-  },
-  {
-    from: STRUCTURE_STORAGE,
-    to: STRUCTURE_EXTENSION,
+    to: (room: Room) => room.spawnsAndExtensions,
     type: RESOURCE_ENERGY,
   },
   {

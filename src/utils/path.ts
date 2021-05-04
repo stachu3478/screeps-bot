@@ -122,7 +122,6 @@ const move = {
     dir: DirectionConstant,
     result: ScreepsReturnCode,
   ) => {
-    console.log('handlong creep on reoad')
     if (!creepOnRoad.memory) {
       if (!creepOnRoad.my) {
         options.ignoreCreeps = false

@@ -27,6 +27,7 @@ interface Room {
   my: boolean
   shieldPositions: RoomPosition[]
   defencePolicy: DefencePolicy
+  spawnsAndExtensions: (StructureSpawn | StructureExtension)[]
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void

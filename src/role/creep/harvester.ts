@@ -73,7 +73,7 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
       break
     case State.HARVESTING:
       if (creep.routeProcessor.process()) {
-        autoPick(creep)
+        autoPick(creep) && autoRepair(creep)
       } else {
         if (creep.room.name !== creep.memory.room) {
           creep.memory._arrive = creep.memory.room

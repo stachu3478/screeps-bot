@@ -16,13 +16,14 @@ import { needsHauler, spawnHauler } from './hauler'
 import { needsScoreDigger, spawnScoreDigger } from './scoreDigger'
 import { needsMover, spawnMover } from './mover'
 import spawnStaticUpgrader, { needsStaticUpgraders } from './staticUpgrader'
+import { needsFighters, spawnFighter } from './fighter'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
   controller: StructureController,
   creepCountByRole: number[],
   workPartCountByRole: number[],
-  needsFighters: boolean,
+  needsFighter: boolean,
 ) {
   const mem = spawn.room.memory
   const cache = spawn.cache
@@ -85,18 +86,8 @@ export default profiler.registerFN(function loop(
         deprivity: 0,
       },
     )
-  } else if (needsFighters) {
-    spawn.trySpawnCreep(
-      progressiveFighter(
-        Math.max(SPAWN_ENERGY_START, spawn.room.energyAvailable),
-      ),
-      'F',
-      {
-        role: Role.FIGHTER,
-        room: spawn.room.name,
-        deprivity: 0,
-      },
-    )
+  } else if (needsFighters(needsFighter)) {
+    spawnFighter(spawn)
   } else if (minerCount < max) {
     const parts = progressiveMiner(spawn.room.energyCapacityAvailable)
     const freeSource = controller.room.sources.free
