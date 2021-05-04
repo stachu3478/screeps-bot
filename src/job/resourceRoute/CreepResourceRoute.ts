@@ -31,16 +31,11 @@ export default class CreepResourceRoute {
   work() {
     const creep = this.creep
     if (creep.memory[Keys.dumping]) {
-      const structure = this.findMemorizedStructure(
-        creep.memory[Keys.fillTarget],
-      )
+      const id = creep.memory[Keys.fillTarget]
+      const structure = id && Game.getObjectById(id)
       const res =
         structure &&
-        memoryLessFill(
-          creep,
-          structure as AnyStoreStructure,
-          creep.memory[Keys.fillType] || 'X',
-        )
+        memoryLessFill(creep, structure, creep.memory[Keys.fillType] || 'X')
       if (res === NOTHING_DONE) return true
       if (!dumpResources(this.creep)) {
         creep.memory[Keys.dumping] = 0
@@ -77,7 +72,7 @@ export default class CreepResourceRoute {
       const source = this.findStructureToDraw() as AnyStoreStructure | null
       if (!source) return false
       creep.memory[Keys.drawSource] = source.id
-      memoryLessDraw(creep, source, route.type)
+      memoryLessDraw(creep, source, route.type, route.drawAmount(source))
     }
     return true
   }
@@ -96,16 +91,12 @@ export default class CreepResourceRoute {
   private findStructureToDraw() {
     const route = this.resourceRoute
     const memory = this.creep.memory
-    const memorizedStructure = this.findMemorizedStructure(
-      memory[Keys.drawSource],
-    )
+    const id = memory[Keys.drawSource]
+    const memorizedStructure = id && Game.getObjectById(id)
     if (memorizedStructure && route.validateSource(memorizedStructure))
       return memorizedStructure
     return this.creep.pos.findClosestByPath(
-      this.room.find(FIND_STRUCTURES).filter((s) => {
-        if (s.structureType !== route.from) return false
-        return route.validateSource(s as AnyStoreStructure)
-      }),
+      route.findSources(this.room),
       ignoreCreeps,
     )
   }
@@ -113,24 +104,14 @@ export default class CreepResourceRoute {
   private findStructureToFill(differ?: AnyStoreStructure) {
     const route = this.resourceRoute
     const memory = this.creep.memory
-    const memorizedStructure = this.findMemorizedStructure(
-      memory[Keys.fillTarget],
-    )
-    if (
-      memorizedStructure &&
-      route.validateTarget(memorizedStructure as AnyStoreStructure)
-    )
+    const id = memory[Keys.fillTarget]
+    const memorizedStructure = id && Game.getObjectById(id)
+    if (memorizedStructure && route.validateTarget(memorizedStructure))
       return memorizedStructure
     return this.creep.pos.findClosestByPath(
       route.findTargets(this.room, differ),
       ignoreCreeps,
     )
-  }
-
-  private findMemorizedStructure(
-    id?: Id<AnyStoreStructure | Tombstone | Ruin>,
-  ) {
-    return id && Game.getObjectById(id)
   }
 
   private get creep() {

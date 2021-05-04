@@ -52,6 +52,13 @@ export default [
     maximumFilledAmount: LINK_CAPACITY / 2,
     minimalStoreToDraw: 10000,
   },
+  {
+    from: (room: Room) => (room.spawnLink ? [room.spawnLink] : []),
+    to: STRUCTURE_STORAGE,
+    type: RESOURCE_ENERGY,
+    minimalStoreToDraw: (LINK_CAPACITY * 3) / 4,
+    keep: LINK_CAPACITY / 2,
+  },
   // storage & terminal exchange
   {
     from: STRUCTURE_STORAGE,

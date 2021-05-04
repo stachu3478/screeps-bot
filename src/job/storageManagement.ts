@@ -1,7 +1,4 @@
-import {
-  storageBufferingThreshold,
-  energyBufferingThreshold,
-} from 'config/terminal'
+import { storageBufferingThreshold } from 'config/terminal'
 import { FactoryManager } from 'role/creep/factoryManager'
 
 const storageManagement = {
@@ -10,10 +7,8 @@ const storageManagement = {
     terminal: StructureTerminal,
     storage: StructureStorage,
   ) => {
-    const threshold =
-      resource === RESOURCE_ENERGY
-        ? energyBufferingThreshold
-        : storageBufferingThreshold
+    if (resource === RESOURCE_ENERGY) return 0
+    const threshold = storageBufferingThreshold
     return Math.max(
       0,
       Math.min(
@@ -28,10 +23,8 @@ const storageManagement = {
     terminal: StructureTerminal,
     storage: StructureStorage,
   ) => {
-    const threshold =
-      resource === RESOURCE_ENERGY
-        ? energyBufferingThreshold
-        : storageBufferingThreshold
+    if (resource === RESOURCE_ENERGY) return 0
+    const threshold = storageBufferingThreshold
     return Math.max(
       0,
       Math.min(threshold - terminal.store[resource], storage.store[resource]),
@@ -50,31 +43,6 @@ const storageManagement = {
     mem._drawAmount = Math.min(creep.store.getFreeCapacity(), amount)
     mem._drawType = mem[Keys.fillType] = resource
     mem[Keys.fillTarget] = to.id
-  },
-
-  fillPowerSpawn: (
-    creep: FactoryManager,
-    terminal: StructureTerminal,
-    powerSpawn: StructurePowerSpawn,
-  ) => {
-    if (
-      powerSpawn.store.getFreeCapacity(RESOURCE_POWER) !==
-      POWER_SPAWN_POWER_CAPACITY
-    )
-      return false
-    const toFill = Math.min(
-      terminal.store[RESOURCE_POWER],
-      POWER_SPAWN_POWER_CAPACITY,
-    )
-    if (toFill === 0) return false
-    storageManagement.prepareToTakeResource(
-      creep,
-      RESOURCE_POWER,
-      toFill,
-      terminal,
-      powerSpawn,
-    )
-    return true
   },
 
   exchangeTerminalAndStorage: (
@@ -121,17 +89,10 @@ const storageManagement = {
     const motherRoom = creep.motherRoom
     const storage = motherRoom.storage
     const terminal = motherRoom.terminal
-    const powerSpawn = motherRoom.powerSpawn
     if (
       storage &&
       terminal &&
       storageManagement.exchangeTerminalAndStorage(creep, storage, terminal)
-    )
-      return true
-    if (
-      terminal &&
-      powerSpawn &&
-      storageManagement.fillPowerSpawn(creep, terminal, powerSpawn)
     )
       return true
     return false
