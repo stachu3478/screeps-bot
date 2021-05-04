@@ -1,6 +1,6 @@
 import { energyToNukerThreshold } from './storage'
 import ResourceRoute from 'job/resourceRoute/ResourceRoute'
-import { energyBufferingThreshold } from './terminal'
+import { energyBufferingThreshold, storageBufferingThreshold } from './terminal'
 
 /**
  * All definitions of the system of transferring
@@ -59,6 +59,19 @@ export default [
     minimalStoreToDraw: (LINK_CAPACITY * 3) / 4,
     keep: LINK_CAPACITY / 2,
   },
+  // fill more expensive things with energy
+  {
+    from: STRUCTURE_STORAGE,
+    to: STRUCTURE_POWER_SPAWN,
+    type: RESOURCE_ENERGY,
+    minimalStoreToDraw: 10000,
+  },
+  {
+    from: STRUCTURE_STORAGE,
+    to: STRUCTURE_NUKER,
+    type: RESOURCE_ENERGY,
+    minimalStoreToDraw: energyToNukerThreshold,
+  },
   // storage & terminal exchange
   {
     from: STRUCTURE_STORAGE,
@@ -72,21 +85,22 @@ export default [
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
     maximumFilledAmount: 5000,
-  },
-  // fill more expensive things with energy
-  {
-    from: STRUCTURE_STORAGE,
-    to: STRUCTURE_POWER_SPAWN,
-    type: RESOURCE_ENERGY,
-    minimalStoreToDraw: 10000,
-  },
-  {
-    from: STRUCTURE_STORAGE,
-    to: STRUCTURE_NUKER,
-    type: RESOURCE_ENERGY,
-    minimalStoreToDraw: energyToNukerThreshold,
     dump: true,
   },
+  /*{
+    from: STRUCTURE_STORAGE,
+    to: STRUCTURE_TERMINAL,
+    type: (r: ResourceConstant) => r !== RESOURCE_ENERGY,
+    maximumFilledAmount: storageBufferingThreshold,
+    dump: true,
+  },
+  {
+    from: STRUCTURE_TERMINAL,
+    to: STRUCTURE_STORAGE,
+    type: (r: ResourceConstant) => r !== RESOURCE_ENERGY,
+    keep: 5000,
+    dump: true,
+  },*/
   // fill powerspawn with power
   {
     from: STRUCTURE_TERMINAL,

@@ -12,7 +12,7 @@ export interface TransferCreep extends Creep {
 interface TransferMemory extends CreepMemory {
   [Keys.fillTarget]?: Id<AnyStoreStructure>
   [Keys.fillType]?: ResourceConstant
-  [Keys.drawSource]?: Id<AnyStoreStructure | Tombstone | Ruin>
+  [Keys.drawSource]?: Id<AnyStoreStructure>
   [Keys.dumping]?: 0 | 1
 }
 
@@ -29,6 +29,17 @@ export default class CreepResourceRoute {
   }
 
   work() {
+    const result = this.deliverAndDump()
+    if (!result) {
+      const creep = this.creep
+      delete creep.memory[Keys.dumping]
+      delete creep.memory[Keys.fillTarget]
+      delete creep.memory[Keys.drawSource]
+    }
+    return result
+  }
+
+  private deliverAndDump() {
     const creep = this.creep
     if (creep.memory[Keys.dumping]) {
       const id = creep.memory[Keys.fillTarget]
@@ -37,15 +48,8 @@ export default class CreepResourceRoute {
         structure &&
         memoryLessFill(creep, structure, creep.memory[Keys.fillType] || 'X')
       if (res === NOTHING_DONE) return true
-      if (!dumpResources(this.creep)) {
-        creep.memory[Keys.dumping] = 0
-        delete creep.memory[Keys.fillTarget]
-        delete creep.memory[Keys.drawSource]
-        return false
-      }
+      return dumpResources(this.creep)
     } else if (!this.drawAndFill()) {
-      delete creep.memory[Keys.fillTarget]
-      delete creep.memory[Keys.drawSource]
       if (this.resourceRoute.dump) {
         return !!(creep.memory[Keys.dumping] = dumpResources(creep) ? 1 : 0)
       }

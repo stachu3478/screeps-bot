@@ -1,20 +1,21 @@
-type WithdrawableStructureSelector = (
-  r: Room,
-) => (AnyStoreStructure | Tombstone | Ruin)[]
-type StructureSelector = (r: Room) => AnyStoreStructure[]
+import StructureMatcher, { StructureSelector } from './matcher/structureMatcher'
+import ResourceMatcher from './matcher/ResourceMatcher'
+type StoreStructureSelector = (r: Room) => AnyStoreStructure[]
+type ResourceSelector = (r: ResourceConstant) => boolean
+
 interface ResourceRouteOptions {
   /**
    * Specifies all sources that the resource will be taken from
    */
-  from: StructureConstant | WithdrawableStructureSelector
+  from: AnyStoreStructure['structureType'] | StoreStructureSelector
   /**
    * Specifies all targets that the resource will be trasfered to
    */
-  to: AnyStoreStructure['structureType'] | StructureSelector
+  to: AnyStoreStructure['structureType'] | StoreStructureSelector
   /**
    * Type of the resource
    */
-  type: ResourceConstant
+  type: ResourceConstant // | ResourceSelector
   /**
    * Conditional minimum available space in target to be filled
    */
@@ -40,34 +41,24 @@ interface ResourceRouteOptions {
 
 export default class ResourceRoute {
   private options: ResourceRouteOptions
+  private sourceMatcher: StructureMatcher
+  private targetMatcher: StructureMatcher
+  //private resourceMatcher: ResourceMatcher
 
   constructor(options: ResourceRouteOptions) {
     this.options = options
+    this.sourceMatcher = new StructureMatcher(this.options.from)
+    this.targetMatcher = new StructureMatcher(this.options.to)
+    //this.resourceMatcher = new ResourceMatcher(this.options.type)
   }
 
   findSources(room: Room, differ?: Structure) {
-    const matcher = this.options.from
-    let match: (AnyStoreStructure | Tombstone | Ruin)[]
-    if (typeof matcher === 'function') {
-      match = matcher(room)
-    } else {
-      match = room
-        .find(FIND_STRUCTURES)
-        .filter((s) => s.structureType === matcher) as AnyStoreStructure[]
-    }
+    const match = this.sourceMatcher.call(room) as AnyStoreStructure[]
     return match.filter((s) => s !== differ && this.validateSource(s))
   }
 
   findTargets(room: Room, differ?: Structure) {
-    const matcher = this.options.to
-    let match: AnyStoreStructure[]
-    if (typeof matcher === 'function') {
-      match = matcher(room)
-    } else {
-      match = room
-        .find(FIND_STRUCTURES)
-        .filter((s) => s.structureType === matcher) as AnyStoreStructure[]
-    }
+    const match = this.targetMatcher.call(room) as AnyStoreStructure[]
     return match.filter((s) => s !== differ && this.validateTarget(s))
   }
 
