@@ -2,6 +2,10 @@ import { energyToNukerThreshold } from './storage'
 import ResourceRoute from 'job/resourceRoute/ResourceRoute'
 import { energyBufferingThreshold } from './terminal'
 
+/**
+ * All definitions of the system of transferring
+ * resources along your base
+ */
 export default [
   // collect energy to storage
   {
@@ -38,6 +42,14 @@ export default [
     from: STRUCTURE_STORAGE,
     to: STRUCTURE_LAB,
     type: RESOURCE_ENERGY,
+    minimalStoreToDraw: 10000,
+  },
+  // balanced transfer between link and storage
+  {
+    from: STRUCTURE_STORAGE,
+    to: (room: Room) => (room.spawnLink ? [room.spawnLink] : []),
+    type: RESOURCE_ENERGY,
+    maximumFilledAmount: LINK_CAPACITY / 2,
     minimalStoreToDraw: 10000,
   },
   // storage & terminal exchange

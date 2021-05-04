@@ -9,7 +9,9 @@ function getHaulable(structure?: StructureStorage | StructureTerminal) {
 
 export function haulCurrentRoom(creep: Hauler) {
   const mem = creep.memory
-  if (creep.motherRoom.storage && pick(creep) in ACCEPTABLE) {
+  const storage = creep.motherRoom.storage
+  if (!storage || storage.store.getFreeCapacity() < 10000) return false
+  if (pick(creep) in ACCEPTABLE) {
     mem.state = State.PICK
     return true
   }

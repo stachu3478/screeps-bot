@@ -4,6 +4,7 @@ import defineGetter from 'utils/defineGetter'
 import SourceHandler from 'handler/SourceHandler'
 import ShieldPlanner from 'planner/shieldPlanner'
 import DefencePolicy from 'room/DefencePolicy'
+import { getLink } from 'utils/selectFromPos'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -123,6 +124,11 @@ defineRoomGetter('spawnsAndExtensions', (self) => {
     | StructureSpawn
     | StructureExtension
   )[]
+})
+
+defineRoomGetter('spawnLink', (self) => {
+  if (!self.memory.structs) return
+  return getLink(self, self.memory.structs.charCodeAt(0))
 })
 
 Room.prototype.store = function (resource: ResourceConstant) {

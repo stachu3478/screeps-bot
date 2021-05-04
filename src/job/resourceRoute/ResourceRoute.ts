@@ -25,7 +25,7 @@ export default class ResourceRoute {
     } else {
       match = room
         .find(FIND_STRUCTURES)
-        .filter((s) => s.structureType !== matcher) as AnyStoreStructure[]
+        .filter((s) => s.structureType === matcher) as AnyStoreStructure[]
     }
     return match.filter((s) => s !== differ && this.validateTarget(s))
   }

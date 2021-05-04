@@ -16,6 +16,7 @@ interface Room {
   mineral?: Mineral
   extractor?: StructureExtractor
   filled: boolean
+  spawnLink?: StructureLink
   linked: boolean
   spawn?: StructureSpawn
   powerSpawn?: StructurePowerSpawn
