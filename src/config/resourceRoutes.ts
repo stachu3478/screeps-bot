@@ -87,7 +87,7 @@ export default [
     maximumFilledAmount: 5000,
     dump: true,
   },
-  /*{
+  {
     from: STRUCTURE_STORAGE,
     to: STRUCTURE_TERMINAL,
     type: (r: ResourceConstant) => r !== RESOURCE_ENERGY,
@@ -100,7 +100,7 @@ export default [
     type: (r: ResourceConstant) => r !== RESOURCE_ENERGY,
     keep: 5000,
     dump: true,
-  },*/
+  },
   // fill powerspawn with power
   {
     from: STRUCTURE_TERMINAL,

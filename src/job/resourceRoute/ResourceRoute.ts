@@ -15,7 +15,7 @@ interface ResourceRouteOptions {
   /**
    * Type of the resource
    */
-  type: ResourceConstant // | ResourceSelector
+  type: ResourceConstant | ResourceSelector
   /**
    * Conditional minimum available space in target to be filled
    */
@@ -43,13 +43,13 @@ export default class ResourceRoute {
   private options: ResourceRouteOptions
   private sourceMatcher: StructureMatcher
   private targetMatcher: StructureMatcher
-  //private resourceMatcher: ResourceMatcher
+  private resourceMatcher: ResourceMatcher
 
   constructor(options: ResourceRouteOptions) {
     this.options = options
     this.sourceMatcher = new StructureMatcher(this.options.from)
     this.targetMatcher = new StructureMatcher(this.options.to)
-    //this.resourceMatcher = new ResourceMatcher(this.options.type)
+    this.resourceMatcher = new ResourceMatcher(this.options.type)
   }
 
   findSources(room: Room, differ?: Structure) {
@@ -65,39 +65,50 @@ export default class ResourceRoute {
   /**
    * Validates previously selected source
    */
-  validateSource(s: AnyStoreStructure | Tombstone | Ruin) {
-    const stored = s.store[this.type] || 0
-    return (
-      stored >= this.minimalStoreToDraw && stored >= (this.options.keep || 0)
-    )
+  validateSource(s: AnyStoreStructure) {
+    const minAmount = Math.max(this.minimalStoreToDraw, this.options.keep || 0)
+    return !!this.resourceMatcher.findStored(s, minAmount)
   }
 
   /**
    * Validates previously selected target
    */
   validateTarget(s: AnyStoreStructure) {
-    return (
-      (s.store.getFreeCapacity(this.type) || 0) >=
-        this.minimalFreeCapacityToFill && this.fillAmount(s) > 0
-    )
+    const minFree = this.minimalFreeCapacityToFill
+    const maxFilled = this.options.maximumFilledAmount
+    return !!this.resourceMatcher.findCanBeFilled(s, minFree, maxFilled)
   }
 
-  drawAmount(source: AnyStoreStructure) {
-    if (!this.options.keep) return source.store[this.type] || 0
-    const amount = (source.store[this.type] || 0) - this.options.keep
+  drawAmount(source: AnyStoreStructure, resource: ResourceConstant) {
+    if (!this.options.keep) return source.store[resource] || 0
+    const amount = (source.store[resource] || 0) - this.options.keep
     return amount
   }
 
-  fillAmount(target: AnyStoreStructure) {
+  fillAmount(target: AnyStoreStructure, resource: ResourceConstant) {
     if (!this.options.maximumFilledAmount)
-      return target.store.getFreeCapacity(this.type) || 0
+      return target.store.getFreeCapacity(resource) || 0
+    console.log(this.options.maximumFilledAmount)
     const amount =
-      this.options.maximumFilledAmount - (target.store[this.type] || 0)
+      this.options.maximumFilledAmount - (target.store[resource] || 0)
     return amount
   }
 
-  get type() {
-    return this.options.type
+  findStoredResource(withdrawable: Creep | AnyStoreStructure) {
+    const matcher = this.options.type
+    if (typeof matcher === 'string') {
+      return withdrawable.store[matcher] > 0 ? matcher : undefined
+    } else {
+      return Object.keys(withdrawable.store).find((r) => {
+        const resource = r as ResourceConstant
+        return matcher(resource)
+      }) as ResourceConstant | undefined
+    }
+  }
+
+  findValidResource(withdrawable: AnyStoreStructure) {
+    const minAmount = Math.max(this.minimalStoreToDraw, this.options.keep || 0)
+    return this.resourceMatcher.findStored(withdrawable, minAmount)
   }
 
   get minimalFreeCapacityToFill() {

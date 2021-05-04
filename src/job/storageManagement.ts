@@ -2,7 +2,7 @@ import { storageBufferingThreshold } from 'config/terminal'
 import { FactoryManager } from 'role/creep/factoryManager'
 
 const storageManagement = {
-  shouldBeTakenToStorage: (
+  /*shouldBeTakenToStorage: (
     resource: ResourceConstant,
     terminal: StructureTerminal,
     storage: StructureStorage,
@@ -29,7 +29,7 @@ const storageManagement = {
       0,
       Math.min(threshold - terminal.store[resource], storage.store[resource]),
     )
-  },
+  },*/
 
   prepareToTakeResource: (
     creep: FactoryManager,
@@ -45,7 +45,7 @@ const storageManagement = {
     mem[Keys.fillTarget] = to.id
   },
 
-  exchangeTerminalAndStorage: (
+  /*exchangeTerminalAndStorage: (
     creep: FactoryManager,
     storage: StructureStorage,
     terminal: StructureTerminal,
@@ -83,9 +83,9 @@ const storageManagement = {
       }
       return false
     })
-  },
+  },*/
 
-  findJob: (creep: FactoryManager) => {
+  /*findJob: (creep: FactoryManager) => {
     const motherRoom = creep.motherRoom
     const storage = motherRoom.storage
     const terminal = motherRoom.terminal
@@ -96,7 +96,7 @@ const storageManagement = {
     )
       return true
     return false
-  },
+  },*/
 }
 
 export default storageManagement

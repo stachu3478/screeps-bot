@@ -60,10 +60,10 @@ export default profiler.registerFN(function factoryManager(
   switch (creep.memory.state) {
     case State.IDLE:
       if (findJob(creep)) break
-      if (storageManagement.findJob(creep)) {
+      /*if (storageManagement.findJob(creep)) {
         creep.memory.state = State.DRAW
         break
-      }
+      }*/
       if (creep.store.getUsedCapacity() === 0) {
         creep.memory.role = Role.HARVESTER
         creep.memory._targetRole = Role.HAULER

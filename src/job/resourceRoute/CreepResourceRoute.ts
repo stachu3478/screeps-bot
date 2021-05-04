@@ -60,23 +60,27 @@ export default class CreepResourceRoute {
 
   private drawAndFill() {
     const creep = this.creep
+    if (creep.name !== 'J12') return
     const target = this.findStructureToFill() as AnyStoreStructure | null
     if (!target) return false
     creep.memory[Keys.fillTarget] = target.id
     const route = this.resourceRoute
-    if (creep.store[this.resourceRoute.type]) {
-      const result = memoryLessFill(
-        creep,
-        target,
-        route.type,
-        route.fillAmount(target),
-      )
+    const resource = route.findStoredResource(creep)
+    if (resource) {
+      const fillAmount = route.fillAmount(target, resource)
+      if (fillAmount < 0) return false
+      console.log('fill', creep, target, resource, fillAmount)
+      const result = memoryLessFill(creep, target, resource, fillAmount)
       if (result === SUCCESS) this.moveWithSpeculation(target)
     } else {
       const source = this.findStructureToDraw() as AnyStoreStructure | null
       if (!source) return false
       creep.memory[Keys.drawSource] = source.id
-      memoryLessDraw(creep, source, route.type, route.drawAmount(source))
+      const resourceToDraw = route.findValidResource(source) || 'X'
+      if (!creep.store.getFreeCapacity()) return false
+      const drawAmount = route.drawAmount(source, resourceToDraw)
+      console.log('draw', creep, source, resourceToDraw, drawAmount)
+      memoryLessDraw(creep, source, resourceToDraw, drawAmount)
     }
     return true
   }
