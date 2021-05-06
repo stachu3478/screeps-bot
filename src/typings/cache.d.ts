@@ -33,6 +33,7 @@ interface CreepCache {
   moverPath?: PathStep[]
   workpartCount?: number
   routeProcessor?: ResourceRouteProcessor
+  buildingRouteProcessor?: BuildingRouteProcessor
   _bodypartHitThreshold?: Record<BodyPartConstant, number>
 }
 

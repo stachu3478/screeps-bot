@@ -1,5 +1,5 @@
-import routes from '../../config/resourceRoutes'
-import CreepResourceRoute from './CreepResourceRoute'
+import routes from '../../config/buildingRoutes'
+import CreepBuildingRoute from './CreepBuldingRoute'
 import CreepMemoized from 'utils/CreepMemoized'
 
 const enum RouteStatusKey {
@@ -7,16 +7,16 @@ const enum RouteStatusKey {
   time = 1,
   timeout = 2,
 }
-export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
-  private routes: CreepResourceRoute[]
+export default class BuildingRouteProcessor extends CreepMemoized<Creep> {
+  private routes: CreepBuildingRoute[]
   private status: RouteStatus
 
   constructor(creep: Creep) {
     super(creep)
-    this.routes = routes.map((route) => new CreepResourceRoute(creep, route))
+    this.routes = routes.map((route) => new CreepBuildingRoute(creep, route))
     this.status =
-      this.creep.memory[Keys.resourceRoute] ||
-      (this.creep.memory[Keys.resourceRoute] = [0, Game.time, 0])
+      this.creep.memory[Keys.buildingRoute] ||
+      (this.creep.memory[Keys.buildingRoute] = [0, Game.time, 0])
   }
 
   process() {
@@ -37,7 +37,7 @@ export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
     if (currentRoute && currentRoute.work()) {
       return true
     }
-    const res = this.routes.some((route, i) => {
+    const res = !!this.routes.find((route, i) => {
       if (route === currentRoute) return false
       if (route.work()) {
         this.status[RouteStatusKey.id] = i

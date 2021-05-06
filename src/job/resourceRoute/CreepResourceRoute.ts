@@ -4,6 +4,7 @@ import memoryLessDraw from 'routine/haul/memoryLessDraw'
 import dumpResources from '../dumpResources'
 import { NOTHING_DONE, SUCCESS } from 'constants/response'
 import move from 'utils/path'
+import CreepMemoized from 'utils/CreepMemoized'
 
 export interface TransferCreep extends Creep {
   memory: TransferMemory
@@ -17,13 +18,12 @@ interface TransferMemory extends CreepMemory {
 }
 
 const ignoreCreeps = { ignoreCreeps: true }
-export default class CreepResourceRoute {
-  private creepName: string
+export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
   private room: Room
   private resourceRoute: ResourceRoute
 
   constructor(creep: TransferCreep, resourceRoute: ResourceRoute) {
-    this.creepName = creep.name
+    super(creep)
     this.room = creep.motherRoom
     this.resourceRoute = resourceRoute
   }
@@ -116,9 +116,5 @@ export default class CreepResourceRoute {
       route.findTargets(this.room, differ),
       ignoreCreeps,
     )
-  }
-
-  private get creep() {
-    return Game.creeps[this.creepName] as TransferCreep
   }
 }

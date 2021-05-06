@@ -15,6 +15,8 @@ export default class StructureMatcher {
     return this.matcher(room)
   }
 
+  matches(s: Structure) {}
+
   private findStructure(room: Room, rule: StructureConstant) {
     return room.find(FIND_STRUCTURES).filter((s) => s.structureType === rule)
   }

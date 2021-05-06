@@ -3,8 +3,10 @@ const enum Keys {
   drawSource = 'd',
   fillTarget = 'f',
   fillType = 't',
-  routeId = 'R',
+  resourceRoute = 's',
   dumping = 'D',
+  buildTarget = 'b',
+  buildingRoute = 'c',
 }
 
 const enum RoomMemoryKeys {

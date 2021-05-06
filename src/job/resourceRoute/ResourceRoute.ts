@@ -1,6 +1,7 @@
 import StructureMatcher, { StructureSelector } from './matcher/structureMatcher'
 import ResourceMatcher from './matcher/ResourceMatcher'
-type StoreStructureSelector = (r: Room) => AnyStoreStructure[]
+import { StoreStructureSelector } from '../selector/StoreStructureSelector'
+
 type ResourceSelector = (r: ResourceConstant) => boolean
 
 interface ResourceRouteOptions {
@@ -43,13 +44,11 @@ export default class ResourceRoute {
   private options: ResourceRouteOptions
   private sourceMatcher: StructureMatcher
   private targetMatcher: StructureMatcher
-  //private resourceMatcher: ResourceMatcher
 
   constructor(options: ResourceRouteOptions) {
     this.options = options
     this.sourceMatcher = new StructureMatcher(this.options.from)
     this.targetMatcher = new StructureMatcher(this.options.to)
-    //this.resourceMatcher = new ResourceMatcher(this.options.type)
   }
 
   findSources(room: Room, differ?: Structure) {

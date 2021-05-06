@@ -19,7 +19,9 @@ export default class ShieldPlanner {
   }
 
   private generateFromMemory(shieldMemory: string) {
-    this.positions = shieldMemory.split('').map(this.room.positionFromChar)
+    this.positions = shieldMemory
+      .split('')
+      .map((c) => this.room.positionFromChar(c))
   }
 
   private generate() {

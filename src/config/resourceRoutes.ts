@@ -1,6 +1,6 @@
 import { energyToNukerThreshold } from './storage'
 import ResourceRoute from 'job/resourceRoute/ResourceRoute'
-import { energyBufferingThreshold, storageBufferingThreshold } from './terminal'
+import { energyBufferingThreshold } from './terminal'
 
 /**
  * All definitions of the system of transferring
@@ -8,12 +8,12 @@ import { energyBufferingThreshold, storageBufferingThreshold } from './terminal'
  */
 export default [
   // collect energy to storage
-  {
+  /*{
     from: STRUCTURE_CONTAINER,
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
-  },
+  },*/
   // fill everything with energy from containers when no storage
   {
     from: STRUCTURE_CONTAINER,

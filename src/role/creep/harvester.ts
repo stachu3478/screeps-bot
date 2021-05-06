@@ -8,25 +8,21 @@ import {
 } from 'constants/response'
 import storageFill from 'routine/haul/storageFill'
 import repair from 'routine/work/repair'
-import build from 'routine/work/build'
 import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/haul/autoPick'
 import arrive from 'routine/arrive'
 import dismantle from 'routine/work/dismantle'
-import drawContainer from 'routine/haul/containerDraw'
 import drawStorage from 'routine/haul/storageDraw'
 import profiler from 'screeps-profiler'
 import energyHaul from 'job/energyHaul'
 import energyUse from 'job/energyUse'
 import Harvester from './harvester.d'
-import canUtilizeEnergy from 'job/canUtilizeEnergy'
 import draw from 'routine/haul/draw'
 import fill from 'routine/haul/fill'
 import dumpResources from 'job/dumpResources'
 import { haulCurrentRoom } from 'job/resourceHaul'
 import pick from 'routine/haul/pick'
-import { ensureEmpty } from './shared'
-import ResourceRouteProcessor from 'job/resourceRoute/ResourceRouteProcessor'
+import move from 'utils/path'
 
 function nativeRoutineHandler(creep: Harvester, result: number) {
   switch (result) {
@@ -54,6 +50,8 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
       if (haulCurrentRoom(creep)) break
       else if (creep.routeProcessor.process()) {
         creep.memory.state = State.HARVESTING
+      } else if (creep.buildingRouteProcessor.process()) {
+        creep.memory.state = State.BUILD
       } else {
         creep.memory.role = Role.LAB_MANAGER
       }
@@ -74,19 +72,15 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
     case State.HARVESTING:
       if (creep.routeProcessor.process()) {
         autoPick(creep) && autoRepair(creep)
-      } else {
-        if (creep.room.name !== creep.memory.room) {
-          creep.memory._arrive = creep.memory.room
-          creep.memory.state = State.ARRIVE
-        }
-        creep.memory.state = State.IDLE
-      }
+      } else creep.memory.state = State.IDLE
       break
     case State.REPAIR:
       nativeRoutineHandler(creep, repair(creep))
       break
     case State.BUILD:
-      nativeRoutineHandler(creep, build(creep))
+      if (creep.buildingRouteProcessor.process()) {
+        autoPick(creep) && move.check(creep) && autoRepair(creep)
+      } else creep.memory.state = State.IDLE
       break
     case State.STORAGE_FILL:
       switch (storageFill(creep)) {

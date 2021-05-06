@@ -1,6 +1,8 @@
 interface SourceMap {
   [id: string]: string
 }
+
+type RouteStatus = [number, number, number]
 // memory extension samples
 interface CreepMemory {
   role: Role
@@ -26,9 +28,13 @@ interface CreepMemory {
    */
   l?: number
   /**
-   * Current route id that is processed by the creep
+   * Current resource route status that is processed by the creep
    */
-  R?: number
+  s?: RouteStatus
+  /**
+   * Current building route status that is processed by the creep
+   */
+  c?: RouteStatus
 }
 
 interface Stats {
