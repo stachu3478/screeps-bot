@@ -1,15 +1,15 @@
 import routes from '../../config/buildingRoutes'
 import CreepBuildingRoute from './CreepBuldingRoute'
 import CreepMemoized from 'utils/CreepMemoized'
+import Failer from 'utils/Failer'
 
 const enum RouteStatusKey {
-  id = 0,
-  time = 1,
-  timeout = 2,
+  id = 2,
 }
 export default class BuildingRouteProcessor extends CreepMemoized<Creep> {
   private routes: CreepBuildingRoute[]
   private status: RouteStatus
+  private failer: Failer
 
   constructor(creep: Creep) {
     super(creep)
@@ -17,19 +17,11 @@ export default class BuildingRouteProcessor extends CreepMemoized<Creep> {
     this.status =
       this.creep.memory[Keys.buildingRoute] ||
       (this.creep.memory[Keys.buildingRoute] = [0, Game.time, 0])
+    this.failer = new Failer(() => this.findJob(), this.status)
   }
 
   process() {
-    if (Game.time < this.status[RouteStatusKey.timeout]) return false
-    const result = this.findJob()
-    if (result) {
-      this.status[RouteStatusKey.timeout] = 0
-    } else {
-      this.status[RouteStatusKey.timeout]++
-      this.status[RouteStatusKey.time] =
-        Game.time + this.status[RouteStatusKey.timeout]
-    }
-    return result
+    return this.failer.call()
   }
 
   findJob() {

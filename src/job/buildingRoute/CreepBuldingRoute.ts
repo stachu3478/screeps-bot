@@ -77,7 +77,6 @@ export default class CreepBuildingRoute extends CreepMemoized<BuildingCreep> {
       .some((pos) =>
         pos.lookFor(LOOK_CONSTRUCTION_SITES).some((s) => !!(site = s)),
       )
-    if (this.creep.name === 'J7') console.log('site', site)
     return site
   }
 
@@ -91,8 +90,6 @@ export default class CreepBuildingRoute extends CreepMemoized<BuildingCreep> {
       if (result === ERR_FULL) return true
       return false
     })
-    if (result !== OK && this.creep.name === 'J7')
-      console.log('Missing target, cancelling')
     return result === OK
   }
 }

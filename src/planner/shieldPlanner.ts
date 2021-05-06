@@ -47,6 +47,7 @@ export default class ShieldPlanner {
     targets.forEach((roomPosition) => {
       const path = initialPosition.findPathTo(roomPosition, {
         costCallback: () => costMatrix,
+        ignoreCreeps: true,
       })
       path.forEach((pathStep) => {
         if (
@@ -67,7 +68,7 @@ export default class ShieldPlanner {
     const roads = this.room.memory.roads || ''
     const costMatrix = createUnwalkableMatrix()
     charPosIterator(roads, (x, y) => {
-      costMatrix.set(x, y, 0)
+      costMatrix.set(x, y, 1)
     })
     return costMatrix
   }
