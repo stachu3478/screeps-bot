@@ -12,6 +12,11 @@ export default class RoomBuildingRouter {
     this.routesLooper = new ArrayLooper(this.roomRoutes, 0 /* TODO: memorize */)
   }
 
+  findJob() {
+    if (this.hasJob()) return this.routesLooper.current
+    return !this.routesLooper.end
+  }
+
   hasJob() {
     if (this.hadJob) {
       return (this.hadJob = this.routesLooper.current.hasJob())

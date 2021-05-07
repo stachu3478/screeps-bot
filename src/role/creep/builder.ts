@@ -10,11 +10,6 @@ export default profiler.registerFN(function builder(creep: Creep) {
         creep.memory.state = State.BUILD
       }
       break
-    case State.HARVESTING:
-      if (creep.routeProcessor.process()) {
-        autoPick(creep) && autoRepair(creep)
-      } else creep.memory.state = State.IDLE
-      break
     /*case State.REPAIR: TODO
       nativeRoutineHandler(creep, repair(creep))
       break*/

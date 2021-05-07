@@ -65,7 +65,8 @@ export default [
     from: STRUCTURE_STORAGE,
     to: STRUCTURE_POWER_SPAWN,
     type: RESOURCE_ENERGY,
-    minimalStoreToDraw: 10000,
+    minimalFreeCapacityToFill: POWER_SPAWN_ENERGY_CAPACITY / 2,
+    minimalStoreToDraw: 30000,
   },
   {
     from: STRUCTURE_STORAGE,

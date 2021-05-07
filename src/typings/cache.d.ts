@@ -14,6 +14,7 @@ interface RoomCache {
   shieldPlanner?: ShieldPlanner
   defencePolicy?: DefencePolicy
   buildingRouter?: RoomBuildingRouter
+  leastAvailablePosition?: string
 
   labCooldown?: number
 }
@@ -85,6 +86,7 @@ interface GlobalCache {
   feromon: {
     [key: string]: number
   }
+  capturePlanner?: CapturePlanner
 }
 
 interface WrappedGlobalCache extends GlobalCache {

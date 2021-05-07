@@ -147,8 +147,12 @@ export default [
         .find(FIND_STRUCTURES)
         .filter(storageOrTerminalFilter) as AnyStoreStructure[],
   },
-  /*{ // todo generate obserever position
+  {
     structure: STRUCTURE_OBSERVER,
-    positions: (room: Room) => room.planner.leastAvailablePosition
-  },*/
+    positions: (room: Room) => [room.leastAvailablePosition],
+    from: (room: Room) =>
+      room
+        .find(FIND_STRUCTURES)
+        .filter(storageOrTerminalFilter) as AnyStoreStructure[],
+  },
 ].map((options) => new BuildingRoute(options))

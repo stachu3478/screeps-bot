@@ -7,21 +7,14 @@ const enum RouteStatusKey {
   id = 2,
 }
 export default class BuildingRouteProcessor extends CreepMemoized<Creep> {
-  private routes: CreepBuildingRoute[]
+  private room: Room
   private status: RouteStatus
   private failer: Failer
+  private currentRoute?: CreepBuildingRoute
 
   constructor(creep: Creep) {
     super(creep)
-    const room = creep.motherRoom
-    this.routes = room.buildingRouter.routes.map(
-      (route) =>
-        new CreepBuildingRoute(
-          creep,
-          // @ts-ignore private property member error
-          route,
-        ),
-    )
+    this.room = creep.motherRoom
     this.status =
       this.creep.memory[Keys.buildingRoute] ||
       (this.creep.memory[Keys.buildingRoute] = [0, Game.time, 0])
@@ -29,23 +22,20 @@ export default class BuildingRouteProcessor extends CreepMemoized<Creep> {
   }
 
   process() {
-    return this.failer.call()
+    return this.findJob()
   }
 
   findJob() {
-    const currentRoute = this.routes[this.status[RouteStatusKey.id]]
-    if (currentRoute && currentRoute.work()) {
-      return true
-    }
-    this.creep.room.visual.text('Building route search', 0, 8, infoStyle)
-    const res = !!this.routes.find((route, i) => {
-      if (route === currentRoute) return false
-      if (route.work()) {
-        this.status[RouteStatusKey.id] = i
-        return true
-      }
-      return false
-    })
-    return res
+    if (this.currentRoute && this.currentRoute.work()) return true
+    delete this.currentRoute
+    const newRoute = this.room.buildingRouter.findJob()
+    if (typeof newRoute === 'boolean') return newRoute
+    this.currentRoute = new CreepBuildingRoute(
+      this.creep,
+      // @ts-ignore private property member error
+      newRoute,
+    )
+    this.currentRoute!.work()
+    return true
   }
 }

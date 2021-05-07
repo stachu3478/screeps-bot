@@ -1,21 +1,5 @@
-interface Aliance {
-  color: string
-  rcl_rank: number
-  spawns_rank: number
-  logo: string
-  members_rank: number
-  slack_channel: string
-  alliance_power_rank: number
-  name: string
-  combined_power_rank: number
-  alliance_gcl_rank: number
-  combined_gcl_rank: number
-  abbreviation: string
-  members: string[]
-}
-
 export default class AlianceScanner {
-  private result?: { [key: string]: Aliance }
+  private result?: { [key: string]: string[] }
   private fetchTime: number
 
   constructor() {
@@ -37,6 +21,7 @@ export default class AlianceScanner {
     }
     try {
       this.result = JSON.parse(RawMemory.foreignSegment.data)
+      if (!this.result) return this.fetch()
     } catch (err) {
       console.log('Error parsing aliance data:', err)
     }

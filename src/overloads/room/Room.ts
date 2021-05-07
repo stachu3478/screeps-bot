@@ -8,6 +8,9 @@ import DefencePolicy from 'room/DefencePolicy'
 import { getLink } from 'utils/selectFromPos'
 import RoomBuildingRoute from 'job/buildingRoute/RoomBuildingRoute'
 import RoomBuildingRouter from 'job/buildingRoute/RoomBuildingRouter'
+import { posToChar } from 'planner/pos'
+import whirl from 'utils/whirl'
+import { isWalkable } from 'utils/path'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -139,6 +142,29 @@ defineRoomGetter('buildingRouter', (self) => {
     self.cache.buildingRouter ||
     (self.cache.buildingRouter = new RoomBuildingRouter(self))
   )
+})
+
+defineRoomGetter('leastAvailablePosition', (self) => {
+  const saved = self.cache.leastAvailablePosition
+  if (saved) return self.positionFromChar(saved)
+  const positions = PathFinder.search(
+    self.sources.colonyPosition,
+    self.find(FIND_EXIT),
+    { flee: true, maxRooms: 1, swampCost: 2 },
+  ).path
+  let lastPosition = positions.pop()
+  if (!lastPosition) {
+    const xy = whirl(
+      25,
+      25,
+      (x, y) =>
+        isWalkable(self, x, y) && !self.lookForAt(LOOK_STRUCTURES, x, y).length,
+    )
+    if (!xy) throw new Error('Failed to find least available position')
+    lastPosition = new RoomPosition(xy[0], xy[1], self.name)
+  }
+  self.cache.leastAvailablePosition = posToChar(lastPosition)
+  return lastPosition
 })
 
 Room.prototype.store = function (resource: ResourceConstant) {
