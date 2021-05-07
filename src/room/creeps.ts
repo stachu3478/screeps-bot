@@ -19,6 +19,7 @@ import scorer, { Scorer } from 'role/creep/scorer'
 import scoreDigger from 'role/creep/scoreDigger'
 import mover from 'role/creep/mover'
 import builder from 'role/creep/builder'
+import towerEkhauster from 'role/creep/towerEkhauster'
 
 interface Creeps {
   [key: string]: 0
@@ -121,6 +122,9 @@ export default function creeps(
           break
         case Role.BUILDER:
           builder(creep)
+          break
+        case Role.TOWER_EKHAUSTER:
+          towerEkhauster(creep)
           break
         default:
           creep.memory.role = Role.UPGRADER

@@ -149,7 +149,7 @@ defineRoomGetter('leastAvailablePosition', (self) => {
   if (saved) return self.positionFromChar(saved)
   const positions = PathFinder.search(
     self.sources.colonyPosition,
-    self.find(FIND_EXIT),
+    self.find(FIND_EXIT).map((p) => ({ pos: p, range: 50 })),
     { flee: true, maxRooms: 1, swampCost: 2 },
   ).path
   let lastPosition = positions.pop()

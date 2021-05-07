@@ -3,10 +3,10 @@ import { carryPacks } from './body/body'
 export function needsHauler(spawn: StructureSpawn, count: number) {
   return !!(
     !count &&
-    spawn.room.storage &&
-    spawn.room.filled &&
     spawn.room.memory._haul &&
-    spawn.room.memory._haul !== spawn.room.name
+    spawn.room.memory._haul !== spawn.room.name &&
+    spawn.room.storage &&
+    spawn.room.filled
   )
 }
 

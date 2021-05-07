@@ -39,7 +39,12 @@ export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
       this.status[RouteStatusKey.id] = this.i
       return true
     }
-    this.creep.room.visual.text('Resource route search', 0, 9, infoStyle)
+    this.creep.room.visual.text(
+      'Resource route search ' + this.i,
+      0,
+      9,
+      infoStyle,
+    )
     this.i++
     if (this.i >= this.routes.length) {
       this.i = 0

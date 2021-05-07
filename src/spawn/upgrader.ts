@@ -8,10 +8,10 @@ export function needsUpgraders(
   const isLinked = spawn.room.linked
   const maxUpgradersCount = Memory.maxUpgradersCount || 3
   return (
-    !isLinked &&
-    containersPresent &&
     count < maxUpgradersCount &&
-    count < (spawn.room.memory.maxWorkController || 0)
+    containersPresent &&
+    count < (spawn.room.memory.maxWorkController || 0) &&
+    !isLinked
   )
 }
 

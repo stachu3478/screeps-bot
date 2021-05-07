@@ -134,6 +134,10 @@ interface RoomMemory {
    * Currently apllied timeout for defence
    */
   D?: number
+  /**
+   * Tower ekhaustion target
+   */
+  e?: string
 }
 
 interface RemoteMemory {

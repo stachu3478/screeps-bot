@@ -25,8 +25,12 @@ export default class BuildingRouteProcessor extends CreepMemoized<Creep> {
     return this.findJob()
   }
 
+  doJob() {
+    return !!(this.currentRoute && this.currentRoute.work())
+  }
+
   findJob() {
-    if (this.currentRoute && this.currentRoute.work()) return true
+    if (this.doJob()) return true
     delete this.currentRoute
     const newRoute = this.room.buildingRouter.findJob()
     if (typeof newRoute === 'boolean') return newRoute

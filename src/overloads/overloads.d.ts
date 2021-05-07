@@ -43,7 +43,7 @@ interface Room {
   getAmountReserved: (resource: ResourceConstant) => number
   getAvailableBoosts: (resource: ResourceConstant, partCount: number) => number
   getBestAvailableBoost: (
-    partType: string,
+    partType: BodyPartConstant,
     action: string,
     partCount: number,
   ) => BoostInfo | null

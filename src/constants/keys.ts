@@ -13,6 +13,7 @@ const enum RoomMemoryKeys {
   shields = 's',
   defenceHoldingTicks = 'd',
   defenceHoldingTimer = 'D',
+  ekhaust = 'e',
 }
 
 const enum ShardMemoryKeys {
