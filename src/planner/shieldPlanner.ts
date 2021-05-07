@@ -43,7 +43,7 @@ export default class ShieldPlanner {
 
   private generateFromPathTargets(targets: RoomPosition[]) {
     this.positions = targets.slice(0)
-    const initialPosition = targets.shift()!
+    const initialPosition = this.room.sources.colonyPosition
     const costMatrix = this.onlyPlannedPathCostMatrix
     targets.forEach((roomPosition) => {
       const path = PathFinder.search(

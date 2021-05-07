@@ -11,6 +11,7 @@ import RoomBuildingRouter from 'job/buildingRoute/RoomBuildingRouter'
 import { posToChar } from 'planner/pos'
 import whirl from 'utils/whirl'
 import { isWalkable } from 'utils/path'
+import RoomRepairRouter from 'job/repairRoute/RoomRepairRouter'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -141,6 +142,13 @@ defineRoomGetter('buildingRouter', (self) => {
   return (
     self.cache.buildingRouter ||
     (self.cache.buildingRouter = new RoomBuildingRouter(self))
+  )
+})
+
+defineRoomGetter('repairRouter', (self) => {
+  return (
+    self.cache.repairRouter ||
+    (self.cache.repairRouter = new RoomRepairRouter(self))
   )
 })
 

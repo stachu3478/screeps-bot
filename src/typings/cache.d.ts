@@ -14,6 +14,7 @@ interface RoomCache {
   shieldPlanner?: ShieldPlanner
   defencePolicy?: DefencePolicy
   buildingRouter?: RoomBuildingRouter
+  repairRouter?: RoomRepairRouter
   leastAvailablePosition?: string
 
   labCooldown?: number
@@ -36,6 +37,7 @@ interface CreepCache {
   workpartCount?: number
   routeProcessor?: ResourceRouteProcessor
   buildingRouteProcessor?: BuildingRouteProcessor
+  repairRouteProcessor?: RepairRouteProcessor
   _bodypartHitThreshold?: Record<BodyPartConstant, number>
 }
 

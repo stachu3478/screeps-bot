@@ -28,6 +28,7 @@ export default class CreepBuildingRoute extends CreepMemoized<BuildingCreep> {
       const creep = this.creep
       delete creep.memory[Keys.buildTarget]
       delete creep.memory[Keys.drawSource]
+      this.route.done()
     }
     return result
   }
@@ -40,10 +41,7 @@ export default class CreepBuildingRoute extends CreepMemoized<BuildingCreep> {
     const buildResult = memoryLessBuild(creep, target)
     if (buildResult === NO_RESOURCE) {
       const source = this.findStructureToDraw() as AnyStoreStructure | null
-      if (!source) {
-        console.log('Missing source, cancelling')
-        return false
-      }
+      if (!source) return false
       creep.memory[Keys.drawSource] = source.id
       memoryLessDraw(creep, source, RESOURCE_ENERGY)
     }

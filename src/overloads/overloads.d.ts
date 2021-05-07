@@ -30,6 +30,7 @@ interface Room {
   defencePolicy: DefencePolicy
   spawnsAndExtensions: (StructureSpawn | StructureExtension)[]
   buildingRouter: RoomBuildingRouter
+  repairRouter: RoomRepairRouter
   leastAvailablePosition: RoomPosition
 
   addBuilding: (x: number, y: number, order?: number) => void
@@ -125,6 +126,7 @@ interface Creep {
   _bodyPartHitThreshold: Record<BodyPartConstant, number>
   routeProcessor: ResourceRouteProcessor
   buildingRouteProcessor: BuildingRouteProcessor
+  repairRouteProcessor: RepairRouteProcessor
   hasActiveBodyPart: (b: BodyPartConstant) => boolean
   isSafeFrom: (creep: Creep) => boolean
   safeRangeXY: (x: number, y: number) => number

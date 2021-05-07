@@ -1,35 +1,34 @@
 import StructureMatcher from '../resourceRoute/matcher/structureMatcher'
 import { StoreStructureSelector } from '../selector/StoreStructureSelector'
 
-interface BuildingRouteOptions {
+type BuildableStructureSelector = (
+  r: Room,
+) => Structure<BuildableStructureConstant>[]
+interface RepairRouteOptions {
   /**
    * Specifies structure type to place
    */
-  structure: BuildableStructureConstant
+  structure: BuildableStructureConstant | BuildableStructureSelector
   /**
-   * Specifies all positions where the structure should be placed
+   * Repair up to these hits
    */
-  positions: (room: Room) => RoomPosition[]
+  hits: number
   /**
    * Specifies all sources that the energy will be taken from
    */
   from: AnyStoreStructure['structureType'] | StoreStructureSelector
   /**
-   * Custom condition function based on room
+   * Conditional minimal amount in sources to take from
+   * NOTE: More of the recourse can be taken
    */
-  if?: (room: Room) => boolean
-  /**
-   * Function launched when all work is done
-   */
-  done?: (room: Room) => any
+  minimalStore?: number
 }
 
-const truther = () => true
-export default class BuildingRoute {
-  private options: BuildingRouteOptions
+export default class RepairRoute {
+  private options: RepairRouteOptions
   private sourceMatcher: StructureMatcher
 
-  constructor(options: BuildingRouteOptions) {
+  constructor(options: RepairRouteOptions) {
     this.options = options
     this.sourceMatcher = new StructureMatcher(this.options.from)
   }
@@ -38,20 +37,12 @@ export default class BuildingRoute {
     return s.store[RESOURCE_ENERGY] >= this.minimalStoreToDraw
   }
 
-  get if() {
-    return this.options.if || truther
-  }
-
-  get done() {
-    return this.options.done || truther
+  validateTarget(s: Structure<BuildableStructureConstant>) {
+    return s.hits < this.options.hits && s.hits < s.hitsMax
   }
 
   get sources() {
     return this.sourceMatcher
-  }
-
-  get positions() {
-    return this.options.positions
   }
 
   get structure() {
@@ -59,6 +50,6 @@ export default class BuildingRoute {
   }
 
   private get minimalStoreToDraw() {
-    return 1000
+    return this.options.minimalStore || 50
   }
 }

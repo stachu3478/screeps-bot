@@ -1,9 +1,9 @@
-import CreepBuildingRoute from './CreepBuldingRoute'
+import CreepRepairRoute, { RepairCreep } from './CreepRepairRoute'
 import CreepMemoized from 'utils/CreepMemoized'
 
-export default class BuildingRouteProcessor extends CreepMemoized<Creep> {
+export default class RepairRouteProcessor extends CreepMemoized<Creep> {
   private room: Room
-  private currentRoute?: CreepBuildingRoute
+  private currentRoute?: CreepRepairRoute
   private jobFound: boolean = false
 
   constructor(creep: Creep) {
@@ -22,11 +22,11 @@ export default class BuildingRouteProcessor extends CreepMemoized<Creep> {
   findJob() {
     if (this.doJob()) return true
     delete this.currentRoute
-    const newRoute = this.room.buildingRouter.findJob()
+    const newRoute = this.room.repairRouter.findJob()
     if (typeof newRoute === 'boolean') return newRoute
-    this.currentRoute = new CreepBuildingRoute(
-      this.creep,
-      // @ts-ignore private property member error
+    this.currentRoute = new CreepRepairRoute(
+      this.creep as RepairCreep,
+      // @ts-ignore private property failcheck
       newRoute,
     )
     this.currentRoute!.work()

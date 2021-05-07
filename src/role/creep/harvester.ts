@@ -15,7 +15,6 @@ import dismantle from 'routine/work/dismantle'
 import drawStorage from 'routine/haul/storageDraw'
 import profiler from 'screeps-profiler'
 import energyHaul from 'job/energyHaul'
-import energyUse from 'job/energyUse'
 import Harvester from './harvester.d'
 import draw from 'routine/haul/draw'
 import fill from 'routine/haul/fill'
@@ -27,11 +26,9 @@ import move from 'utils/path'
 function nativeRoutineHandler(creep: Harvester, result: number) {
   switch (result) {
     case NO_RESOURCE:
-      if (autoPick(creep) !== SUCCESS) energyHaul(creep)
-      break
     case NOTHING_TODO:
     case FAILED:
-      energyUse(creep)
+      creep.memory.state = State.IDLE
     case NOTHING_DONE:
       autoRepair(creep)
       break
@@ -41,12 +38,6 @@ function nativeRoutineHandler(creep: Harvester, result: number) {
 export default profiler.registerFN(function harvester(creep: Harvester) {
   switch (creep.memory.state) {
     case State.IDLE:
-      /*if (creep.store[RESOURCE_ENERGY]) energyUse(creep)
-      else if (canUtilizeEnergy(creep)) {
-        ensureEmpty(creep)
-        energyHaul(creep)
-      }
-      if (creep.memory.state !== State.IDLE) break*/
       if (haulCurrentRoom(creep)) break
       else if (creep.routeProcessor.process()) {
         if (creep.routeProcessor.isJobFound())

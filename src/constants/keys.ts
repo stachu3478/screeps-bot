@@ -7,6 +7,7 @@ const enum Keys {
   dumping = 'D',
   buildTarget = 'b',
   buildingRoute = 'c',
+  repairTarget = 'r',
 }
 
 const enum RoomMemoryKeys {

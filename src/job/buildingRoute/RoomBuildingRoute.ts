@@ -18,7 +18,11 @@ export default class RoomBuildingRoute {
     if (!controller.my) return true
     if (!CONTROLLER_STRUCTURES[this.route.structure][controller.level])
       return true
-    return false
+    return !this.route.if(this.room)
+  }
+
+  done() {
+    this.route.done(this.room)
   }
 
   hasJob() {
@@ -35,28 +39,33 @@ export default class RoomBuildingRoute {
   }
 
   findOrCreateTarget() {
-    const target = this.findTarget()
+    const positions = this.route.positions(this.room)
+    const target = this.findTarget(positions)
     if (target) return target
-    else return this.createTarget()
+    else return this.createTarget(positions)
   }
 
-  findTarget() {
+  findTarget(positions: RoomPosition[] = this.positions) {
     let site: ConstructionSite | undefined
-    this.route
-      .positions(this.room)
-      .some((pos) =>
-        pos
-          .lookFor(LOOK_CONSTRUCTION_SITES)
-          .some(
-            (s) => !!(s.structureType === this.route.structure && (site = s)),
-          ),
-      )
+    positions.some((pos) =>
+      pos
+        .lookFor(LOOK_CONSTRUCTION_SITES)
+        .some(
+          (s) => !!(s.structureType === this.route.structure && (site = s)),
+        ),
+    )
     return site
   }
 
-  createTarget() {
+  createTarget(positions: RoomPosition[] = this.positions) {
     let result = 1
-    this.route.positions(this.room).some((pos) => {
+    positions.some((pos) => {
+      if (
+        pos
+          .lookFor(LOOK_STRUCTURES)
+          .some((s) => s.structureType === this.route.structure)
+      )
+        return false
       result = pos.createConstructionSite(this.route.structure)
       if (result === OK) return true
       if (result === ERR_RCL_NOT_ENOUGH) return true
@@ -68,5 +77,9 @@ export default class RoomBuildingRoute {
 
   private get room() {
     return Game.rooms[this.roomName]
+  }
+
+  private get positions() {
+    return this.route.positions(this.room)
   }
 }
