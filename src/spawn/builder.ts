@@ -2,12 +2,7 @@ import { progressiveWorker } from './body/work'
 
 export function needsBuilder(spawn: StructureSpawn, buildersCount?: number) {
   if (buildersCount) return false
-  const room = spawn.room
-  const mem = room.memory
-  if (!mem.creeps) return false
-  const mineral = room.mineral
-  if (!mineral || !mineral.mineralAmount || !room.extractor) return false
-  return true
+  return spawn.room.buildingRouter.hasJob()
 }
 
 export default function spawnBuilder(spawn: StructureSpawn) {

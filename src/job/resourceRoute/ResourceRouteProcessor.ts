@@ -2,6 +2,7 @@ import routes from '../../config/resourceRoutes'
 import CreepResourceRoute from './CreepResourceRoute'
 import CreepMemoized from 'utils/CreepMemoized'
 import Failer from 'utils/Failer'
+import { infoStyle } from 'room/style'
 
 const enum RouteStatusKey {
   id = 2,
@@ -10,6 +11,8 @@ export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
   private routes: CreepResourceRoute[]
   private status: RouteStatus
   private failer: Failer
+  private i: number
+  private jobFound: boolean = false
 
   constructor(creep: Creep) {
     super(creep)
@@ -17,6 +20,7 @@ export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
     this.status =
       this.creep.memory[Keys.resourceRoute] ||
       (this.creep.memory[Keys.resourceRoute] = [0, Game.time, 0])
+    this.i = this.status[RouteStatusKey.id]
     this.failer = new Failer(() => this.findJob(), this.status)
   }
 
@@ -24,19 +28,23 @@ export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
     return this.failer.call()
   }
 
+  isJobFound() {
+    return this.jobFound
+  }
+
   findJob() {
-    const currentRoute = this.routes[this.status[RouteStatusKey.id]]
-    if (currentRoute && currentRoute.work()) {
+    const currentRoute = this.routes[this.i]
+    this.jobFound = currentRoute && currentRoute.work()
+    if (this.jobFound) {
+      this.status[RouteStatusKey.id] = this.i
       return true
     }
-    const res = this.routes.some((route, i) => {
-      if (route === currentRoute) return false
-      if (route.work()) {
-        this.status[RouteStatusKey.id] = i
-        return true
-      }
+    this.creep.room.visual.text('Resource route search', 0, 9, infoStyle)
+    this.i++
+    if (this.i >= this.routes.length) {
+      this.i = 0
       return false
-    })
-    return res
+    }
+    return true
   }
 }

@@ -13,7 +13,7 @@ export default class Failer {
   }
 
   call() {
-    if (Game.time < this.status[RouteStatusKey.timeout]) return false
+    if (Game.time < this.status[RouteStatusKey.time]) return false
     const result = this.decident()
     if (result) {
       this.status[RouteStatusKey.timeout] = 0

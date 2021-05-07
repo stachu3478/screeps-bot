@@ -13,6 +13,7 @@ interface RoomCache {
   quadSquad?: QuadSquadHandler
   shieldPlanner?: ShieldPlanner
   defencePolicy?: DefencePolicy
+  buildingRouter?: RoomBuildingRouter
 
   labCooldown?: number
 }

@@ -8,12 +8,12 @@ import { energyBufferingThreshold } from './terminal'
  */
 export default [
   // collect energy to storage
-  /*{
+  {
     from: STRUCTURE_CONTAINER,
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
-  },*/
+  },
   // fill everything with energy from containers when no storage
   {
     from: STRUCTURE_CONTAINER,
@@ -49,6 +49,7 @@ export default [
     from: STRUCTURE_STORAGE,
     to: (room: Room) => (room.spawnLink ? [room.spawnLink] : []),
     type: RESOURCE_ENERGY,
+    minimalFreeCapacityToFill: LINK_CAPACITY,
     maximumFilledAmount: (LINK_CAPACITY * 3) / 4,
     minimalStoreToDraw: 10000,
   },

@@ -18,6 +18,7 @@ import ranger, { Ranger } from 'role/creep/ranger'
 import scorer, { Scorer } from 'role/creep/scorer'
 import scoreDigger from 'role/creep/scoreDigger'
 import mover from 'role/creep/mover'
+import builder from 'role/creep/builder'
 
 interface Creeps {
   [key: string]: 0
@@ -117,6 +118,9 @@ export default function creeps(
           break
         case Role.MOVER:
           mover(creep)
+          break
+        case Role.BUILDER:
+          builder(creep)
           break
         default:
           creep.memory.role = Role.UPGRADER

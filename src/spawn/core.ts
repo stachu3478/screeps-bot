@@ -17,6 +17,7 @@ import { needsScoreDigger, spawnScoreDigger } from './scoreDigger'
 import { needsMover, spawnMover } from './mover'
 import spawnStaticUpgrader, { needsStaticUpgraders } from './staticUpgrader'
 import { needsFighters, spawnFighter } from './fighter'
+import spawnBuilder, { needsBuilder } from './builder'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -117,6 +118,8 @@ export default profiler.registerFN(function loop(
     spawnHauler(spawn)
   } else if (needsScout(spawn, creepCountByRole[Role.SCOUT])) {
     spawnScout(spawn)
+  } else if (needsBuilder(spawn, creepCountByRole[Role.BUILDER])) {
+    spawnBuilder(spawn)
   } else if (needsClaimer(spawn, creepCountByRole[Role.CLAIMER])) {
     spawnClaimer(spawn)
   } else if (domination(spawn, creepCountByRole))

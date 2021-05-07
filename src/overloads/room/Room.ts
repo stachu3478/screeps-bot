@@ -1,10 +1,13 @@
 import './buildingManagement'
 import './boostManagement'
+
 import defineGetter from 'utils/defineGetter'
 import SourceHandler from 'handler/SourceHandler'
 import ShieldPlanner from 'planner/shieldPlanner'
 import DefencePolicy from 'room/DefencePolicy'
 import { getLink } from 'utils/selectFromPos'
+import RoomBuildingRoute from 'job/buildingRoute/RoomBuildingRoute'
+import RoomBuildingRouter from 'job/buildingRoute/RoomBuildingRouter'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -129,6 +132,13 @@ defineRoomGetter('spawnsAndExtensions', (self) => {
 defineRoomGetter('spawnLink', (self) => {
   if (!self.memory.structs) return
   return getLink(self, self.memory.structs.charCodeAt(0))
+})
+
+defineRoomGetter('buildingRouter', (self) => {
+  return (
+    self.cache.buildingRouter ||
+    (self.cache.buildingRouter = new RoomBuildingRouter(self))
+  )
 })
 
 Room.prototype.store = function (resource: ResourceConstant) {

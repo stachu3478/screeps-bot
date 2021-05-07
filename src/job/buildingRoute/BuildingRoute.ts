@@ -25,25 +25,12 @@ export default class BuildingRoute {
     this.sourceMatcher = new StructureMatcher(this.options.from)
   }
 
-  /**
-   * Checks wherever the route processing should be skipped
-   */
-  skip(room: Room) {
-    const controller = room.controller
-    if (!controller) return true
-    if (!controller.my) return true
-    if (!CONTROLLER_STRUCTURES[this.options.structure][controller.level])
-      return true
-    return false
-  }
-
-  findSources(room: Room) {
-    const match = this.sourceMatcher.call(room) as AnyStoreStructure[]
-    return match.filter((s) => this.validateSource(s))
-  }
-
   validateSource(s: AnyStoreStructure) {
     return s.store[RESOURCE_ENERGY] >= this.minimalStoreToDraw
+  }
+
+  get sources() {
+    return this.sourceMatcher
   }
 
   get positions() {

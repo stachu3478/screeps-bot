@@ -7,6 +7,7 @@ const spawnStyle: CircleStyle = {
   fill: '#0000',
 }
 const extStyle: CircleStyle = { stroke: '#000', radius: 0.25, fill: '#0000' }
+const shieldStyle: CircleStyle = { stroke: '#0f04', radius: 0.5, fill: '#0a04' }
 const towerStyle: CircleStyle = {
   stroke: '#8af4',
   strokeWidth: 0.15,
@@ -80,6 +81,9 @@ export default function visual(room: Room) {
 
     lookupArray(structs, (x, y, i) =>
       vis.circle(x, y, i < 11 ? towerStyle : extStyle),
+    )
+    lookupArray(room.memory[RoomMemoryKeys.shields] || '', (x, y, i) =>
+      vis.circle(x, y, shieldStyle),
     )
   }
 

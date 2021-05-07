@@ -1,8 +1,8 @@
-import BuildingRoute from './BuildingRoute'
 import memoryLessDraw from 'routine/haul/memoryLessDraw'
 import { NO_RESOURCE } from 'constants/response'
 import CreepMemoized from 'utils/CreepMemoized'
 import memoryLessBuild from 'routine/work/memoryLessBuild'
+import RoomBuildingRoute from './RoomBuildingRoute'
 
 export interface BuildingCreep extends Creep {
   memory: BuildingMemory
@@ -15,13 +15,11 @@ interface BuildingMemory extends CreepMemory {
 
 const ignoreCreeps = { ignoreCreeps: true }
 export default class CreepBuildingRoute extends CreepMemoized<BuildingCreep> {
-  private room: Room
-  private buildingRoute: BuildingRoute
+  private route: RoomBuildingRoute
 
-  constructor(creep: Creep, buildingRoute: BuildingRoute) {
+  constructor(creep: Creep, roomBuildingRoute: RoomBuildingRoute) {
     super(creep)
-    this.room = creep.motherRoom
-    this.buildingRoute = buildingRoute
+    this.route = roomBuildingRoute
   }
 
   work() {
@@ -37,7 +35,7 @@ export default class CreepBuildingRoute extends CreepMemoized<BuildingCreep> {
   private drawAndBuild() {
     const creep = this.creep
     const target = this.findConstructionSite()
-    if (!target) return this.createConstructionSite()
+    if (!target) return this.route.createTarget()
     creep.memory[Keys.buildTarget] = target.id
     const buildResult = memoryLessBuild(creep, target)
     if (buildResult === NO_RESOURCE) {
@@ -53,43 +51,22 @@ export default class CreepBuildingRoute extends CreepMemoized<BuildingCreep> {
   }
 
   private findStructureToDraw() {
-    const route = this.buildingRoute
     const memory = this.creep.memory
     const id = memory[Keys.drawSource]
     const memorizedStructure = id && Game.getObjectById(id)
-    if (memorizedStructure && route.validateSource(memorizedStructure))
+    if (memorizedStructure && this.route.validateSource(memorizedStructure))
       return memorizedStructure
     return this.creep.pos.findClosestByPath(
-      route.findSources(this.room),
+      this.route.findSources(),
       ignoreCreeps,
     )
   }
 
   private findConstructionSite() {
-    const route = this.buildingRoute
     const memory = this.creep.memory
     const id = memory[Keys.buildTarget]
     const memorizedSite = id && Game.getObjectById(id)
     if (memorizedSite) return memorizedSite
-    let site: ConstructionSite | undefined
-    route
-      .positions(this.room)
-      .some((pos) =>
-        pos.lookFor(LOOK_CONSTRUCTION_SITES).some((s) => !!(site = s)),
-      )
-    return site
-  }
-
-  private createConstructionSite() {
-    const route = this.buildingRoute
-    let result = 1
-    route.positions(this.room).some((pos) => {
-      result = pos.createConstructionSite(route.structure)
-      if (result === OK) return true
-      if (result === ERR_RCL_NOT_ENOUGH) return true
-      if (result === ERR_FULL) return true
-      return false
-    })
-    return result === OK
+    return this.route.findTarget()
   }
 }

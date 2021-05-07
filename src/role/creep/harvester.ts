@@ -49,7 +49,8 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
       if (creep.memory.state !== State.IDLE) break*/
       if (haulCurrentRoom(creep)) break
       else if (creep.routeProcessor.process()) {
-        creep.memory.state = State.HARVESTING
+        if (creep.routeProcessor.isJobFound())
+          creep.memory.state = State.HARVESTING
       } else if (creep.buildingRouteProcessor.process()) {
         creep.memory.state = State.BUILD
       } else {

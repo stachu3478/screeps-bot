@@ -36,31 +36,24 @@ export default class ShieldPlanner {
     })
 
     this.generateFromPathTargets(positionsToBeShielded)
-    this.room.memory[RoomMemoryKeys.shields] = this.positions
-      .map(posToChar)
-      .join('')
+    this.room.memory[RoomMemoryKeys.shields] = [
+      ...new Set(this.positions.map(posToChar)),
+    ].join('')
   }
 
   private generateFromPathTargets(targets: RoomPosition[]) {
-    const initialPosition = targets.pop()!
+    this.positions = targets.slice(0)
+    const initialPosition = targets.shift()!
     const costMatrix = this.onlyPlannedPathCostMatrix
     targets.forEach((roomPosition) => {
-      const path = initialPosition.findPathTo(roomPosition, {
-        costCallback: () => costMatrix,
-        ignoreCreeps: true,
-      })
-      path.forEach((pathStep) => {
-        if (
-          this.positions.every(
-            (roomPosition) =>
-              pathStep.x !== roomPosition.x && pathStep.y !== roomPosition.y,
-          )
-        ) {
-          this.positions.push(
-            new RoomPosition(pathStep.x, pathStep.y, this.room.name),
-          )
-        }
-      })
+      const path = PathFinder.search(
+        initialPosition,
+        { pos: roomPosition, range: 1 },
+        {
+          roomCallback: () => costMatrix,
+        },
+      )
+      this.positions = this.positions.concat(path.path)
     })
   }
 
