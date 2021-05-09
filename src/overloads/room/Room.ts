@@ -14,6 +14,7 @@ import RoomRepairRouter from 'job/repairRoute/RoomRepairRouter'
 import RoomLocation from './RoomLocation'
 import RoomPathScanner from 'planner/RoomPathScanner'
 import enemies from 'config/enemies'
+import EnemyRoomDetector from 'planner/EnemyRoomDetector'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -191,6 +192,21 @@ defineRoomGetter('pathScanner', (self) => {
     (self.cache.pathScanner = new RoomPathScanner(self, {
       maxCost: enemies.maxCost,
     }))
+  )
+})
+
+defineRoomGetter('owner', (self) => {
+  const controller = self.controller
+  if (!controller) return
+  const owner = controller.owner
+  if (!owner) return
+  return owner.username
+})
+
+defineRoomGetter('enemyDetector', (self) => {
+  return (
+    self.cache.enemyDetector ||
+    (self.cache.enemyDetector = new EnemyRoomDetector(self))
   )
 })
 

@@ -28,6 +28,15 @@ export default class RoomPathScanner {
       const info = this.infos[room]
       return !!info && this.traverseIfAvailable(info, room)
     })
+    if (this.traversed) console.log('traversing done')
+  }
+
+  get done() {
+    return this.traversed
+  }
+
+  get rooms() {
+    return this.infos
   }
 
   private traverseIfAvailable(info: RoomNeighbourPath, roomName: string) {
@@ -36,7 +45,6 @@ export default class RoomPathScanner {
     if (available) {
       this.traversePos(new RoomPosition(info.x, info.y, roomName))
       this.scanned[roomName] = 1
-      console.log('Room traversed: ', roomName)
     }
     this.traversed = false
     return true
@@ -46,31 +54,27 @@ export default class RoomPathScanner {
     const room = Game.rooms[roomName]
     if (!room) {
       const observer = this.room.observer
-      if (observer)
-        console.log(
-          roomName,
-          'not found, observing from',
-          this.room.name,
-          observer.observeRoom(roomName),
-        )
+      if (observer) observer.observeRoom(roomName)
       // TODO else send scouts here
     }
     return !!room
   }
 
   private traversePos(pos: RoomPosition) {
-    const scanResult = new RoomNeighbourPathScanner(
-      Game.rooms[pos.roomName],
-    ).findExitPaths(pos)
+    const room = Game.rooms[pos.roomName]
+    const scanResult = new RoomNeighbourPathScanner(room).findExitPaths(pos)
     const roomLocation = new RoomLocation(pos.roomName)
+    const currentRoomPath = this.infos[pos.roomName]
+    const baseCost = currentRoomPath ? currentRoomPath.cost : 0
+    if (currentRoomPath) currentRoomPath.owner = room.owner
     scanResult.forEach((path) => {
       const roomName = roomLocation.getNeighbour(path.dir)
       const existingPath = this.infos[roomName]
-      const currentRoomPath = this.infos[pos.roomName]
-      const cost = (currentRoomPath ? currentRoomPath.cost : 0) + path.cost
+      const cost = baseCost + path.cost
       if (cost > this.config.maxCost) return
       if (existingPath && existingPath.cost <= cost) return
       this.infos[roomName] = {
+        name: roomName,
         cost,
         x: path.x,
         y: path.y,

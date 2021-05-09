@@ -77,10 +77,12 @@ interface BoostData {
 }
 
 interface RoomNeighbourPath {
+  name: string
   cost: number
   x: number
   y: number
   through: string
+  owner?: string
 }
 
 interface RoomMemory {

@@ -7,7 +7,7 @@ interface EnemiesConfig {
   clones: boolean
 }
 
-export default class CapturePlanner {
+export default class EnemiesPlanner {
   private aliances: AlianceScanner
   private enemies: string[]
   private loaded: boolean = false
@@ -19,8 +19,8 @@ export default class CapturePlanner {
     this.config = config
   }
 
-  isEnemy(username: string) {
-    return this.enemies.indexOf(username) !== -1
+  isEnemy(username?: string) {
+    return this.enemies.indexOf(username || '') !== -1
   }
 
   get isLoaded() {
@@ -40,7 +40,7 @@ export default class CapturePlanner {
   static get instance() {
     return (
       global.Cache.capturePlanner ||
-      (global.Cache.capturePlanner = new CapturePlanner(config))
+      (global.Cache.capturePlanner = new EnemiesPlanner(config))
     )
   }
 }

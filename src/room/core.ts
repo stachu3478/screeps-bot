@@ -101,7 +101,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
   const powerSpawn = room.powerSpawn
   if (powerSpawn) rolePowerSpawn(powerSpawn)
 
-  controller.room.pathScanner.traverse()
+  controller.room.enemyDetector.scan()
 
   const spawn = spawns.find((s) => !s.spawning)
   if (spawn)

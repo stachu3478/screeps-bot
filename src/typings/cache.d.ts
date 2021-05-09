@@ -17,6 +17,7 @@ interface RoomCache {
   repairRouter?: RoomRepairRouter
   leastAvailablePosition?: string
   pathScanner?: RoomPathScanner
+  enemyDetector?: EnemyRoomDetector
 
   labCooldown?: number
 }
@@ -89,7 +90,7 @@ interface GlobalCache {
   feromon: {
     [key: string]: number
   }
-  capturePlanner?: CapturePlanner
+  capturePlanner?: EnemiesPlanner
 }
 
 interface WrappedGlobalCache extends GlobalCache {

@@ -35,6 +35,8 @@ interface Room {
   location: RoomLocation
   observer?: StructureObserver
   pathScanner: RoomPathScanner
+  owner?: string
+  enemyDetector: EnemyRoomDetector
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void
