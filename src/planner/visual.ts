@@ -14,8 +14,8 @@ const towerStyle: CircleStyle = {
   radius: 0.5,
   fill: '#0000',
 }
-const linkStyle: PolyStyle = { stroke: '#000', fill: '#0000' }
-const storageStyle: PolyStyle = { fill: '#888888' }
+export const linkStyle: PolyStyle = { stroke: '#000', fill: '#0000' }
+export const storageStyle: PolyStyle = { fill: '#888888' }
 const internalLabStyle: CircleStyle = {
   stroke: '#800',
   fill: '#8004',

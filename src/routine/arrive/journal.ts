@@ -1,21 +1,13 @@
 import { ArriveCreep } from '../arrive'
 import move from 'utils/path'
-
-function roomLocationIndex(roomName: string) {
-  let [, w, x, h, y] = roomName.split(/(W|E|N|S)/)
-  let xPos = parseInt(x)
-  let yPos = parseInt(y)
-  if (w === 'W') xPos = -xPos
-  if (h === 'S') yPos = -yPos
-  return [xPos, yPos]
-}
+import RoomLocation from 'overloads/room/RoomLocation'
 
 function getExitDirection(roomNameFrom: string, roomNameTo: string) {
-  const [x1, y1] = roomLocationIndex(roomNameFrom)
-  const [x2, y2] = roomLocationIndex(roomNameTo)
-  if (x2 < x1) return FIND_EXIT_LEFT
-  if (x1 < x2) return FIND_EXIT_RIGHT
-  if (y1 < y2) return FIND_EXIT_TOP
+  const roomFrom = new RoomLocation(roomNameFrom)
+  const roomTo = new RoomLocation(roomNameTo)
+  if (roomTo.x < roomFrom.x) return FIND_EXIT_LEFT
+  if (roomFrom.x < roomTo.x) return FIND_EXIT_RIGHT
+  if (roomFrom.y < roomTo.y) return FIND_EXIT_TOP
   return FIND_EXIT_BOTTOM
 }
 

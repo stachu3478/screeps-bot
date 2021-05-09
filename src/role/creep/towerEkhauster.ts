@@ -5,10 +5,10 @@ import profiler from 'screeps-profiler'
 import collectGarbage from 'utils/collectGarbage'
 
 export default profiler.registerFN(function towerEkhauster(creep: ArriveCreep) {
-  if (creep.hits < creep.hitsMax) creep.heal(creep)
+  creep.heal(creep)
+  const target = creep.motherRoom.memory[RoomMemoryKeys.ekhaust]
   switch (creep.memory.state) {
     case State.IDLE:
-      const target = creep.motherRoom.memory[RoomMemoryKeys.ekhaust]
       if (target) {
         creep.memory.state = State.ARRIVE
         creep.memory._arrive = target
@@ -20,6 +20,11 @@ export default profiler.registerFN(function towerEkhauster(creep: ArriveCreep) {
       }
       break
     case State.ARRIVE:
+      if (!creep.hasActiveBodyPart(TOUGH)) {
+        creep.memory.state = State.FALL_BACK
+        creep.memory._arrive = creep.memory.room
+        arrive(creep)
+      }
       switch (arrive(creep)) {
         case NOTHING_TODO:
         case DONE:
@@ -37,7 +42,15 @@ export default profiler.registerFN(function towerEkhauster(creep: ArriveCreep) {
           break
       }
       break
+    case State.FALL_BACK:
+      arrive(creep)
+      if (target && creep.hits === creep.hitsMax) {
+        creep.memory.state = State.ARRIVE
+        creep.memory._arrive = target
+      }
+      break
     default:
+      creep.notifyWhenAttacked(false)
       creep.memory.state = State.IDLE
   }
 }, 'roleTowerEkhauster')

@@ -28,6 +28,7 @@ const roleBooster = {
         }
         break
       default:
+        // FIXME: not always forcing works
         const targetLabId = creep.room.getBoostRequest(creep.name)
         if (targetLabId) {
           creep.memory.state = State.BOOST

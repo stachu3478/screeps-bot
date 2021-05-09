@@ -16,6 +16,7 @@ interface RoomCache {
   buildingRouter?: RoomBuildingRouter
   repairRouter?: RoomRepairRouter
   leastAvailablePosition?: string
+  pathScanner?: RoomPathScanner
 
   labCooldown?: number
 }

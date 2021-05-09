@@ -32,6 +32,9 @@ interface Room {
   buildingRouter: RoomBuildingRouter
   repairRouter: RoomRepairRouter
   leastAvailablePosition: RoomPosition
+  location: RoomLocation
+  observer?: StructureObserver
+  pathScanner: RoomPathScanner
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void

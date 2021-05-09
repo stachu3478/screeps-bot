@@ -26,7 +26,7 @@ export default [
   // repair all other sturtures
   {
     structure: findAllOther,
-    hits: 1000,
+    hits: Infinity,
     from: findStorageAndTerminal,
     minimalStore: 1000,
   },

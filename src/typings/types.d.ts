@@ -76,6 +76,13 @@ interface BoostData {
   creeps: [string, ResourceConstant, number, 0 | 1][]
 }
 
+interface RoomNeighbourPath {
+  cost: number
+  x: number
+  y: number
+  through: string
+}
+
 interface RoomMemory {
   structs?: string
   roads?: string
@@ -138,6 +145,7 @@ interface RoomMemory {
    * Tower ekhaustion target
    */
   e?: string
+  p?: RoomNeighbourPath[]
 }
 
 interface RemoteMemory {

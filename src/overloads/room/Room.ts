@@ -6,12 +6,14 @@ import SourceHandler from 'handler/SourceHandler'
 import ShieldPlanner from 'planner/shieldPlanner'
 import DefencePolicy from 'room/DefencePolicy'
 import { getLink } from 'utils/selectFromPos'
-import RoomBuildingRoute from 'job/buildingRoute/RoomBuildingRoute'
 import RoomBuildingRouter from 'job/buildingRoute/RoomBuildingRouter'
 import { posToChar } from 'planner/pos'
 import whirl from 'utils/whirl'
 import { isWalkable } from 'utils/path'
 import RoomRepairRouter from 'job/repairRoute/RoomRepairRouter'
+import RoomLocation from './RoomLocation'
+import RoomPathScanner from 'planner/RoomPathScanner'
+import enemies from 'config/enemies'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -173,6 +175,23 @@ defineRoomGetter('leastAvailablePosition', (self) => {
   }
   self.cache.leastAvailablePosition = posToChar(lastPosition)
   return lastPosition
+})
+
+defineRoomGetter('location', (self) => {
+  return new RoomLocation(self.name)
+})
+
+defineRoomGetter('observer', (self) => {
+  return self.leastAvailablePosition.building(STRUCTURE_OBSERVER)
+})
+
+defineRoomGetter('pathScanner', (self) => {
+  return (
+    self.cache.pathScanner ||
+    (self.cache.pathScanner = new RoomPathScanner(self, {
+      maxCost: enemies.maxCost,
+    }))
+  )
 })
 
 Room.prototype.store = function (resource: ResourceConstant) {
