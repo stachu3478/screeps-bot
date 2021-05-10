@@ -199,7 +199,7 @@ defineRoomGetter('pathScanner', (self) => {
 defineRoomGetter('owner', (self) => {
   const controller = self.controller
   if (!controller) return
-  const owner = controller.owner
+  const owner = controller.owner || controller.reservation
   if (!owner) return
   return owner.username
 })

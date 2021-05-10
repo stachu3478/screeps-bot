@@ -74,8 +74,24 @@ export default class RoomPathScanner {
     const baseCost = currentRoomPath ? currentRoomPath.cost : 0
     if (currentRoomPath) {
       currentRoomPath.owner = room.owner
-      currentRoomPath.controller = !!room.controller
+      const controller = room.controller
+      if ((currentRoomPath.controller = !!controller)) {
+        const path = pos.findPathTo(controller!, {
+          maxRooms: 1,
+          ignoreCreeps: true,
+        })
+        const aim = path[path.length - 1]
+        currentRoomPath.controllerFortified =
+          aim.x !== controller!.pos.x && aim.y !== controller!.pos.y
+      }
       currentRoomPath.sources = room.find(FIND_SOURCES).length
+      currentRoomPath.safe =
+        currentRoomPath.safe !== false &&
+        (room.owner === this.room.owner ||
+          !room
+            .find(FIND_STRUCTURES)
+            .filter((s) => s.structureType === STRUCTURE_TOWER && s.isActive())
+            .length)
     }
     scanResult.forEach((path) => {
       const roomName = roomLocation.getNeighbour(path.dir)
@@ -89,16 +105,10 @@ export default class RoomPathScanner {
         x: path.x,
         y: path.y,
         through: pos.roomName,
+        safe: currentRoomPath ? currentRoomPath.safe : true,
       }
     })
     this.room.visual.text('Scanned ' + room, 0, 11, infoStyle)
     return true
   }
-
-  /*private get infos() {
-    const memorizedInfos = this.room.memory[RoomMemoryKeys.roomNeighbourPaths]
-    if (memorizedInfos) return memorizedInfos
-    const infos =
-    return this.room.memory[RoomMemoryKeys.roomNeighbourPaths] = infos
-  }*/
 }

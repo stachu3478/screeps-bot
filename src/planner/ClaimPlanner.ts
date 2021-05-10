@@ -12,15 +12,13 @@ export default class ClaimPlanner {
     this.invalidateTarget()
     if (this.currentTarget) return this.currentTarget
     const roomNames = Object.keys(Memory.myRooms)
-    if (roomNames.length >= this.maxRooms) {
-      console.log('enough rooms claimed')
-      return null
-    }
+    if (roomNames.length >= this.maxRooms) return null
     const rooms = roomNames.map((n) => Game.rooms[n])
-    if (!rooms.every((r) => r.pathScanner.done)) {
+    rooms.forEach((r) => r.pathScanner.done)
+    /*if (!rooms.every((r) => r.pathScanner.done)) {
       console.log('paths not scanned')
       return null
-    }
+    }*/
     console.log('looking for target')
     return this.findTarget(rooms)
   }
@@ -36,20 +34,23 @@ export default class ClaimPlanner {
       })
     })
     if (target === '' || !source) return null
-    return { source: source.name, target }
+    return (this.currentTarget = { source: source.name, target })
   }
 
   private validateTarget(rooms: Room[], info: RoomNeighbourPath) {
     return (
       !!info.controller &&
-      !!info.owner &&
+      !info.owner &&
+      !!info.safe &&
       info.cost >= this.minCost &&
+      info.cost <= this.config.maxCost &&
       (info.sources || 0) >= this.config.minSources &&
+      (console.log('partial passing ', info.name) || true) &&
       !rooms.some((r) => {
         const scannerRooms = r.pathScanner.rooms
-        return Object.keys(scannerRooms).some(
-          (i) => scannerRooms[i]!.cost < this.config.minCost,
-        )
+        const scannerRoom = scannerRooms[info.name]
+        if (!scannerRoom) return false
+        return scannerRoom.cost < this.minCost
       })
     )
   }

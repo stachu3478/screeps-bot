@@ -85,6 +85,8 @@ interface RoomNeighbourPath {
   owner?: string
   controller?: boolean
   sources?: number
+  controllerFortified?: boolean
+  safe?: boolean
 }
 
 interface RoomMemory {
