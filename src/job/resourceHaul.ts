@@ -43,7 +43,6 @@ export default function resourceHaul(creep: Hauler) {
       mem.state = State.ARRIVE
       mem._arrive = mem.room
       delete creep.motherRoom.memory._haul
-      delete creep.motherRoom.memory._haulScore
     }
     return hauling
   } else {

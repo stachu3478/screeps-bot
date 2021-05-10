@@ -1,19 +1,15 @@
-import _ from 'lodash'
 import profiler from 'screeps-profiler'
 import { progressiveMiner, progressiveLiteWorker } from './body/work'
-import { progressiveFighter } from './body/body'
 import domination from './domination'
 import { infoStyle } from '../room/style'
 import extract, { needsExtractor } from './extract'
 import spawnUpgrader, { needsUpgraders } from './upgrader'
-import { MinerMemory, Miner } from 'role/creep/miner'
+import { MinerMemory } from 'role/creep/miner'
 import { findContainers } from 'utils/find'
 import { needsRanger, spawnRanger } from './ranger'
-import { needsScout, spawnScout, needsClaim } from './scout'
+import { needsScout, spawnScout } from './scout'
 import { needsClaimer, spawnClaimer } from './claimer'
-import { needsScorer, spawnScorer } from './scorer'
 import { needsHauler, spawnHauler } from './hauler'
-import { needsScoreDigger, spawnScoreDigger } from './scoreDigger'
 import { needsMover, spawnMover } from './mover'
 import spawnStaticUpgrader, { needsStaticUpgraders } from './staticUpgrader'
 import { needsFighters, spawnFighter } from './fighter'
@@ -134,9 +130,6 @@ export default profiler.registerFN(function loop(
   else if (needsExtractor(spawn, creepCountByRole[Role.EXTRACTOR]))
     extract(spawn)
   else if (needsRanger(spawn, creepCountByRole[Role.RANGER])) spawnRanger(spawn)
-  else if (needsScorer(spawn, creepCountByRole[Role.SCORER])) spawnScorer(spawn)
-  else if (needsScoreDigger(spawn, creepCountByRole[Role.SCORE_DIGGER]))
-    spawnScoreDigger(spawn)
   else if (needsMover(spawn, creepCountByRole[Role.MOVER])) spawnMover(spawn)
   else if (needsTowerEkhauster(spawn, creepCountByRole[Role.TOWER_EKHAUSTER])) {
     spawnTowerEkhauster(spawn)

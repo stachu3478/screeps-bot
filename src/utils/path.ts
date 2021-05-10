@@ -188,11 +188,6 @@ const move = {
     safe: boolean = false,
     range: number = 0,
   ): ScreepsReturnCode => {
-    if (
-      !creep.hasActiveBodyPart(MOVE) &&
-      creep.memory.role === Role.SCORE_DIGGER
-    )
-      return move.handleStaticCreep(creep, target) as ScreepsReturnCode
     if (creep.fatigue) return ERR_TIRED
     if (safe && !move.keepAwayFromHostiles(creep)) return 0
     const options = {

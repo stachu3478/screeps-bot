@@ -14,21 +14,6 @@ export function carryPacks(count: number) {
   return hybridPack(CARRY, MOVE, count)
 }
 
-export function scoreDigger(energy: number) {
-  const workPackEnergy = energy - BODYPART_COST[ATTACK]
-  const workPacks = Math.min(
-    Math.floor(workPackEnergy / BODYPART_COST[WORK]),
-    49,
-  )
-  const arr: BodyPartConstant[] = [ATTACK]
-  return arr.concat(new Array(workPacks).fill(WORK))
-}
-
-export function scorer(energy: number, toBeDelivered: number) {
-  const carryParts = Math.floor(Math.min(energy / 100, toBeDelivered / 150, 25))
-  return carryPacks(carryParts)
-}
-
 export function ranger() {
   return new Array(17)
     .fill(RANGED_ATTACK)

@@ -15,8 +15,6 @@ import roleBooster, { BoosterCreep } from 'role/creep/booster'
 import Harvester from 'role/creep/harvester.d'
 import collectGarbage from 'utils/collectGarbage'
 import ranger, { Ranger } from 'role/creep/ranger'
-import scorer, { Scorer } from 'role/creep/scorer'
-import scoreDigger from 'role/creep/scoreDigger'
 import mover from 'role/creep/mover'
 import builder from 'role/creep/builder'
 import towerEkhauster from 'role/creep/towerEkhauster'
@@ -110,12 +108,6 @@ export default function creeps(
           break
         case Role.RANGER:
           ranger(creep as Ranger)
-          break
-        case Role.SCORER:
-          scorer(creep as Scorer)
-          break
-        case Role.SCORE_DIGGER:
-          scoreDigger(creep)
           break
         case Role.MOVER:
           mover(creep)

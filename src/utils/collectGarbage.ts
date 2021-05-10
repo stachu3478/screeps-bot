@@ -5,7 +5,6 @@ function handleRoomBlackList(memory: CreepMemory) {
   if (!motherRoom) return
   if (motherRoom.memory._haul === room.name) {
     delete motherRoom.memory._haul
-    delete motherRoom.memory._haulScore
     delete motherRoom.memory._haulSize
   }
 }

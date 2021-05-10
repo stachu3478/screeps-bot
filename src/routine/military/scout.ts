@@ -1,6 +1,5 @@
 import { DONE, FAILED, NOTHING_DONE } from 'constants/response'
 import { findHaulable } from 'utils/find'
-import scorePlanner from 'planner/score'
 
 interface ScoutCreep extends Creep {
   memory: ScoutMemory
@@ -43,18 +42,14 @@ class ClaimChecker {
 
 export function requestHaul(creep: ScoutCreep) {
   const roomMemory = creep.motherRoom.memory
-  if (roomMemory._haul && roomMemory._haulScore && !creep.room.my) return
+  if (roomMemory._haul && !creep.room.my) return
   const haulable = findHaulable(creep.room, creep.pos)
   if (!haulable) return
   if (creep.moveTo(haulable) === ERR_NO_PATH) return
   roomMemory._haul = creep.room.name
-  roomMemory._haulScore = creep.room.find(10011 as FindConstant) ? 1 : 0
 }
 
 export default function scout(creep: ScoutCreep) {
-  if (scorePlanner(creep.room, creep.motherRoom.memory)) {
-    console.log('Room score plan found')
-  }
   requestHaul(creep)
   const claimChecker = new ClaimChecker(creep)
   claimChecker.fetchClaimable()
