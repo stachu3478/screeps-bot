@@ -142,7 +142,7 @@ export default profiler.registerFN(function loop(
     spawnTowerEkhauster(spawn)
   } else
     spawn.room.visual.text(
-      'Spawn is idle. (' + (Game.cpu.getUsed() - cpu) + ')',
+      'Spawn is idle. (' + (Game.cpu.getUsed() - cpu).toPrecision(2) + ')',
       0,
       3,
       infoStyle,

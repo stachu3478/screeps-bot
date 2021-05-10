@@ -15,6 +15,7 @@ import RoomLocation from './RoomLocation'
 import RoomPathScanner from 'planner/RoomPathScanner'
 import enemies from 'config/enemies'
 import EnemyRoomDetector from 'planner/EnemyRoomDetector'
+import claim from 'config/claim'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -160,7 +161,7 @@ defineRoomGetter('leastAvailablePosition', (self) => {
   if (saved) return self.positionFromChar(saved)
   const positions = PathFinder.search(
     self.sources.colonyPosition,
-    self.find(FIND_EXIT).map((p) => ({ pos: p, range: 50 })),
+    self.find(FIND_EXIT).map((p) => ({ pos: p, range: 500 })),
     { flee: true, maxRooms: 1, swampCost: 2 },
   ).path
   let lastPosition = positions.pop()
@@ -190,7 +191,7 @@ defineRoomGetter('pathScanner', (self) => {
   return (
     self.cache.pathScanner ||
     (self.cache.pathScanner = new RoomPathScanner(self, {
-      maxCost: enemies.maxCost,
+      maxCost: Math.max(enemies.maxCost, claim.maxCost),
     }))
   )
 })

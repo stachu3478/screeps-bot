@@ -2,7 +2,7 @@ export default {
   /**
    * Top switch to enable purging rooms
    */
-  enableWar: true,
+  enableWar: false,
   /**
    * Choose aliances that have to be purged out
    */

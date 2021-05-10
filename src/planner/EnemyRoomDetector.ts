@@ -1,4 +1,5 @@
 import EnemiesPlanner from './EnemiesPlanner'
+import config from 'config/enemies'
 
 export default class EnemyRoomDetector {
   private enemies: EnemiesPlanner
@@ -6,6 +7,7 @@ export default class EnemyRoomDetector {
   private enemyRooms?: RoomNeighbourPath[]
 
   constructor(room: Room) {
+    // @ts-ignore private property error
     this.enemies = EnemiesPlanner.instance
     this.paths = room.pathScanner
   }
@@ -13,16 +15,13 @@ export default class EnemyRoomDetector {
   scan() {
     if (this.enemyRooms) return false
     if (!this.enemies.isLoaded) return false
-    if (!this.paths.done) {
-      this.paths.traverse()
-      // todo auto traverse one room per tick
-      return false
-    }
+    if (!this.paths.done) return false
     const roomPaths = this.paths.rooms
     this.enemyRooms = Object.keys(roomPaths)
       .filter((roomName) => {
         const room = roomPaths[roomName]
         if (!room) return false
+        if (room.cost > config.maxCost) return false
         return this.enemies.isEnemy(room.owner)
       })
       .map((roomName) => roomPaths[roomName]!)

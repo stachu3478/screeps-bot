@@ -83,6 +83,8 @@ interface RoomNeighbourPath {
   y: number
   through: string
   owner?: string
+  controller?: boolean
+  sources?: number
 }
 
 interface RoomMemory {

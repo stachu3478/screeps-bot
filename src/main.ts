@@ -9,6 +9,7 @@ import roomVisual from 'utils/visual'
 import { memHackBeforeLoop, memHackAfterLoop } from 'utils/memHack'
 import pixelsHandler from 'utils/pixelsHandler'
 import handleRuntimeStats from 'utils/runtime'
+import ClaimPlanner from 'planner/ClaimPlanner'
 
 export const addFirstRoom = (game = Game, memory = Memory) => {
   // Automatically add first room to owned if there are none
@@ -51,5 +52,7 @@ export const loop = () => {
   handleStats()
   memHackAfterLoop()
   saveCpuUsage()
+  const target = ClaimPlanner.instance.target
+  if (target) console.log(JSON.stringify(target))
   if (error) throw error
 }

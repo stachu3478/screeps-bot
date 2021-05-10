@@ -79,7 +79,7 @@ export default function plan(room: Room) {
     const ps = obj.pos
     const { path } = PathFinder.search(
       new RoomPosition(ps.x, ps.y, room.name),
-      furthestSource.pos,
+      { pos: furthestSource.pos, range: 1 },
       {
         plainCost: 2,
         roomCallback,

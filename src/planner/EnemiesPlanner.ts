@@ -2,9 +2,12 @@ import AlianceScanner from './AlianceScanner'
 import config from 'config/enemies'
 
 interface EnemiesConfig {
+  enableWar: boolean
   aliances: string[]
   players: string[]
   clones: boolean
+  maxCost: number
+  nukes: boolean
 }
 
 export default class EnemiesPlanner {
@@ -24,6 +27,7 @@ export default class EnemiesPlanner {
   }
 
   get isLoaded() {
+    if (!this.config.enableWar) return false
     if (this.loaded) return true
     const aliances = this.aliances.aliances
     if (!aliances) return false

@@ -91,6 +91,7 @@ interface GlobalCache {
     [key: string]: number
   }
   capturePlanner?: EnemiesPlanner
+  claimPlanner?: ClaimPlanner
 }
 
 interface WrappedGlobalCache extends GlobalCache {
