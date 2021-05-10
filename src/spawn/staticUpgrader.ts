@@ -2,7 +2,7 @@ import { progressiveStaticUpgrader } from './body/work'
 import { energyToUpgradeThreshold } from 'config/storage'
 
 export function needsStaticUpgraders(spawn: StructureSpawn, count: number) {
-  return spawn.room.linked && !count
+  return !count && spawn.room.linked
 }
 
 export default function spawnStaticUpgrader(

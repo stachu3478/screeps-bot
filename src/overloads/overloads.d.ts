@@ -29,6 +29,14 @@ interface Room {
   shieldPositions: RoomPosition[]
   defencePolicy: DefencePolicy
   spawnsAndExtensions: (StructureSpawn | StructureExtension)[]
+  buildingRouter: RoomBuildingRouter
+  repairRouter: RoomRepairRouter
+  leastAvailablePosition: RoomPosition
+  location: RoomLocation
+  observer?: StructureObserver
+  pathScanner: RoomPathScanner
+  owner?: string
+  enemyDetector: EnemyRoomDetector
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void
@@ -41,7 +49,7 @@ interface Room {
   getAmountReserved: (resource: ResourceConstant) => number
   getAvailableBoosts: (resource: ResourceConstant, partCount: number) => number
   getBestAvailableBoost: (
-    partType: string,
+    partType: BodyPartConstant,
     action: string,
     partCount: number,
   ) => BoostInfo | null
@@ -122,6 +130,8 @@ interface Creep {
   safeDistance: number
   _bodyPartHitThreshold: Record<BodyPartConstant, number>
   routeProcessor: ResourceRouteProcessor
+  buildingRouteProcessor: BuildingRouteProcessor
+  repairRouteProcessor: RepairRouteProcessor
   hasActiveBodyPart: (b: BodyPartConstant) => boolean
   isSafeFrom: (creep: Creep) => boolean
   safeRangeXY: (x: number, y: number) => number

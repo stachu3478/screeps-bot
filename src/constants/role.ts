@@ -19,4 +19,6 @@ const enum Role {
   SCORER = 18,
   SCORE_DIGGER = 19,
   MOVER = 20,
+  BUILDER = 21,
+  TOWER_EKHAUSTER = 22,
 }

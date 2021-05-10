@@ -13,6 +13,11 @@ interface RoomCache {
   quadSquad?: QuadSquadHandler
   shieldPlanner?: ShieldPlanner
   defencePolicy?: DefencePolicy
+  buildingRouter?: RoomBuildingRouter
+  repairRouter?: RoomRepairRouter
+  leastAvailablePosition?: string
+  pathScanner?: RoomPathScanner
+  enemyDetector?: EnemyRoomDetector
 
   labCooldown?: number
 }
@@ -33,6 +38,8 @@ interface CreepCache {
   moverPath?: PathStep[]
   workpartCount?: number
   routeProcessor?: ResourceRouteProcessor
+  buildingRouteProcessor?: BuildingRouteProcessor
+  repairRouteProcessor?: RepairRouteProcessor
   _bodypartHitThreshold?: Record<BodyPartConstant, number>
 }
 
@@ -83,6 +90,8 @@ interface GlobalCache {
   feromon: {
     [key: string]: number
   }
+  capturePlanner?: EnemiesPlanner
+  claimPlanner?: ClaimPlanner
 }
 
 interface WrappedGlobalCache extends GlobalCache {

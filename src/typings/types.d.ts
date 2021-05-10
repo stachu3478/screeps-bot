@@ -1,6 +1,8 @@
 interface SourceMap {
   [id: string]: string
 }
+
+type RouteStatus = [number, number, number]
 // memory extension samples
 interface CreepMemory {
   role: Role
@@ -26,9 +28,13 @@ interface CreepMemory {
    */
   l?: number
   /**
-   * Current route id that is processed by the creep
+   * Current resource route status that is processed by the creep
    */
-  R?: number
+  s?: RouteStatus
+  /**
+   * Current building route status that is processed by the creep
+   */
+  c?: RouteStatus
 }
 
 interface Stats {
@@ -68,6 +74,17 @@ interface Memory {
 interface BoostData {
   labs: [ResourceConstant, number][]
   creeps: [string, ResourceConstant, number, 0 | 1][]
+}
+
+interface RoomNeighbourPath {
+  name: string
+  cost: number
+  x: number
+  y: number
+  through: string
+  owner?: string
+  controller?: boolean
+  sources?: number
 }
 
 interface RoomMemory {
@@ -128,6 +145,11 @@ interface RoomMemory {
    * Currently apllied timeout for defence
    */
   D?: number
+  /**
+   * Tower ekhaustion target
+   */
+  e?: string
+  p?: RoomNeighbourPath[]
 }
 
 interface RemoteMemory {

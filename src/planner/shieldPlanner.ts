@@ -19,7 +19,9 @@ export default class ShieldPlanner {
   }
 
   private generateFromMemory(shieldMemory: string) {
-    this.positions = shieldMemory.split('').map(this.room.positionFromChar)
+    this.positions = shieldMemory
+      .split('')
+      .map((c) => this.room.positionFromChar(c))
   }
 
   private generate() {
@@ -34,30 +36,24 @@ export default class ShieldPlanner {
     })
 
     this.generateFromPathTargets(positionsToBeShielded)
-    this.room.memory[RoomMemoryKeys.shields] = this.positions
-      .map(posToChar)
-      .join('')
+    this.room.memory[RoomMemoryKeys.shields] = [
+      ...new Set(this.positions.map(posToChar)),
+    ].join('')
   }
 
   private generateFromPathTargets(targets: RoomPosition[]) {
-    const initialPosition = targets.pop()!
+    this.positions = targets.slice(0)
+    const initialPosition = this.room.sources.colonyPosition
     const costMatrix = this.onlyPlannedPathCostMatrix
     targets.forEach((roomPosition) => {
-      const path = initialPosition.findPathTo(roomPosition, {
-        costCallback: () => costMatrix,
-      })
-      path.forEach((pathStep) => {
-        if (
-          this.positions.every(
-            (roomPosition) =>
-              pathStep.x !== roomPosition.x && pathStep.y !== roomPosition.y,
-          )
-        ) {
-          this.positions.push(
-            new RoomPosition(pathStep.x, pathStep.y, this.room.name),
-          )
-        }
-      })
+      const path = PathFinder.search(
+        initialPosition,
+        { pos: roomPosition, range: 1 },
+        {
+          roomCallback: () => costMatrix,
+        },
+      )
+      this.positions = this.positions.concat(path.path)
     })
   }
 
@@ -65,7 +61,7 @@ export default class ShieldPlanner {
     const roads = this.room.memory.roads || ''
     const costMatrix = createUnwalkableMatrix()
     charPosIterator(roads, (x, y) => {
-      costMatrix.set(x, y, 0)
+      costMatrix.set(x, y, 1)
     })
     return costMatrix
   }

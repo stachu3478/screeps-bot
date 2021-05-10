@@ -1,6 +1,7 @@
 import StructureMatcher, { StructureSelector } from './matcher/structureMatcher'
 import ResourceMatcher from './matcher/ResourceMatcher'
-type StoreStructureSelector = (r: Room) => AnyStoreStructure[]
+import { StoreStructureSelector } from '../selector/StoreStructureSelector'
+
 type ResourceSelector = (r: ResourceConstant) => boolean
 
 interface ResourceRouteOptions {

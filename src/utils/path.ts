@@ -103,13 +103,13 @@ const move = {
           leastFeromon = feromon
           bestDir = dir
         }
-        console.log(feromon, dir)
+        //console.log(feromon, dir)
       }
       if (dirOffset > -1) dirOffset++
       dirOffset = -dirOffset
     }
     if (bestDir === 0) return false
-    console.log(bestDir, creep.name)
+    //console.log(bestDir, creep.name)
     creep.move(bestDir as DirectionConstant)
     Feromon.increment(room.name, x, y)
     return true

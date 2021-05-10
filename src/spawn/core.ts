@@ -17,6 +17,8 @@ import { needsScoreDigger, spawnScoreDigger } from './scoreDigger'
 import { needsMover, spawnMover } from './mover'
 import spawnStaticUpgrader, { needsStaticUpgraders } from './staticUpgrader'
 import { needsFighters, spawnFighter } from './fighter'
+import spawnBuilder, { needsBuilder } from './builder'
+import { needsTowerEkhauster, spawnTowerEkhauster } from './towerEkhauster'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -25,6 +27,7 @@ export default profiler.registerFN(function loop(
   workPartCountByRole: number[],
   needsFighter: boolean,
 ) {
+  const cpu = Game.cpu.getUsed()
   const mem = spawn.room.memory
   const cache = spawn.cache
   if (!mem.creeps) mem.creeps = {}
@@ -117,6 +120,8 @@ export default profiler.registerFN(function loop(
     spawnHauler(spawn)
   } else if (needsScout(spawn, creepCountByRole[Role.SCOUT])) {
     spawnScout(spawn)
+  } else if (needsBuilder(spawn, creepCountByRole[Role.BUILDER])) {
+    spawnBuilder(spawn)
   } else if (needsClaimer(spawn, creepCountByRole[Role.CLAIMER])) {
     spawnClaimer(spawn)
   } else if (domination(spawn, creepCountByRole))
@@ -133,6 +138,14 @@ export default profiler.registerFN(function loop(
   else if (needsScoreDigger(spawn, creepCountByRole[Role.SCORE_DIGGER]))
     spawnScoreDigger(spawn)
   else if (needsMover(spawn, creepCountByRole[Role.MOVER])) spawnMover(spawn)
-  else spawn.room.visual.text('Spawn is idle.', 0, 3, infoStyle)
+  else if (needsTowerEkhauster(spawn, creepCountByRole[Role.TOWER_EKHAUSTER])) {
+    spawnTowerEkhauster(spawn)
+  } else
+    spawn.room.visual.text(
+      'Spawn is idle. (' + (Game.cpu.getUsed() - cpu).toPrecision(2) + ')',
+      0,
+      3,
+      infoStyle,
+    )
 },
 'spawnLoop')

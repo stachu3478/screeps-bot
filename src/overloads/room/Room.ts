@@ -1,10 +1,21 @@
 import './buildingManagement'
 import './boostManagement'
+
 import defineGetter from 'utils/defineGetter'
 import SourceHandler from 'handler/SourceHandler'
 import ShieldPlanner from 'planner/shieldPlanner'
 import DefencePolicy from 'room/DefencePolicy'
 import { getLink } from 'utils/selectFromPos'
+import RoomBuildingRouter from 'job/buildingRoute/RoomBuildingRouter'
+import { posToChar } from 'planner/pos'
+import whirl from 'utils/whirl'
+import { isWalkable } from 'utils/path'
+import RoomRepairRouter from 'job/repairRoute/RoomRepairRouter'
+import RoomLocation from './RoomLocation'
+import RoomPathScanner from 'planner/RoomPathScanner'
+import enemies from 'config/enemies'
+import EnemyRoomDetector from 'planner/EnemyRoomDetector'
+import claim from 'config/claim'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -129,6 +140,75 @@ defineRoomGetter('spawnsAndExtensions', (self) => {
 defineRoomGetter('spawnLink', (self) => {
   if (!self.memory.structs) return
   return getLink(self, self.memory.structs.charCodeAt(0))
+})
+
+defineRoomGetter('buildingRouter', (self) => {
+  return (
+    self.cache.buildingRouter ||
+    (self.cache.buildingRouter = new RoomBuildingRouter(self))
+  )
+})
+
+defineRoomGetter('repairRouter', (self) => {
+  return (
+    self.cache.repairRouter ||
+    (self.cache.repairRouter = new RoomRepairRouter(self))
+  )
+})
+
+defineRoomGetter('leastAvailablePosition', (self) => {
+  const saved = self.cache.leastAvailablePosition
+  if (saved) return self.positionFromChar(saved)
+  const positions = PathFinder.search(
+    self.sources.colonyPosition,
+    self.find(FIND_EXIT).map((p) => ({ pos: p, range: 500 })),
+    { flee: true, maxRooms: 1, swampCost: 2 },
+  ).path
+  let lastPosition = positions.pop()
+  if (!lastPosition) {
+    const xy = whirl(
+      25,
+      25,
+      (x, y) =>
+        isWalkable(self, x, y) && !self.lookForAt(LOOK_STRUCTURES, x, y).length,
+    )
+    if (!xy) throw new Error('Failed to find least available position')
+    lastPosition = new RoomPosition(xy[0], xy[1], self.name)
+  }
+  self.cache.leastAvailablePosition = posToChar(lastPosition)
+  return lastPosition
+})
+
+defineRoomGetter('location', (self) => {
+  return new RoomLocation(self.name)
+})
+
+defineRoomGetter('observer', (self) => {
+  return self.leastAvailablePosition.building(STRUCTURE_OBSERVER)
+})
+
+defineRoomGetter('pathScanner', (self) => {
+  return (
+    self.cache.pathScanner ||
+    (self.cache.pathScanner = new RoomPathScanner(self, {
+      maxCost: Math.max(enemies.maxCost, claim.maxCost),
+    }))
+  )
+})
+
+defineRoomGetter('owner', (self) => {
+  const controller = self.controller
+  if (!controller) return
+  const owner = controller.owner
+  if (!owner) return
+  return owner.username
+})
+
+defineRoomGetter('enemyDetector', (self) => {
+  return (
+    self.cache.enemyDetector ||
+    (self.cache.enemyDetector = new EnemyRoomDetector(self))
+  )
 })
 
 Room.prototype.store = function (resource: ResourceConstant) {

@@ -3,14 +3,19 @@ const enum Keys {
   drawSource = 'd',
   fillTarget = 'f',
   fillType = 't',
-  routeId = 'R',
+  resourceRoute = 's',
   dumping = 'D',
+  buildTarget = 'b',
+  buildingRoute = 'c',
+  repairTarget = 'r',
 }
 
 const enum RoomMemoryKeys {
   shields = 's',
   defenceHoldingTicks = 'd',
   defenceHoldingTimer = 'D',
+  ekhaust = 'e',
+  roomNeighbourPaths = 'p',
 }
 
 const enum ShardMemoryKeys {

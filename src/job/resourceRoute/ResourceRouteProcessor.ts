@@ -1,32 +1,55 @@
 import routes from '../../config/resourceRoutes'
 import CreepResourceRoute from './CreepResourceRoute'
+import CreepMemoized from 'utils/CreepMemoized'
+import Failer from 'utils/Failer'
+import { infoStyle } from 'room/style'
 
-export default class ResourceRouteProcessor {
+const enum RouteStatusKey {
+  id = 2,
+}
+export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
   private routes: CreepResourceRoute[]
-  private creepName: string
+  private status: RouteStatus
+  private failer: Failer
+  private i: number
+  private jobFound: boolean = false
 
   constructor(creep: Creep) {
+    super(creep)
     this.routes = routes.map((route) => new CreepResourceRoute(creep, route))
-    this.creepName = creep.name
+    this.status =
+      this.creep.memory[Keys.resourceRoute] ||
+      (this.creep.memory[Keys.resourceRoute] = [0, Game.time, 0])
+    this.i = this.status[RouteStatusKey.id]
+    this.failer = new Failer(() => this.findJob(), this.status)
   }
 
   process() {
-    const currentRoute = this.routes[this.creep.memory[Keys.routeId] || 0]
-    if (currentRoute.work()) {
-      return true
-    }
-    const res = !!this.routes.find((route, i) => {
-      if (route === currentRoute) return false
-      if (route.work()) {
-        this.creep.memory[Keys.routeId] = i
-        return true
-      }
-      return false
-    })
-    return res
+    return this.failer.call()
   }
 
-  private get creep() {
-    return Game.creeps[this.creepName]
+  isJobFound() {
+    return this.jobFound
+  }
+
+  findJob() {
+    const currentRoute = this.routes[this.i]
+    this.jobFound = currentRoute && currentRoute.work()
+    if (this.jobFound) {
+      this.status[RouteStatusKey.id] = this.i
+      return true
+    }
+    this.creep.room.visual.text(
+      'Resource route search ' + this.i,
+      0,
+      9,
+      infoStyle,
+    )
+    this.i++
+    if (this.i >= this.routes.length) {
+      this.i = 0
+      return false
+    }
+    return true
   }
 }

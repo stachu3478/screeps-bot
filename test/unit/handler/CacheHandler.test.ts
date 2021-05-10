@@ -27,7 +27,7 @@ describe('CacheHandler', () => {
   'creeps spawns powerSpawns rooms terminals factories roomKeepers roomStructures'
     .split(' ')
     .forEach((property) => {
-      const key = property as keyof GlobalCache
+      const key = property as keyof GlobalCache & keyof CacheHandler
       describe(`#${property}`, () => {
         it(`returns ${property} object from cache`, () => {
           expect(cacheHandler[key]).to.eq(cache[key])

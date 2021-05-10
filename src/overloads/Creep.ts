@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import defineGetter from 'utils/defineGetter'
 import ResourceRouteProcessor from 'job/resourceRoute/ResourceRouteProcessor'
+import BuildingRouteProcessor from 'job/buildingRoute/BuildingRouteProcessor'
+import RepairRouteProcessor from 'job/repairRoute/RepairRouteProcessor'
 
 function defineCreepGetter<T>(property: string, handler: (self: Creep) => T) {
   defineGetter<Creep, CreepConstructor, T>(Creep, property, handler)
@@ -66,6 +68,20 @@ defineCreepGetter('routeProcessor', (self) => {
   return (
     self.cache.routeProcessor ||
     (self.cache.routeProcessor = new ResourceRouteProcessor(self))
+  )
+})
+
+defineCreepGetter('buildingRouteProcessor', (self) => {
+  return (
+    self.cache.buildingRouteProcessor ||
+    (self.cache.buildingRouteProcessor = new BuildingRouteProcessor(self))
+  )
+})
+
+defineCreepGetter('repairRouteProcessor', (self) => {
+  return (
+    self.cache.repairRouteProcessor ||
+    (self.cache.repairRouteProcessor = new RepairRouteProcessor(self))
   )
 })
 

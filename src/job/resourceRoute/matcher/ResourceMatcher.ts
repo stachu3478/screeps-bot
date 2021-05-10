@@ -62,14 +62,6 @@ export default class ResourceMatcher {
     maxFilled?: number,
   ) {
     const store = w.store as GenericStoreBase
-    console.log(
-      resource,
-      minFree,
-      maxFilled,
-      (store.getFreeCapacity(resource) || 0) >= minFree &&
-        (store.getUsedCapacity(resource) || 0) <
-          (maxFilled || store.getCapacity(resource) || 0),
-    )
     return (
       (store.getFreeCapacity(resource) || 0) >= minFree &&
       (store.getUsedCapacity(resource) || 0) <
