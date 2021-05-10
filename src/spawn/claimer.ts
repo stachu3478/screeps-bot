@@ -2,7 +2,7 @@ import { progressiveClaimer } from './body/body'
 import { needsClaim } from './scout'
 
 export function needsClaimer(spawn: StructureSpawn, count: number) {
-  return spawn.room.memory._claim && needsClaim(spawn) && !count
+  return spawn.room.memory[RoomMemoryKeys.claim] && needsClaim(spawn) && !count
 }
 
 export function spawnClaimer(spawn: StructureSpawn) {

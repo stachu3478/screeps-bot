@@ -13,7 +13,7 @@ export default class ClaimPlanner {
     if (this.currentTarget) return this.currentTarget
     const roomNames = Object.keys(Memory.myRooms)
     if (roomNames.length >= this.maxRooms) return null
-    const rooms = roomNames.map((n) => Game.rooms[n])
+    const rooms = roomNames.map((n) => Game.rooms[n]).filter((r) => r)
     rooms.forEach((r) => r.pathScanner.done)
     /*if (!rooms.every((r) => r.pathScanner.done)) {
       console.log('paths not scanned')
@@ -42,10 +42,10 @@ export default class ClaimPlanner {
       !!info.controller &&
       !info.owner &&
       !!info.safe &&
+      !info.controllerFortified &&
       info.cost >= this.minCost &&
       info.cost <= this.config.maxCost &&
       (info.sources || 0) >= this.config.minSources &&
-      (console.log('partial passing ', info.name) || true) &&
       !rooms.some((r) => {
         const scannerRooms = r.pathScanner.rooms
         const scannerRoom = scannerRooms[info.name]

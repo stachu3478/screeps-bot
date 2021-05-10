@@ -21,14 +21,19 @@ export default function arrive(
     ensureEmpty(creep)
   }
   if (journal) keepJournal(creep)
-  const targetRoom = creep.memory._arrive
+  const memory = creep.memory
+  const targetRoom = memory._arrive
+  console.log(targetRoom)
   if (!targetRoom) return NOTHING_TODO
-  const pos = new RoomPosition(25, 25, targetRoom)
-  let result = move.cheap(creep, pos, true, 25)
-  if (result === ERR_NO_PATH)
-    result = move.anywhere(creep, creep.pos.getDirectionTo(pos))
-      ? OK
-      : ERR_NO_PATH
+  const nextRoom = creep.motherRoom.location.findRoomPathStep(
+    creep.room.name,
+    targetRoom,
+  )
+  console.log(JSON.stringify(nextRoom))
+  if (!nextRoom) return NOTHING_TODO
+  const pos = new RoomPosition(nextRoom.x, nextRoom.y, nextRoom.name)
+  let result = move.cheap(creep, pos, true)
+  console.log(result)
   if (creep.room.name === targetRoom && result === 0) {
     delete creep.memory._arrive
     return DONE

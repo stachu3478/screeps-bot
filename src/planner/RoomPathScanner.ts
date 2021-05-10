@@ -1,6 +1,7 @@
 import RoomNeighbourPathScanner from './RoomNeighbourPathScanner'
 import RoomLocation from 'overloads/room/RoomLocation'
 import { infoStyle } from 'room/style'
+import RoomInspector from './RoomInspector'
 
 interface RoomPathScannerConfig {
   maxCost: number
@@ -12,6 +13,7 @@ export default class RoomPathScanner {
   private infos: { [key: string]: RoomNeighbourPath | undefined } = {}
   private scanned: { [key: string]: 1 | undefined } = {}
   private traversedTick: number = 0
+  private toBeTraversed?: string
 
   constructor(room: Room, config: RoomPathScannerConfig) {
     this.room = room
@@ -25,6 +27,10 @@ export default class RoomPathScanner {
 
   get rooms() {
     return this.infos
+  }
+
+  get scanTarget() {
+    return this.toBeTraversed
   }
 
   private traverse() {
@@ -60,6 +66,7 @@ export default class RoomPathScanner {
     if (!room) {
       const observer = this.room.observer
       if (observer) observer.observeRoom(roomName)
+      else this.toBeTraversed = roomName
       this.room.visual.text('Trying to scan room ' + roomName, 0, 11, infoStyle)
       // TODO else send scouts here
     }
@@ -72,27 +79,8 @@ export default class RoomPathScanner {
     const roomLocation = new RoomLocation(pos.roomName)
     const currentRoomPath = this.infos[pos.roomName]
     const baseCost = currentRoomPath ? currentRoomPath.cost : 0
-    if (currentRoomPath) {
-      currentRoomPath.owner = room.owner
-      const controller = room.controller
-      if ((currentRoomPath.controller = !!controller)) {
-        const path = pos.findPathTo(controller!, {
-          maxRooms: 1,
-          ignoreCreeps: true,
-        })
-        const aim = path[path.length - 1]
-        currentRoomPath.controllerFortified =
-          aim.x !== controller!.pos.x && aim.y !== controller!.pos.y
-      }
-      currentRoomPath.sources = room.find(FIND_SOURCES).length
-      currentRoomPath.safe =
-        currentRoomPath.safe !== false &&
-        (room.owner === this.room.owner ||
-          !room
-            .find(FIND_STRUCTURES)
-            .filter((s) => s.structureType === STRUCTURE_TOWER && s.isActive())
-            .length)
-    }
+    if (currentRoomPath)
+      new RoomInspector(room).inspectInto(this.room, currentRoomPath, pos)
     scanResult.forEach((path) => {
       const roomName = roomLocation.getNeighbour(path.dir)
       const existingPath = this.infos[roomName]

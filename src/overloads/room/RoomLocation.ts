@@ -30,6 +30,18 @@ export default class RoomLocation {
     return roomName
   }
 
+  findRoomPathStep(current: string, to: string) {
+    const rooms = Game.rooms[this.roomName].pathScanner.rooms
+    let room = rooms[to]
+    let next = to
+    while (next !== current) {
+      room = rooms[next]
+      if (!room) return
+      next = room.through
+    }
+    return room
+  }
+
   private getIndex(): [number, number] {
     let [, w, x, h, y] = this.roomName.split(/(W|E|N|S)/)
     let xPos = parseInt(x)

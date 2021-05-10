@@ -12,6 +12,11 @@ interface ClaimerMemory extends CreepMemory {
   _arrive?: string
 }
 
+function arriveToClaimedRoom(creep: Claimer) {
+  creep.memory.state = State.ARRIVE
+  creep.memory._arrive = Memory.rooms[creep.memory.room][RoomMemoryKeys.claim]
+}
+
 export default function run(creep: Claimer) {
   switch (creep.memory.state) {
     case State.ARRIVE:
@@ -22,13 +27,19 @@ export default function run(creep: Claimer) {
       }
       break
     case State.CLAIMING:
+      if (
+        Memory.rooms[creep.memory.room][RoomMemoryKeys.claim] !==
+        creep.room.name
+      ) {
+        arriveToClaimedRoom(creep)
+        break
+      }
       switch (claim(creep)) {
         case NOTHING_TODO:
-          creep.memory.state = State.ARRIVE
-          creep.memory._arrive = Memory.rooms[creep.memory.room]._claim
+          arriveToClaimedRoom(creep)
           break
         case DONE:
-          delete Memory.rooms[creep.memory.room]._claim
+          delete Memory.rooms[creep.memory.room][RoomMemoryKeys.claim]
           creep.memory.state = State.DESTRUCT
           global.Cache.ownedRooms = (global.Cache.ownedRooms || 0) + 1
           break
@@ -43,8 +54,7 @@ export default function run(creep: Claimer) {
       }
       break
     default: {
-      creep.memory.state = State.ARRIVE
-      creep.memory._arrive = Memory.rooms[creep.memory.room]._claim
+      arriveToClaimedRoom(creep)
     }
   }
 }

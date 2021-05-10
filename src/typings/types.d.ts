@@ -116,7 +116,10 @@ interface RoomMemory {
   creeps?: {
     [key: string]: 0
   }
-  _claim?: string
+  /**
+   * Claim target for this room
+   */
+  c?: string
   _claimer?: string
   _claimed?: string[]
   _dismantle?: string

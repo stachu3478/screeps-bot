@@ -1,13 +1,17 @@
-import { DONE, FAILED } from 'constants/response'
-import exit from 'routine/exit'
-import scout from 'routine/military/scout'
+import { DONE } from 'constants/response'
+import arrive from 'routine/arrive'
 
 export interface Scout extends Creep {
   cache: ScoutCache
+  memory: ScoutMemory
 }
 
 interface ScoutCache extends CreepCache {
   exit: string
+}
+
+interface ScoutMemory extends CreepMemory {
+  _arrive?: string
 }
 
 export default function run(creep: Scout) {
@@ -16,23 +20,15 @@ export default function run(creep: Scout) {
       creep.notifyWhenAttacked(false)
       creep.memory.state = State.SCOUT
       break
-    case State.EXIT:
-      switch (exit(creep)) {
+    case State.SCOUT:
+      creep.memory._arrive = creep.motherRoom.pathScanner.scanTarget
+      switch (arrive(creep)) {
         case DONE:
-          creep.memory.state = State.SCOUT
+          creep.memory.state = State.IDLE
           break
       }
       break
-    case State.SCOUT:
-      switch (scout(creep)) {
-        case FAILED:
-          creep.memory.state = State.EXIT
-          break
-        case DONE:
-          Memory.rooms[creep.memory.room]._claim = creep.room.name
-          creep.memory.state = State.EXIT
-          break
-      }
+    case State.IDLE:
       break
     default:
       creep.memory.state = State.INIT

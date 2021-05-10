@@ -29,13 +29,15 @@ export const loop = () => {
       addFirstRoom()
       let usage = Game.cpu.getUsed()
       roomVisual.text('Memory overhead: ' + usage.toFixed(3), 0, 49, infoStyle)
+      const roomsToRemove = new Set()
       for (const name in Memory.myRooms) {
         const room = Game.rooms[name]
         if (room) {
           if (room.controller) usage += run(room.controller, usage)
-          else delete Memory.myRooms[name]
+          else roomsToRemove.add(name)
         }
       }
+      for (const room of roomsToRemove) delete Memory.myRooms[room]
 
       if (Memory.debugStructures)
         for (const name in Memory.myRooms) {
@@ -53,6 +55,7 @@ export const loop = () => {
   memHackAfterLoop()
   saveCpuUsage()
   const target = ClaimPlanner.instance.target
-  if (target) console.log(JSON.stringify(target))
+  if (target)
+    Game.rooms[target.source].memory[RoomMemoryKeys.claim] = target.target
   if (error) throw error
 }

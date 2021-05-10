@@ -8,6 +8,7 @@ const enum Keys {
   buildTarget = 'b',
   buildingRoute = 'c',
   repairTarget = 'r',
+  roomPath = 'R',
 }
 
 const enum RoomMemoryKeys {
@@ -16,6 +17,7 @@ const enum RoomMemoryKeys {
   defenceHoldingTimer = 'D',
   ekhaust = 'e',
   roomNeighbourPaths = 'p',
+  claim = 'c',
 }
 
 const enum ShardMemoryKeys {

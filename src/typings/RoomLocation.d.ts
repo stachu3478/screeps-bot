@@ -1,6 +1,7 @@
 declare class RoomLocation {
   x: number
   y: number
+  findRoomPathStep(current: string, to: string): RoomNeighbourPath | undefined
   getNeighbour(
     direction:
       | FIND_EXIT_TOP

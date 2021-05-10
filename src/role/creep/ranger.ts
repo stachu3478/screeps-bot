@@ -1,8 +1,7 @@
-import { DONE, NOTHING_TODO, FAILED } from 'constants/response'
+import { DONE, NOTHING_TODO } from 'constants/response'
 import arrive from 'routine/arrive'
 import heal from 'routine/military/heal'
 import rangedAttack from 'routine/military/rangedAttack'
-import { requestHaul } from 'routine/military/scout'
 
 export interface Ranger extends Creep {
   memory: RangerMemory
