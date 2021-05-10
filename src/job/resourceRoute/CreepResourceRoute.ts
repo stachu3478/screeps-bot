@@ -5,6 +5,7 @@ import dumpResources from '../dumpResources'
 import { NOTHING_DONE, SUCCESS } from 'constants/response'
 import move from 'utils/path'
 import CreepMemoized from 'utils/CreepMemoized'
+import RoomResourceRoute from './RoomResourceRoute'
 
 export interface TransferCreep extends Creep {
   memory: TransferMemory
@@ -18,11 +19,13 @@ interface TransferMemory extends CreepMemory {
 }
 
 const ignoreCreeps = { ignoreCreeps: true }
+const SOURCE = 1
+const TARGET = 2
 export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
   private room: Room
-  private resourceRoute: ResourceRoute
+  private resourceRoute: RoomResourceRoute
 
-  constructor(creep: TransferCreep, resourceRoute: ResourceRoute) {
+  constructor(creep: TransferCreep, resourceRoute: RoomResourceRoute) {
     super(creep)
     this.room = creep.motherRoom
     this.resourceRoute = resourceRoute
@@ -60,8 +63,7 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
 
   private drawAndFill() {
     const creep = this.creep
-    if (creep.name !== 'J12') return
-    const target = this.findStructureToFill() as AnyStoreStructure | null
+    const [source, target] = this.findSourceAndTarget()
     if (!target) return false
     creep.memory[Keys.fillTarget] = target.id
     const route = this.resourceRoute
@@ -96,17 +98,39 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
     }
   }
 
-  private findStructureToDraw() {
+  private findSourceAndTarget() {
     const route = this.resourceRoute
+    const source = this.source
+    const target = this.target
+    if (source && target) {
+      const result = route.reloadSourceAndTarget(source, target)
+      if (source === result[0][0][0] && target === result[1][0][0])
+        return [source, target]
+    }
+    const result = route.findSourcesAndTargets()
+    if (!result[0].length || !result[1].length) return
+    const nearestSource = this.closest(result[0].map((s) => s[0]))
+    const sourceWithResources = result[0].find((s) => s[0] === nearestSource)!
+    const targets = route.selectTargetsBySource(sourceWithResources, result[1])
+    const nearestTarget = this.closest(targets.map((s) => s[0]))
+    const targetWithResources = targets.find((s) => s[0] === nearestTarget)!
+    return [sourceWithResources, targetWithResources]
+  }
+
+  private closest(s: AnyStoreStructure[]) {
+    return this.creep.pos.findClosestByPath(s, ignoreCreeps)
+  }
+
+  private get source() {
     const memory = this.creep.memory
     const id = memory[Keys.drawSource]
-    const memorizedStructure = id && Game.getObjectById(id)
-    if (memorizedStructure && route.validateSource(memorizedStructure))
-      return memorizedStructure
-    return this.creep.pos.findClosestByPath(
-      route.findSources(this.room),
-      ignoreCreeps,
-    )
+    return id && Game.getObjectById(id)
+  }
+
+  private get target() {
+    const memory = this.creep.memory
+    const id = memory[Keys.fillTarget]
+    return id && Game.getObjectById(id)
   }
 
   private findStructureToFill(differ?: AnyStoreStructure) {

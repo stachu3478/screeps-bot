@@ -10,14 +10,12 @@ export default class ResourceMatcher {
   findStored(withdrawable: Withdrawable, minAmount: number) {
     const rule = this.rule
     if (typeof rule === 'string')
-      return this.storesResource(withdrawable, rule, minAmount)
-        ? rule
-        : undefined
-    return Object.keys(withdrawable.store).find((r) => {
+      return this.storesResource(withdrawable, rule, minAmount) ? [rule] : []
+    return Object.keys(withdrawable.store).filter((r) => {
       const resource = r as ResourceConstant
       if (!rule(resource)) return false
       return this.storesResource(withdrawable, resource, minAmount)
-    }) as ResourceConstant | undefined
+    }) as ResourceConstant[]
   }
 
   findCanBeFilled(
@@ -33,9 +31,9 @@ export default class ResourceMatcher {
         minFree,
         maxFilled,
       )
-        ? rule
-        : undefined
-    return Object.keys(withdrawable.store).find((r) => {
+        ? [rule]
+        : []
+    return Object.keys(withdrawable.store).filter((r) => {
       const resource = r as ResourceConstant
       if (!rule(resource)) return false
       return this.canBeFilledWithResource(
@@ -44,7 +42,7 @@ export default class ResourceMatcher {
         minFree,
         maxFilled,
       )
-    }) as ResourceConstant | undefined
+    }) as ResourceConstant[]
   }
 
   private storesResource(

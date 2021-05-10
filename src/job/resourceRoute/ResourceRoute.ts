@@ -1,4 +1,4 @@
-import StructureMatcher, { StructureSelector } from './matcher/structureMatcher'
+import StructureMatcher from './matcher/structureMatcher'
 import ResourceMatcher from './matcher/ResourceMatcher'
 import { StoreStructureSelector } from '../selector/StoreStructureSelector'
 
@@ -42,25 +42,11 @@ interface ResourceRouteOptions {
 
 export default class ResourceRoute {
   private options: ResourceRouteOptions
-  private sourceMatcher: StructureMatcher
-  private targetMatcher: StructureMatcher
   private resourceMatcher: ResourceMatcher
 
   constructor(options: ResourceRouteOptions) {
     this.options = options
-    this.sourceMatcher = new StructureMatcher(this.options.from)
-    this.targetMatcher = new StructureMatcher(this.options.to)
     this.resourceMatcher = new ResourceMatcher(this.options.type)
-  }
-
-  findSources(room: Room, differ?: Structure) {
-    const match = this.sourceMatcher.call(room) as AnyStoreStructure[]
-    return match.filter((s) => s !== differ && this.validateSource(s))
-  }
-
-  findTargets(room: Room, differ?: Structure) {
-    const match = this.targetMatcher.call(room) as AnyStoreStructure[]
-    return match.filter((s) => s !== differ && this.validateTarget(s))
   }
 
   /**
@@ -68,7 +54,7 @@ export default class ResourceRoute {
    */
   validateSource(s: AnyStoreStructure) {
     const minAmount = Math.max(this.minimalStoreToDraw, this.options.keep || 0)
-    return !!this.resourceMatcher.findStored(s, minAmount)
+    return !!this.resourceMatcher.findStored(s, minAmount).length
   }
 
   /**
@@ -77,7 +63,7 @@ export default class ResourceRoute {
   validateTarget(s: AnyStoreStructure) {
     const minFree = this.minimalFreeCapacityToFill
     const maxFilled = this.options.maximumFilledAmount
-    return !!this.resourceMatcher.findCanBeFilled(s, minFree, maxFilled)
+    return !!this.resourceMatcher.findCanBeFilled(s, minFree, maxFilled).length
   }
 
   drawAmount(source: AnyStoreStructure, resource: ResourceConstant) {
@@ -122,6 +108,26 @@ export default class ResourceRoute {
 
   get dump() {
     return !!this.options.dump
+  }
+
+  get minStored() {
+    return Math.max(this.minimalStoreToDraw, this.options.keep || 0)
+  }
+
+  get maximumFilledAmount() {
+    return this.options.maximumFilledAmount
+  }
+
+  get from() {
+    return new StructureMatcher(this.options.from)
+  }
+
+  get to() {
+    return new StructureMatcher(this.options.to)
+  }
+
+  get resource() {
+    return this.resourceMatcher
   }
 
   /*get drawMoreThanCanBeFilled() {
