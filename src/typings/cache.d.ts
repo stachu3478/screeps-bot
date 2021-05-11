@@ -18,6 +18,7 @@ interface RoomCache {
   leastAvailablePosition?: string
   pathScanner?: RoomPathScanner
   enemyDetector?: EnemyRoomDetector
+  boosts?: BoostManager
 
   labCooldown?: number
 }

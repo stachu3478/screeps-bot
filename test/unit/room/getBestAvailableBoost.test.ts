@@ -2,10 +2,10 @@ import _ from 'lodash'
 import sinon from 'sinon'
 import boostData from '../mock/boostData'
 import { expect } from '../../expect'
+import BoostManager from 'overloads/room/BoostManager'
 
 describe('Getting best option for boosting action', () => {
   let room: Room
-  let boosts: BoostData
   let lab: StructureLab
   beforeEach(() => {
     // runs before each test in this block
@@ -13,13 +13,10 @@ describe('Getting best option for boosting action', () => {
     global.Game = _.clone(Game)
     // @ts-ignore : allow adding Memory to global
     global.Memory = _.clone(Memory)
-    boosts = boostData()
-    room = { getBoosts: () => boosts } as Room
-    room.getBestAvailableBoost = Room.prototype.getBestAvailableBoost
-    room.getAvailableBoosts = Room.prototype.getAvailableBoosts
-    room.getAmountReserved = Room.prototype.getAmountReserved
-
-    room.getBoosts = () => boosts
+    room = {} as Room
+    room.memory = {} as RoomMemory
+    room.memory.boosts = boostData()
+    room.boosts = new BoostManager(room)
     room.terminal = {
       store: {
         [RESOURCE_GHODIUM_HYDRIDE]: 300,
@@ -35,7 +32,7 @@ describe('Getting best option for boosting action', () => {
     it('should return null', function () {
       delete room.terminal
       expect(
-        room.getBestAvailableBoost('work', 'upgradeController', 10),
+        room.boosts.getBestAvailable('work', 'upgradeController', 10),
       ).to.eql(null)
     })
   })
@@ -44,7 +41,7 @@ describe('Getting best option for boosting action', () => {
     it('should return null', function () {
       room.externalLabs = []
       expect(
-        room.getBestAvailableBoost('work', 'upgradeController', 10),
+        room.boosts.getBestAvailable('work', 'upgradeController', 10),
       ).to.eql(null)
     })
   })
@@ -54,7 +51,7 @@ describe('Getting best option for boosting action', () => {
       room.terminal = room.terminal || ({} as StructureTerminal)
       room.terminal.store[RESOURCE_GHODIUM_HYDRIDE] = 0
       expect(
-        room.getBestAvailableBoost('work', 'upgradeController', 10),
+        room.boosts.getBestAvailable('work', 'upgradeController', 10),
       ).to.eql(null)
     })
   })
@@ -62,7 +59,7 @@ describe('Getting best option for boosting action', () => {
   describe('only weakiest resource in terminal', () => {
     it('should return the weakiest resource', function () {
       expect(
-        room.getBestAvailableBoost('work', 'upgradeController', 10),
+        room.boosts.getBestAvailable('work', 'upgradeController', 10),
       ).to.eql({
         resource: RESOURCE_GHODIUM_HYDRIDE,
         partCount: 300 / LAB_BOOST_MINERAL,
@@ -75,7 +72,7 @@ describe('Getting best option for boosting action', () => {
       room.terminal = room.terminal || ({} as StructureTerminal)
       room.terminal.store[RESOURCE_GHODIUM_ACID] = 300
       expect(
-        room.getBestAvailableBoost('work', 'upgradeController', 10),
+        room.boosts.getBestAvailable('work', 'upgradeController', 10),
       ).to.eql({
         resource: RESOURCE_GHODIUM_ACID,
         partCount: 300 / LAB_BOOST_MINERAL,
@@ -89,7 +86,7 @@ describe('Getting best option for boosting action', () => {
       room.terminal.store[RESOURCE_GHODIUM_HYDRIDE] = 3000
       room.terminal.store[RESOURCE_GHODIUM_ACID] = 300
       expect(
-        room.getBestAvailableBoost('work', 'upgradeController', 10),
+        room.boosts.getBestAvailable('work', 'upgradeController', 10),
       ).to.eql({
         resource: RESOURCE_GHODIUM_ACID,
         partCount: 300 / LAB_BOOST_MINERAL,
@@ -103,7 +100,7 @@ describe('Getting best option for boosting action', () => {
       room.terminal.store[RESOURCE_GHODIUM_HYDRIDE] = 3000
       room.terminal.store[RESOURCE_GHODIUM_ACID] = 300
       expect(
-        room.getBestAvailableBoost('work', 'upgradeController', 100),
+        room.boosts.getBestAvailable('work', 'upgradeController', 100),
       ).to.eql({
         resource: RESOURCE_GHODIUM_HYDRIDE,
         partCount: 3000 / LAB_BOOST_MINERAL,

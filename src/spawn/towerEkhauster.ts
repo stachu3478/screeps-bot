@@ -20,7 +20,7 @@ export function spawnTowerEkhauster(spawn: StructureSpawn) {
     const required = Math.ceil(
       (toughBoosts[b].damage * requiredToughHits) / 100,
     )
-    const available = room.getAvailableBoosts(b, required)
+    const available = room.boosts.getAvailable(b, required)
     const canBeUsed = available === required
     if (available === required) toughPartCount = required
     return canBeUsed
@@ -34,7 +34,7 @@ export function spawnTowerEkhauster(spawn: StructureSpawn) {
     const required = Math.ceil(
       (damage * requiredHeal) / (HEAL_POWER * healBoosts[b].heal),
     )
-    const available = room.getAvailableBoosts(b, required)
+    const available = room.boosts.getAvailable(b, required)
     const canBeUsed = available === required
     if (canBeUsed) healPartCount = required
     return canBeUsed
@@ -45,7 +45,7 @@ export function spawnTowerEkhauster(spawn: StructureSpawn) {
   let movePartCount = toughPartCount + healPartCount
   const moveBoost = moveKeys.find((b) => {
     const required = Math.ceil(movePartCount / moveBoosts[b].fatigue)
-    const available = room.getAvailableBoosts(b, required)
+    const available = room.boosts.getAvailable(b, required)
     const canBeUsed = available === required
     if (canBeUsed) movePartCount = required
     return canBeUsed
@@ -66,10 +66,10 @@ export function spawnTowerEkhauster(spawn: StructureSpawn) {
   }
   const creepName = 'E' + spawn.name
   if (toughBoost)
-    room.createBoostRequest(creepName, toughBoost, toughPartCount, true)
+    room.boosts.createRequest(creepName, toughBoost, toughPartCount, true)
   if (healBoost)
-    room.createBoostRequest(creepName, healBoost, healPartCount, true)
+    room.boosts.createRequest(creepName, healBoost, healPartCount, true)
   if (moveBoost)
-    room.createBoostRequest(creepName, moveBoost, movePartCount, true)
+    room.boosts.createRequest(creepName, moveBoost, movePartCount, true)
   spawn.trySpawnCreep(body, creepName, memory, false, 10)
 }

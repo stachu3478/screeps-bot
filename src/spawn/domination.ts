@@ -11,7 +11,7 @@ export default function domination(
     spawn.room.energyCapacityAvailable,
     mem._attackLevel || 3,
   )
-  const boostRequests = spawn.room.prepareBoostData(
+  const boostRequests = spawn.room.boosts.prepareData(
     memory,
     [HEAL, TOUGH],
     ['heal', 'damage'],

@@ -5,6 +5,7 @@ const fortificationsAndRoads: Record<string, 1 | undefined> = {
   [STRUCTURE_RAMPART]: 1,
   [STRUCTURE_ROAD]: 1,
   [STRUCTURE_WALL]: 1,
+  [STRUCTURE_CONTAINER]: 1,
 }
 const fortifications: Record<string, 1 | undefined> = {
   [STRUCTURE_RAMPART]: 1,

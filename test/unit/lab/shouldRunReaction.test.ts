@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import { expect } from '../../expect'
+import BoostManager from 'overloads/room/BoostManager'
 
 describe('When lab system is in producing state', () => {
   let room: Room
@@ -35,7 +36,8 @@ describe('When lab system is in producing state', () => {
       ],
       creeps: [],
     }
-    lab.room = { getBoosts: () => stubBoostData } as Room
+    lab.room = {} as Room
+    lab.room.boosts = stubBoostData as BoostManager
     expect(lab.shouldRunReaction(RESOURCE_UTRIUM_HYDRIDE, 1)).to.eql(true)
   })
 
@@ -48,7 +50,8 @@ describe('When lab system is in producing state', () => {
       ],
       creeps: [],
     }
-    lab.room = { getBoosts: () => stubBoostData } as Room
+    lab.room = {} as Room
+    lab.room.boosts = stubBoostData as BoostManager
     expect(lab.shouldRunReaction(RESOURCE_UTRIUM_HYDRIDE, 1)).to.eql(true)
   })
 
@@ -61,7 +64,8 @@ describe('When lab system is in producing state', () => {
       ],
       creeps: [],
     }
-    lab.room = { getBoosts: () => stubBoostData } as Room
+    lab.room = {} as Room
+    lab.room.boosts = stubBoostData as BoostManager
     expect(lab.shouldRunReaction(RESOURCE_UTRIUM_HYDRIDE, 1)).to.eql(false)
   })
 })

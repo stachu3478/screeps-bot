@@ -81,7 +81,7 @@ StructureSpawn.prototype.trySpawnCreep = function (
     if (memory.role === Role.MINER)
       this.room.sources.assign(name, cache.sourceId)
     boost.forEach((data) => {
-      this.room.createBoostRequest(name, data.resource, data.partCount)
+      this.room.boosts.createRequest(name, data.resource, data.partCount)
     })
     delete cache.sourceId
     delete cache.trySpawn

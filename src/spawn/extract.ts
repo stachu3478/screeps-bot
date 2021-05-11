@@ -17,7 +17,7 @@ export default function extract(spawn: StructureSpawn) {
     deprivity: 0,
   }
   const body = progressiveWorker(spawn.room.energyCapacityAvailable)
-  const boostRequests = spawn.room.prepareBoostData(
+  const boostRequests = spawn.room.boosts.prepareData(
     memory,
     [CARRY, WORK],
     ['capacity', 'harvest'],

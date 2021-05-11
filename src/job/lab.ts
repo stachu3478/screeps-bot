@@ -28,7 +28,7 @@ const labJobs = {
   collectResources: (creep: LabManager, labs: StructureLab[]) => {
     return labs.some((lab, i) => {
       const mineralType = lab.mineralType
-      const labBoostData = lab.room.getBoosts().labs[i]
+      const labBoostData = lab.room.boosts.labs[i]
       if (
         mineralType &&
         lab.store[mineralType] > 0 &&
@@ -122,7 +122,7 @@ const labJobs = {
     return false
   },
   prepareBoostResources: (creep: LabManager, externalLabs: StructureLab[]) => {
-    const boostData = creep.room.getBoosts()
+    const boostData = creep.room.boosts
     if (boostData.labs.length === 0) return false
     return boostData.labs.some((labBoostData, index) => {
       const lab = externalLabs[index]

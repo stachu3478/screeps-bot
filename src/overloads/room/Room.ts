@@ -1,5 +1,4 @@
 import './buildingManagement'
-import './boostManagement'
 
 import defineGetter from 'utils/defineGetter'
 import SourceHandler from 'handler/SourceHandler'
@@ -16,6 +15,7 @@ import RoomPathScanner from 'planner/RoomPathScanner'
 import enemies from 'config/enemies'
 import EnemyRoomDetector from 'planner/EnemyRoomDetector'
 import claim from 'config/claim'
+import BoostManager from './BoostManager'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -209,6 +209,10 @@ defineRoomGetter('enemyDetector', (self) => {
     self.cache.enemyDetector ||
     (self.cache.enemyDetector = new EnemyRoomDetector(self))
   )
+})
+
+defineRoomGetter('boosts', (self) => {
+  return self.cache.boosts || (self.cache.boosts = new BoostManager(self))
 })
 
 Room.prototype.store = function (resource: ResourceConstant) {

@@ -42,7 +42,7 @@ export default function spawnUpgrader(
     room: spawn.room.name,
     deprivity: 0,
   }
-  const boostRequests = spawn.room.prepareBoostData(
+  const boostRequests = spawn.room.boosts.prepareData(
     creepMemory,
     [CARRY, WORK],
     ['capacity', 'upgradeController'],

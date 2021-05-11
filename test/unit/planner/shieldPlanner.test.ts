@@ -2,7 +2,6 @@ import '../constants'
 import _ from 'lodash'
 import { Memory } from '../mock'
 import Game from '../mock/Game'
-import RoomPosition from '../mock/RoomPosition'
 import { expect } from '../../expect'
 import ShieldPlanner from 'planner/shieldPlanner'
 import { posToChar, roomPos } from 'planner/pos'
@@ -23,6 +22,8 @@ describe('ShieldPlanner', () => {
   })
 
   it('room positions match those in memory', () => {
+    room.sources = {} as SourceHandler
+    room.sources.colonyPosition = new RoomPosition(12, 34, 'test')
     const shieldPlanner = new ShieldPlanner(room)
     expect(shieldPlanner.roomPositions.map(posToChar).join('')).to.equal(
       room.memory[RoomMemoryKeys.shields],

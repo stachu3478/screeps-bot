@@ -21,7 +21,7 @@ export default function spawnStaticUpgrader(
     room: room.name,
     deprivity,
   }
-  const boostRequests = room.prepareBoostData(
+  const boostRequests = room.boosts.prepareData(
     creepMemory,
     [CARRY, WORK],
     ['capacity', 'upgradeController'],

@@ -37,7 +37,7 @@ export const loop = () => {
           else roomsToRemove.add(name)
         }
       }
-      for (const room of roomsToRemove) delete Memory.myRooms[room]
+      for (const room in roomsToRemove) delete Memory.myRooms[room]
 
       if (Memory.debugStructures)
         for (const name in Memory.myRooms) {

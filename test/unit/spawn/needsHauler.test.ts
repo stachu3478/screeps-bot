@@ -22,7 +22,9 @@ describe('spawn/needsHauler', () => {
 
     context('when room has storage', () => {
       beforeEach(() => {
-        spawn = { room: { storage: {}, name: 'myRoom' } } as StructureSpawn
+        spawn = {
+          room: { storage: {}, name: 'myRoom', memory: {} },
+        } as StructureSpawn
       })
 
       context('when extensions are filled with energy', () => {
@@ -74,7 +76,7 @@ describe('spawn/needsHauler', () => {
 
     context('when room has no storage', () => {
       beforeEach(() => {
-        spawn = { room: { filled: true } } as StructureSpawn
+        spawn = { room: { filled: true, memory: {} } } as StructureSpawn
       })
 
       it('returns false - hauler cannot have a big container to fill', () => {

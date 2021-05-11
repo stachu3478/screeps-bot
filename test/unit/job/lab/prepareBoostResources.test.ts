@@ -17,7 +17,7 @@ describe('Finding boost-preparing job', () => {
     // @ts-ignore : allow adding Memory to global
     global.Memory = _.clone(Memory)
     boostData = boostMock()
-    creep = { room: { getBoosts: () => boostData } } as LabManager
+    creep = { room: { boosts: boostData } } as LabManager
     lab = {} as StructureLab
     sinon.restore()
   })
