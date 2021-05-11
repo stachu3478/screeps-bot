@@ -30,11 +30,20 @@ export default class CreepCorpus extends CreepMemoized<Creep> {
   }
 
   get healPower() {
-    return 0 // todo
+    return this.creep.body.reduce(
+      (total, p) => total + this.partHealPower(p),
+      0,
+    )
   }
 
   get rangedHealPower() {
-    return 0 // todo
+    return this.healPower * (RANGED_HEAL_POWER / HEAL_POWER)
+  }
+
+  private partHealPower(part: Creep['body'][0]) {
+    if (part.type !== HEAL || !part.hits) return 0
+    if (!part.boost) return HEAL_POWER
+    return BOOSTS.heal[part.boost].heal * HEAL_POWER
   }
 
   private computeBodyPartHitThresholdAndCount() {

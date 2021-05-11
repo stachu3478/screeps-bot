@@ -1,14 +1,16 @@
-import '../constants'
-import '../../../src/overloads/all'
-import sinon from 'sinon'
-import { expect, assert } from '../../../expect'
+import '../../constants'
+import '../../../../src/overloads/all'
+import { expect } from '../../../expect'
 import CreepCorpus from 'overloads/creep/CreepCorpus'
 
 describe('CreepCorpus', () => {
   let creep: Creep
   let corpus: CreepCorpus
   beforeEach(() => {
-    creep = {} as Creep
+    // @ts-ignore : allow adding Game to global
+    global.Game = _.clone(Game)
+    creep = { name: 'test' } as Creep
+    Game.creeps[creep.name] = creep
   })
 
   describe('#count', () => {
@@ -181,18 +183,71 @@ describe('CreepCorpus', () => {
     })
   })
 
-  /*describe('healPower', () => {
-    beforeEach(() => {
-      creep.body = [
-        { type: HEAL, hits: 100 },
-        { type: HEAL, hits: 100 },
-        { type: HEAL, hits: 100 },
-      ]
-      creep.hits = 300
+  describe('healPower', () => {
+    context('not boosted and healed', () => {
+      beforeEach(() => {
+        creep.body = [
+          { type: HEAL, hits: 100 },
+          { type: HEAL, hits: 100 },
+          { type: HEAL, hits: 100 },
+          { type: MOVE, hits: 100 },
+        ]
+        creep.hits = 300
+      })
+
+      it('returns 36', () => {
+        expect(corpus.healPower).to.eq(36)
+      })
     })
 
-    it('returns 36', () => {
-      expect(creep.healPower).to.eq(36)
+    context('not boosted and not healed', () => {
+      beforeEach(() => {
+        creep.body = [
+          { type: HEAL, hits: 0 },
+          { type: HEAL, hits: 1 },
+          { type: HEAL, hits: 100 },
+          { type: MOVE, hits: 100 },
+        ]
+        creep.hits = 300
+      })
+
+      it('returns 24', () => {
+        expect(corpus.healPower).to.eq(24)
+      })
     })
-  })*/
+
+    context('boosted and not healed', () => {
+      beforeEach(() => {
+        creep.body = [
+          { type: HEAL, hits: 0, boost: 'LHO2' },
+          { type: HEAL, hits: 1, boost: 'LO' },
+          { type: HEAL, hits: 100, boost: 'XLHO2' },
+          { type: MOVE, hits: 100 },
+        ]
+        creep.hits = 300
+      })
+
+      it('returns 72', () => {
+        expect(corpus.healPower).to.eq(72)
+      })
+    })
+  })
+
+  describe('rangedHealPower', () => {
+    context('boosted and not healed', () => {
+      beforeEach(() => {
+        creep.body = [
+          { type: HEAL, hits: 0, boost: 'LHO2' },
+          { type: HEAL, hits: 1, boost: 'LO' },
+          { type: HEAL, hits: 100, boost: 'XLHO2' },
+          { type: MOVE, hits: 100 },
+        ]
+        creep.hits = 300
+      })
+
+      it('returns 72 divided by 3 as ranged is 3 times weakier than indirect', () => {
+        expect(corpus.rangedHealPower).to.eq(72 / 3)
+      })
+    })
+  })
 })
