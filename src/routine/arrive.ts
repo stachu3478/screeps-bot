@@ -23,10 +23,8 @@ export default function arrive(
   if (journal) keepJournal(creep)
   const memory = creep.memory
   const targetRoom = memory._arrive
-  console.log(targetRoom)
   if (!targetRoom) return NOTHING_TODO
   const result = creep.moveToRoom(targetRoom)
-  console.log(result)
   if (result === ERR_NOT_FOUND) return NOTHING_TODO
   if (creep.room.name === targetRoom && result === 0) {
     delete creep.memory._arrive

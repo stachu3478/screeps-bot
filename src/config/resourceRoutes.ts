@@ -26,6 +26,7 @@ export default [
     to: (room: Room) => room.spawnsAndExtensions,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
+    minimalFreeCapacityToFill: 1,
   },
   // fill everything with energy from storage
   {

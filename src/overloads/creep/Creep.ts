@@ -61,12 +61,12 @@ Creep.prototype.safeRangeXY = function (x: number, y: number) {
 
 Creep.prototype.moveToRoom = function (room: string) {
   let target = this.memory[Keys.roomPath]
-  if (!target || target[0] !== this.room.name) {
+  if (!target || target[0] !== this.room.name || target[1] !== room) {
     const pathStep = this.room.location.findRoomPathStep(this.room.name, room)
     if (!pathStep) return ERR_NOT_FOUND
-    target = this.memory[Keys.roomPath] = [this.room.name, pathStep]
+    target = this.memory[Keys.roomPath] = [this.room.name, room, pathStep]
   }
-  const roomPathStep = target[1]
+  const roomPathStep = target[2]
   const pos = new RoomPosition(
     roomPathStep.x,
     roomPathStep.y,

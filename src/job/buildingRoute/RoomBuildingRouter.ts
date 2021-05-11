@@ -34,6 +34,10 @@ export default class RoomBuildingRouter {
     }
   }
 
+  get found() {
+    return this.hadJob
+  }
+
   get routes() {
     return this.roomRoutes
   }

@@ -38,7 +38,7 @@ interface CreepMemory {
   /**
    * Creep room path step
    */
-  R?: [string, RoomNeighbourPath]
+  R?: [string, string, RoomNeighbourPath]
 }
 
 interface Stats {

@@ -1,8 +1,9 @@
 import _, { Dictionary } from 'lodash'
 import CreepMemoized from 'utils/CreepMemoized'
+import Memoized from 'utils/Memoized'
 
 const CREEP_BODY_HITS = 100
-export default class CreepCorpus extends CreepMemoized<Creep> {
+export default class CreepCorpus extends Memoized<Creep> {
   private bodyPartCount: { [key: string]: number | undefined } = {}
   private hitThresholds: Dictionary<number> = {}
 
@@ -16,11 +17,11 @@ export default class CreepCorpus extends CreepMemoized<Creep> {
   }
 
   hasActive(type: BodyPartConstant) {
-    return this.creep.hits > this.hitThresholds[type]
+    return this.object!.hits > this.hitThresholds[type]
   }
 
   healPowerTo(creep: _HasRoomPosition) {
-    const range = this.creep.pos.getRangeTo(creep)
+    const range = this.object!.pos.getRangeTo(creep)
     if (range > 3) return 0
     if (range > 1) return this.rangedHealPower
     return this.healPower
@@ -37,7 +38,7 @@ export default class CreepCorpus extends CreepMemoized<Creep> {
   }
 
   get healPower() {
-    return this.creep.body.reduce((sum, p) => sum + this.partHealPower(p), 0)
+    return this.object!.body.reduce((sum, p) => sum + this.partHealPower(p), 0)
   }
 
   get rangedHealPower() {
@@ -45,11 +46,17 @@ export default class CreepCorpus extends CreepMemoized<Creep> {
   }
 
   get attackPower() {
-    return this.creep.body.reduce((sum, p) => sum + this.partAttackPower(p), 0)
+    return this.object!.body.reduce(
+      (sum, p) => sum + this.partAttackPower(p),
+      0,
+    )
   }
 
   get rangedAttackPower() {
-    return this.creep.body.reduce((sum, p) => sum + this.partRangedPower(p), 0)
+    return this.object!.body.reduce(
+      (sum, p) => sum + this.partRangedPower(p),
+      0,
+    )
   }
 
   private partHealPower(part: Creep['body'][0]) {
@@ -73,7 +80,7 @@ export default class CreepCorpus extends CreepMemoized<Creep> {
   private computeBodyPartHitThresholdAndCount() {
     const minUnreachableHits = MAX_CREEP_SIZE * CREEP_BODY_HITS + 1
     const dict = _.mapValues(BODYPART_COST, (_) => minUnreachableHits)
-    this.creep.body.reverse().forEach((part, i) => {
+    this.object!.body.reverse().forEach((part, i) => {
       const type = part.type
       dict[type] = Math.min(i * CREEP_BODY_HITS, dict[type])
       if (!this.bodyPartCount[type]) this.bodyPartCount[type] = 0
