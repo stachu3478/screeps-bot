@@ -3,6 +3,7 @@ import defineGetter from 'utils/defineGetter'
 import ResourceRouteProcessor from 'job/resourceRoute/ResourceRouteProcessor'
 import BuildingRouteProcessor from 'job/buildingRoute/BuildingRouteProcessor'
 import RepairRouteProcessor from 'job/repairRoute/RepairRouteProcessor'
+import move from 'utils/path'
 
 function defineCreepGetter<T>(property: string, handler: (self: Creep) => T) {
   defineGetter<Creep, CreepConstructor, T>(Creep, property, handler)
@@ -98,4 +99,20 @@ Creep.prototype.isSafeFrom = function (creep: Creep) {
 
 Creep.prototype.safeRangeXY = function (x: number, y: number) {
   return this.pos.rangeXY(x, y) - this.safeDistance
+}
+
+Creep.prototype.moveToRoom = function (room: string) {
+  let target = this.memory[Keys.roomPath]
+  if (!target || target[0] !== this.room.name) {
+    const pathStep = this.room.location.findRoomPathStep(this.room.name, room)
+    if (!pathStep) return ERR_NOT_FOUND
+    target = this.memory[Keys.roomPath] = [this.room.name, pathStep]
+  }
+  const roomPathStep = target[1]
+  const pos = new RoomPosition(
+    roomPathStep.x,
+    roomPathStep.y,
+    roomPathStep.name,
+  )
+  return move.cheap(this, pos, true)
 }

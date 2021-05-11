@@ -25,15 +25,9 @@ export default function arrive(
   const targetRoom = memory._arrive
   console.log(targetRoom)
   if (!targetRoom) return NOTHING_TODO
-  const nextRoom = creep.motherRoom.location.findRoomPathStep(
-    creep.room.name,
-    targetRoom,
-  )
-  console.log(JSON.stringify(nextRoom))
-  if (!nextRoom) return NOTHING_TODO
-  const pos = new RoomPosition(nextRoom.x, nextRoom.y, nextRoom.name)
-  let result = move.cheap(creep, pos, true)
+  const result = creep.moveToRoom(targetRoom)
   console.log(result)
+  if (result === ERR_NOT_FOUND) return NOTHING_TODO
   if (creep.room.name === targetRoom && result === 0) {
     delete creep.memory._arrive
     return DONE

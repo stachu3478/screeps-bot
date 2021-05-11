@@ -2,7 +2,7 @@ export default {
   /**
    * Top switch to enable purging rooms
    */
-  enableWar: false,
+  enableWar: true,
   /**
    * Choose aliances that have to be purged out
    */
@@ -14,10 +14,10 @@ export default {
   /**
    * Specify that bot clones have to be purged out
    */
-  clones: true, // TODO: scan clones
+  clones: true,
   /**
-   * Max path cost that the scoutes (TODO) and observers
-   * will scan rooms starting of the current one
+   * Max path cost that the scoutes and observers
+   * will scan rooms (for enemies) starting from the current one
    */
   maxCost: 250,
   /**

@@ -48,6 +48,7 @@ export default function commander(creep: Commander) {
       switch (arrive(creep)) {
         case DONE:
           creep.memory.state = State.ATTACKING
+          attack(creep)
           break
         case NOTHING_TODO:
           creep.memory.state = State.FALL_BACK
@@ -59,6 +60,10 @@ export default function commander(creep: Commander) {
       }
       break
     case State.ATTACKING:
+      if (creep.motherRoom.memory._attack !== creep.room.name) {
+        creep.memory.state = State.INIT
+        break
+      }
       switch (attack(creep)) {
         case NOTHING_DONE:
           {

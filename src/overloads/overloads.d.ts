@@ -110,4 +110,5 @@ interface Creep {
   hasActiveBodyPart: (b: BodyPartConstant) => boolean
   isSafeFrom: (creep: Creep) => boolean
   safeRangeXY: (x: number, y: number) => number
+  moveToRoom: (room: string) => ScreepsReturnCode
 }

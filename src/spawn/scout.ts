@@ -1,9 +1,11 @@
+import ClaimPlanner from 'planner/ClaimPlanner'
+
 const claimerThreshold = BODYPART_COST[CLAIM] + BODYPART_COST[MOVE]
 export function needsClaim(spawn: StructureSpawn) {
-  return (
-    !spawn.room.memory._attack &&
-    spawn.room.energyCapacityAvailable >= claimerThreshold
-  )
+  if (spawn.room.memory._attack) return false
+  if (spawn.room.energyCapacityAvailable < claimerThreshold) return false
+  const target = ClaimPlanner.instance.target
+  return target && target.source === spawn.room.name
 }
 
 export function needsScout(spawn: StructureSpawn, count: number) {

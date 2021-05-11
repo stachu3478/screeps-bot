@@ -104,7 +104,6 @@ export default profiler.registerFN(function miner(creep: Miner) {
           }
           break
         case NOTHING_DONE:
-          autoPick(creep)
           autoRepair(creep)
       }
       break

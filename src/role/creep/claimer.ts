@@ -2,6 +2,7 @@ import { DONE, NOTHING_TODO } from 'constants/response'
 import selfDestruct from 'routine/selfDestruct'
 import arrive from 'routine/arrive'
 import claim from 'routine/military/claim'
+import ClaimPlanner from 'planner/ClaimPlanner'
 
 export interface Claimer extends Creep {
   memory: ClaimerMemory
@@ -12,37 +13,17 @@ interface ClaimerMemory extends CreepMemory {
   _arrive?: string
 }
 
-function arriveToClaimedRoom(creep: Claimer) {
-  creep.memory.state = State.ARRIVE
-  creep.memory._arrive = Memory.rooms[creep.memory.room][RoomMemoryKeys.claim]
-}
-
 export default function run(creep: Claimer) {
+  const target = ClaimPlanner.instance.target
+  if (!target) return
   switch (creep.memory.state) {
-    case State.ARRIVE:
-      switch (arrive(creep)) {
-        case DONE:
-          creep.memory.state = State.CLAIMING
-          break
-      }
-      break
     case State.CLAIMING:
-      if (
-        Memory.rooms[creep.memory.room][RoomMemoryKeys.claim] !==
-        creep.room.name
-      ) {
-        arriveToClaimedRoom(creep)
-        break
-      }
-      switch (claim(creep)) {
-        case NOTHING_TODO:
-          arriveToClaimedRoom(creep)
-          break
-        case DONE:
-          delete Memory.rooms[creep.memory.room][RoomMemoryKeys.claim]
-          creep.memory.state = State.DESTRUCT
-          global.Cache.ownedRooms = (global.Cache.ownedRooms || 0) + 1
-          break
+      if (target.target !== creep.room.name) {
+        creep.memory._arrive = target.target
+        arrive(creep)
+      } else if (claim(creep) === DONE) {
+        creep.memory.state = State.DESTRUCT
+        global.Cache.ownedRooms = (global.Cache.ownedRooms || 0) + 1
       }
       break
     case State.DESTRUCT:
@@ -54,7 +35,7 @@ export default function run(creep: Claimer) {
       }
       break
     default: {
-      arriveToClaimedRoom(creep)
+      creep.memory.state = State.CLAIMING
     }
   }
 }

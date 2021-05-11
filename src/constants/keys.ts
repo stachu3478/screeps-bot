@@ -17,7 +17,6 @@ const enum RoomMemoryKeys {
   defenceHoldingTimer = 'D',
   ekhaust = 'e',
   roomNeighbourPaths = 'p',
-  claim = 'c',
 }
 
 const enum ShardMemoryKeys {

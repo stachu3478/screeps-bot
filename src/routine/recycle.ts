@@ -1,4 +1,4 @@
-import { NOTHING_TODO, FAILED, DONE } from '../constants/response'
+import { NOTHING_TODO, FAILED, DONE, NOTHING_DONE } from '../constants/response'
 import move from 'utils/path'
 
 export default function recycle(creep: Creep) {
@@ -8,5 +8,5 @@ export default function recycle(creep: Creep) {
   if (result === ERR_NOT_IN_RANGE) move.cheap(creep, spawn)
   else if (result !== 0) return FAILED
   else return DONE
-  return NOTHING_TODO
+  return NOTHING_DONE
 }

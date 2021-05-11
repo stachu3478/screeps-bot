@@ -112,7 +112,13 @@ export default function run(controller: StructureController, cpuUsed: number) {
       workPartCountByRole,
       needFighters,
     )
-  else room.visual.text('All spawns busy', 0, 3, infoStyle)
+  else {
+    room.visual.text('All spawns busy', 0, 3, infoStyle)
+    if (needFighters) {
+      const claimer = Game.rooms[mem._claimer || '']
+      if (claimer) claimer.memory._attack = room.name
+    }
+  }
   room.visual.text(
     'Population: ' +
       count +

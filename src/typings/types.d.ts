@@ -35,6 +35,10 @@ interface CreepMemory {
    * Current building route status that is processed by the creep
    */
   c?: RouteStatus
+  /**
+   * Creep room path step
+   */
+  R?: [string, RoomNeighbourPath]
 }
 
 interface Stats {
@@ -116,10 +120,6 @@ interface RoomMemory {
   creeps?: {
     [key: string]: 0
   }
-  /**
-   * Claim target for this room
-   */
-  c?: string
   _claimer?: string
   _claimed?: string[]
   _dismantle?: string

@@ -3,6 +3,7 @@ import config from 'config/claim'
 export default class ClaimPlanner {
   private config: ClaimConfig
   private currentTarget?: ClaimTarget
+  private searchTime: number = 0
 
   constructor(config: ClaimConfig) {
     this.config = config
@@ -11,14 +12,14 @@ export default class ClaimPlanner {
   get target(): ClaimTarget | null {
     this.invalidateTarget()
     if (this.currentTarget) return this.currentTarget
+    if (this.searchTime === Game.time) return null
+    this.searchTime = Game.time
     const roomNames = Object.keys(Memory.myRooms)
     if (roomNames.length >= this.maxRooms) return null
     const rooms = roomNames.map((n) => Game.rooms[n]).filter((r) => r)
-    rooms.forEach((r) => r.pathScanner.done)
-    /*if (!rooms.every((r) => r.pathScanner.done)) {
-      console.log('paths not scanned')
+    if (!rooms.every((r) => r.pathScanner.done)) {
       return null
-    }*/
+    }
     console.log('looking for target')
     return this.findTarget(rooms)
   }

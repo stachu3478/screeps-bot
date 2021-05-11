@@ -1,5 +1,6 @@
 import AlianceScanner from './AlianceScanner'
 import config from 'config/enemies'
+import CloneScanner from './CloneScanner'
 
 interface EnemiesConfig {
   enableWar: boolean
@@ -12,12 +13,15 @@ interface EnemiesConfig {
 
 export default class EnemiesPlanner {
   private aliances: AlianceScanner
+  private aliancesLoaded: boolean = false
+  private clones: CloneScanner
+  private clonesLoaded: boolean = false
   private enemies: string[]
-  private loaded: boolean = false
   private config: EnemiesConfig
 
   constructor(config: EnemiesConfig) {
     this.aliances = new AlianceScanner()
+    this.clones = new CloneScanner()
     this.enemies = config.players
     this.config = config
   }
@@ -29,16 +33,42 @@ export default class EnemiesPlanner {
   get isLoaded() {
     if (!this.config.enableWar) return false
     if (this.loaded) return true
+    this.loadAliances()
+    this.loadClones()
+    if (this.loaded) console.log('Enemies loaded: ', this.enemies)
+    return this.loaded
+  }
+
+  private loadAliances() {
+    if (this.aliancesLoaded) return
     const aliances = this.aliances.aliances
-    if (!aliances) return false
-    this.loaded = true
+    if (!aliances) return
+    this.aliancesLoaded = true
     this.config.aliances.forEach((abbr) => {
       const members = aliances[abbr]
       if (!members) return
       this.enemies = this.enemies.concat(members)
     })
-    console.log('Enemies loaded: ', this.enemies)
-    return this.loaded
+  }
+
+  private loadClones() {
+    if (this.clonesLoaded) return
+    if (!this.config.clones) {
+      this.clonesLoaded = true
+      return
+    }
+    const clones = this.clones.clones
+    if (!clones) return
+    this.clonesLoaded = true
+    Object.keys(clones).forEach((abbr) => {
+      const members = clones[abbr].members
+      if (!members) return
+      this.enemies = this.enemies.concat(members)
+    })
+  }
+
+  private get loaded() {
+    return this.aliancesLoaded && this.clonesLoaded
   }
 
   static get instance() {
