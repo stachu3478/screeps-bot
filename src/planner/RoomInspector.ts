@@ -20,7 +20,7 @@ export default class RoomInspector {
   private checkSafety(room: Room, info: RoomNeighbourPath) {
     if (info.safe === false) return false
     if (room.owner === this.room.owner) return true
-    return !room
+    return !this.room
       .find(FIND_STRUCTURES)
       .filter((s) => s.structureType === STRUCTURE_TOWER && s.isActive()).length
   }
