@@ -15,7 +15,7 @@ export default function memoryLessRepair(
   if (storedEnergy === 0) return NO_RESOURCE
   if (target.hits === target.hitsMax) return NOTHING_TODO
   const result = creep.repair(target)
-  const remaining = storedEnergy - creep.workpartCount
+  const remaining = storedEnergy - creep.corpus.count(WORK)
   if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target, false, 3)
   else if (result !== 0) return FAILED
   else {

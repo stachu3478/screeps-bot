@@ -3,7 +3,7 @@ import tower from '../role/tower'
 import spawnLoop from 'spawn/core'
 import plan from 'planner/core'
 import callRescue from 'planner/rescue'
-import trackEnemy, { findMostVulnerableCreep } from './enemyTrack'
+import { findMostVulnerableCreep } from './enemyTrack'
 import usage from './usage'
 import { infoStyle, dangerStyle } from './style'
 import handleLog from './log'
@@ -13,6 +13,7 @@ import { findTowers, findFighters, findDamagedCreeps } from 'utils/find'
 import lab from 'role/lab'
 import factory from 'role/factory'
 import rolePowerSpawn from 'role/powerSpawn'
+import RoomEnemies from './military/RoomEnemies'
 
 export default function run(controller: StructureController, cpuUsed: number) {
   const room = controller.room
@@ -22,7 +23,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
   const cache = room.cache
   if (!mem.creeps) mem.creeps = {}
 
-  const enemies = trackEnemy(room)
+  const enemies = new RoomEnemies(room).find()
   let enemy: Creep | undefined
   let needFighters = false
   let towersProcessed = false
@@ -67,7 +68,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
     else cache.healthy = 1
   }
 
-  const { creepCountByRole, workPartCountByRole, count } = creeps(
+  const { creepCountByRole, count } = creeps(
     mem.creeps,
     room,
     enemy,
@@ -104,14 +105,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
   controller.room.enemyDetector.scan()
 
   const spawn = spawns.find((s) => !s.spawning)
-  if (spawn)
-    spawnLoop(
-      spawn,
-      controller,
-      creepCountByRole,
-      workPartCountByRole,
-      needFighters,
-    )
+  if (spawn) spawnLoop(spawn, controller, creepCountByRole, needFighters)
   else {
     room.visual.text('All spawns busy', 0, 3, infoStyle)
     if (needFighters) {

@@ -126,11 +126,11 @@ const move = {
       if (!creepOnRoad.my) {
         options.ignoreCreeps = false
         options.reusePath = 0
-        if (creep.hasActiveAttackBodyPart) creep.attack(creepOnRoad)
+        if (creep.corpus.armed) creep.attack(creepOnRoad)
         return creep.moveTo(target, options)
       } else move.anywhere(creepOnRoad, dir, creep)
     } else if (!move.check(creepOnRoad)) {
-      if (!creepOnRoad.hasActiveBodyPart(MOVE)) {
+      if (!creepOnRoad.corpus.hasActive(MOVE)) {
         creep.pull(creepOnRoad)
         creepOnRoad.move(creep)
       } else {
@@ -155,8 +155,7 @@ const move = {
       .find(FIND_HOSTILE_CREEPS)
       .filter(
         (creep) =>
-          creep.hasActiveAttackBodyPart &&
-          creep.owner.username !== 'Source Keeper',
+          creep.owner.username !== 'Source Keeper' && creep.corpus.armed,
       )
     if (hostiles.every((hostile) => creep.isSafeFrom(hostile))) return true
     const direction = pickBestDirectionFrom(
@@ -174,7 +173,7 @@ const move = {
     const roomMemory = creep.motherRoom.memory
     roomMemory._moveNeeds = Math.max(
       roomMemory._moveNeeds || 0,
-      creep.workpartCount + creep.getActiveBodyparts(ATTACK),
+      creep.corpus.count(WORK) + creep.corpus.count(ATTACK),
     )
     if (!creep.cache.moverPath) {
       console.log('refreshing path')

@@ -72,14 +72,13 @@ export function handleCachedTarget(
 }
 
 export default function rangedAttack(creep: AttackCreep) {
-  creep.say('💵🔫', true)
   const target = handleCachedTarget(creep)
   if (!target) return NOTHING_TODO
   const hostiles = creep.room
     .find(FIND_HOSTILE_CREEPS)
-    .filter((creep) => creep.hasActiveAttackBodyPart)
+    .filter((creep) => creep.corpus.armed)
 
-  const isDanger = (target as Creep).hasActiveAttackBodyPart
+  const isDanger = (target as Creep).corpus.armed
   const distances = hostiles.map((hostile) => creep.pos.rangeTo(hostile))
   const leastDistanceFromHostile = Math.min(...distances, Infinity)
   if (creep.hits < creep.hitsMax) {

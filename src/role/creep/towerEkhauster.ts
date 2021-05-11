@@ -20,7 +20,7 @@ export default profiler.registerFN(function towerEkhauster(creep: ArriveCreep) {
       }
       break
     case State.ARRIVE:
-      if (!creep.hasActiveBodyPart(TOUGH)) {
+      if (!creep.corpus.hasActive(TOUGH)) {
         creep.memory.state = State.FALL_BACK
         creep.memory._arrive = creep.memory.room
         arrive(creep)

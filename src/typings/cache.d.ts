@@ -42,6 +42,7 @@ interface CreepCache {
   buildingRouteProcessor?: BuildingRouteProcessor
   repairRouteProcessor?: RepairRouteProcessor
   _bodypartHitThreshold?: Record<BodyPartConstant, number>
+  corpus?: CreepCorpus
 }
 
 interface PowerSpawnCache {

@@ -32,7 +32,7 @@ export default function autoRepair(
     target.hits === target.hitsMax ||
     creep.pos.rangeTo(target) > 3
   ) {
-    const repairPower = creep.workpartCount * REPAIR_POWER
+    const repairPower = creep.corpus.count(WORK) * REPAIR_POWER
     target = findCloseMostDamagedStructure(creep.pos, repairPower)
     if (!target) {
       cache.repair_cooldown = timeout
@@ -41,7 +41,7 @@ export default function autoRepair(
     cache.auto_repair = target.id
   }
   const result = creep.repair(target)
-  const remaining = storedEnergy - creep.workpartCount
+  const remaining = storedEnergy - creep.corpus.count(WORK)
   if (result !== 0) return FAILED
   else {
     if (remaining <= 0) {

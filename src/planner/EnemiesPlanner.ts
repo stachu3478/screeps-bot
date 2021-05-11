@@ -2,13 +2,16 @@ import AlianceScanner from './AlianceScanner'
 import config from 'config/enemies'
 import CloneScanner from './CloneScanner'
 
-interface EnemiesConfig {
+export interface EnemiesConfig {
   enableWar: boolean
   aliances: string[]
   players: string[]
   clones: boolean
   maxCost: number
   nukes: boolean
+  allies: {
+    [key: string]: number | undefined
+  }
 }
 
 export default class EnemiesPlanner {
@@ -29,6 +32,8 @@ export default class EnemiesPlanner {
   isEnemy(username?: string) {
     return this.enemies.indexOf(username || '') !== -1
   }
+
+  getTolerance(username?: string) {}
 
   get isLoaded() {
     if (!this.config.enableWar) return false

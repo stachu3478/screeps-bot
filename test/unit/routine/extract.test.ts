@@ -1,3 +1,4 @@
+import sinon from 'sinon'
 import '../constants'
 import extract from '../../../src/routine/work/extract'
 import { expect } from '../../expect'
@@ -8,11 +9,17 @@ import {
   FAILED,
   DONE,
 } from 'constants/response'
+import CreepCorpus from 'overloads/creep/CreepCorpus'
 
 let creep: Creep
 describe('routine/extract', () => {
   beforeEach(() => {
-    creep = {} as Creep
+    // @ts-ignore : allow adding Game to global
+    global.Game = _.clone(Game)
+    creep = { name: 'test' } as Creep
+    Game.creeps[creep.name] = creep
+    creep.body = []
+    creep.corpus = new CreepCorpus(creep)
   })
 
   context('when creep is full', () => {
@@ -73,13 +80,17 @@ describe('routine/extract', () => {
         })
 
         it('returns SUCCESS when not done', () => {
-          creep.workpartCount = 1
+          creep.corpus = {} as CreepCorpus
+          creep.corpus.count = sinon.spy(() => 1)
           expect(extract(creep)).to.eql(SUCCESS)
+          expect(creep.corpus.count).to.be.calledOnceWithExactly(WORK)
         })
 
         it('returns DONE when done', () => {
-          creep.workpartCount = Infinity
+          creep.corpus = {} as CreepCorpus
+          creep.corpus.count = sinon.spy(() => Infinity)
           expect(extract(creep)).to.eql(DONE)
+          expect(creep.corpus.count).to.be.calledOnceWithExactly(WORK)
         })
       })
     })

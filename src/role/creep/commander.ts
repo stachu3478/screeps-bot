@@ -54,7 +54,7 @@ export default function commander(creep: Commander) {
           creep.memory.state = State.FALL_BACK
           break
         default:
-          if (!creep.hasActiveBodyPart(TOUGH))
+          if (!creep.corpus.hasActive(TOUGH))
             creep.memory.state = State.FALL_BACK
           heal(creep)
       }
@@ -90,16 +90,16 @@ export default function commander(creep: Commander) {
       if (
         runTicks > 0 ||
         creep.hits < prevHits ||
-        !creep.hasActiveBodyPart(ATTACK)
+        !creep.corpus.hasActive(ATTACK)
       ) {
-        if (creep.hits < prevHits || !creep.hasActiveBodyPart(ATTACK))
+        if (creep.hits < prevHits || !creep.corpus.hasActive(ATTACK))
           creep.memory._runTicks = 5
         switch (arrive(creep)) {
           case SUCCESS:
           case NOTHING_TODO:
             const attackTarget = creep.motherRoom.memory._attack
             if (attackTarget) {
-              if (creep.hasActiveBodyPart(TOUGH)) {
+              if (creep.corpus.hasActive(TOUGH)) {
                 creep.memory._arrive = attackTarget
                 creep.memory.state = State.ARRIVE_HOSTILE
               }
@@ -109,7 +109,7 @@ export default function commander(creep: Commander) {
           default:
             creep.heal(creep)
         }
-      } else if (creep.hasActiveBodyPart(TOUGH)) {
+      } else if (creep.corpus.hasActive(TOUGH)) {
         creep.memory._arrive = creep.motherRoom.memory._attack
         if (creep.memory._arrive) creep.memory.state = State.ARRIVE_HOSTILE
         else creep.memory.state = State.RECYCLE

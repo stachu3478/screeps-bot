@@ -7,7 +7,7 @@ export default function upgrade(creep: Creep, staticMode: boolean = false) {
   let target = creep.motherRoom.controller
   if (!target) return FAILED
   const result = creep.upgradeController(target)
-  const remaining = storedEnergy - creep.workpartCount
+  const remaining = storedEnergy - creep.corpus.count(WORK)
   if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
   else if (result !== 0) return FAILED
   else {

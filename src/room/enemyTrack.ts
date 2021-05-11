@@ -91,31 +91,3 @@ export function findMostVulnerableCreep(
     vulnerability: value,
   }
 }
-
-const harmfulBodyparts: Readonly<Record<BodyPartConstant, 0 | 1>> = {
-  [ATTACK]: 1,
-  [WORK]: 1,
-  [RANGED_ATTACK]: 1,
-  [CLAIM]: 1,
-  [HEAL]: 1,
-  [MOVE]: 0,
-  [CARRY]: 0,
-  [TOUGH]: 0,
-}
-function getHarmfulBodyparts(creep: Creep) {
-  return creep.body.reduce((t, part) => t + harmfulBodyparts[part.type], 0)
-}
-export default function trackEnemy(room: Room): Creep[] {
-  if (!Memory.whitelist) Memory.whitelist = {}
-  const list = Memory.whitelist
-  const black = Memory.blacklist || {}
-  return room.find(FIND_HOSTILE_CREEPS, {
-    filter: (creep) => {
-      const treshold =
-        (list[creep.owner.username] || -black[creep.owner.username] || 0) -
-        getHarmfulBodyparts(creep)
-      if (treshold < 0) delete list[creep.owner.username]
-      return treshold < 0
-    },
-  })
-}

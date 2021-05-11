@@ -30,7 +30,6 @@ export default function creeps(
   holdFire?: boolean,
 ) {
   const creepCountByRole: number[] = []
-  const workPartCountByRole: number[] = []
   let count = 0
   for (const name in creeps) {
     const creep = Game.creeps[name]
@@ -53,8 +52,6 @@ export default function creeps(
         const targetRole = creep.memory._targetRole || 0
         creepCountByRole[targetRole] = (creepCountByRole[targetRole] || 0) + 1
       } else creepCountByRole[role] = (creepCountByRole[role] || 0) + 1
-      workPartCountByRole[role] =
-        (workPartCountByRole[role] || 0) + creep.workpartCount
       count++
     } else
       creepCountByRole[Role.RETIRED] = (creepCountByRole[Role.RETIRED] || 0) + 1
@@ -130,7 +127,6 @@ export default function creeps(
 
   return {
     creepCountByRole,
-    workPartCountByRole,
     count,
   }
 }

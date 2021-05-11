@@ -28,7 +28,7 @@ export default profiler.registerFN(function harvest(creep: HarvestCreep) {
     return NOTHING_DONE
   }
   const result = creep.harvest(target)
-  const remaining = energyStored - creep.workpartCount * HARVEST_POWER
+  const remaining = energyStored - creep.corpus.count(WORK) * HARVEST_POWER
   if (result === ERR_TIRED) return NOTHING_TODO
   else if (result !== 0) return FAILED
   else {

@@ -26,7 +26,7 @@ export default function autoBuild(creep: AutoBuildCreep) {
   const result = creep.build(target)
   if (result !== 0) return FAILED
   else {
-    const remaining = storedEnergy - creep.workpartCount * BUILD_POWER
+    const remaining = storedEnergy - creep.corpus.count(WORK) * BUILD_POWER
     if (remaining <= 0) return NO_RESOURCE
     return SUCCESS
   }

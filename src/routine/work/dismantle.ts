@@ -37,7 +37,7 @@ export default function dismantle(
   if (result === 0) {
     const remaining =
       creep.store.getFreeCapacity() -
-      creep.workpartCount * DISMANTLE_POWER * DISMANTLE_COST
+      creep.corpus.count(WORK) * DISMANTLE_POWER * DISMANTLE_COST
     if (remaining <= 0) {
       delete cache.dismantle
       return DONE

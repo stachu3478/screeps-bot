@@ -1,4 +1,6 @@
-export default {
+import { EnemiesConfig } from 'planner/EnemiesPlanner'
+
+const config: EnemiesConfig = {
   /**
    * Top switch to enable purging rooms
    */
@@ -10,7 +12,15 @@ export default {
   /**
    * Choose players that have to be purged out
    */
-  players: [],
+  players: ['qnz', 'Invader', 'Source Keeper'],
+  /**
+   * Choose players that wont be attacked
+   * (specify tolerance as max harmful bodypart count)
+   */
+  allies: {
+    slyly: 25,
+    Zhenya56554: 5,
+  },
   /**
    * Specify that bot clones have to be purged out
    */
@@ -25,3 +35,5 @@ export default {
    */
   nukes: false,
 }
+
+export default config

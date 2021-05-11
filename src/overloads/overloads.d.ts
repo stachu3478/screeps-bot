@@ -98,16 +98,12 @@ interface RoomPosition {
 
 interface Creep {
   motherRoom: Room
-  workpartCount: number
   cache: CreepCache
   isRetired: boolean
-  hasActiveAttackBodyPart: boolean
-  safeDistance: number
-  _bodyPartHitThreshold: Record<BodyPartConstant, number>
   routeProcessor: ResourceRouteProcessor
   buildingRouteProcessor: BuildingRouteProcessor
   repairRouteProcessor: RepairRouteProcessor
-  hasActiveBodyPart: (b: BodyPartConstant) => boolean
+  corpus: CreepCorpus
   isSafeFrom: (creep: Creep) => boolean
   safeRangeXY: (x: number, y: number) => number
   moveToRoom: (room: string) => ScreepsReturnCode

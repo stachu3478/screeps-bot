@@ -1,9 +1,9 @@
-import _ from 'lodash'
 import defineGetter from 'utils/defineGetter'
 import ResourceRouteProcessor from 'job/resourceRoute/ResourceRouteProcessor'
 import BuildingRouteProcessor from 'job/buildingRoute/BuildingRouteProcessor'
 import RepairRouteProcessor from 'job/repairRoute/RepairRouteProcessor'
 import move from 'utils/path'
+import CreepCorpus from './CreepCorpus'
 
 function defineCreepGetter<T>(property: string, handler: (self: Creep) => T) {
   defineGetter<Creep, CreepConstructor, T>(Creep, property, handler)
@@ -19,50 +19,11 @@ defineCreepGetter('motherRoom', (self) => {
   return Game.rooms[self.memory.room] || self.room
 })
 
-defineCreepGetter('workpartCount', (self) => {
-  const cache = self.cache
-  return (
-    cache.workpartCount || (cache.workpartCount = self.getActiveBodyparts(WORK))
-  )
-})
-
 defineCreepGetter('isRetired', (self) => {
   return (
     (self.ticksToLive || CREEP_LIFE_TIME) <=
     self.body.length * CREEP_SPAWN_TIME + self.memory.deprivity
   )
-})
-
-defineCreepGetter('hasActiveAttackBodyPart', (self) => {
-  return self.hasActiveBodyPart(ATTACK) || self.hasActiveBodyPart(RANGED_ATTACK)
-})
-
-defineCreepGetter('safeDistance', (self) => {
-  if (self.hasActiveBodyPart(RANGED_ATTACK)) return 5
-  else if (self.hasActiveBodyPart(ATTACK)) return 3
-  return 1
-})
-
-const CREEP_BODY_HITS = 100
-defineCreepGetter('_bodyPartHitThreshold', (self) => {
-  const minUnreachableHits = MAX_CREEP_SIZE * CREEP_BODY_HITS + 1
-  const bodypartMap: Record<BodyPartConstant, number> = {
-    [MOVE]: minUnreachableHits,
-    [WORK]: minUnreachableHits,
-    [CARRY]: minUnreachableHits,
-    [ATTACK]: minUnreachableHits,
-    [RANGED_ATTACK]: minUnreachableHits,
-    [TOUGH]: minUnreachableHits,
-    [HEAL]: minUnreachableHits,
-    [CLAIM]: minUnreachableHits,
-  }
-  self.body.reverse().forEach((bodyPart, i) => {
-    bodypartMap[bodyPart.type] = Math.min(
-      i * CREEP_BODY_HITS,
-      bodypartMap[bodyPart.type],
-    )
-  })
-  return bodypartMap as Record<BodyPartConstant, number>
 })
 
 defineCreepGetter('routeProcessor', (self) => {
@@ -86,19 +47,16 @@ defineCreepGetter('repairRouteProcessor', (self) => {
   )
 })
 
-Creep.prototype.hasActiveBodyPart = function (bodyPartType: BodyPartConstant) {
-  const cachedThresholds =
-    this.cache._bodypartHitThreshold ||
-    (this.cache._bodypartHitThreshold = this._bodyPartHitThreshold)
-  return this.hits > cachedThresholds[bodyPartType]
-}
+defineCreepGetter('corpus', (self) => {
+  return self.cache.corpus || (self.cache.corpus = new CreepCorpus(self))
+})
 
 Creep.prototype.isSafeFrom = function (creep: Creep) {
-  return this.pos.getRangeTo(creep) > creep.safeDistance
+  return this.pos.getRangeTo(creep) > creep.corpus.safeDistance
 }
 
 Creep.prototype.safeRangeXY = function (x: number, y: number) {
-  return this.pos.rangeXY(x, y) - this.safeDistance
+  return this.pos.rangeXY(x, y) - this.corpus.safeDistance
 }
 
 Creep.prototype.moveToRoom = function (room: string) {

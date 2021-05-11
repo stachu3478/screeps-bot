@@ -12,7 +12,7 @@ interface AttackCache extends CreepCache {
 export default function attack(creep: AttackCreep) {
   const cache = creep.cache
   let target: Creep | Structure | null = Game.getObjectById(cache.attack || '')
-  if (!creep.hasActiveBodyPart(TOUGH)) return FAILED
+  if (!creep.corpus.hasActive(TOUGH)) return FAILED
   if (!target) {
     const newTarget = findTarget(creep)
     if (!newTarget) return NOTHING_TODO

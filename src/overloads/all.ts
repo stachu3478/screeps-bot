@@ -1,5 +1,5 @@
 import './room/Room'
-import './Creep'
+import './creep/Creep'
 import './RoomPosition'
 import './Structure'
 import './StructureFactory'

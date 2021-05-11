@@ -20,7 +20,6 @@ export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
   controller: StructureController,
   creepCountByRole: number[],
-  workPartCountByRole: number[],
   needsFighter: boolean,
 ) {
   const cpu = Game.cpu.getUsed()

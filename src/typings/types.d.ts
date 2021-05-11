@@ -54,9 +54,6 @@ interface Memory {
   whitelist?: {
     [key: string]: number
   }
-  blacklist?: {
-    [key: string]: number
-  }
   trade_blacklist?: {
     [key: string]: number
   }
