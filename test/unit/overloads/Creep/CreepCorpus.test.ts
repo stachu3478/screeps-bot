@@ -192,7 +192,7 @@ describe('CreepCorpus', () => {
           { type: HEAL, hits: 100 },
           { type: MOVE, hits: 100 },
         ]
-        creep.hits = 300
+        creep.hits = 400
       })
 
       it('returns 36', () => {
@@ -208,7 +208,7 @@ describe('CreepCorpus', () => {
           { type: HEAL, hits: 100 },
           { type: MOVE, hits: 100 },
         ]
-        creep.hits = 300
+        creep.hits = 201
       })
 
       it('returns 24', () => {
@@ -224,7 +224,7 @@ describe('CreepCorpus', () => {
           { type: HEAL, hits: 100, boost: 'XLHO2' },
           { type: MOVE, hits: 100 },
         ]
-        creep.hits = 300
+        creep.hits = 201
       })
 
       it('returns 72', () => {
@@ -242,11 +242,148 @@ describe('CreepCorpus', () => {
           { type: HEAL, hits: 100, boost: 'XLHO2' },
           { type: MOVE, hits: 100 },
         ]
-        creep.hits = 300
+        creep.hits = 201
       })
 
       it('returns 72 divided by 3 as ranged is 3 times weakier than indirect', () => {
         expect(corpus.rangedHealPower).to.eq(72 / 3)
+      })
+    })
+  })
+
+  describe('#healPowerTo', () => {
+    beforeEach(() => {
+      creep.body = [
+        { type: HEAL, hits: 0, boost: 'LHO2' },
+        { type: HEAL, hits: 1, boost: 'LO' },
+        { type: HEAL, hits: 100, boost: 'XLHO2' },
+        { type: MOVE, hits: 100 },
+      ]
+      creep.hits = 201
+      creep.pos = new RoomPosition(25, 25, 'test')
+    })
+
+    context('out of range', () => {
+      it('returns 0', () => {
+        expect(
+          corpus.healPowerTo({ pos: new RoomPosition(26, 29, 'test') }),
+        ).to.eq(0)
+      })
+    })
+
+    context('in long range', () => {
+      it('returns 72 divided by 3 as ranged is 3 times weakier than indirect', () => {
+        expect(
+          corpus.healPowerTo({ pos: new RoomPosition(26, 28, 'test') }),
+        ).to.eq(72 / 3)
+      })
+    })
+
+    context('near', () => {
+      it('returns 72', () => {
+        expect(
+          corpus.healPowerTo({ pos: new RoomPosition(26, 26, 'test') }),
+        ).to.eq(72)
+      })
+    })
+  })
+
+  describe('attackPower', () => {
+    context('not boosted and healed', () => {
+      beforeEach(() => {
+        creep.body = [
+          { type: ATTACK, hits: 100 },
+          { type: ATTACK, hits: 100 },
+          { type: ATTACK, hits: 100 },
+          { type: MOVE, hits: 100 },
+        ]
+        creep.hits = 400
+      })
+
+      it('returns 90', () => {
+        expect(corpus.attackPower).to.eq(90)
+      })
+    })
+
+    context('not boosted and not healed', () => {
+      beforeEach(() => {
+        creep.body = [
+          { type: ATTACK, hits: 0 },
+          { type: ATTACK, hits: 1 },
+          { type: ATTACK, hits: 100 },
+          { type: MOVE, hits: 100 },
+        ]
+        creep.hits = 201
+      })
+
+      it('returns 60', () => {
+        expect(corpus.attackPower).to.eq(60)
+      })
+    })
+
+    context('boosted and not healed', () => {
+      beforeEach(() => {
+        creep.body = [
+          { type: ATTACK, hits: 0, boost: 'UH2O' },
+          { type: ATTACK, hits: 1, boost: 'UH' },
+          { type: ATTACK, hits: 100, boost: 'XUH2O' },
+          { type: MOVE, hits: 100 },
+        ]
+        creep.hits = 201
+      })
+
+      it('returns 180', () => {
+        expect(corpus.attackPower).to.eq(180)
+      })
+    })
+  })
+
+  describe('rangedAttackPower', () => {
+    context('not boosted and healed', () => {
+      beforeEach(() => {
+        creep.body = [
+          { type: RANGED_ATTACK, hits: 100 },
+          { type: RANGED_ATTACK, hits: 100 },
+          { type: RANGED_ATTACK, hits: 100 },
+          { type: MOVE, hits: 100 },
+        ]
+        creep.hits = 400
+      })
+
+      it('returns 30', () => {
+        expect(corpus.rangedAttackPower).to.eq(30)
+      })
+    })
+
+    context('not boosted and not healed', () => {
+      beforeEach(() => {
+        creep.body = [
+          { type: RANGED_ATTACK, hits: 0 },
+          { type: RANGED_ATTACK, hits: 1 },
+          { type: RANGED_ATTACK, hits: 100 },
+          { type: MOVE, hits: 100 },
+        ]
+        creep.hits = 201
+      })
+
+      it('returns 20', () => {
+        expect(corpus.rangedAttackPower).to.eq(20)
+      })
+    })
+
+    context('boosted and not healed', () => {
+      beforeEach(() => {
+        creep.body = [
+          { type: RANGED_ATTACK, hits: 0, boost: 'KHO2' },
+          { type: RANGED_ATTACK, hits: 1, boost: 'KO' },
+          { type: RANGED_ATTACK, hits: 100, boost: 'XKHO2' },
+          { type: MOVE, hits: 100 },
+        ]
+        creep.hits = 201
+      })
+
+      it('returns 60', () => {
+        expect(corpus.rangedAttackPower).to.eq(60)
       })
     })
   })

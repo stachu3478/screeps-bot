@@ -19,6 +19,13 @@ export default class CreepCorpus extends CreepMemoized<Creep> {
     return this.creep.hits > this.hitThresholds[type]
   }
 
+  healPowerTo(creep: _HasRoomPosition) {
+    const range = this.creep.pos.getRangeTo(creep)
+    if (range > 3) return 0
+    if (range > 1) return this.rangedHealPower
+    return this.healPower
+  }
+
   get armed() {
     return this.hasActive(ATTACK) || this.hasActive(RANGED_ATTACK)
   }
@@ -30,20 +37,37 @@ export default class CreepCorpus extends CreepMemoized<Creep> {
   }
 
   get healPower() {
-    return this.creep.body.reduce(
-      (total, p) => total + this.partHealPower(p),
-      0,
-    )
+    return this.creep.body.reduce((sum, p) => sum + this.partHealPower(p), 0)
   }
 
   get rangedHealPower() {
     return this.healPower * (RANGED_HEAL_POWER / HEAL_POWER)
   }
 
+  get attackPower() {
+    return this.creep.body.reduce((sum, p) => sum + this.partAttackPower(p), 0)
+  }
+
+  get rangedAttackPower() {
+    return this.creep.body.reduce((sum, p) => sum + this.partRangedPower(p), 0)
+  }
+
   private partHealPower(part: Creep['body'][0]) {
     if (part.type !== HEAL || !part.hits) return 0
     if (!part.boost) return HEAL_POWER
     return BOOSTS.heal[part.boost].heal * HEAL_POWER
+  }
+
+  private partAttackPower(part: Creep['body'][0]) {
+    if (part.type !== ATTACK || !part.hits) return 0
+    if (!part.boost) return ATTACK_POWER
+    return BOOSTS.attack[part.boost].attack * ATTACK_POWER
+  }
+
+  private partRangedPower(part: Creep['body'][0]) {
+    if (part.type !== RANGED_ATTACK || !part.hits) return 0
+    if (!part.boost) return RANGED_ATTACK_POWER
+    return BOOSTS.ranged_attack[part.boost].rangedAttack * RANGED_ATTACK_POWER
   }
 
   private computeBodyPartHitThresholdAndCount() {

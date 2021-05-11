@@ -1,16 +1,6 @@
 import _ from 'lodash'
 import { Fighter } from 'role/creep/fighter'
 
-type BodyPart = Creep['body'][0]
-
-const healBoosts = BOOSTS.heal
-export function getBodypartHealPower(part: BodyPart) {
-  if (part.type !== HEAL || !part.hits) return 0
-  if (!part.boost) return HEAL_POWER
-  const boost = healBoosts[part.boost]
-  return boost.heal * HEAL_POWER
-}
-
 const TOWER_FALLOFF_DAMAGE = (1 - TOWER_FALLOFF) * TOWER_POWER_ATTACK
 const optimalDamageBonus = TOWER_POWER_ATTACK - TOWER_FALLOFF_DAMAGE
 const towerFalloffAreaRange = TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE
@@ -48,15 +38,6 @@ export function getHitSummary(
   return summary - healed + remaining
 }
 
-const distancedFactor = RANGED_HEAL_POWER / HEAL_POWER
-function getHealPower(creep: Creep, distant: boolean = false) {
-  const healPower = creep.body.reduce(
-    (t, part) => t + getBodypartHealPower(part),
-    0,
-  )
-  return distant ? healPower * distancedFactor : healPower
-}
-
 export function findMostVulnerableCreep(
   enemies: Creep[],
   towers: StructureTower[],
@@ -65,23 +46,20 @@ export function findMostVulnerableCreep(
   const enemyHealable: number[] = []
   const enemyDealable: number[] = []
   const enemySummary: number[] = []
-  const fighterDamage = fighters.reduce(
-    (v, c) => v + c.getActiveBodyparts(ATTACK) * ATTACK_POWER,
-    0,
-  )
   enemies.forEach((c, i) => {
     enemyHealable[i] = 0
-    enemyDealable[i] = fighterDamage
+    enemyDealable[i] = 0
     enemies.forEach((h) => {
-      const distance = c.pos.rangeTo(h)
-      if (distance > 3) return
-      if (distance > 1) enemyHealable[i] += getHealPower(h, true)
-      else enemyHealable[i] += getHealPower(h)
+      enemyHealable[i] += h.corpus.healPowerTo(c)
     })
     enemyDealable[i] += towers.reduce(
       (s, t) => s + getTowerAttackPower(t, c.pos.rangeTo(t)),
       0,
     )
+    enemyDealable[i] += fighters.reduce((t, f) => {
+      if (!f.pos.isNearTo(c)) return t
+      return t + f.corpus.attackPower
+    }, 0)
     enemySummary[i] = getHitSummary(c.body, enemyDealable[i], enemyHealable[i])
   })
   const best: Creep = _.max(enemies, (v, i) => enemySummary[i])

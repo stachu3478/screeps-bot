@@ -46,8 +46,10 @@ export default class RoomPosition {
     return TOP
   }
 
-  getRangeTo(x: number, y: number) {
-    return Math.max(Math.abs(this.x - x), Math.abs(this.y - y))
+  getRangeTo(x: number | _HasRoomPosition, y: number): number {
+    if (typeof x === 'number')
+      return Math.max(Math.abs(this.x - x), Math.abs(this.y - y))
+    return this.getRangeTo(x.pos.x, x.pos.y)
   }
 
   inRangeTo(x: number, y: number, r: number) {
