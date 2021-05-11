@@ -23,7 +23,7 @@ function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
 
 defineRoomGetter('cache', (self) => {
   const cache = global.Cache.rooms
-  return cache[self.name] || (cache[self.name] = {})
+  return cache[self.name] || (cache[self.name] = { scoutsWorking: 0 })
 })
 
 defineRoomGetter('factoryCache', (self) => {

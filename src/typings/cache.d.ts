@@ -18,6 +18,7 @@ interface RoomCache {
   pathScanner?: RoomPathScanner
   enemyDetector?: EnemyRoomDetector
   boosts?: BoostManager
+  scoutsWorking: number
 
   labCooldown?: number
 }

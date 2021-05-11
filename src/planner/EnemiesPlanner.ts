@@ -33,8 +33,6 @@ export default class EnemiesPlanner {
     return this.enemies.indexOf(username || '') !== -1
   }
 
-  getTolerance(username?: string) {}
-
   get isLoaded() {
     if (!this.config.enableWar) return false
     if (this.loaded) return true

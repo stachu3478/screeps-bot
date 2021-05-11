@@ -1,5 +1,5 @@
 declare class EnemiesPlanner {
-  isEnemy(username: string): boolean
+  isEnemy(username?: string): boolean
   isLoaded: boolean
   static instance: EnemiesPlanner
 }

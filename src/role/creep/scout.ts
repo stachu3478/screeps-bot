@@ -22,6 +22,7 @@ export default function run(creep: Scout) {
       break
     case State.SCOUT:
       creep.memory._arrive = creep.motherRoom.pathScanner.scanTarget
+      creep.motherRoom.cache.scoutsWorking++
       switch (arrive(creep)) {
         case DONE:
           creep.memory.state = State.IDLE

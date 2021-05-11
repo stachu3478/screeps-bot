@@ -14,19 +14,19 @@ describe('Room', () => {
     room.memory.controllerLink = '9'
   })
   ;[
-    ['cache', 'rooms'],
-    ['factoryCache', 'factories'],
-    ['powerSpawnCache', 'powerSpawns'],
+    ['cache', 'rooms', { scoutsWorking: 0 }],
+    ['factoryCache', 'factories', {}],
+    ['powerSpawnCache', 'powerSpawns', {}],
   ].forEach((keys) => {
     describe(`#${keys[0]}`, () => {
       context('value is not cached', () => {
-        it('returns empty object', () => {
-          expect(room[keys[0] as keyof Room]).to.eql({})
+        it('returns default value', () => {
+          expect(room[keys[0] as keyof Room]).to.eql(keys[2])
         })
       })
 
       context('value is cached', () => {
-        const cachedObject = { lvl: 1 }
+        const cachedObject = { lvl: 1, scoutsWorking: 0 }
         beforeEach(() => {
           const typedCache = global.Cache[
             keys[1] as keyof WrappedGlobalCache

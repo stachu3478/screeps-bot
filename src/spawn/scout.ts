@@ -9,7 +9,7 @@ export function needsClaim(spawn: StructureSpawn) {
 }
 
 export function needsScout(spawn: StructureSpawn, count: number) {
-  return !count && spawn.room.pathScanner.scanTarget
+  return !spawn.room.cache.scoutsWorking && spawn.room.pathScanner.scanTarget
 }
 
 export function spawnScout(spawn: StructureSpawn) {

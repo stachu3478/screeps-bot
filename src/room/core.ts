@@ -67,6 +67,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
       })
     else cache.healthy = 1
   }
+  cache.scoutsWorking = 0
 
   const { creepCountByRole, count } = creeps(
     mem.creeps,
