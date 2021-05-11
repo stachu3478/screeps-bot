@@ -29,7 +29,8 @@ describe('spawn/needsHauler', () => {
 
       context('when extensions are filled with energy', () => {
         beforeEach(() => {
-          spawn.room.filled = true
+          spawn.room.energyAvailable = 123
+          spawn.room.energyCapacityAvailable = 123
         })
 
         context('when room to haul is present', () => {
@@ -54,7 +55,8 @@ describe('spawn/needsHauler', () => {
 
         context('when room to haul is not present', () => {
           beforeEach(() => {
-            spawn.room.filled = false
+            spawn.room.energyAvailable = 123
+            spawn.room.energyCapacityAvailable = 123
           })
 
           it('returns false - hauler spawning should only drain excess energy', () => {
@@ -65,7 +67,8 @@ describe('spawn/needsHauler', () => {
 
       context('when extensions are not filled with energy', () => {
         beforeEach(() => {
-          spawn.room.filled = false
+          spawn.room.energyAvailable = 123
+          spawn.room.energyCapacityAvailable = 123
         })
 
         it('returns false - hauler spawning should only drain excess energy', () => {
@@ -76,7 +79,9 @@ describe('spawn/needsHauler', () => {
 
     context('when room has no storage', () => {
       beforeEach(() => {
-        spawn = { room: { filled: true, memory: {} } } as StructureSpawn
+        spawn = { room: { memory: {} } } as StructureSpawn
+        spawn.room.energyAvailable = 123
+        spawn.room.energyCapacityAvailable = 123
       })
 
       it('returns false - hauler cannot have a big container to fill', () => {

@@ -6,7 +6,7 @@ export function needsHauler(spawn: StructureSpawn, count: number) {
     spawn.room.memory._haul &&
     spawn.room.memory._haul !== spawn.room.name &&
     spawn.room.storage &&
-    spawn.room.filled
+    spawn.room.energyAvailable > spawn.room.energyCapacityAvailable - 50
   )
 }
 

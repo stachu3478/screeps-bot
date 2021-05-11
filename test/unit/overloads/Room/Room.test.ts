@@ -164,42 +164,6 @@ describe('Room', () => {
     })
   })
 
-  describe('#filled', () => {
-    context('when all properties mean filled', () => {
-      beforeEach(() => {
-        room.cache.priorityFilled = 1
-        room.energyAvailable = room.energyCapacityAvailable = 100
-      })
-
-      it('returns true', () => {
-        expect(room.filled).to.be.true
-      })
-    })
-
-    context('when cache properties not mean filled', () => {
-      beforeEach(() => {
-        room.cache.priorityFilled = 0
-        room.energyAvailable = room.energyCapacityAvailable = 100
-      })
-
-      it('returns false', () => {
-        expect(room.filled).to.be.false
-      })
-    })
-
-    context('when energy avaibility properties not mean filled', () => {
-      beforeEach(() => {
-        room.cache.priorityFilled = 1
-        room.energyAvailable = 90
-        room.energyCapacityAvailable = 100
-      })
-
-      it('returns false', () => {
-        expect(room.filled).to.be.false
-      })
-    })
-  })
-
   describe('#spawn', () => {
     const returnValue = [{ id: 0 }]
     beforeEach(() => {

@@ -15,7 +15,6 @@ interface Room {
   allLabs: StructureLab[]
   mineral?: Mineral
   extractor?: StructureExtractor
-  filled: boolean
   spawnLink?: StructureLink
   linked: boolean
   spawn?: StructureSpawn

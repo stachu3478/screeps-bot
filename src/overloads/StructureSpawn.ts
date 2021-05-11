@@ -76,7 +76,6 @@ StructureSpawn.prototype.trySpawnCreep = function (
       memory,
       directions: this.getDirections() /*energyStructures: getDistanceOrderedHatches(this.room, creepCost(body))*/,
     })
-    this.room.cache.priorityFilled = 0
     motherMemory.creeps[name] = 0
     if (memory.role === Role.MINER)
       this.room.sources.assign(name, cache.sourceId)

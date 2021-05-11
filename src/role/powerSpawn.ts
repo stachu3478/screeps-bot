@@ -3,5 +3,4 @@ export default function powerSpawn(spawn: StructurePowerSpawn) {
   if (cache.idle) return
   if (spawn.processPower() === OK) return
   cache.idle = 1
-  spawn.room.cache.priorityFilled = 0
 }

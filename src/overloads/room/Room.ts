@@ -76,13 +76,6 @@ defineRoomGetter('extractor', (self) => {
   return mineral && mineral.pos.building(STRUCTURE_EXTRACTOR)
 })
 
-defineRoomGetter('filled', (self) => {
-  return (
-    !!self.cache.priorityFilled &&
-    self.energyAvailable === self.energyCapacityAvailable
-  )
-})
-
 defineRoomGetter('linked', (self) => {
   const linkCharArray = (self.memory.links || '')
     .concat(self.memory.controllerLink || '')

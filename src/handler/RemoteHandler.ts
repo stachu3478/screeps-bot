@@ -55,7 +55,6 @@ class Remote {
   }
 
   createHarvester() {
-    if (!this.spawn.room.filled) return
     const energy = this.spawn.room.energyAvailable
     const carryPackCost = BODYPART_COST[CARRY] * 2 + BODYPART_COST[MOVE]
     const carryPacks = Math.min(50, Math.floor(energy / carryPackCost))

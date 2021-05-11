@@ -1,6 +1,5 @@
 // cache.d.ts
 interface RoomCache {
-  priorityFilled?: 0 | 1
   repaired?: 0 | 1
   struct_iteration?: number
   road_iteration?: number

@@ -43,7 +43,6 @@ describe('Role of the power spawn', () => {
         rolePowerSpawn(powerSpawn)
         expect(powerSpawn.processPower).to.be.called
         expect(powerSpawn.cache.idle).to.eql(1)
-        expect(room.cache.priorityFilled).to.eql(0)
       })
     })
   })

@@ -28,8 +28,6 @@ export default profiler.registerFN(function loop(
   if (!mem.creeps) mem.creeps = {}
   if (mem.maxWorkController === undefined) return
   const max = mem.sourceCount || 0
-  if (spawn.room.energyAvailable < spawn.room.energyCapacityAvailable)
-    spawn.room.cache.priorityFilled = 0
   if (cache.trySpawn) {
     const { creep, memory, name, cooldown, boost } = cache.trySpawn
     const result = spawn.trySpawnCreep(

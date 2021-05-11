@@ -8,5 +8,4 @@ export default function tower(
   } else {
     tower.attack(enemy)
   }
-  tower.room.cache.priorityFilled = 0
 }
