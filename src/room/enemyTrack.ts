@@ -50,15 +50,14 @@ export function findMostVulnerableCreep(
     enemyHealable[i] = 0
     enemyDealable[i] = 0
     enemies.forEach((h) => {
-      enemyHealable[i] += h.corpus.healPowerTo(c)
+      enemyHealable[i] += h.corpus.healPowerAt(c)
     })
     enemyDealable[i] += towers.reduce(
       (s, t) => s + getTowerAttackPower(t, c.pos.rangeTo(t)),
       0,
     )
     enemyDealable[i] += fighters.reduce((t, f) => {
-      if (!f.pos.isNearTo(c)) return t
-      return t + f.corpus.attackPower
+      return t + f.corpus.attackPowerAt(c)
     }, 0)
     enemySummary[i] = getHitSummary(c.body, enemyDealable[i], enemyHealable[i])
   })

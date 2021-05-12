@@ -10,7 +10,7 @@ describe('CreepCorpus', () => {
     // @ts-ignore : allow adding Game to global
     global.Game = _.clone(Game)
     creep = { name: 'test' } as Creep
-    Game.creeps[creep.name] = creep
+    Game.getObjectById = () => creep
   })
 
   describe('#count', () => {
@@ -251,7 +251,7 @@ describe('CreepCorpus', () => {
     })
   })
 
-  describe('#healPowerTo', () => {
+  describe('#healPowerAt', () => {
     beforeEach(() => {
       creep.body = [
         { type: HEAL, hits: 0, boost: 'LHO2' },
@@ -266,7 +266,7 @@ describe('CreepCorpus', () => {
     context('out of range', () => {
       it('returns 0', () => {
         expect(
-          corpus.healPowerTo({ pos: new RoomPosition(26, 29, 'test') }),
+          corpus.healPowerAt({ pos: new RoomPosition(26, 29, 'test') }),
         ).to.eq(0)
       })
     })
@@ -274,7 +274,7 @@ describe('CreepCorpus', () => {
     context('in long range', () => {
       it('returns 72 divided by 3 as ranged is 3 times weakier than indirect', () => {
         expect(
-          corpus.healPowerTo({ pos: new RoomPosition(26, 28, 'test') }),
+          corpus.healPowerAt({ pos: new RoomPosition(26, 28, 'test') }),
         ).to.eq(72 / 3)
       })
     })
@@ -282,7 +282,7 @@ describe('CreepCorpus', () => {
     context('near', () => {
       it('returns 72', () => {
         expect(
-          corpus.healPowerTo({ pos: new RoomPosition(26, 26, 'test') }),
+          corpus.healPowerAt({ pos: new RoomPosition(26, 26, 'test') }),
         ).to.eq(72)
       })
     })
@@ -384,6 +384,43 @@ describe('CreepCorpus', () => {
 
       it('returns 60', () => {
         expect(corpus.rangedAttackPower).to.eq(60)
+      })
+    })
+  })
+
+  describe('#attackPowerAt', () => {
+    beforeEach(() => {
+      creep.body = [
+        { type: ATTACK, hits: 0, boost: 'UH2O' },
+        { type: ATTACK, hits: 1, boost: 'UH' },
+        { type: RANGED_ATTACK, hits: 100, boost: 'XKHO2' },
+        { type: MOVE, hits: 100 },
+      ]
+      creep.hits = 201
+      creep.pos = new RoomPosition(25, 25, 'test')
+    })
+
+    context('out of range', () => {
+      it('returns 0', () => {
+        expect(
+          corpus.attackPowerAt({ pos: new RoomPosition(26, 29, 'test') }),
+        ).to.eq(0)
+      })
+    })
+
+    context('in long range', () => {
+      it('returns 40', () => {
+        expect(
+          corpus.attackPowerAt({ pos: new RoomPosition(26, 28, 'test') }),
+        ).to.eq(40)
+      })
+    })
+
+    context('near', () => {
+      it('returns 100', () => {
+        expect(
+          corpus.attackPowerAt({ pos: new RoomPosition(26, 26, 'test') }),
+        ).to.eq(100)
       })
     })
   })

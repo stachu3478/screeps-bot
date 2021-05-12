@@ -1,7 +1,8 @@
 declare class CreepCorpus {
   count(type: BodyPartConstant): number
   hasActive(type: BodyPartConstant): boolean
-  healPowerTo(creep: _HasRoomPosition): number
+  healPowerAt(creep: _HasRoomPosition): number
+  attackPowerAt(creep: _HasRoomPosition): number
   armed: boolean
   safeDistance: number
   healPower: number

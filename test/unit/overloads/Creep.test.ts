@@ -11,7 +11,7 @@ describe('Creep', () => {
     // @ts-ignore : allow adding Game to global
     global.Game = _.clone(Game)
     creep = new Creep('test' as Id<Creep>)
-    Game.creeps[creep.name] = creep
+    Game.getObjectById = () => creep
   })
 
   describe('#cache', () => {

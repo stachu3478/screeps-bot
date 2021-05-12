@@ -20,11 +20,18 @@ export default class CreepCorpus extends Memoized<Creep> {
     return this.object!.hits > this.hitThresholds[type]
   }
 
-  healPowerTo(creep: _HasRoomPosition) {
+  healPowerAt(creep: _HasRoomPosition) {
     const range = this.object!.pos.getRangeTo(creep)
     if (range > 3) return 0
     if (range > 1) return this.rangedHealPower
     return this.healPower
+  }
+
+  attackPowerAt(creep: _HasRoomPosition) {
+    const range = this.object!.pos.getRangeTo(creep)
+    if (range > 3) return 0
+    if (range > 1) return this.rangedAttackPower
+    return this.attackPower + this.rangedAttackPower
   }
 
   get armed() {

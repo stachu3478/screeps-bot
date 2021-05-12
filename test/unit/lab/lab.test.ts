@@ -16,7 +16,7 @@ describe('Lab system initialization', () => {
   })
 
   it('should do nothing if system is cooling down', function () {
-    room.cache = { labCooldown: 1 }
+    room.cache = { labCooldown: 1, scoutsWorking: 0 }
     room.memory = {}
     room.lab2 = {} as StructureLab
     lab(room)
@@ -24,14 +24,14 @@ describe('Lab system initialization', () => {
   })
 
   it('should do nothing if main labs are missing', function () {
-    room.cache = { labCooldown: 0 }
+    room.cache = { labCooldown: 0, scoutsWorking: 0 }
     room.memory = {}
     lab(room)
     expect(room.memory.labState).to.be.undefined
   })
 
   it('should return to IDLE state if no more data are present', function () {
-    room.cache = { labCooldown: 0 }
+    room.cache = { labCooldown: 0, scoutsWorking: 0 }
     room.memory = {}
     room.lab2 = {} as StructureLab
     lab(room)
@@ -39,7 +39,7 @@ describe('Lab system initialization', () => {
   })
 
   it('should return to LAB_PRODUCING state if recipe is present', function () {
-    room.cache = { labCooldown: 0 }
+    room.cache = { labCooldown: 0, scoutsWorking: 0 }
     room.memory = { labRecipe: RESOURCE_UTRIUM_HYDRIDE }
     room.lab2 = {} as StructureLab
     lab(room)

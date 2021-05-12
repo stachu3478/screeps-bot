@@ -17,7 +17,7 @@ describe('routine/extract', () => {
     // @ts-ignore : allow adding Game to global
     global.Game = _.clone(Game)
     creep = { name: 'test' } as Creep
-    Game.creeps[creep.name] = creep
+    Game.getObjectById = () => creep
     creep.body = []
     creep.corpus = new CreepCorpus(creep)
   })
