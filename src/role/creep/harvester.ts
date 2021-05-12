@@ -23,18 +23,6 @@ import { haulCurrentRoom } from 'job/resourceHaul'
 import pick from 'routine/haul/pick'
 import move from 'utils/path'
 
-function nativeRoutineHandler(creep: Harvester, result: number) {
-  switch (result) {
-    case NO_RESOURCE:
-    case NOTHING_TODO:
-    case FAILED:
-      creep.memory.state = State.IDLE
-    case NOTHING_DONE:
-      autoRepair(creep)
-      break
-  }
-}
-
 export default profiler.registerFN(function harvester(creep: Harvester) {
   switch (creep.memory.state) {
     case State.IDLE:
@@ -66,10 +54,11 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
         autoPick(creep) && autoRepair(creep)
       } else creep.memory.state = State.IDLE
       break
-    case State.REPAIR:
-      nativeRoutineHandler(creep, repair(creep))
-      break
     case State.BUILD:
+      if (creep.routeProcessor.process() && creep.routeProcessor.isJobFound()) {
+        creep.memory.state = State.HARVESTING
+        break
+      }
       if (creep.buildingRouteProcessor.process()) {
         autoPick(creep) && move.check(creep) && autoRepair(creep)
       } else creep.memory.state = State.IDLE

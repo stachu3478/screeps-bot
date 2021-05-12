@@ -34,6 +34,24 @@ export default class CreepCorpus extends Memoized<Creep> {
     return this.attackPower + this.rangedAttackPower
   }
 
+  damageDealt(baseAmount: number) {
+    let dealt = 0
+    let remaining = baseAmount
+    this.object!.body.every((part) => {
+      let damage = 0
+      if (part.type !== TOUGH || !part.boost)
+        dealt += damage = Math.min(part.hits, remaining)
+      else {
+        const boostMultipler = BOOSTS.tough[part.boost].damage
+        dealt += Math.min(part.hits, remaining * boostMultipler)
+        damage = Math.min(part.hits / boostMultipler, remaining)
+      }
+      remaining -= damage
+      return remaining > 0
+    })
+    return dealt + remaining
+  }
+
   get armed() {
     return this.hasActive(ATTACK) || this.hasActive(RANGED_ATTACK)
   }

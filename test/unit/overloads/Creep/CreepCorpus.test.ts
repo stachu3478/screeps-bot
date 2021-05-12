@@ -424,4 +424,56 @@ describe('CreepCorpus', () => {
       })
     })
   })
+
+  describe('#damageDealt Calculating creep damage summary at current body', () => {
+    beforeEach(() => {
+      creep.body = [
+        {
+          type: MOVE,
+          hits: 100,
+        },
+        {
+          type: CARRY,
+          hits: 100,
+        },
+      ]
+    })
+
+    describe('when no damage is dealt', () => {
+      it('returns 0', () => {
+        expect(corpus.damageDealt(0)).to.eql(0)
+      })
+    })
+
+    describe('when damage is dealt', () => {
+      describe('when parts are damage resistant', () => {
+        beforeEach(() => {
+          creep.body.unshift({
+            type: TOUGH,
+            hits: 100,
+            boost: RESOURCE_GHODIUM_OXIDE,
+          })
+        })
+
+        it('returns less dealt damage', () => {
+          expect(corpus.damageDealt(100)).to.eql(100 * BOOSTS.tough.GO.damage)
+        })
+
+        it('returns more dealt damage', () => {
+          const boostMul = BOOSTS.tough.GO.damage
+          expect(corpus.damageDealt(200)).to.eql(300 - 100 / boostMul)
+        })
+      })
+
+      it('returns dealt damage', () => {
+        expect(corpus.damageDealt(1)).to.eql(1)
+      })
+    })
+
+    describe('when more damage is dealt', () => {
+      it('returns the same value', () => {
+        expect(corpus.damageDealt(144)).to.eql(144)
+      })
+    })
+  })
 })

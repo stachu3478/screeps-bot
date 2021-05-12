@@ -21,6 +21,7 @@ const ignoreCreeps = { ignoreCreeps: true }
 export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
   private room: Room
   private resourceRoute: ResourceRoute
+  private operated: boolean = false
 
   constructor(creep: TransferCreep, resourceRoute: ResourceRoute) {
     super(creep)
@@ -35,6 +36,7 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
       delete creep.memory[Keys.dumping]
       delete creep.memory[Keys.fillTarget]
       delete creep.memory[Keys.drawSource]
+      this.operated = false
     }
     return result
   }
@@ -50,7 +52,7 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
       if (res === NOTHING_DONE) return true
       return dumpResources(this.creep)
     } else if (!this.drawAndFill()) {
-      if (this.resourceRoute.dump) {
+      if (this.ableToDump) {
         return !!(creep.memory[Keys.dumping] = dumpResources(creep) ? 1 : 0)
       }
       return false
@@ -65,6 +67,7 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
     creep.memory[Keys.fillTarget] = target.id
     const route = this.resourceRoute
     if (creep.store[this.resourceRoute.type]) {
+      this.operated = true
       const result = memoryLessFill(
         creep,
         target,
@@ -75,6 +78,7 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
     } else {
       const source = this.findStructureToDraw() as AnyStoreStructure | null
       if (!source) return false
+      this.operated = true
       creep.memory[Keys.drawSource] = source.id
       memoryLessDraw(creep, source, route.type, route.drawAmount(source))
     }
@@ -116,5 +120,9 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
       route.findTargets(this.room, differ),
       ignoreCreeps,
     )
+  }
+
+  private get ableToDump() {
+    return this.resourceRoute.dump && this.operated
   }
 }
