@@ -107,3 +107,7 @@ interface Creep {
   safeRangeXY: (x: number, y: number) => number
   moveToRoom: (room: string) => ScreepsReturnCode
 }
+
+interface StructureTower {
+  attackPowerAt: (creep: _HasRoomPosition) => number
+}

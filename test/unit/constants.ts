@@ -31,6 +31,7 @@ Object.assign(global, {
   StructureFactory: class extends Structure {},
   StructurePowerSpawn: class extends Structure {},
   StructureTerminal: class extends Structure {},
+  StructureTower: class extends Structure {},
   PathFinder: {
     CostMatrix: class {
       set() {}
