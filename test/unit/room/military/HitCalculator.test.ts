@@ -32,8 +32,8 @@ describe('HitCalculator', () => {
     calculator = new HitCalculator(room)
   })
 
-  it('returns arbitrary value', () => {
+  it('returns arbitrary value dealt damage', () => {
     calculator.fetch()
-    expect(calculator.getFor(creep, dealers, healers)).to.eql(-2)
+    expect(calculator.getFor(creep, dealers, healers)).to.eql(-5)
   })
 })

@@ -27,7 +27,7 @@ export default function run(creep: Scout) {
       creep.motherRoom.cache.scoutsWorking++
       const hostiles = new RoomEnemies(creep.room).find()
       const hostileNotSafe = hostiles.find((h) => !creep.isSafeFrom(h))
-      if (hostileNotSafe)
+      if (hostileNotSafe && !creep.pos.isNearTo(hostileNotSafe))
         move.anywhere(creep, hostileNotSafe.pos.getDirectionTo(creep))
       else
         switch (arrive(creep)) {
