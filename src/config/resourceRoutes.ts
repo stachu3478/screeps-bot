@@ -23,7 +23,7 @@ export default [
   },
   {
     from: STRUCTURE_CONTAINER,
-    to: (room: Room) => room.spawnsAndExtensions,
+    to: (room: Room) => room.buildings.spawnsWithExtensions,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
     minimalFreeCapacityToFill: 1,
@@ -36,7 +36,7 @@ export default [
   },
   {
     from: STRUCTURE_STORAGE,
-    to: (room: Room) => room.spawnsAndExtensions,
+    to: (room: Room) => room.buildings.spawnsWithExtensions,
     type: RESOURCE_ENERGY,
   },
   {

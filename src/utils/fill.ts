@@ -12,7 +12,7 @@ export function getFillableGenericStruture(room: Room, amount: number = 1) {
   if (isFillable(amount, structure)) return structure
   structure = room.storage
   if (isFillable(amount, structure)) return structure
-  structure = room.factory
+  structure = room.buildings.factory
   if (isFillable(amount, structure)) return structure
   return undefined
 }

@@ -19,6 +19,7 @@ interface RoomCache {
   enemyDetector?: EnemyRoomDetector
   boosts?: BoostManager
   scoutsWorking: number
+  buildings?: RoomBuildings
 
   labCooldown?: number
 }

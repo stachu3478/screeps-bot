@@ -68,6 +68,6 @@ export default function handleTerminal(
   cache.dealResourceType = resourceType
   handleLab.run(terminal)
   if (!mem.structs) return
-  const factory = terminal.room.factory
+  const factory = terminal.room.buildings.factory
   if (factory) handleFactory(terminal.store, factory)
 }

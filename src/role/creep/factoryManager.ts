@@ -22,7 +22,7 @@ interface FactoryManagerMemory extends CreepMemory {
 function findJob(creep: FactoryManager) {
   creep.memory.state = State.IDLE
   const motherRoom = creep.motherRoom
-  const factory = motherRoom.factory
+  const factory = motherRoom.buildings.factory
   if (!factory) return false
   const cache = factory.cache
   if (!motherRoom.terminal) return false

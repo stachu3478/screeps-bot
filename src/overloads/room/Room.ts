@@ -16,6 +16,7 @@ import enemies from 'config/enemies'
 import EnemyRoomDetector from 'planner/EnemyRoomDetector'
 import claim from 'config/claim'
 import BoostManager from './BoostManager'
+import RoomBuildings from './RoomBuildings'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -36,13 +37,6 @@ defineRoomGetter('powerSpawnCache', (self) => {
   return cache[self.name] || (cache[self.name] = {})
 })
 
-defineRoomGetter('factory', (self) => {
-  return self.buildingAt(
-    (self.memory.structs || '').charCodeAt(4),
-    STRUCTURE_FACTORY,
-  )
-})
-
 defineRoomGetter('lab1', (self) => {
   return self.buildingAt(
     (self.memory.internalLabs || '').charCodeAt(0),
@@ -61,19 +55,8 @@ defineRoomGetter('externalLabs', (self) => {
   return self.labsFromChars(self.memory.externalLabs || '')
 })
 
-defineRoomGetter('allLabs', (self) => {
-  return self.labsFromChars(
-    (self.memory.externalLabs || '') + (self.memory.internalLabs || ''),
-  )
-})
-
 defineRoomGetter('mineral', (self) => {
   return self.find(FIND_MINERALS)[0]
-})
-
-defineRoomGetter('extractor', (self) => {
-  const mineral = self.mineral
-  return mineral && mineral.pos.building(STRUCTURE_EXTRACTOR)
 })
 
 defineRoomGetter('linked', (self) => {
@@ -90,11 +73,6 @@ defineRoomGetter('linked', (self) => {
 
 defineRoomGetter('spawn', (self) => {
   return self.find(FIND_MY_SPAWNS)[0]
-})
-
-defineRoomGetter('powerSpawn', (self) => {
-  const structs = self.memory.structs || ''
-  return self.buildingAt(structs.charCodeAt(11), STRUCTURE_POWER_SPAWN)
 })
 
 defineRoomGetter('sources', (self) => {
@@ -115,19 +93,6 @@ defineRoomGetter('defencePolicy', (self) => {
   const cache = self.cache
   if (!cache.defencePolicy) cache.defencePolicy = new DefencePolicy(self)
   return cache.defencePolicy
-})
-
-const spawnOrExtension: Record<string, number> = {
-  [STRUCTURE_SPAWN]: 1,
-  [STRUCTURE_EXTENSION]: 1,
-}
-defineRoomGetter('spawnsAndExtensions', (self) => {
-  return self
-    .find(FIND_STRUCTURES)
-    .filter((s) => spawnOrExtension[s.structureType]) as (
-    | StructureSpawn
-    | StructureExtension
-  )[]
 })
 
 defineRoomGetter('spawnLink', (self) => {
@@ -176,10 +141,6 @@ defineRoomGetter('location', (self) => {
   return new RoomLocation(self.name)
 })
 
-defineRoomGetter('observer', (self) => {
-  return self.leastAvailablePosition.building(STRUCTURE_OBSERVER)
-})
-
 defineRoomGetter('pathScanner', (self) => {
   return (
     self.cache.pathScanner ||
@@ -206,6 +167,11 @@ defineRoomGetter('enemyDetector', (self) => {
 
 defineRoomGetter('boosts', (self) => {
   return self.cache.boosts || (self.cache.boosts = new BoostManager(self))
+})
+
+defineRoomGetter('buildings', (self) => {
+  const cache = self.cache
+  return cache.buildings || (cache.buildings = new RoomBuildings(self))
 })
 
 Room.prototype.store = function (resource: ResourceConstant) {

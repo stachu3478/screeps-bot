@@ -15,7 +15,7 @@ describe('Role of the power spawn', () => {
     global.Memory = _.clone(Memory)
 
     powerSpawn = { cache: {} } as StructurePowerSpawn
-    room = { memory: {}, cache: {}, powerSpawn: powerSpawn } as Room
+    room = { memory: {}, cache: {}, buildings: { powerSpawn } } as Room
     powerSpawn.room = room
 
     sinon.restore()

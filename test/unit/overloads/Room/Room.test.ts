@@ -41,27 +41,6 @@ describe('Room', () => {
     })
   })
 
-  describe('#factory', () => {
-    const structs = '0123456789'
-    const returnValue = { id: 0 }
-    beforeEach(() => {
-      room.memory.structs = structs
-      room.buildingAt = sinon.stub().returns(returnValue)
-    })
-
-    it('returns factory from locked position', () => {
-      expect(room.factory).to.eq(returnValue)
-    })
-
-    it('calls building lock wizard', () => {
-      room.factory
-      expect(room.buildingAt).to.be.calledOnceWithExactly(
-        structs.charCodeAt(4),
-        STRUCTURE_FACTORY,
-      )
-    })
-  })
-
   describe('#lab1 #lab2', () => {
     const labs = '0123456789'
     const returnValue = { id: 0 }
@@ -111,22 +90,6 @@ describe('Room', () => {
     })
   })
 
-  describe('#allLabs', () => {
-    const returnValue = { id: 0 }
-    beforeEach(() => {
-      room.labsFromChars = sinon.stub().returns(returnValue)
-    })
-
-    it('returns all labs', () => {
-      expect(room.allLabs).to.eq(returnValue)
-    })
-
-    it('calls labsFromChars', () => {
-      room.allLabs
-      expect(room.labsFromChars).to.be.calledOnceWithExactly('123456')
-    })
-  })
-
   describe('#mineral', () => {
     const returnValue = [{ id: 0 }]
     beforeEach(() => {
@@ -143,27 +106,6 @@ describe('Room', () => {
     })
   })
 
-  describe('#extractor', () => {
-    const returnMineral = [{} as Mineral]
-    const returnExtractor = { id: 0 }
-    beforeEach(() => {
-      room.find = sinon.stub().returns(returnMineral)
-      returnMineral[0].pos = {} as RoomPosition
-      returnMineral[0].pos.building = sinon.stub().returns(returnExtractor)
-    })
-
-    it('returns extractor', () => {
-      expect(room.extractor).to.eq(returnExtractor)
-    })
-
-    it('calls finder', () => {
-      room.extractor
-      expect(returnMineral[0].pos.building).to.be.calledOnceWithExactly(
-        STRUCTURE_EXTRACTOR,
-      )
-    })
-  })
-
   describe('#spawn', () => {
     const returnValue = [{ id: 0 }]
     beforeEach(() => {
@@ -177,27 +119,6 @@ describe('Room', () => {
     it('calls finder', () => {
       room.spawn
       expect(room.find).to.be.calledOnceWithExactly(FIND_MY_SPAWNS)
-    })
-  })
-
-  describe('#powerSpawn', () => {
-    const returnValue = { id: 0 }
-    const structs = '000000000001'
-    beforeEach(() => {
-      room.memory.structs = structs
-      room.buildingAt = sinon.stub().returns(returnValue)
-    })
-
-    it('returns wizard rezult', () => {
-      expect(room.powerSpawn).to.eq(returnValue)
-    })
-
-    it('calls wizard', () => {
-      room.powerSpawn
-      expect(room.buildingAt).to.be.calledOnceWithExactly(
-        '1'.charCodeAt(0),
-        STRUCTURE_POWER_SPAWN,
-      )
     })
   })
 

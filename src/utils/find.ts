@@ -1,16 +1,9 @@
 import _ from 'lodash'
 import { Fighter } from 'role/creep/fighter'
-import { energyToNukerThreshold } from 'config/storage'
 
 function persistFilter<T>(arr: (T | undefined)[]): T[] {
   return arr.filter((v) => v) as T[]
 }
-
-const towerFilter = {
-  filter: (s: Structure) => s.structureType === STRUCTURE_TOWER,
-}
-export const findTowers = (room: Room) =>
-  room.find<StructureTower>(FIND_STRUCTURES, towerFilter)
 
 export const findContainers = (room: Room) => {
   const potencialContainers = room.sources.positions.map((pos) =>

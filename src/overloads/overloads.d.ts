@@ -8,17 +8,13 @@ type BuildingAt<T extends StructureConstant> = (
   type: T,
 ) => Structure<T> | undefined
 interface Room {
-  factory?: StructureFactory
   lab1?: StructureLab
   lab2?: StructureLab
   externalLabs: StructureLab[]
-  allLabs: StructureLab[]
   mineral?: Mineral
-  extractor?: StructureExtractor
   spawnLink?: StructureLink
   linked: boolean
   spawn?: StructureSpawn
-  powerSpawn?: StructurePowerSpawn
   cache: RoomCache
   factoryCache: FactoryCache
   powerSpawnCache: PowerSpawnCache
@@ -27,16 +23,15 @@ interface Room {
   my: boolean
   shieldPositions: RoomPosition[]
   defencePolicy: DefencePolicy
-  spawnsAndExtensions: (StructureSpawn | StructureExtension)[]
   buildingRouter: RoomBuildingRouter
   repairRouter: RoomRepairRouter
   leastAvailablePosition: RoomPosition
   location: RoomLocation
-  observer?: StructureObserver
   pathScanner: RoomPathScanner
   owner?: string
   enemyDetector: EnemyRoomDetector
   boosts: BoostManager
+  buildings: RoomBuildings
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void

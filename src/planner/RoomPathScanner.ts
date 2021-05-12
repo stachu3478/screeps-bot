@@ -64,7 +64,7 @@ export default class RoomPathScanner {
   private getOrRequestRoomAvailbility(roomName: string) {
     const room = Game.rooms[roomName]
     if (!room) {
-      const observer = this.room.observer
+      const observer = this.room.buildings.observer
       if (observer) observer.observeRoom(roomName)
       else this.toBeTraversed = roomName
       this.room.visual.text('Trying to scan room ' + roomName, 0, 11, infoStyle)

@@ -1,0 +1,39 @@
+import HitCalculator from 'room/military/HitCalculator'
+import { expect } from '../../../expect'
+
+describe('HitCalculator', () => {
+  let creep: Creep
+  let calculator: HitCalculator
+  let tower: StructureTower
+  let dealers: Creep[]
+  let healers: Creep[]
+  beforeEach(() => {
+    const room = {} as Room
+    room.buildings = {} as RoomBuildings
+    tower = {} as StructureTower
+    tower.attackPowerAt = () => 1
+    room.buildings.towers = [tower]
+
+    creep = {} as Creep
+    creep.corpus = {} as CreepCorpus
+    creep.corpus.healPowerAt = () => 2
+    creep.corpus.damageDealt = (d) => d
+
+    const dealer = {} as Creep
+    dealer.corpus = {} as CreepCorpus
+    dealer.corpus.attackPowerAt = () => 4
+    dealers = [dealer]
+
+    const healer = {} as Creep
+    healer.corpus = {} as CreepCorpus
+    healer.corpus.healPowerAt = () => 8
+    healers = [healer, creep]
+
+    calculator = new HitCalculator(room)
+  })
+
+  it('returns arbitrary value', () => {
+    calculator.fetch()
+    expect(calculator.getFor(creep, dealers, healers)).to.eql(-2)
+  })
+})
