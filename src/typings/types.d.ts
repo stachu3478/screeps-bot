@@ -148,6 +148,10 @@ interface RoomMemory {
    * Tower ekhaustion target
    */
   e?: string
+  /**
+   * Creeps formed in duet
+   */
+  u?: [string, string]
   p?: RoomNeighbourPath[]
 }
 

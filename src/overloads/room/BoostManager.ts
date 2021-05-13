@@ -114,11 +114,7 @@ export default class BoostManager {
       if (name === creepName)
         return resourceType === resource && (done || !mandatory)
       const creep = Game.creeps[name]
-      if (
-        name &&
-        (!creep || creep.memory.role !== Role.BOOSTER) &&
-        !mandatory
-      ) {
+      if (name && (!creep || creep.memory.role !== Role.BOOSTER)) {
         toRemove = name
         resourceToRemove = resourceType
       }

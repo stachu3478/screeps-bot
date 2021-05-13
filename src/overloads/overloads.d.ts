@@ -32,6 +32,7 @@ interface Room {
   enemyDetector: EnemyRoomDetector
   boosts: BoostManager
   buildings: RoomBuildings
+  duet: DuetHandler
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void

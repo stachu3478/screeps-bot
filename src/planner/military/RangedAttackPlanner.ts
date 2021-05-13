@@ -3,13 +3,13 @@ export default class RangedAttackPlanner {
   private mass = false
 
   constructor(room: Room, pos: RoomPosition) {
-    const nearTargets = this.structuresAtArea(room, pos, 1)
-    if (nearTargets.length) {
-      this.mass = true
+    const nearTarget = this.structuresAtArea(room, pos, 1)[0]
+    if (nearTarget) {
+      if ((nearTarget.structure as OwnedStructure).owner) this.mass = true
+      else this.target = nearTarget.structure
     } else {
-      const closeTargets = this.structuresAtArea(room, pos, 3)
-      this.target = closeTargets[0] && closeTargets[0].structure
-      if (!this.target) this.mass = true
+      const closeTarget = this.structuresAtArea(room, pos, 3)[0]
+      this.target = closeTarget && closeTarget.structure
     }
   }
 
@@ -24,7 +24,7 @@ export default class RangedAttackPlanner {
     const minY = Math.max(0, pos.y - range)
     const minX = Math.max(0, pos.x - range)
     const maxY = Math.min(49, pos.y + range)
-    const maxX = Math.min(49, pos.y + range)
+    const maxX = Math.min(49, pos.x + range)
     return room
       .lookForAtArea(LOOK_STRUCTURES, minY, minX, maxY, maxX, true)
       .filter(({ structure }) => structure.hits)

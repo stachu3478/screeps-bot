@@ -17,6 +17,7 @@ import EnemyRoomDetector from 'planner/military/EnemyRoomDetector'
 import claim from 'config/claim'
 import BoostManager from './BoostManager'
 import RoomBuildings from './RoomBuildings'
+import DuetHandler from 'handler/DuetHandler'
 
 function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
@@ -172,6 +173,11 @@ defineRoomGetter('boosts', (self) => {
 defineRoomGetter('buildings', (self) => {
   const cache = self.cache
   return cache.buildings || (cache.buildings = new RoomBuildings(self))
+})
+
+defineRoomGetter('duet', (self) => {
+  const cache = self.cache
+  return cache.duet || (cache.duet = new DuetHandler(self))
 })
 
 Room.prototype.store = function (resource: ResourceConstant) {

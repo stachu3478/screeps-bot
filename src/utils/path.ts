@@ -87,32 +87,42 @@ const move = {
   ) => {
     const room = creep.room
     const { x, y } = creep.pos
+    let bestDir = move.findNearestWalkableDirection(
+      room,
+      creep.pos,
+      preferDirection,
+      me,
+    )
+    if (bestDir === 0) return false
+    creep.move(bestDir as DirectionConstant)
+    Feromon.increment(room.name, x, y)
+    return true
+  },
+  findNearestWalkableDirection: (
+    room: Room,
+    pos: RoomPosition,
+    direction: DirectionConstant,
+    me?: Creep,
+  ) => {
     let dirOffset = 0
     let bestDir = 0
     let leastFeromon = Infinity
     for (let i = 0; i < 8; i++) {
-      const dir = (zmod(preferDirection + dirOffset - 1, 8) +
-        1) as DirectionConstant
-      if (dir < 1 || dir > 8) throw new Error('Invalid direction')
+      const dir = (zmod(direction + dirOffset - 1, 8) + 1) as DirectionConstant
       const offset = offsetsByDirection[dir]
-      const mx = x + offset[0]
-      const my = y + offset[1]
+      const mx = pos.x + offset[0]
+      const my = pos.y + offset[1]
       if (isWalkable(room, mx, my, me)) {
         const feromon = Feromon.collect(room.name, mx, my)
         if (feromon < leastFeromon) {
           leastFeromon = feromon
           bestDir = dir
         }
-        //console.log(feromon, dir)
       }
       if (dirOffset > -1) dirOffset++
       dirOffset = -dirOffset
     }
-    if (bestDir === 0) return false
-    //console.log(bestDir, creep.name)
-    creep.move(bestDir as DirectionConstant)
-    Feromon.increment(room.name, x, y)
-    return true
+    return bestDir
   },
   handleCreepOnRoad: (
     creepOnRoad: Creep,

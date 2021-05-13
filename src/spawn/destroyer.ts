@@ -5,17 +5,16 @@ import { uniqName } from './name'
 
 function createBodyDefinition(room: Room, entranceDamage: number) {
   const requiredToughHits = entranceDamage * 2
-  const requiredHeal = entranceDamage
   return new BodyDefinition(
     requiredToughHits,
-    requiredHeal,
+    0,
     // @ts-ignore private property error
     room.boosts,
-    RANGED_ATTACK,
+    WORK,
   )
 }
 
-export function needsTowerEkhauster(spawn: StructureSpawn, count: number) {
+export function needsDestroyer(spawn: StructureSpawn, count: number) {
   if (count) return false
   const room = spawn.room
   const target = room.memory[RoomMemoryKeys.ekhaust]
@@ -23,6 +22,8 @@ export function needsTowerEkhauster(spawn: StructureSpawn, count: number) {
   if (room.energyAvailable < 12000) return false
   const targetInfo = room.pathScanner.rooms[target]
   if (!targetInfo || _.isUndefined(targetInfo.entranceDamage)) return false
+  const ekhaustedRoom = Game.rooms[target]
+  if (!ekhaustedRoom) return false
   if (room.duet.formed) return false
   return (
     createBodyDefinition(room, targetInfo.entranceDamage!).body.length <=
@@ -30,7 +31,7 @@ export function needsTowerEkhauster(spawn: StructureSpawn, count: number) {
   )
 }
 
-export function spawnTowerEkhauster(spawn: StructureSpawn) {
+export function spawnDestroyer(spawn: StructureSpawn) {
   const room = spawn.room
   const target = room.memory[RoomMemoryKeys.ekhaust]!
   const targetInfo = room.pathScanner.rooms[target]!
@@ -39,12 +40,12 @@ export function spawnTowerEkhauster(spawn: StructureSpawn) {
   const body = bodyDef.body
   const memory = {
     role: Role.BOOSTER,
-    _targetRole: Role.TOWER_EKHAUSTER,
+    _targetRole: Role.DESTROYER,
     room: spawn.room.name,
     deprivity: 50,
   }
-  const creepName = uniqName('E' + spawn.name)
+  const creepName = uniqName('Y' + spawn.name)
   const boostingRequester = new BoostingRequester(room.boosts, bodyDef)
-  boostingRequester.requestFor(creepName, 'rangedAttack', true)
+  boostingRequester.requestFor(creepName, 'dismantle', true)
   spawn.trySpawnCreep(body, creepName, memory, false, 10)
 }

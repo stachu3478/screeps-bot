@@ -15,6 +15,7 @@ import spawnStaticUpgrader, { needsStaticUpgraders } from './staticUpgrader'
 import { needsFighters, spawnFighter } from './fighter'
 import spawnBuilder, { needsBuilder } from './builder'
 import { needsTowerEkhauster, spawnTowerEkhauster } from './towerEkhauster'
+import { needsDestroyer, spawnDestroyer } from './destroyer'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -130,6 +131,8 @@ export default profiler.registerFN(function loop(
   else if (needsMover(spawn, creepCountByRole[Role.MOVER])) spawnMover(spawn)
   else if (needsTowerEkhauster(spawn, creepCountByRole[Role.TOWER_EKHAUSTER])) {
     spawnTowerEkhauster(spawn)
+  } else if (needsDestroyer(spawn, creepCountByRole[Role.DESTROYER])) {
+    spawnDestroyer(spawn)
   } else
     spawn.room.visual.text(
       'Spawn is idle. (' + (Game.cpu.getUsed() - cpu).toPrecision(2) + ')',

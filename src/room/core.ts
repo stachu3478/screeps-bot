@@ -8,11 +8,10 @@ import { infoStyle, dangerStyle } from './style'
 import handleLog from './log'
 import creeps from './creeps'
 import terminal from 'role/terminal'
-import { findFighters, findDamagedCreeps } from 'utils/find'
+import { findDamagedCreeps } from 'utils/find'
 import lab from 'role/lab'
 import factory from 'role/factory'
 import rolePowerSpawn from 'role/powerSpawn'
-import RoomEnemies from './military/RoomEnemies'
 import EnemyPicker from './military/EnemyPicker'
 
 export default function run(controller: StructureController, cpuUsed: number) {

@@ -20,6 +20,7 @@ interface RoomCache {
   boosts?: BoostManager
   scoutsWorking: number
   buildings?: RoomBuildings
+  duet?: DuetHandler
 
   labCooldown?: number
 }

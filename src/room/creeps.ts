@@ -125,6 +125,9 @@ export default function creeps(
     creep.memory.l = creep.ticksToLive
   }
 
+  if (creepCountByRole[Role.DUAL] || room.memory[RoomMemoryKeys.ekhaust])
+    room.duet.handle()
+
   return {
     creepCountByRole,
     count,
