@@ -1,4 +1,6 @@
 import BodyDefinition from './body/BodyDefinition'
+import BoostingRequester from './body/BoostingRequester'
+import { uniqName } from './name'
 
 function createBodyDefinition(room: Room, entranceDamage: number) {
   const requiredToughHits = entranceDamage * 2
@@ -39,33 +41,8 @@ export function spawnTowerEkhauster(spawn: StructureSpawn) {
     room: spawn.room.name,
     deprivity: 50,
   }
-  const creepName = 'E' + spawn.name
-  if (bodyDef.toughResource)
-    room.boosts.createRequest(
-      creepName,
-      bodyDef.toughResource,
-      bodyDef.toughCount,
-      true,
-    )
-  if (bodyDef.healResource)
-    room.boosts.createRequest(
-      creepName,
-      bodyDef.healResource,
-      bodyDef.healCount,
-      true,
-    )
-  if (bodyDef.moveResource)
-    room.boosts.createRequest(
-      creepName,
-      bodyDef.moveResource,
-      bodyDef.moveCount,
-      true,
-    )
-  const boostInfo = room.boosts.getBestAvailable(
-    part,
-    actions[i],
-    body.filter((type) => type === part).length,
-  )
-  if (boostInfo) boostRequests.push(boostInfo)
+  const creepName = uniqName('E' + spawn.name)
+  const boostingRequester = new BoostingRequester(room.boosts, bodyDef)
+  boostingRequester.requestFor(creepName, 'rangedAttack', true)
   spawn.trySpawnCreep(body, creepName, memory, false, 10)
 }

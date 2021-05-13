@@ -16,7 +16,7 @@ export default class CreepCorpus extends Memoized<Creep> {
   }
 
   hasActive(type: BodyPartConstant) {
-    if (!this.object) return 0
+    if (!this.object) return false
     return this.object.hits > this.hitThresholds[type]
   }
 

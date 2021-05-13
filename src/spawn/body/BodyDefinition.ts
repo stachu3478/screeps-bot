@@ -60,6 +60,10 @@ export default class BodyDefinition {
     return MAX_CREEP_SIZE - this.basePartCount
   }
 
+  get polyBodyType() {
+    return this.poly
+  }
+
   get valid() {
     return this.basePartCount <= MAX_CREEP_SIZE
   }
