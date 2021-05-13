@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { Fighter } from 'role/creep/fighter'
+import { Fighter } from 'role/creep/military/fighter'
 
 function persistFilter<T>(arr: (T | undefined)[]): T[] {
   return arr.filter((v) => v) as T[]

@@ -28,12 +28,13 @@ const roleBooster = {
         }
         break
       default:
+        const boosts = creep.room.boosts
         // FIXME: not always forcing works
-        const targetLabId = creep.room.boosts.getRequest(creep.name)
+        const targetLabId = boosts.getRequest(creep.name)
         if (targetLabId) {
           creep.memory.state = State.BOOST
           creep.memory._boostLab = targetLabId
-        } else {
+        } else if (!boosts.hasMandatory(creep.name)) {
           creep.memory.role = creep.memory._targetRole
           delete creep.memory._targetRole
         }

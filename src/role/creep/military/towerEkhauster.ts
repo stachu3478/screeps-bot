@@ -3,6 +3,8 @@ import arrive, { ArriveCreep } from 'routine/arrive'
 import recycle from 'routine/recycle'
 import profiler from 'screeps-profiler'
 import collectGarbage from 'utils/collectGarbage'
+import memoryLessAutoRangedAttack from 'routine/military/memoryLessAutoRangedAttack'
+import move from 'utils/path'
 
 export default profiler.registerFN(function towerEkhauster(creep: ArriveCreep) {
   creep.heal(creep)
@@ -24,17 +26,17 @@ export default profiler.registerFN(function towerEkhauster(creep: ArriveCreep) {
         creep.memory.state = State.FALL_BACK
         creep.memory._arrive = creep.memory.room
         arrive(creep)
+      } else if (creep.pos.isBorder()) {
+        move.anywhere(creep, creep.pos.getDirectionTo(25, 25))
       }
       switch (arrive(creep)) {
         case NOTHING_TODO:
         case DONE:
-          const towersEkhausted = creep.room
-            .find(FIND_HOSTILE_STRUCTURES)
-            .every(
-              (s) =>
-                s.structureType !== STRUCTURE_TOWER ||
-                !s.store[RESOURCE_ENERGY],
-            )
+          const towersEkhausted = creep.room.buildings.towers.every(
+            (s) =>
+              s.structureType !== STRUCTURE_TOWER || !s.store[RESOURCE_ENERGY],
+          )
+          if (memoryLessAutoRangedAttack(creep)) break
           if (!towersEkhausted || creep.hits < creep.hitsMax) break
           delete creep.motherRoom.memory[RoomMemoryKeys.ekhaust]
           creep.motherRoom.memory._rangedAttack = creep.room.name

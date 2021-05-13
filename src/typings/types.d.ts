@@ -88,6 +88,7 @@ interface RoomNeighbourPath {
   sources?: number
   controllerFortified?: boolean
   safe?: boolean
+  entranceDamage?: number
 }
 
 interface RoomMemory {

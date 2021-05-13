@@ -2,7 +2,7 @@ import { DONE, NOTHING_TODO } from 'constants/response'
 import selfDestruct from 'routine/selfDestruct'
 import arrive from 'routine/arrive'
 import claim from 'routine/military/claim'
-import ClaimPlanner from 'planner/ClaimPlanner'
+import ClaimPlanner from 'planner/military/ClaimPlanner'
 
 export interface Claimer extends Creep {
   memory: ClaimerMemory

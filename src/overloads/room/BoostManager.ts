@@ -165,6 +165,14 @@ export default class BoostManager {
     return boostRequests
   }
 
+  hasMandatory(creepName: string) {
+    return this.creeps.some(
+      (b) =>
+        b[CreepBoostDataKeys.name] === creepName &&
+        !!b[CreepBoostDataKeys.mandatory],
+    )
+  }
+
   get labs() {
     return this.memory.labs
   }

@@ -1,5 +1,5 @@
 import enemies from 'config/enemies'
-import EnemiesPlanner from 'planner/EnemiesPlanner'
+import EnemiesPlanner from 'planner/military/EnemiesPlanner'
 
 export default class RoomEnemies {
   private static harmlessBodyparts: Set<BodyPartConstant> = new Set([

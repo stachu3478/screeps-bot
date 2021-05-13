@@ -87,7 +87,7 @@ export default [
     from: STRUCTURE_TERMINAL,
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
-    maximumFilledAmount: 5000,
+    maximumFilledAmount: 10000,
     dump: true,
   },
   /*{

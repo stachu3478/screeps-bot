@@ -5,7 +5,7 @@ export function needsExtractor(spawn: StructureSpawn, extractorCount?: number) {
   const room = spawn.room
   const mem = room.memory
   if (!mem.creeps) return false
-  if (!room.buildings.extractor) return false
+  if (!room.buildings.extractor || !room.mineral!.mineralAmount) return false
   return true
 }
 

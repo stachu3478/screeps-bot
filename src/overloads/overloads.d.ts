@@ -87,6 +87,7 @@ interface RoomPosition {
   rangeXY: (x: number, y: number) => number
   range: (pos: RoomPosition) => number
   rangeTo: (obj: _HasRoomPosition) => number
+  isBorder: () => boolean
   building: Building<StructureConstant>
 }
 

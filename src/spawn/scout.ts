@@ -1,4 +1,4 @@
-import ClaimPlanner from 'planner/ClaimPlanner'
+import ClaimPlanner from 'planner/military/ClaimPlanner'
 
 const claimerThreshold = BODYPART_COST[CLAIM] + BODYPART_COST[MOVE]
 export function needsClaim(spawn: StructureSpawn) {

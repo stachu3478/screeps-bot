@@ -20,10 +20,12 @@ export default function fighter(
       creep.memory.state = State.FIGHT
       break
     case State.RECYCLE:
-      switch (recycle(creep)) {
+      // please dont die if you need to fight
+      /*switch (recycle(creep)) {
         case DONE:
           collectGarbage(creep.name)
-      }
+      }*/
+      creep.memory.state = State.FIGHT
       break
     case State.FIGHT:
       switch (fight(creep, enemy, keepDistance)) {

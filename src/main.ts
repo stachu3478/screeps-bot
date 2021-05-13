@@ -9,8 +9,7 @@ import roomVisual from 'utils/visual'
 import { memHackBeforeLoop, memHackAfterLoop } from 'utils/memHack'
 import pixelsHandler from 'utils/pixelsHandler'
 import handleRuntimeStats from 'utils/runtime'
-import ClaimPlanner from 'planner/ClaimPlanner'
-import CloneScanner from 'planner/CloneScanner'
+import CloneScanner from 'planner/military/CloneScanner'
 
 export const addFirstRoom = (game = Game, memory = Memory) => {
   // Automatically add first room to owned if there are none

@@ -1,4 +1,4 @@
-import { EnemiesConfig } from 'planner/EnemiesPlanner'
+import { EnemiesConfig } from 'planner/military/EnemiesPlanner'
 
 const config: EnemiesConfig = {
   /**

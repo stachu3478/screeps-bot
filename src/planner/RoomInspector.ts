@@ -1,3 +1,5 @@
+import _ from 'lodash'
+
 export default class RoomInspector {
   private room: Room
 
@@ -20,9 +22,17 @@ export default class RoomInspector {
   private checkSafety(room: Room, info: RoomNeighbourPath) {
     if (info.safe === false) return false
     if (room.owner === this.room.owner) return true
-    return !this.room
+    const entryPosition = new RoomPosition(info.x, info.y, info.name)
+    const towers = this.room
       .find(FIND_STRUCTURES)
-      .filter((s) => s.structureType === STRUCTURE_TOWER && s.isActive()).length
+      .filter(
+        (s) => s.structureType === STRUCTURE_TOWER && s.isActive(),
+      ) as StructureTower[]
+    const entranceTowerDamage = _.sum(towers, (t) =>
+      t.attackPowerAt({ pos: entryPosition }),
+    )
+    info.entranceDamage = entranceTowerDamage
+    return info.entranceDamage === 0
   }
 
   private inspectController(

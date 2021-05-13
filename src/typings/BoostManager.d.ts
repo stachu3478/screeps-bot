@@ -24,6 +24,7 @@ declare class BoostManager {
     actions: string[],
     body: BodyPartConstant[],
   ) => BoostInfo[]
+  hasMandatory: (creepName: string) => boolean
   labs: BoostData['labs']
   creeps: BoostData['creeps']
 }
