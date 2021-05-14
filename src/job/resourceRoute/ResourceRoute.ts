@@ -1,5 +1,4 @@
-import StructureMatcher, { StructureSelector } from './matcher/structureMatcher'
-import ResourceMatcher from './matcher/ResourceMatcher'
+import StructureMatcher from './matcher/structureMatcher'
 import { StoreStructureSelector } from '../selector/StoreStructureSelector'
 
 type ResourceSelector = (r: ResourceConstant) => boolean

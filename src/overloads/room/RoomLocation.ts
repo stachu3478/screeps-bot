@@ -1,4 +1,5 @@
 import { FindExitConstant } from 'planner/RoomNeighbourPathScanner'
+import range from 'utils/range'
 
 export default class RoomLocation {
   private roomName: string
@@ -15,6 +16,11 @@ export default class RoomLocation {
 
   get y() {
     return this.index[1]
+  }
+
+  inRangeTo(room: Room, r: number) {
+    const location = room.location
+    return r >= range(this.x - location.x, this.y - location.y)
   }
 
   getNeighbour(direction: FindExitConstant) {

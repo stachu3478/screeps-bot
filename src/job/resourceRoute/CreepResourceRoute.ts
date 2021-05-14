@@ -7,10 +7,10 @@ import move from 'utils/path'
 import CreepMemoized from 'utils/CreepMemoized'
 
 export interface TransferCreep extends Creep {
-  memory: TransferMemory
+  cache: TransferCache
 }
 
-interface TransferMemory extends CreepMemory {
+interface TransferCache extends CreepCache {
   [Keys.fillTarget]?: Id<AnyStoreStructure>
   [Keys.fillType]?: ResourceConstant
   [Keys.drawSource]?: Id<AnyStoreStructure>
@@ -33,9 +33,9 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
     const result = this.deliverAndDump()
     if (!result) {
       const creep = this.creep
-      delete creep.memory[Keys.dumping]
-      delete creep.memory[Keys.fillTarget]
-      delete creep.memory[Keys.drawSource]
+      delete creep.cache[Keys.dumping]
+      delete creep.cache[Keys.fillTarget]
+      delete creep.cache[Keys.drawSource]
       this.operated = false
     }
     return result
@@ -43,17 +43,17 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
 
   private deliverAndDump() {
     const creep = this.creep
-    if (creep.memory[Keys.dumping]) {
-      const id = creep.memory[Keys.fillTarget]
+    if (creep.cache[Keys.dumping]) {
+      const id = creep.cache[Keys.fillTarget]
       const structure = id && Game.getObjectById(id)
       const res =
         structure &&
-        memoryLessFill(creep, structure, creep.memory[Keys.fillType] || 'X')
+        memoryLessFill(creep, structure, creep.cache[Keys.fillType] || 'X')
       if (res === NOTHING_DONE) return true
       return dumpResources(this.creep)
     } else if (!this.drawAndFill()) {
       if (this.ableToDump) {
-        return !!(creep.memory[Keys.dumping] = dumpResources(creep) ? 1 : 0)
+        return !!(creep.cache[Keys.dumping] = dumpResources(creep) ? 1 : 0)
       }
       return false
     }
@@ -64,7 +64,7 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
     const creep = this.creep
     const target = this.findStructureToFill() as AnyStoreStructure | null
     if (!target) return false
-    creep.memory[Keys.fillTarget] = target.id
+    creep.cache[Keys.fillTarget] = target.id
     const route = this.resourceRoute
     const toFill = route.fillAmount(target)
     const result = memoryLessFill(creep, target, route.type, toFill)
@@ -72,7 +72,7 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
       const source = this.findStructureToDraw() as AnyStoreStructure | null
       if (!source) return false
       this.operated = true
-      creep.memory[Keys.drawSource] = source.id
+      creep.cache[Keys.drawSource] = source.id
       memoryLessDraw(creep, source, route.type, route.drawAmount(source))
     } else {
       this.operated = true
@@ -82,20 +82,20 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
   }
 
   private moveWithSpeculation(prevTarget: AnyStoreStructure) {
-    delete this.creep.memory[Keys.fillTarget]
+    delete this.creep.cache[Keys.fillTarget]
     const nextTarget = this.findStructureToFill(
       prevTarget,
     ) as AnyStoreStructure | null
     if (nextTarget && !this.creep.pos.isNearTo(nextTarget)) {
-      this.creep.memory[Keys.fillTarget] = nextTarget.id
+      this.creep.cache[Keys.fillTarget] = nextTarget.id
       move.cheap(this.creep, nextTarget)
     }
   }
 
   private findStructureToDraw() {
     const route = this.resourceRoute
-    const memory = this.creep.memory
-    const id = memory[Keys.drawSource]
+    const cache = this.creep.cache
+    const id = cache[Keys.drawSource]
     const memorizedStructure = id && Game.getObjectById(id)
     if (memorizedStructure && route.validateSource(memorizedStructure))
       return memorizedStructure
@@ -107,8 +107,8 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
 
   private findStructureToFill(differ?: AnyStoreStructure) {
     const route = this.resourceRoute
-    const memory = this.creep.memory
-    const id = memory[Keys.fillTarget]
+    const cache = this.creep.cache
+    const id = cache[Keys.fillTarget]
     const memorizedStructure = id && Game.getObjectById(id)
     if (memorizedStructure && route.validateTarget(memorizedStructure))
       return memorizedStructure

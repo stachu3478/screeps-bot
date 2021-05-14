@@ -10,8 +10,12 @@ RoomPosition.prototype.rangeTo = function (obj: _HasRoomPosition) {
   return this.range(obj.pos)
 }
 
-RoomPosition.prototype.building = function (type: StructureConstant) {
-  return this.lookFor(LOOK_STRUCTURES).find((s) => s.structureType === type)
+RoomPosition.prototype.building = function <T extends StructureConstant>(
+  type: StructureConstant,
+) {
+  return this.lookFor(LOOK_STRUCTURES).find((s) => s.structureType === type) as
+    | ConcreteStructure<T>
+    | undefined
 }
 
 RoomPosition.prototype.isBorder = function () {

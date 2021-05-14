@@ -87,6 +87,7 @@ describe('overloads/Structure#isWalkable', () => {
           const rampart = {} as StructureRampart
           rampart.structureType = STRUCTURE_RAMPART
           rampart.hits = 4123
+          // @ts-ignore why
           structure.pos.building = () => rampart
         })
 

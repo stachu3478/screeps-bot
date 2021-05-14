@@ -1,6 +1,7 @@
 declare class RoomLocation {
   x: number
   y: number
+  inRangeTo(room: Room, range: number): boolean
   findRoomPathStep(current: string, to: string): RoomNeighbourPath | undefined
   getNeighbour(
     direction:

@@ -54,6 +54,11 @@ export default class RoomBuildings {
     return (stack || []) as StructureExtension[]
   }
 
+  get nuker() {
+    const stack = this.fetched[STRUCTURE_NUKER]
+    return stack && (stack[0] as StructureNuker)
+  }
+
   private get fetched() {
     if (this.fetchTime === Game.time) return this.structures
     this.fetchTime = Game.time

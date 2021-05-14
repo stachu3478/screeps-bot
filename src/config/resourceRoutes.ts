@@ -9,25 +9,23 @@ import { energyBufferingThreshold } from './terminal'
 export default [
   // collect energy to storage
   {
-    from: STRUCTURE_CONTAINER,
+    from: (room: Room) => {
+      const container = room.sources.colonyPosition.building(
+        STRUCTURE_CONTAINER,
+      )
+      return container ? [container] : []
+    },
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
   },
-  // fill everything with energy from containers when no storage
-  {
+  /*{
     from: STRUCTURE_CONTAINER,
-    to: STRUCTURE_TOWER,
+    to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
-  },
-  {
-    from: STRUCTURE_CONTAINER,
-    to: (room: Room) => room.buildings.spawnsWithExtensions,
-    type: RESOURCE_ENERGY,
-    minimalStoreToDraw: CONTAINER_CAPACITY / 2,
-    minimalFreeCapacityToFill: 1,
-  },
+    maximumFilledAmount: 1000,
+  },*/
   // fill everything with energy from storage
   {
     from: STRUCTURE_STORAGE,
@@ -45,6 +43,20 @@ export default [
     to: STRUCTURE_LAB,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: 10000,
+  },
+  // fill everything with energy from containers when no storage
+  {
+    from: STRUCTURE_CONTAINER,
+    to: STRUCTURE_TOWER,
+    type: RESOURCE_ENERGY,
+    minimalStoreToDraw: CONTAINER_CAPACITY / 2,
+  },
+  {
+    from: STRUCTURE_CONTAINER,
+    to: (room: Room) => room.buildings.spawnsWithExtensions,
+    type: RESOURCE_ENERGY,
+    minimalStoreToDraw: CONTAINER_CAPACITY / 2,
+    minimalFreeCapacityToFill: 1,
   },
   // balanced transfer between link and storage
   {

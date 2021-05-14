@@ -32,11 +32,17 @@ Object.assign(global, {
   StructurePowerSpawn: class extends Structure {},
   StructureTerminal: class extends Structure {},
   StructureTower: class extends Structure {},
+  StructureNuker: class extends Structure {},
   PathFinder: {
     CostMatrix: class {
       set() {}
       get() {
         return 0
+      }
+    },
+    search: (src: RoomPosition, targets: _HasRoomPosition[]) => {
+      return {
+        path: [src],
       }
     },
   },

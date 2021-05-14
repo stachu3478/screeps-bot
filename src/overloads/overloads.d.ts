@@ -82,15 +82,14 @@ interface StructureTerminal {
   businessHandler: BusinessHandler
 }
 
-type Building<T extends StructureConstant> = (
-  type: T,
-) => Structure<T> | undefined
 interface RoomPosition {
   rangeXY: (x: number, y: number) => number
   range: (pos: RoomPosition) => number
   rangeTo: (obj: _HasRoomPosition) => number
   isBorder: () => boolean
-  building: Building<StructureConstant>
+  building<T extends StructureConstant>(
+    type: T,
+  ): ConcreteStructure<T> | undefined
 }
 
 interface Creep {
@@ -108,4 +107,8 @@ interface Creep {
 
 interface StructureTower {
   attackPowerAt: (creep: _HasRoomPosition) => number
+}
+
+interface StructureNuker {
+  readyToLaunch: boolean
 }

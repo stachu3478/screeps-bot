@@ -10,7 +10,7 @@ export default class RoomPosition {
     this.roomName = name
   }
 
-  createConstructionSite(type: StructureConstant) {
+  createConstructionSite(type: StructureConstant): ScreepsReturnCode {
     return OK
   }
 

@@ -8,4 +8,5 @@ declare class RoomBuildings {
   towers: StructureTower[]
   spawns: StructureSpawn[]
   extensions: StructureExtension[]
+  nuker?: StructureNuker
 }
