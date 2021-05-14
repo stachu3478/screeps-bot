@@ -101,6 +101,15 @@ export default [
     from: findStorageAndTerminal,
   },
   {
+    structure: STRUCTURE_LINK,
+    positions: (room: Room) => {
+      let links = room.memory.links || ''
+      links += room.memory.structs ? room.memory.structs[0] : ''
+      return charToPositionMapper(room, links)
+    },
+    from: findStorageAndTerminal,
+  },
+  {
     structure: STRUCTURE_EXTRACTOR,
     positions: (room: Room) => (room.mineral ? [room.mineral.pos] : []),
     from: findStorageAndTerminal,

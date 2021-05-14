@@ -24,6 +24,10 @@ export default function memoryLessFill(
       return 0
     }
   } else if (result !== 0) return FAILED
-  else return SUCCESS
+  else {
+    if ((target.store.getFreeCapacity(resourceType) || 0) > toBeTransfered)
+      return DONE
+    return SUCCESS
+  }
   return NOTHING_DONE
 }

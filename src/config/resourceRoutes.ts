@@ -38,6 +38,7 @@ export default [
     from: STRUCTURE_STORAGE,
     to: (room: Room) => room.buildings.spawnsWithExtensions,
     type: RESOURCE_ENERGY,
+    minimalFreeCapacityToFill: 1,
   },
   {
     from: STRUCTURE_STORAGE,

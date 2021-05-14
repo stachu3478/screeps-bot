@@ -2,7 +2,7 @@ import ResourceRoute from './ResourceRoute'
 import memoryLessFill from 'routine/haul/memoryLessFill'
 import memoryLessDraw from 'routine/haul/memoryLessDraw'
 import dumpResources from '../dumpResources'
-import { NOTHING_DONE, SUCCESS } from 'constants/response'
+import { NOTHING_DONE, SUCCESS, DONE } from 'constants/response'
 import move from 'utils/path'
 import CreepMemoized from 'utils/CreepMemoized'
 
@@ -66,21 +66,17 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
     if (!target) return false
     creep.memory[Keys.fillTarget] = target.id
     const route = this.resourceRoute
-    if (creep.store[this.resourceRoute.type]) {
-      this.operated = true
-      const result = memoryLessFill(
-        creep,
-        target,
-        route.type,
-        route.fillAmount(target),
-      )
-      if (result === SUCCESS) this.moveWithSpeculation(target)
-    } else {
+    const toFill = route.fillAmount(target)
+    const result = memoryLessFill(creep, target, route.type, toFill)
+    if (result === DONE) {
       const source = this.findStructureToDraw() as AnyStoreStructure | null
       if (!source) return false
       this.operated = true
       creep.memory[Keys.drawSource] = source.id
       memoryLessDraw(creep, source, route.type, route.drawAmount(source))
+    } else {
+      this.operated = true
+      if (result === SUCCESS) this.moveWithSpeculation(target)
     }
     return true
   }
