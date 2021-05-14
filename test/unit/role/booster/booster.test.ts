@@ -26,6 +26,7 @@ describe('Creep boost role', () => {
     } as BoosterCreep
     creep.room = {} as Room
     creep.room.boosts = {} as BoostManager
+    creep.room.boosts.hasMandatory = () => false
     creep.room.externalLabs = [externalLab]
     creep.room.lab1 = lab1
     creep.room.lab2 = lab2

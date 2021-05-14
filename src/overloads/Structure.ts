@@ -16,3 +16,11 @@ export function isWalkable(self: Structure) {
   )
 }
 defineStructureGetter('isWalkable', isWalkable)
+
+defineStructureGetter('effectiveHits', (self) => {
+  if (self.structureType === STRUCTURE_RAMPART) return self.hits
+  const rampart = self.pos.building(STRUCTURE_RAMPART)
+  const ranpartHits = rampart ? rampart.hits : 0
+  const baseHits = self.hits || 0
+  return baseHits + ranpartHits
+})

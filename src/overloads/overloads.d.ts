@@ -47,6 +47,7 @@ interface Room {
 
 interface Structure {
   isWalkable: boolean
+  effectiveHits: number
 }
 
 interface StructureLab {
