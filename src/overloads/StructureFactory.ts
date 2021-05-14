@@ -1,8 +1,8 @@
 import defineGetter from 'utils/defineGetter'
 
-function defineFactoryGetter<T>(
-  property: string,
-  handler: (self: StructureFactory) => T,
+function defineFactoryGetter<T extends keyof StructureFactory>(
+  property: T,
+  handler: (self: StructureFactory) => StructureFactory[T],
 ) {
   defineGetter<StructureFactory, StructureFactoryConstructor, T>(
     StructureFactory,

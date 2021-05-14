@@ -1,8 +1,8 @@
 import defineGetter from 'utils/defineGetter'
 
-function definePowerSpawnGetter<T>(
-  property: string,
-  handler: (self: StructurePowerSpawn) => T,
+function definePowerSpawnGetter<T extends keyof StructurePowerSpawn>(
+  property: T,
+  handler: (self: StructurePowerSpawn) => StructurePowerSpawn[T],
 ) {
   defineGetter<StructurePowerSpawn, StructurePowerSpawnConstructor, T>(
     StructurePowerSpawn,

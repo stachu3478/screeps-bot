@@ -3,10 +3,6 @@ interface BoostInfo {
   partCount: number
 }
 
-type BuildingAt<T extends StructureConstant> = (
-  charCode: number,
-  type: T,
-) => Structure<T> | undefined
 interface Room {
   lab1?: StructureLab
   lab2?: StructureLab
@@ -40,7 +36,10 @@ interface Room {
   setBuildingOrder: (x: number, y: number, order: number) => void
   moveBuilding: (x1: number, y1: number, x2: number, y2: number) => void
 
-  buildingAt: BuildingAt<StructureConstant>
+  buildingAt<T extends StructureConstant>(
+    charCode: number,
+    type: T,
+  ): ConcreteStructure<T> | undefined
   store: (resource: ResourceConstant) => number
   positionFromChar: (char: string) => RoomPosition
   labsFromChars: (char: string) => StructureLab[]
@@ -66,6 +65,7 @@ interface StructureSpawn {
   ) => ScreepsReturnCode
   cache: SpawnCache
   distanceToController: number
+  effectiveHits: number
 }
 
 interface StructurePowerSpawn {

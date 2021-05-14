@@ -37,18 +37,22 @@ for (const name in com) {
 }
 
 export function isProducableByFactory(
-  resources: ResourceMap,
+  resources: StoreDefinition,
   resource: ResourceConstant,
 ) {
   if (REACTIONS[resource]) return false // we don't produce basic components
   const recipe = com[resource]
   for (const name in recipe.components) {
-    if ((resources[name] || 0) < recipe.components[name]) return false
+    const res = name as ResourceConstant
+    if ((resources[res] || 0) < recipe.components[res]) return false
   }
   return true
 }
 
-function isNeededByFactory(resources: ResourceMap, resource: ResourceConstant) {
+function isNeededByFactory(
+  resources: StoreDefinition,
+  resource: ResourceConstant,
+) {
   for (const name in commoditiesComponents[resource]) {
     if (isProducableByFactory(resources, name as ResourceConstant)) {
       return true
@@ -58,7 +62,7 @@ function isNeededByFactory(resources: ResourceMap, resource: ResourceConstant) {
 }
 
 export default function handleFactory(
-  resources: ResourceMap,
+  resources: StoreDefinition,
   factory: StructureFactory,
 ) {
   const cache = factory.cache

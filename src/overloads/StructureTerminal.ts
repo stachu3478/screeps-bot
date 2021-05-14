@@ -1,9 +1,9 @@
 import defineGetter from 'utils/defineGetter'
 import BusinessHandler from 'handler/BusinessHandler'
 
-function defineTerminalGetter<T>(
-  property: string,
-  handler: (self: StructureTerminal) => T,
+function defineTerminalGetter<T extends keyof StructureTerminal>(
+  property: T,
+  handler: (self: StructureTerminal) => StructureTerminal[T],
 ) {
   defineGetter<StructureTerminal, StructureTerminalConstructor, T>(
     StructureTerminal,

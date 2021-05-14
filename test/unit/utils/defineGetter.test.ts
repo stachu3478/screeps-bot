@@ -3,6 +3,9 @@ import defineGetter from 'utils/defineGetter'
 import { expect } from '../../expect'
 
 type Test = ObjectConstructor
+interface TruthyTest {
+  foo: true
+}
 describe('Creating getter on given contructor', () => {
   let iterator: () => void
   let Test: Test
@@ -14,7 +17,11 @@ describe('Creating getter on given contructor', () => {
 
   describe('defining some getter on class using method', () => {
     beforeEach(() => {
-      defineGetter<Test, Test['constructor'], true>(Test, 'test', () => true)
+      defineGetter<TruthyTest, Test['constructor'], 'foo'>(
+        Test,
+        'foo',
+        () => true,
+      )
     })
 
     it('Should have that property available', () => {

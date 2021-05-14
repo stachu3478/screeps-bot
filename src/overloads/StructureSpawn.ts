@@ -4,9 +4,9 @@ import sanitizeBody from 'utils/sanitizeBody'
 import { uniqName } from 'spawn/name'
 import defineGetter from 'utils/defineGetter'
 
-function defineSpawnGetter<T>(
-  property: string,
-  handler: (self: StructureSpawn) => T,
+function defineSpawnGetter<T extends keyof StructureSpawn>(
+  property: T,
+  handler: (self: StructureSpawn) => StructureSpawn[T],
 ) {
   defineGetter<StructureSpawn, StructureSpawnConstructor, T>(
     StructureSpawn,

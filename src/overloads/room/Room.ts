@@ -19,7 +19,10 @@ import BoostManager from './BoostManager'
 import RoomBuildings from './RoomBuildings'
 import DuetHandler from 'handler/DuetHandler'
 
-function defineRoomGetter<T>(property: string, handler: (self: Room) => T) {
+function defineRoomGetter<T extends keyof Room>(
+  property: T,
+  handler: (self: Room) => Room[T],
+) {
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
 }
 
@@ -196,13 +199,13 @@ Room.prototype.positionFromChar = function (char: string) {
   )
 }
 
-Room.prototype.buildingAt = function (
+Room.prototype.buildingAt = function <T extends StructureConstant>(
   charCode: number,
-  type: StructureConstant,
+  type: T,
 ) {
   return this.lookForAt(LOOK_STRUCTURES, charCode & 63, charCode >> 6).find(
     (s) => s.structureType === type,
-  )
+  ) as ConcreteStructure<T>
 }
 
 Room.prototype.labsFromChars = function (chars: string) {

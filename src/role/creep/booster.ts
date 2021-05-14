@@ -7,7 +7,7 @@ export interface BoosterCreep extends Creep {
 
 interface BoosterMemory extends CreepMemory {
   _boostLab?: Id<StructureLab>
-  _targetRole: number
+  _targetRole?: number
 }
 
 const roleBooster = {
@@ -35,7 +35,8 @@ const roleBooster = {
           creep.memory.state = State.BOOST
           creep.memory._boostLab = targetLabId
         } else if (!boosts.hasMandatory(creep.name)) {
-          creep.memory.role = creep.memory._targetRole
+          const newRole = creep.memory._targetRole
+          if (newRole) creep.memory.role = newRole
           delete creep.memory._targetRole
         }
     }

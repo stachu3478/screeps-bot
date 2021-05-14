@@ -208,7 +208,7 @@ const move = {
     }
     let result: ScreepsReturnCode = creep.moveTo(target, options)
     if (result === ERR_NOT_FOUND) {
-      delete options.noPathFinding
+      options.noPathFinding = false
       options.ignoreCreeps = true
       result = creep.moveTo(target, options)
     }

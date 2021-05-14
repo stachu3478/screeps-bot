@@ -38,7 +38,7 @@ describe('CacheHandler', () => {
   describe('#ownedRooms', () => {
     context('when value is cached', () => {
       beforeEach(() => {
-        delete Memory.myRooms
+        Memory.myRooms = {}
         cache.ownedRooms = 5
       })
 

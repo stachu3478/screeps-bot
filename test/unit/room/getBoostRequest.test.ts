@@ -59,7 +59,7 @@ describe('Getting a boost request', () => {
 
     describe('no lab with that mineral type', () => {
       beforeEach(() => {
-        delete room.externalLabs[0].mineralType
+        room.externalLabs[0].mineralType = null
       })
 
       it('does not return boost data', () => {

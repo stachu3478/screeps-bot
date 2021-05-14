@@ -42,7 +42,7 @@ export function getMemory(): Memory {
 
 const memory = getMemory()
 export const memHackBeforeLoop = () => {
-  delete global.Memory
+  // delete global.Memory FIXME
   global.Memory = memory
 }
 

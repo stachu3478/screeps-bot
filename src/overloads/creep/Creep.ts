@@ -5,7 +5,10 @@ import RepairRouteProcessor from 'job/repairRoute/RepairRouteProcessor'
 import move from 'utils/path'
 import CreepCorpus from './CreepCorpus'
 
-function defineCreepGetter<T>(property: string, handler: (self: Creep) => T) {
+function defineCreepGetter<T extends keyof Creep>(
+  property: T,
+  handler: (self: Creep) => Creep[T],
+) {
   defineGetter<Creep, CreepConstructor, T>(Creep, property, handler)
 }
 
