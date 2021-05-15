@@ -20,7 +20,6 @@ export default class RoomInspector {
   }
 
   private checkSafety(room: Room, info: RoomNeighbourPath) {
-    if (info.safe === false) return false
     if (room.owner === this.room.owner) return true
     const entryPosition = new RoomPosition(info.x, info.y, info.name)
     const towers = this.room
@@ -32,6 +31,7 @@ export default class RoomInspector {
       t.attackPowerAt({ pos: entryPosition }),
     )
     info.entranceDamage = entranceTowerDamage
+    if (info.safe === false) return false
     return info.entranceDamage === 0
   }
 

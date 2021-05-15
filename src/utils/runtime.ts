@@ -10,6 +10,7 @@ function handleRuntimeReset() {
   const avg = Memory.runtimeAvg || currentResetTime
   Memory.runtimeAvg = Math.floor((avg * 9 + currentResetTime) / 10)
   Memory.runtimeTicks = 0
+  wasReset = false
   collectGarbageAll()
 }
 

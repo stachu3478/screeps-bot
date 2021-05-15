@@ -8,8 +8,10 @@ export default class HitCalculator {
     this.room = room
   }
 
-  fetch() {
-    this.towerDealers = this.room.buildings.towers
+  fetch(friendly: boolean) {
+    this.towerDealers = this.room.buildings.towers.filter(
+      (t) => friendly === (t.owner.username === 'mocnyFull'),
+    )
   }
 
   getDamage(pos: RoomPosition, dealers: Creep[]) {

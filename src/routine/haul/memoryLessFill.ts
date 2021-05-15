@@ -13,9 +13,10 @@ export default function memoryLessFill(
   resourceType: ResourceConstant,
   amount: number = 0,
 ) {
-  if (creep.store[resourceType] === 0) return DONE
+  const stored = creep.store[resourceType]
+  if (stored === 0) return DONE
   if (!target.store.getFreeCapacity(resourceType)) return NOTHING_TODO
-  const toBeTransfered = Math.min(amount, creep.store[resourceType] || 0)
+  const toBeTransfered = Math.min(amount, stored || 0)
   const result = creep.transfer(target, resourceType, toBeTransfered)
   if (result === ERR_NOT_IN_RANGE) {
     const result = move.cheap(creep, target)
@@ -25,8 +26,7 @@ export default function memoryLessFill(
     }
   } else if (result !== 0) return FAILED
   else {
-    if ((target.store.getFreeCapacity(resourceType) || 0) > toBeTransfered)
-      return DONE
+    if (toBeTransfered === stored) return DONE
     return SUCCESS
   }
   return NOTHING_DONE

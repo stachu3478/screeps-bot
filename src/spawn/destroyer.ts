@@ -20,22 +20,17 @@ export function needsDestroyer(spawn: StructureSpawn, count: number) {
   const target = room.memory[RoomMemoryKeys.ekhaust]
   if (!target) return false
   if (room.energyAvailable < 12000) return false
-  const targetInfo = room.pathScanner.rooms[target]
-  if (!targetInfo || _.isUndefined(targetInfo.entranceDamage)) return false
-  const ekhaustedRoom = Game.rooms[target]
-  if (!ekhaustedRoom) return false
-  if (room.duet.formed) return false
-  return (
-    createBodyDefinition(room, targetInfo.entranceDamage!).body.length <=
-    MAX_CREEP_SIZE
-  )
+  const entryDamage = room.pathScanner.getEntryDamage(target)
+  if (_.isUndefined(entryDamage)) return false
+  if (room.duet.keeperPresent) return false
+  return createBodyDefinition(room, entryDamage!).body.length <= MAX_CREEP_SIZE
 }
 
 export function spawnDestroyer(spawn: StructureSpawn) {
   const room = spawn.room
   const target = room.memory[RoomMemoryKeys.ekhaust]!
-  const targetInfo = room.pathScanner.rooms[target]!
-  const bodyDef = createBodyDefinition(room, targetInfo.entranceDamage!)
+  const entryDamage = room.pathScanner.getEntryDamage(target)!
+  const bodyDef = createBodyDefinition(room, entryDamage)
 
   const body = bodyDef.body
   const memory = {

@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import RoomNeighbourPathScanner from './RoomNeighbourPathScanner'
 import RoomLocation from 'overloads/room/RoomLocation'
 import { infoStyle } from 'room/style'
@@ -20,6 +21,19 @@ export default class RoomPathScanner {
     this.config = config
   }
 
+  // to do move mothod to other class
+  getEntryDamage(roomName: string) {
+    let info = this.infos[roomName]
+    if (!info || _.isUndefined(info.entranceDamage)) return
+    let dmg = info.entranceDamage || 0
+    while (this.room.name !== info.through) {
+      info = this.infos[info.through]
+      if (!info) return
+      dmg = Math.max(info.entranceDamage || 0, dmg)
+    }
+    return dmg
+  }
+
   get done() {
     this.traverse()
     return this.traversed
@@ -34,7 +48,7 @@ export default class RoomPathScanner {
   }
 
   private traverse() {
-    if (this.traversedTick === Game.time) return
+    if (this.traversedTick === Game.time || Game.cpu.bucket < 1000) return
     this.traversedTick = Game.time
     if (this.traversed) return
     if (!this.scanned[this.room.name]) {

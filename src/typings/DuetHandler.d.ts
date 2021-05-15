@@ -1,4 +1,5 @@
 declare class DuetHandler {
   handle(): boolean | void
-  formed: boolean
+  keeperPresent: boolean
+  protectorPresent: boolean
 }

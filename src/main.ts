@@ -10,6 +10,7 @@ import { memHackBeforeLoop, memHackAfterLoop } from 'utils/memHack'
 import pixelsHandler from 'utils/pixelsHandler'
 import handleRuntimeStats from 'utils/runtime'
 import CloneScanner from 'planner/military/CloneScanner'
+import ObservingScanner from 'planner/ObservingScanner'
 
 export const addFirstRoom = (game = Game, memory = Memory) => {
   // Automatically add first room to owned if there are none
@@ -20,6 +21,7 @@ export const addFirstRoom = (game = Game, memory = Memory) => {
   }
 }
 
+let saved = false
 export const loop = () => {
   memHackBeforeLoop()
 
@@ -54,6 +56,22 @@ export const loop = () => {
   handleStats()
   memHackAfterLoop()
   saveCpuUsage()
-  new CloneScanner().clones
+  if (
+    Object.keys(Memory.myRooms).every((r) => {
+      const room = Game.rooms[r]
+      if (!room) return true
+      return room.pathScanner.done
+    })
+  ) {
+    if (saved) {
+      ObservingScanner.instance.scan((r) => {
+        console.log('elo', r.name)
+      })
+    } else {
+      ObservingScanner.instance.filterToScanFromPathScanners()
+      saved = true
+      console.log('filtering')
+    }
+  }
   if (error) throw error
 }

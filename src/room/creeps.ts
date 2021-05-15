@@ -115,6 +115,10 @@ export default function creeps(
         case Role.TOWER_EKHAUSTER:
           towerEkhauster(creep)
           break
+        case Role.DESTROYER:
+          break
+        case Role.DUAL:
+          break
         default:
           creep.memory.role = Role.UPGRADER
       }

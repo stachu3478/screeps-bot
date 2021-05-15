@@ -1,6 +1,8 @@
 import _ from 'lodash'
 import Memoized from 'utils/Memoized'
 import HitCalculator from 'room/military/HitCalculator'
+import move from 'utils/path'
+import { copyFileSync } from 'fs'
 
 export default class Duet {
   private keeper: Memoized<Creep>
@@ -9,13 +11,15 @@ export default class Duet {
   constructor(keeper: Creep, protector: Creep) {
     this.keeper = new Memoized(keeper)
     this.protector = new Memoized(protector)
+    keeper.notifyWhenAttacked(false)
+    protector.notifyWhenAttacked(false)
   }
 
   move(direction: DirectionConstant) {
     console.log('move')
-    const keeper = this.keeper.object
+    const keeper = this.keep
     if (keeper && !keeper.fatigue) return false
-    const protector = this.protector.object
+    const protector = this.protect
     if (protector && !protector.fatigue) return false
     if (keeper) keeper.move(direction)
     if (protector) {
@@ -27,26 +31,35 @@ export default class Duet {
 
   moveTo(target: _HasRoomPosition) {
     console.log('move to target')
-    const keeper = this.keeper.object
-    if (keeper && !keeper.fatigue) return false
-    const protector = this.protector.object
-    if (protector && !protector.fatigue) return false
-    if (keeper) keeper.moveTo(target)
-    if (protector) protector.moveTo(keeper || target)
+    let res = -1
+    const keeper = this.keep
+    if (keeper && keeper.fatigue) return false
+    const protector = this.protect
+    if (protector && protector.fatigue) return false
+    if (keeper) res = keeper.moveTo(target)
+    if (protector) res = protector.moveTo(keeper || target)
+    console.log(res)
     return true
   }
 
   arrive(target: string) {
-    console.log('arriving')
-    const keeper = this.keeper.object
-    if (keeper && !keeper.fatigue) return false
-    const protector = this.protector.object
-    if (protector && !protector.fatigue) return false
-    if (keeper) keeper.moveToRoom(target)
-    if (protector) {
-      if (keeper) protector.moveTo(keeper)
-      else protector.moveToRoom(target)
+    let res: ScreepsReturnCode = -1
+    const keeper = this.keep
+    if (keeper && keeper.fatigue) return false
+    const protector = this.protect
+    if (protector && protector.fatigue) return false
+    if (protector) res = protector.moveToRoom(target)
+    if (keeper) {
+      if (protector) {
+        keeper.moveTo(protector)
+        if (protector.room.name !== keeper.room.name) {
+          move.anywhere(protector, protector.pos.getDirectionTo(25, 25))
+        }
+      } else {
+        res = keeper.moveToRoom(target)
+      }
     }
+    console.log('arriving', target, res)
     return true
   }
 
@@ -55,34 +68,35 @@ export default class Duet {
     const creeps = this.creeps
     const healer = creeps[creeps.length - 1]
     if (!healer) return false
-    const toBeHealed = _.max(creeps, (c) => c.hitsMax - c.hits)
+    const localCreeps = creeps.filter((c) => c.pos.getRangeTo(healer) <= 3)
+    const toBeHealed = _.max(localCreeps, (c) => c.hitsMax - c.hits)
     if (healer.pos.isNearTo(toBeHealed)) return healer.heal(toBeHealed) === 0
-    return healer.heal(toBeHealed) === 0
+    return healer.rangedHeal(toBeHealed) === 0
   }
 
   connect() {
-    console.log('connecting')
-    const keeper = this.keeper.object
+    const keeper = this.keep
     if (!keeper) return false
-    const protector = this.protector.object
+    const protector = this.protect
     if (!protector) return false
-    keeper.moveTo(protector)
+    console.log('connecting', protector.name, keeper.name)
+    if (keeper.pos.getRangeTo(protector) > 1) keeper.moveTo(protector)
     protector.moveTo(keeper)
     return true
   }
 
   destroy() {
-    const keeper = this.keeper.object
+    const keeper = this.keep
     if (keeper) keeper.memory.role = Role.DESTROYER
-    const protector = this.protector.object
+    const protector = this.protect
     if (protector) protector.memory.role = Role.TOWER_EKHAUSTER
   }
 
   attack(target: Structure) {
     console.log('attacking')
-    const keeper = this.keeper.object
+    const keeper = this.keep
     if (keeper && target.pos.isNearTo(keeper)) keeper.dismantle(target)
-    const protector = this.protector.object
+    const protector = this.protect
     if (protector) {
       if (
         (keeper && keeper.pos.isNearTo(protector)) ||
@@ -93,26 +107,48 @@ export default class Duet {
     }
   }
 
+  get atBorder() {
+    return this.creeps.some((c) => c.pos.rangeXY(25, 25) > 21)
+  }
+
+  get valid() {
+    return this.creeps.every((c) => c.memory.role === Role.DUAL)
+  }
+
+  get healed() {
+    const creeps = this.creeps
+    return (
+      !creeps.every((c) => c.hits !== c.hitsMax) &&
+      creeps.every((c) => c.corpus.hasActive(TOUGH))
+    )
+  }
+
   get safe() {
     const creeps = this.creeps
     if (!creeps.length) return true
     const room = creeps[0].room
     const hitCalc = new HitCalculator(room)
-    hitCalc.fetch()
+    hitCalc.fetch(false)
     const hostiles = room.find(FIND_HOSTILE_CREEPS)
     const damage = hitCalc.getFor(creeps[0], hostiles, creeps)
-    return damage > 0
+    return damage <= 0
   }
 
   get connected() {
-    const keeper = this.keeper.object
-    const protector = this.protector.object
+    const keeper = this.keep
+    const protector = this.protect
     if (!keeper || !protector) return false
-    return keeper.pos.isNearTo(protector)
+    const range = keeper.pos.rangeTo(protector)
+    console.log(range)
+    if (range > 25 || isNaN(range)) {
+      // todo fix when passing through rooms
+      return true
+    }
+    return range <= 1
   }
 
   get whole() {
-    return !!(this.keeper.object && this.protector.object)
+    return !!(this.keep && this.protect)
   }
 
   get pos() {
@@ -120,11 +156,19 @@ export default class Duet {
     return creeps[0] && creeps[0].pos
   }
 
+  get keep() {
+    return this.keeper.object
+  }
+
+  get protect() {
+    return this.protector.object
+  }
+
   get creeps() {
     const creeps: Creep[] = []
-    const keeper = this.keeper.object
+    const keeper = this.keep
     if (keeper) creeps.push(keeper)
-    const protector = this.protector.object
+    const protector = this.protect
     if (protector) creeps.push(protector)
     return creeps
   }

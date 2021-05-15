@@ -17,7 +17,7 @@ export default class EnemyPicker {
   }
 
   fetch() {
-    this.calculator.fetch()
+    this.calculator.fetch(true)
     const enemies = this.enemies.find()
     const allies = findFighters(this.room)
     const enemySummary = enemies.map((c, i) =>

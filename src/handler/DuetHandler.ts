@@ -20,13 +20,20 @@ export default class DuetHandler {
     const duet = this.findOrCreateDuet()
     if (!duet) return
     duet.heal()
-    if (!duet.whole) return this.safeDestroyDuet(duet)
+    const safe = duet.safe
+    if (safe && Game.cpu.bucket < 100) return
+    if (!duet.whole || !duet.valid) return this.safeDestroyDuet(duet)
     if (!duet.connected) return duet.connect()
     const room = duet.room
     const pos = duet.pos
-    if (!duet.safe) {
+    if (!safe || !duet.healed) {
+      console.log('unsafe')
+      if (duet.keep?.room.name !== duet.protect?.room.name || duet.atBorder) {
+        console.log('tragical')
+        return duet.moveTo({ pos: this.room.sources.colonyPosition })
+      }
       const calc = new HitCalculator(room)
-      calc.fetch()
+      calc.fetch(false)
       const dealers = room.find(FIND_HOSTILE_CREEPS)
       const saferDir = _.min(directions, (d) => {
         const x = pos.x + offsetsByDirection[d][0]
@@ -37,9 +44,11 @@ export default class DuetHandler {
       })
       duet.move(saferDir)
     } else if (pos.roomName !== this.targetRoom) {
+      console.log('unarrived')
       if (!this.targetRoom) return this.safeDestroyDuet(duet)
       duet.arrive(this.targetRoom)
     } else {
+      console.log('attacking')
       let target = this.target.object
       if (!target) {
         target =
@@ -63,14 +72,21 @@ export default class DuetHandler {
     }
   }
 
-  get formed() {
-    return !!this.duet
+  get keeperPresent() {
+    return !!this.duet?.keep
+  }
+
+  get protectorPresent() {
+    return !!this.duet?.protect
   }
 
   private recover() {
     const creeps = this.room.memory[RoomMemoryKeys.duet]
     if (!creeps) return
-    this.duet = new Duet(Game.creeps[creeps[0]], Game.creeps[creeps[1]])
+    const keeper = Game.creeps[creeps[0]]
+    const protector = Game.creeps[creeps[1]]
+    if (keeper && protector) this.duet = new Duet(keeper, protector)
+    else delete this.room.memory[RoomMemoryKeys.duet]
   }
 
   private safeDestroyDuet(duet: Duet) {

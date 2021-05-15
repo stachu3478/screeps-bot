@@ -37,23 +37,22 @@ export default class RoomLocation {
   }
 
   findRoomPathStep(current: string, to: string) {
-    const allRooms = Object.keys(Memory.myRooms).map((r) => Game.rooms[r])
-    allRooms.unshift(Game.rooms[this.roomName])
-    let found: RoomNeighbourPath | undefined
-    allRooms
+    const allRooms = Object.keys(Memory.myRooms)
+      .map((r) => Game.rooms[r])
       .filter((r) => r)
-      .some((r) => {
-        const rooms = r.pathScanner.rooms
-        let room = rooms[to]
-        let next = to
-        while (next !== current) {
-          room = rooms[next]
-          if (!room) return false
-          next = room.through
-        }
-        if (room) found = room
-        return !!room
-      })
+    let found: RoomNeighbourPath | undefined
+    allRooms.some((r) => {
+      const rooms = r.pathScanner.rooms
+      let room = rooms[to]
+      let next = to
+      while (next !== current) {
+        room = rooms[next]
+        if (!room) return false
+        next = room.through
+      }
+      if (room) found = room
+      return !!room
+    })
     return found
   }
 
