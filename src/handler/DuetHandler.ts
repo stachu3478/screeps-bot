@@ -56,7 +56,9 @@ export default class DuetHandler {
             maxRooms: 1,
             filter: (s) =>
               s.structureType !== STRUCTURE_WALL &&
-              s.structureType !== STRUCTURE_RAMPART,
+              s.structureType !== STRUCTURE_RAMPART &&
+              s.structureType !== STRUCTURE_ROAD &&
+              s.structureType !== STRUCTURE_CONTAINER,
           }) ||
           pos.findClosestByPath(FIND_STRUCTURES, {
             maxRooms: 1,
@@ -90,7 +92,7 @@ export default class DuetHandler {
   }
 
   private safeDestroyDuet(duet: Duet) {
-    if (duet.safe) {
+    if (duet.safe && !duet.atBorder) {
       duet.destroy()
       delete this.duet
     } else {

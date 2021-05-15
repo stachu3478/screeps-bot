@@ -2,7 +2,6 @@ import _ from 'lodash'
 import Memoized from 'utils/Memoized'
 import HitCalculator from 'room/military/HitCalculator'
 import move from 'utils/path'
-import { copyFileSync } from 'fs'
 
 export default class Duet {
   private keeper: Memoized<Creep>
@@ -17,10 +16,9 @@ export default class Duet {
 
   move(direction: DirectionConstant) {
     console.log('move')
+    if (this.fatigued) return false
     const keeper = this.keep
-    if (keeper && !keeper.fatigue) return false
     const protector = this.protect
-    if (protector && !protector.fatigue) return false
     if (keeper) keeper.move(direction)
     if (protector) {
       if (keeper) protector.moveTo(keeper)
@@ -31,23 +29,31 @@ export default class Duet {
 
   moveTo(target: _HasRoomPosition) {
     console.log('move to target')
+    if (this.fatigued) return false
     let res = -1
     const keeper = this.keep
-    if (keeper && keeper.fatigue) return false
     const protector = this.protect
-    if (protector && protector.fatigue) return false
     if (keeper) res = keeper.moveTo(target)
-    if (protector) res = protector.moveTo(keeper || target)
+    if (protector) {
+      if (
+        keeper &&
+        keeper.pos.x !== 49 &&
+        keeper.pos.x !== 0 &&
+        keeper.pos.y !== 49 &&
+        keeper.pos.y !== 0
+      )
+        protector.moveTo(keeper)
+      else res = protector.moveTo(target)
+    }
     console.log(res)
     return true
   }
 
   arrive(target: string) {
     let res: ScreepsReturnCode = -1
+    if (this.fatigued) return false
     const keeper = this.keep
-    if (keeper && keeper.fatigue) return false
     const protector = this.protect
-    if (protector && protector.fatigue) return false
     if (protector) res = protector.moveToRoom(target)
     if (keeper) {
       if (protector) {
@@ -176,5 +182,9 @@ export default class Duet {
   get room() {
     const creeps = this.creeps
     return creeps[0] && creeps[0].room
+  }
+
+  private get fatigued() {
+    return this.creeps.some((c) => c.fatigue)
   }
 }
