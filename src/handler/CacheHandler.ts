@@ -57,4 +57,8 @@ export default class CacheHandler {
   get feromon() {
     return this.cache.feromon
   }
+
+  get links() {
+    return this.cache.links
+  }
 }

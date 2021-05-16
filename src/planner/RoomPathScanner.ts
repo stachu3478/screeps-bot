@@ -65,9 +65,10 @@ export default class RoomPathScanner {
   }
 
   private traverseIfAvailable(info: RoomNeighbourPath, roomName: string) {
-    if (this.scanned[roomName] || (info.safe === false && !this.observer))
-      return false
-    const available = this.getOrRequestRoomAvailbility(roomName)
+    if (this.scanned[roomName]) return false
+    const observer = this.findObserver(roomName)
+    if (info.safe === false && !observer) return false
+    const available = this.getOrRequestRoomAvailbility(roomName, observer)
     if (available) {
       this.traversePos(new RoomPosition(info.x, info.y, roomName))
       this.scanned[roomName] = 1
@@ -76,11 +77,14 @@ export default class RoomPathScanner {
     return true
   }
 
-  private getOrRequestRoomAvailbility(roomName: string) {
+  private getOrRequestRoomAvailbility(
+    roomName: string,
+    observer?: StructureObserver,
+  ) {
     const room = Game.rooms[roomName]
     if (!room) {
-      if (this.observer) {
-        this.observer.observeRoom(roomName)
+      if (observer) {
+        observer.observeRoom(roomName)
       } else this.toBeTraversed = roomName
       this.room.visual.text('Trying to scan room ' + roomName, 0, 11, infoStyle)
       // TODO else send scouts here
@@ -115,7 +119,10 @@ export default class RoomPathScanner {
     return true
   }
 
-  private get observer() {
-    return this.room.buildings.observer
+  private findObserver(room: string) {
+    const location = new RoomLocation(room)
+    return Object.keys(Memory.myRooms)
+      .map((r) => Game.rooms[r]?.buildings.observer)
+      .find((o) => o && location.inRangeTo(o.room, OBSERVER_RANGE))
   }
 }

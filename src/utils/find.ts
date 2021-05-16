@@ -1,3 +1,4 @@
+import energyDistribution from 'config/energyDistribution'
 import _ from 'lodash'
 import { Fighter } from 'role/creep/military/fighter'
 
@@ -133,42 +134,18 @@ export const findCloseMostDamagedStructure = (
 interface ToFill {
   [key: string]: number
 }
-const fillPriority: ToFill = {
-  [STRUCTURE_TOWER]: 11,
-  [STRUCTURE_SPAWN]: 10,
-  [STRUCTURE_EXTENSION]: 9,
-  [STRUCTURE_LAB]: 8,
-  [STRUCTURE_NUKER]: 7,
-  [STRUCTURE_POWER_SPAWN]: 6,
-  [STRUCTURE_LINK]: 5,
-  [STRUCTURE_STORAGE]: 4,
-  [STRUCTURE_TERMINAL]: 3,
-  [STRUCTURE_FACTORY]: 2,
-  [STRUCTURE_CONTAINER]: 1,
+const fillPriority: ToFill = _.invert(energyDistribution.reverse())
+export const findNearStructureToFillWithPriority = (creep: Creep) => {
+  const { x, y } = creep.pos
+  const structures = creep.room
+    .lookForAtArea(LOOK_STRUCTURES, y - 1, x - 1, y + 1, x + 1, true)
+    .filter((s) => (s.structure as AnyStoreStructure).store)
+    .sort(
+      (a, b) =>
+        fillPriority[a.structure.structureType] -
+        fillPriority[b.structure.structureType],
+    )
+  return structures.find((s) => {
+    creep.transfer(s.structure, RESOURCE_ENERGY) === OK
+  })?.structure as AnyStoreStructure | undefined
 }
-
-const toFillFilter = (differ?: AnyStoreStructure) => (structure: Structure) => {
-  return (
-    fillPriority[structure.structureType] &&
-    (structure as AnyStoreStructure).store &&
-    structure !== differ &&
-    (((structure as AnyStoreStructure).store as StoreBase<
-      ResourceConstant,
-      false
-    >).getFreeCapacity(RESOURCE_ENERGY) || 0) > 0
-  )
-}
-const toFillPrioritySelector = (s: AnyStoreStructure) =>
-  fillPriority[s.structureType] || 0
-export const findNearStructureToFillWithPriority = (
-  room: Room,
-  x: number,
-  y: number,
-) =>
-  _.max(
-    room
-      .lookForAtArea(LOOK_STRUCTURES, y - 1, x - 1, y + 1, x + 1, true)
-      .map(lookResultDeobfuscator)
-      .filter(toFillFilter()),
-    toFillPrioritySelector,
-  ) as AnyStoreStructure

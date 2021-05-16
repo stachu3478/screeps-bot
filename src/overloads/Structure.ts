@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import defineGetter from 'utils/defineGetter'
 
 function defineStructureGetter<T extends keyof Structure>(
@@ -24,3 +25,6 @@ defineStructureGetter('effectiveHits', (self) => {
   const baseHits = self.hits || 0
   return baseHits + ranpartHits
 })
+
+Structure.prototype.onTransfer = _.noop
+Structure.prototype.onWithdraw = _.noop

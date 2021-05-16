@@ -26,6 +26,7 @@ export default class DuetHandler {
     if (!duet.connected) return duet.connect()
     const room = duet.room
     const pos = duet.pos
+    if (!pos) return
     if (!safe || !duet.healed) {
       console.log('unsafe')
       if (duet.keep?.room.name !== duet.protect?.room.name || duet.atBorder) {
@@ -100,7 +101,12 @@ export default class DuetHandler {
   }
 
   private safeDestroyDuet(duet: Duet) {
-    if (duet.safe && !duet.atBorder && this.room.name === duet.pos.roomName) {
+    const pos = duet.pos
+    if (
+      duet.safe &&
+      !duet.atBorder &&
+      (!pos || this.room.name === pos.roomName)
+    ) {
       duet.destroy()
       delete this.duet
       delete this.room.memory[RoomMemoryKeys.duet]

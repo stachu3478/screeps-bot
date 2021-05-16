@@ -59,6 +59,11 @@ export default class RoomBuildings {
     return stack && (stack[0] as StructureNuker)
   }
 
+  get links() {
+    const stack = this.fetched[STRUCTURE_LINK]
+    return (stack || []) as StructureLink[]
+  }
+
   private get fetched() {
     if (this.fetchTime === Game.time) return this.structures
     this.fetchTime = Game.time

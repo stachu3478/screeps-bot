@@ -14,7 +14,6 @@ export default function memoryLessDraw(
   amount?: number,
 ) {
   if (creep.store.getFreeCapacity(resourceType) === 0) return DONE
-  if (target.store[resourceType] === 0) return NOTHING_TODO
   const result = creep.withdraw(
     target,
     resourceType,
@@ -25,6 +24,7 @@ export default function memoryLessDraw(
     ),
   )
   if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target)
+  else if (result === ERR_NOT_ENOUGH_RESOURCES) return NOTHING_TODO
   else if (result !== 0) return FAILED
   else return SUCCESS
   return NOTHING_DONE

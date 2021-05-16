@@ -9,4 +9,5 @@ declare class RoomBuildings {
   spawns: StructureSpawn[]
   extensions: StructureExtension[]
   nuker?: StructureNuker
+  links: StructureLink[]
 }

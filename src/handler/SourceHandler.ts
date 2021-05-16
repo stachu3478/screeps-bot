@@ -18,8 +18,8 @@ export default class SourceHandler {
     this.memory[sourceId] = this.memory[sourceId].slice(0, 2) + creepName
   }
 
-  getPosition(sourceId: string) {
-    return this.room.positionFromChar(this.memory[sourceId])
+  getPosition(sourceId?: string) {
+    return this.room.positionFromChar(this.memory[sourceId || ''] || '')
   }
 
   getDistance(sourceId: string) {

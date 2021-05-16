@@ -21,6 +21,7 @@ interface RoomCache {
   scoutsWorking: number
   buildings?: RoomBuildings
   duet?: DuetHandler
+  links?: RoomLinks
 
   labCooldown?: number
 }
@@ -64,6 +65,11 @@ interface FactoryCache {
   producing?: ResourceConstant
 }
 
+interface LinkCache {
+  isDrain: boolean
+  isCollector: boolean
+}
+
 interface GlobalCache {
   rooms: {
     [key: string]: RoomCache
@@ -82,6 +88,9 @@ interface GlobalCache {
   }
   factories: {
     [key: string]: FactoryCache
+  }
+  links: {
+    [key: string]: LinkCache
   }
 
   roomKeepers: {

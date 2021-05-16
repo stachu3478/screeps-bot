@@ -8,6 +8,7 @@ import { energyBufferingThreshold } from './terminal'
  */
 export default [
   // collect energy to storage
+  // from containers if no link present
   {
     from: (room: Room) => {
       const container = room.sources.colonyPosition.building(
@@ -19,13 +20,15 @@ export default [
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
   },
-  /*{
+  {
     from: STRUCTURE_CONTAINER,
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
     maximumFilledAmount: 1000,
-  },*/
+    if: (c: Structure) =>
+      !c.room.buildings.links.some((l) => l.pos.isNearTo(c)),
+  },
   // fill everything with energy from storage
   {
     from: STRUCTURE_STORAGE,
@@ -50,6 +53,7 @@ export default [
     to: STRUCTURE_TOWER,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
+    if: (c: Structure) => !c.room.storage,
   },
   {
     from: STRUCTURE_CONTAINER,
@@ -57,18 +61,19 @@ export default [
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
     minimalFreeCapacityToFill: 1,
+    if: (c: Structure) => !c.room.storage,
   },
   // balanced transfer between link and storage
   {
     from: STRUCTURE_STORAGE,
-    to: (room: Room) => (room.spawnLink ? [room.spawnLink] : []),
+    to: (room: Room) => (room.links.spawny ? [room.links.spawny] : []),
     type: RESOURCE_ENERGY,
     minimalFreeCapacityToFill: LINK_CAPACITY,
     maximumFilledAmount: (LINK_CAPACITY * 3) / 4,
     minimalStoreToDraw: 10000,
   },
   {
-    from: (room: Room) => (room.spawnLink ? [room.spawnLink] : []),
+    from: (room: Room) => (room.links.spawny ? [room.links.spawny] : []),
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
     minimalStoreToDraw: LINK_CAPACITY,

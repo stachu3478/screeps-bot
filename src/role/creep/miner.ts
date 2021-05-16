@@ -44,12 +44,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
           delete creep.cache.pick_pos
           autoPick(creep)
         case DONE:
-          const result = creep.motherRoom.spawn
-            ? autoFill(
-                creep,
-                creep.memory._harvest !== creep.room.memory.colonySourceId,
-              )
-            : FAILED
+          const result = creep.motherRoom.spawn ? autoFill(creep) : FAILED
           if (result in ACCEPTABLE || result === NO_RESOURCE) {
             // nothing to do
           } else if (creep.memory._draw && autoRepair(creep, 0) in ACCEPTABLE)
@@ -60,10 +55,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
             const miningPosition = creep.room.sources.getPosition(
               creep.memory._harvest,
             )
-            if (creep.pos.range(miningPosition)) {
-              creep.drop(RESOURCE_ENERGY)
-              return
-            }
+            if (creep.pos.range(miningPosition)) return
             const structures = miningPosition.lookFor(LOOK_STRUCTURES)
             const container = structures.find(
               (s) => s.structureType === STRUCTURE_CONTAINER,

@@ -17,6 +17,7 @@ const cache = {
   roomKeepers: {},
   roomStructures: {},
   feromon: {},
+  links: {},
 }
 
 global.Cache = new CacheHandler(

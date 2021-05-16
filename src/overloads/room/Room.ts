@@ -4,7 +4,6 @@ import defineGetter from 'utils/defineGetter'
 import SourceHandler from 'handler/SourceHandler'
 import ShieldPlanner from 'planner/shieldPlanner'
 import DefencePolicy from 'room/DefencePolicy'
-import { getLink } from 'utils/selectFromPos'
 import RoomBuildingRouter from 'job/buildingRoute/RoomBuildingRouter'
 import { posToChar } from 'planner/pos'
 import whirl from 'utils/whirl'
@@ -18,6 +17,7 @@ import claim from 'config/claim'
 import BoostManager from './BoostManager'
 import RoomBuildings from './RoomBuildings'
 import DuetHandler from 'handler/DuetHandler'
+import RoomLinks from './RoomLinks'
 
 function defineRoomGetter<T extends keyof Room>(
   property: T,
@@ -63,18 +63,6 @@ defineRoomGetter('mineral', (self) => {
   return self.find(FIND_MINERALS)[0]
 })
 
-defineRoomGetter('linked', (self) => {
-  const linkCharArray = (self.memory.links || '')
-    .concat(self.memory.controllerLink || '')
-    .split('')
-  return (
-    linkCharArray.length > 0 &&
-    linkCharArray.every(
-      (char) => !!self.buildingAt(char.charCodeAt(0), STRUCTURE_LINK),
-    )
-  )
-})
-
 defineRoomGetter('spawn', (self) => {
   return self.find(FIND_MY_SPAWNS)[0]
 })
@@ -99,11 +87,6 @@ defineRoomGetter('defencePolicy', (self) => {
   return cache.defencePolicy
 })
 
-defineRoomGetter('spawnLink', (self) => {
-  if (!self.memory.structs) return
-  return getLink(self, self.memory.structs.charCodeAt(0))
-})
-
 defineRoomGetter('buildingRouter', (self) => {
   return (
     self.cache.buildingRouter ||
@@ -116,6 +99,10 @@ defineRoomGetter('repairRouter', (self) => {
     self.cache.repairRouter ||
     (self.cache.repairRouter = new RoomRepairRouter(self))
   )
+})
+
+defineRoomGetter('links', (self) => {
+  return self.cache.links || (self.cache.links = new RoomLinks(self))
 })
 
 defineRoomGetter('leastAvailablePosition', (self) => {
@@ -195,7 +182,7 @@ Room.prototype.positionFromChar = function (char: string) {
   const charCode = char.charCodeAt(0)
   return (
     this.getPositionAt(charCode & 63, charCode >> 6) ||
-    new RoomPosition(-1, -1, this.name)
+    new RoomPosition(0, 0, this.name)
   )
 }
 

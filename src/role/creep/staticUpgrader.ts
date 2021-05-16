@@ -10,7 +10,6 @@ import upgrade from 'routine/work/upgrade'
 import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/haul/autoPick'
 import draw from 'routine/haul/draw'
-import maintainControllerLink from 'utils/controllerLink'
 import profiler from 'screeps-profiler'
 
 export interface StaticUpgrader extends Creep {
@@ -32,10 +31,7 @@ export default profiler.registerFN(function staticUpgrader(
         case NO_RESOURCE:
         case FAILED:
           if (autoPick(creep) === SUCCESS) break
-          const linkId = maintainControllerLink(
-            creep.room,
-            creep.store.getFreeCapacity(RESOURCE_ENERGY),
-          )
+          const linkId = creep.room.links.controller?.id
           if (linkId) {
             creep.memory.state = State.DRAW
             creep.memory._draw = linkId

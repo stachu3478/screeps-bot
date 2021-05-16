@@ -77,3 +77,35 @@ Creep.prototype.moveToRoom = function (room: string) {
   )
   return move.cheap(this, pos, true)
 }
+
+Creep.prototype._transfer = Creep.prototype.transfer
+Creep.prototype.transfer = function (
+  t: Structure | AnyCreep,
+  r: ResourceConstant,
+  a?: number,
+) {
+  const res = this._transfer(t, r, a)
+  if (res === OK || res === ERR_FULL) {
+    const s = t as AnyStoreStructure
+    const transfered =
+      a || Math.min(s.store.getFreeCapacity(r) || 0, this.store[r])
+    t.onTransfer(transfered)
+  }
+  return res
+}
+
+Creep.prototype._withdraw = Creep.prototype.withdraw
+Creep.prototype.withdraw = function (
+  t: Structure | Tombstone | Ruin,
+  r: ResourceConstant,
+  a?: number,
+) {
+  const res = this._withdraw(t, r, a)
+  if (res === OK || res === ERR_NOT_ENOUGH_RESOURCES) {
+    const s = t as AnyStoreStructure
+    const transfered =
+      a || Math.min(s.store[r] || 0, this.store.getFreeCapacity(r))
+    t.onWithdraw(transfered)
+  }
+  return res
+}

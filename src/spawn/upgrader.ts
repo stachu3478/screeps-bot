@@ -5,7 +5,7 @@ export function needsUpgraders(
   count: number,
   containersPresent: boolean,
 ) {
-  const isLinked = spawn.room.linked
+  const isLinked = spawn.room.links.finished
   const maxUpgradersCount = Memory.maxUpgradersCount || 3
   return (
     count < maxUpgradersCount &&

@@ -13,7 +13,7 @@ interface DrawContainerMemory extends CreepMemory {
 export default function drawContainer(creep: DrawContainerCreep) {
   let target = creep.memory._draw && Game.getObjectById(creep.memory._draw)
   if (!target || target.store[RESOURCE_ENERGY] === 0) {
-    if (creep.room.linked) {
+    if (creep.room.links.finished) {
       const containerPosition = creep.room.sources.colonyPosition
       const container = containerPosition
         .lookFor(LOOK_STRUCTURES)

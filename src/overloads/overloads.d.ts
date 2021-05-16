@@ -8,8 +8,7 @@ interface Room {
   lab2?: StructureLab
   externalLabs: StructureLab[]
   mineral?: Mineral
-  spawnLink?: StructureLink
-  linked: boolean
+  links: RoomLinks
   spawn?: StructureSpawn
   cache: RoomCache
   factoryCache: FactoryCache
@@ -48,6 +47,8 @@ interface Room {
 interface Structure {
   isWalkable: boolean
   effectiveHits: number
+  onWithdraw: (amount: number) => void
+  onTransfer: (amount: number) => void
 }
 
 interface StructureLab {
@@ -104,6 +105,15 @@ interface Creep {
   isSafeFrom: (creep: Creep) => boolean
   safeRangeXY: (x: number, y: number) => number
   moveToRoom: (room: string) => ScreepsReturnCode
+  _transfer: Creep['transfer']
+  _withdraw: Creep['withdraw']
+  onWithdraw: (amount: number) => void
+  onTransfer: (amount: number) => void
+}
+
+interface PowerCreep {
+  onWithdraw: (amount: number) => void
+  onTransfer: (amount: number) => void
 }
 
 interface StructureTower {
@@ -112,4 +122,16 @@ interface StructureTower {
 
 interface StructureNuker {
   readyToLaunch: boolean
+}
+
+interface StructureLink {
+  cache: LinkCache
+}
+
+interface Tombstone {
+  onWithdraw: (amount: number) => void
+}
+
+interface Ruin {
+  onWithdraw: (amount: number) => void
 }

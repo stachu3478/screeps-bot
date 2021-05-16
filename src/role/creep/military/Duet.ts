@@ -152,7 +152,7 @@ export default class Duet {
     return !!(this.keep && this.protect)
   }
 
-  get pos() {
+  get pos(): RoomPosition | undefined {
     const creeps = this.creeps
     return creeps[0] && creeps[0].pos
   }

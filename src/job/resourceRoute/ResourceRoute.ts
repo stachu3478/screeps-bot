@@ -1,8 +1,6 @@
 import StructureMatcher from './matcher/structureMatcher'
 import { StoreStructureSelector } from '../selector/StoreStructureSelector'
 
-type ResourceSelector = (r: ResourceConstant) => boolean
-
 interface ResourceRouteOptions {
   /**
    * Specifies all sources that the resource will be taken from
@@ -37,8 +35,13 @@ interface ResourceRouteOptions {
    * Amount to keep in sources
    */
   keep?: number
+  /**
+   * Conditional function to select source
+   */
+  if?: (s: AnyStoreStructure) => boolean
 }
 
+const truthier = () => true
 export default class ResourceRoute {
   private options: ResourceRouteOptions
   private sourceMatcher: StructureMatcher
@@ -52,7 +55,9 @@ export default class ResourceRoute {
 
   findSources(room: Room, differ?: Structure) {
     const match = this.sourceMatcher.call(room) as AnyStoreStructure[]
-    return match.filter((s) => s !== differ && this.validateSource(s))
+    return match.filter(
+      (s) => s !== differ && this.if(s) && this.validateSource(s),
+    )
   }
 
   findTargets(room: Room, differ?: Structure) {
@@ -108,6 +113,10 @@ export default class ResourceRoute {
 
   get dump() {
     return !!this.options.dump
+  }
+
+  get if() {
+    return this.options.if || truthier
   }
 
   /*get drawMoreThanCanBeFilled() {
