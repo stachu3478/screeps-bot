@@ -1,13 +1,11 @@
 import {
   SUCCESS,
   NOTHING_TODO,
-  FAILED,
   DONE,
   NO_RESOURCE,
 } from '../../constants/response'
 import profiler from 'screeps-profiler'
 import { findNearStructureToFillWithPriority } from 'utils/find'
-import { getXYContainer } from 'utils/selectFromPos'
 
 export default profiler.registerFN(function autoFill(creep: Creep) {
   const target = findNearStructureToFillWithPriority(creep)
@@ -19,7 +17,7 @@ export default profiler.registerFN(function autoFill(creep: Creep) {
     false
   >).getFreeCapacity(RESOURCE_ENERGY)
   if (target.structureType !== STRUCTURE_CONTAINER) {
-    const container = getXYContainer(creep.room, creep.pos.x, creep.pos.y)
+    const container = creep.pos.building(STRUCTURE_CONTAINER)
     if (container && container.store[RESOURCE_ENERGY])
       creep.withdraw(container, RESOURCE_ENERGY)
   }

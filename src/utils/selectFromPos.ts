@@ -42,9 +42,6 @@ export const getWall = createPosSelector(STRUCTURE_WALL) as PosSelector<
 export const getXYLink = createXYSelector(STRUCTURE_LINK) as XYSelector<
   StructureLink
 >
-export const getXYContainer = createXYSelector(
-  STRUCTURE_CONTAINER,
-) as XYSelector<StructureContainer>
 export const getXYExtension = createXYSelector(
   STRUCTURE_EXTENSION,
 ) as XYSelector<StructureExtension>

@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import Memoized from 'utils/Memoized'
 import HitCalculator from 'room/military/HitCalculator'
-import move from 'utils/path'
+import move, { offsetsByDirection } from 'utils/path'
 
 export default class Duet {
   private keeper: Memoized<Creep>
@@ -33,6 +33,42 @@ export default class Duet {
     let res = -1
     const keeper = this.keep
     const protector = this.protect
+    if (keeper) res = move.cheap(keeper, target)
+    if (protector) {
+      if (keeper && !keeper?.pos.isBorder()) protector.moveTo(keeper)
+      else res = protector.moveTo(target)
+    }
+    console.log(res)
+    return true
+  }
+
+  moveToWithSafety(
+    target: _HasRoomPosition,
+    calc: HitCalculator,
+    enemies: Creep[],
+  ) {
+    console.log('move to target')
+    if (this.fatigued) return false
+    let res = -1
+    const keeper = this.keep
+    const protector = this.protect
+
+    const pos = this.pos
+    if (!pos) return false
+    const dir = pos.getDirectionTo(target)
+    const x = pos.x + offsetsByDirection[dir][0]
+    const y = pos.y + offsetsByDirection[dir][1]
+    const damaged = this.creeps.some((c) => {
+      const damage = calc.getDamage(
+        new RoomPosition(x, y, pos.roomName),
+        enemies,
+      )
+      const dealt =
+        c.corpus.damageDealt(damage) - (protector?.corpus.healPower || 0)
+      return dealt > 0
+    })
+    if (damaged) return false
+
     if (keeper) res = move.cheap(keeper, target)
     if (protector) {
       if (keeper && !keeper?.pos.isBorder()) protector.moveTo(keeper)

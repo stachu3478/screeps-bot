@@ -69,10 +69,16 @@ export default class DuetHandler {
               (s.structureType === STRUCTURE_WALL ||
                 s.structureType === STRUCTURE_RAMPART),
           })
-        if (!target) return this.safeDestroyDuet(duet)
+        if (!target) {
+          delete this.room.memory[RoomMemoryKeys.ekhaust]
+          return this.safeDestroyDuet(duet)
+        }
         this.target = new Memoized(target)
       }
-      if (!pos.isNearTo(target)) duet.moveTo(target)
+      const calc = new HitCalculator(room)
+      calc.fetch(false)
+      const dealers = room.find(FIND_HOSTILE_CREEPS)
+      if (!pos.isNearTo(target)) duet.moveToWithSafety(target, calc, dealers)
       return duet.attack(target)
     }
   }

@@ -76,7 +76,7 @@ export default [
     from: (room: Room) => (room.links.spawny ? [room.links.spawny] : []),
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
-    minimalStoreToDraw: LINK_CAPACITY,
+    minimalStoreToDraw: (LINK_CAPACITY * 7) / 8,
     keep: LINK_CAPACITY / 4,
   },
   // fill more expensive things with energy

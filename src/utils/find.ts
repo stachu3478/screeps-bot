@@ -134,7 +134,7 @@ export const findCloseMostDamagedStructure = (
 interface ToFill {
   [key: string]: number
 }
-const fillPriority: ToFill = _.invert(energyDistribution.reverse())
+const fillPriority: ToFill = _.invert(energyDistribution)
 export const findNearStructureToFillWithPriority = (creep: Creep) => {
   const { x, y } = creep.pos
   const structures = creep.room
@@ -146,6 +146,6 @@ export const findNearStructureToFillWithPriority = (creep: Creep) => {
         fillPriority[b.structure.structureType],
     )
   return structures.find((s) => {
-    creep.transfer(s.structure, RESOURCE_ENERGY) === OK
+    return creep.transfer(s.structure, RESOURCE_ENERGY) === OK
   })?.structure as AnyStoreStructure | undefined
 }

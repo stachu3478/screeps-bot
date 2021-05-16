@@ -12,7 +12,6 @@ import autoRepair from 'routine/work/autoRepair'
 import autoBuild from 'routine/work/autoBuild'
 import autoPick from 'routine/haul/autoPick'
 import profiler from 'screeps-profiler'
-import { getXYContainer, getXYRampart, getContainer } from 'utils/selectFromPos'
 
 export interface Miner extends Creep {
   memory: MinerMemory
