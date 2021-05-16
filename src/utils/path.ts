@@ -212,6 +212,8 @@ const move = {
       options.ignoreCreeps = true
       result = creep.moveTo(target, options)
     }
+    if (result === ERR_NO_PATH)
+      move.anywhere(creep, creep.pos.getDirectionTo(target))
     const mem = creep.memory
     const moveMemory = mem._move
     if (!moveMemory) return result

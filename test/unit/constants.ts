@@ -33,6 +33,9 @@ Object.assign(global, {
   StructureTerminal: class extends Structure {},
   StructureTower: class extends Structure {},
   StructureNuker: class extends Structure {},
+  StructureLink: class extends Structure {},
+  Tombstone: class {},
+  Ruin: class {},
   PathFinder: {
     CostMatrix: class {
       set() {}

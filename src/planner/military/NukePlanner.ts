@@ -20,6 +20,10 @@ export default class NukerPlanner {
     return true
   }
 
+  shouldNukeRoom() {
+    return !this.room.find(FIND_NUKES).length
+  }
+
   get positions() {
     return this.xys || []
   }

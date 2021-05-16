@@ -99,11 +99,16 @@ interface RoomMemory {
    */
   s?: string
   walls?: string
-  colonySources?: SourceMap
-  colonySourceId?: Id<Source>
+  /**
+   * Compressed sources information
+   */
+  S?: string[]
+  /**
+   * Colony source index from room.find sources
+   */
+  c?: number
   links?: string
   controllerLink?: string
-  sourceCount?: number
   maxWorkController?: number
   workControllerOver?: number
 

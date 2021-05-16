@@ -19,7 +19,7 @@ describe('Detecting ability to transfer energy with links', () => {
 
   describe('No links description in memory', () => {
     it('returns false', () => {
-      expect(room.linked).to.eql(false)
+      expect(room.links.finished).to.eql(false)
     })
   })
 
@@ -27,22 +27,22 @@ describe('Detecting ability to transfer energy with links', () => {
     beforeEach(() => {
       room.memory.controllerLink = 'a'
       room.memory.links = 'def'
-      sinon.stub(room, 'lookForAt').returns([])
+      sinon.stub(room, 'buildingAt').returns(undefined)
     })
 
     it('returns false', () => {
-      expect(room.linked).to.eql(false)
+      expect(room.links.finished).to.eql(false)
     })
   })
 
   describe('No controller link in room', () => {
     beforeEach(() => {
       room.memory.links = 'def'
-      sinon.stub(room, 'lookForAt').returns([])
+      sinon.stub(room, 'buildingAt').returns(undefined)
     })
 
     it('returns false', () => {
-      expect(room.linked).to.eql(false)
+      expect(room.links.finished).to.eql(false)
     })
   })
 
@@ -50,11 +50,11 @@ describe('Detecting ability to transfer energy with links', () => {
     beforeEach(() => {
       room.memory.controllerLink = 'a'
       room.memory.links = 'def'
-      sinon.stub(room, 'lookForAt').returns([link])
+      sinon.stub(room, 'buildingAt').returns(link)
     })
 
     it('returns true', () => {
-      expect(room.linked).to.eql(true)
+      expect(room.links.finished).to.eql(true)
     })
   })
 })

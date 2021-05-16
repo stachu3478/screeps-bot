@@ -113,7 +113,7 @@ defineRoomGetter('leastAvailablePosition', (self) => {
     self.find(FIND_EXIT).map((p) => ({ pos: p, range: 500 })),
     { flee: true, maxRooms: 1, swampCost: 2 },
   ).path
-  let lastPosition = positions.pop()
+  let lastPosition = positions.find((p) => !p.lookFor(LOOK_STRUCTURES).length)
   if (!lastPosition) {
     const xy = whirl(
       25,

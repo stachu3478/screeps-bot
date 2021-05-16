@@ -47,8 +47,8 @@ describe('ObservingScanner', () => {
       const instance = ObservingScanner.instance
       const cb = Sinon.spy()
       const res = instance.scan(cb)
-      expect(observer.observeRoom).to.be.calledOnceWithExactly('W17N42')
       expect(res).to.be.true
+      expect(observer.observeRoom).to.be.calledOnceWithExactly('W17N42')
       expect(cb).to.not.be.called
     })
 

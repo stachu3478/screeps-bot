@@ -28,7 +28,7 @@ export default profiler.registerFN(function loop(
   const cache = spawn.cache
   if (!mem.creeps) mem.creeps = {}
   if (mem.maxWorkController === undefined) return
-  const max = mem.sourceCount || 0
+  const max = mem[RoomMemoryKeys.sourceInfo]?.length || 0
   if (cache.trySpawn) {
     const { creep, memory, name, cooldown, boost } = cache.trySpawn
     const result = spawn.trySpawnCreep(
@@ -55,7 +55,7 @@ export default profiler.registerFN(function loop(
     findContainers(spawn.room).length || spawn.room.storage
   )
   if (minerCount === 0 && !creepCountByRole[Role.RETIRED]) {
-    const colonySource = mem.colonySourceId
+    const colonySource = mem[RoomMemoryKeys.colonySourceIndex]
     cache.sourceId = colonySource
     spawn.trySpawnCreep(
       progressiveMiner(
@@ -88,13 +88,13 @@ export default profiler.registerFN(function loop(
   } else if (minerCount < max) {
     const parts = progressiveMiner(spawn.room.energyCapacityAvailable)
     const freeSource = controller.room.sources.free
-    if (!freeSource) return
-    cache.sourceId = freeSource as Id<Source>
+    if (freeSource === -1) return
+    cache.sourceId = freeSource
     const spec = controller.room.sources.getDistance(freeSource)
     const memory: MinerMemory = {
       role: Role.MINER,
       room: spawn.room.name,
-      _harvest: freeSource as Id<Source>,
+      [Keys.sourceIndex]: freeSource,
       deprivity: spec,
     }
     spawn.trySpawnCreep(parts, 'M', memory)

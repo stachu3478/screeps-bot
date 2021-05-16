@@ -34,7 +34,7 @@ interface SpawnCache {
     memory: CreepMemory
     boost: BoostInfo[]
   }
-  sourceId?: Id<Source>
+  sourceId?: number
   distanceToController?: number
 }
 

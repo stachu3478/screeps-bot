@@ -37,6 +37,7 @@ export default function commander(creep: Commander) {
       creep.memory._arrive = creep.motherRoom.memory._attack
       break
     case State.RECYCLE:
+      if (creep.motherRoom.memory._attack) creep.memory.state = State.INIT
       switch (recycle(creep)) {
         case NOTHING_TODO:
           creep.suicide()

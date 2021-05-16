@@ -12,6 +12,7 @@ describe('HitCalculator', () => {
     room.buildings = {} as RoomBuildings
     tower = {} as StructureTower
     tower.attackPowerAt = () => 1
+    tower.owner = { username: 'test' }
     room.buildings.towers = [tower]
 
     creep = {} as Creep
@@ -33,7 +34,12 @@ describe('HitCalculator', () => {
   })
 
   it('returns arbitrary value dealt damage', () => {
-    calculator.fetch()
+    calculator.fetch(false)
     expect(calculator.getFor(creep, dealers, healers)).to.eql(-5)
+  })
+
+  it('negates tower power attack', () => {
+    calculator.fetch(true)
+    expect(calculator.getFor(creep, dealers, healers)).to.eql(-6)
   })
 })

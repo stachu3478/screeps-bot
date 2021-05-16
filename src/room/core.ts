@@ -30,7 +30,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
   const towers = room.buildings.towers
   if (enemyPicker.any) {
     enemy = enemyPicker.enemy!
-    const canDeal = enemyPicker.dealt >= 0
+    const canDeal = enemyPicker.dealt > 0
     const shouldAttack = room.defencePolicy.shouldAttack(canDeal)
     if (!shouldAttack) needFighters = true
     else {

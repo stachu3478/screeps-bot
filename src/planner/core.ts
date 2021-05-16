@@ -20,7 +20,7 @@ export default function plan(room: Room) {
   let nearestSource = sources[0]
   let shortestPathLength = Infinity
   let furthestPath: RoomPosition[] = []
-  const sourcePositions: SourceMap = {}
+  const sourcePositions: string[] = []
   const costMatrix = new PathFinder.CostMatrix()
   const roomCallback = (roomName: string) =>
     roomName === room.name ? costMatrix : false
@@ -37,7 +37,7 @@ export default function plan(room: Room) {
       })
     })
   })
-  sources.forEach((obj) => {
+  sources.forEach((obj, i) => {
     const ps = obj.pos
     const { path } = PathFinder.search(
       new RoomPosition(ps.x, ps.y, room.name),
@@ -60,7 +60,7 @@ export default function plan(room: Room) {
       })
     }
     ///
-    sourcePositions[obj.id] = posToChar(path[0])
+    sourcePositions[i] = posToChar(path[0])
     if (path.length > furthestPath.length) {
       furthestSource = obj
       furthestPath = path
@@ -71,9 +71,9 @@ export default function plan(room: Room) {
   })
 
   // find path to prospect time to travel to routine place
-  sources.forEach((obj) => {
+  sources.forEach((obj, i) => {
     if (obj === furthestSource) {
-      sourcePositions[obj.id] += String.fromCharCode(1)
+      sourcePositions[i] += String.fromCharCode(1)
       return
     }
     const ps = obj.pos
@@ -85,9 +85,9 @@ export default function plan(room: Room) {
         roomCallback,
       },
     )
-    planLink(room, sourcePositions[obj.id][0], matrix, terrain)
+    planLink(room, sourcePositions[i][0], matrix, terrain)
     // save path length
-    sourcePositions[obj.id] += String.fromCharCode(path.length)
+    sourcePositions[i] += String.fromCharCode(path.length)
   })
 
   // plan controller link
@@ -199,5 +199,11 @@ export default function plan(room: Room) {
     // break
   }
 
-  dump(room, pm, sourcePositions, furthestSource.id, nearestSource.id)
+  dump(
+    room,
+    pm,
+    sourcePositions,
+    sources.indexOf(furthestSource),
+    sources.indexOf(nearestSource),
+  )
 }

@@ -2,24 +2,21 @@ import PlannerMatrix from './matrix'
 import { getMaximumWorkPartsForSource, getWorkSaturation } from './opts'
 import range from 'utils/range'
 
-interface SourceMap {
-  [id: string]: string
-}
 export default function dump(
   room: Room,
   pm: PlannerMatrix,
-  sourcePositions: SourceMap,
-  farSourceId: Id<Source>,
-  nearSourceId: Id<Source>,
+  sourcePositions: string[],
+  farSourceId: number,
+  nearSourceId: number,
 ) {
   // dump data to Memory
   const terrain = room.getTerrain()
+  const sources = room.find(FIND_SOURCES)
   const structs: number[][] = []
   const roads: number[] = []
   const links: number[] = []
   const labs: number[] = []
-  const farSource =
-    Game.getObjectById(farSourceId) || Game.getObjectById(nearSourceId)
+  const farSource = sources[farSourceId] || sources[nearSourceId]
   const { x: sx, y: sy } = farSource ? farSource.pos : { x: 0, y: 0 }
   pm.each((v, xy, x, y) => {
     if (v === -1) {
@@ -49,9 +46,8 @@ export default function dump(
     )
     .map((n) => String.fromCharCode(n))
     .join('')
-  room.memory.sourceCount = Object.keys(sourcePositions).length
-  room.memory.colonySources = sourcePositions
-  room.memory.colonySourceId = farSourceId
+  room.memory[RoomMemoryKeys.sourceInfo] = sourcePositions
+  room.memory[RoomMemoryKeys.colonySourceIndex] = farSourceId
   room.memory.maxWorkController = Math.ceil(
     getMaximumWorkPartsForSource(
       getWorkSaturation(50, 2 * sourcePositions[nearSourceId].charCodeAt(1)),

@@ -19,7 +19,7 @@ export interface Miner extends Creep {
 }
 
 export interface MinerMemory extends CreepMemory {
-  _harvest?: Id<Source>
+  [Keys.sourceIndex]?: number
   _draw?: Id<AnyStoreStructure>
 }
 
@@ -32,13 +32,11 @@ interface MinerCache extends CreepCache {
 
 export default profiler.registerFN(function miner(creep: Miner) {
   switch (creep.memory.state) {
-    case State.INIT:
-      if (!creep.memory._harvest)
-        creep.memory._harvest = creep.room.memory.colonySourceId
-      else creep.memory.state = State.HARVESTING
-      break
     case State.HARVESTING:
-      switch (harvest(creep)) {
+      if (!creep.memory[Keys.sourceIndex])
+        creep.memory[Keys.sourceIndex] =
+          creep.room.memory[RoomMemoryKeys.colonySourceIndex]
+      switch (harvest(creep, creep.memory[Keys.sourceIndex]!)) {
         case NOTHING_TODO:
           delete creep.cache.pick_pos
           autoPick(creep)
@@ -50,9 +48,9 @@ export default profiler.registerFN(function miner(creep: Miner) {
             creep.memory.state = State.REPAIR
           else if (autoBuild(creep) in ACCEPTABLE)
             creep.memory.state = State.BUILD
-          else if (creep.memory._harvest) {
+          else if (creep.memory[Keys.sourceIndex]) {
             const miningPosition = creep.room.sources.getPosition(
-              creep.memory._harvest,
+              creep.memory[Keys.sourceIndex]!,
             )
             if (creep.pos.range(miningPosition)) return
             const structures = miningPosition.lookFor(LOOK_STRUCTURES)
@@ -101,7 +99,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
     case State.REPAIR:
       switch (autoRepair(creep)) {
         case NO_RESOURCE:
-          harvest(creep)
+          harvest(creep, creep.memory[Keys.sourceIndex] || 0)
           creep.memory.state = State.HARVESTING
           break
         case NOTHING_TODO:
@@ -112,7 +110,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
     case State.BUILD:
       switch (autoBuild(creep)) {
         case NO_RESOURCE:
-          harvest(creep)
+          harvest(creep, creep.memory[Keys.sourceIndex] || 0)
           creep.memory.state = State.HARVESTING
           break
         case NOTHING_TODO:
@@ -122,6 +120,6 @@ export default profiler.registerFN(function miner(creep: Miner) {
       }
       break
     default:
-      creep.memory.state = State.INIT
+      creep.memory.state = State.HARVESTING
   }
 }, 'roleMiner')

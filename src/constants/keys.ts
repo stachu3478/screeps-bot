@@ -9,6 +9,7 @@ const enum Keys {
   buildingRoute = 'c',
   repairTarget = 'r',
   roomPath = 'R',
+  sourceIndex = 'S',
 }
 
 const enum RoomMemoryKeys {
@@ -18,6 +19,8 @@ const enum RoomMemoryKeys {
   ekhaust = 'e',
   roomNeighbourPaths = 'p',
   duet = 'u',
+  colonySourceIndex = 'c',
+  sourceInfo = 'S',
 }
 
 const enum ShardMemoryKeys {

@@ -3,44 +3,44 @@ import { Miner } from 'role/creep/miner'
 
 export default class SourceHandler {
   private room: Room
-  private memory: SourceMap
-  private colony: string
+  private memory: string[]
+  private colony: number
   private roomPositions?: RoomPosition[]
 
   constructor(room: Room) {
     this.room = room
-    if (!room.memory.colonySources) plan(room)
-    this.memory = room.memory.colonySources || {}
-    this.colony = room.memory.colonySourceId || ''
+    if (!room.memory[RoomMemoryKeys.sourceInfo]) plan(room)
+    this.memory = room.memory[RoomMemoryKeys.sourceInfo] || []
+    this.colony = room.memory[RoomMemoryKeys.colonySourceIndex] || 0
   }
 
-  assign(creepName: string, sourceId: string = '') {
-    this.memory[sourceId] = this.memory[sourceId].slice(0, 2) + creepName
+  assign(creepName: string, sourceIndex: number) {
+    this.memory[sourceIndex] = this.memory[sourceIndex].slice(0, 2) + creepName
   }
 
-  getPosition(sourceId?: string) {
-    return this.room.positionFromChar(this.memory[sourceId || ''] || '')
+  getPosition(sourceIndex: number) {
+    return this.room.positionFromChar(this.memory[sourceIndex])
   }
 
-  getDistance(sourceId: string) {
-    return this.memory[sourceId].charCodeAt(1)
+  getDistance(sourceIndex: number) {
+    return this.memory[sourceIndex].charCodeAt(1)
   }
 
   get free() {
-    for (const id in this.memory) {
-      const name = this.memory[id].slice(2)
+    return this.memory.findIndex((info, i) => {
+      const name = info.slice(2)
       const creep = Game.creeps[name] as Miner
-      if (!creep || creep.memory._harvest !== id || creep.isRetired) {
-        return id
+      if (!creep || creep.memory[Keys.sourceIndex] !== i || creep.isRetired) {
+        return !!i
       }
-    }
-    return
+      return false
+    })
   }
 
   get positions() {
     return (
       this.roomPositions ||
-      (this.roomPositions = Object.values(this.memory).map((p) =>
+      (this.roomPositions = this.memory.map((p) =>
         this.room.positionFromChar(p),
       ))
     )

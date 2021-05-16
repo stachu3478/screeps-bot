@@ -1,10 +1,10 @@
 declare class SourceHandler {
   constructor(room: Room)
 
-  assign(creepName: string, sourceId?: string): void
-  getPosition(sourceId: string): RoomPosition
-  getDistance(sourceId: string): number
+  assign(creepName: string, sourceIndex?: number): void
+  getPosition(sourceIndex: number): RoomPosition
+  getDistance(sourceIndex: number): number
   positions: RoomPosition[]
   colonyPosition: RoomPosition
-  free?: string
+  free: number
 }

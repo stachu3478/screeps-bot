@@ -19,6 +19,7 @@ describe('CacheHandler', () => {
       roomKeepers: {},
       roomStructures: {},
       feromon: {},
+      links: {},
     }
     intershardMemoryHandler = {} as IntershardMemoryHandler
     cacheHandler = new CacheHandler(cache, intershardMemoryHandler)

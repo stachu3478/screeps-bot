@@ -20,7 +20,6 @@ export default function memoryLessFill(
   const result = creep.transfer(target, resourceType, toBeTransfered)
   if (result === ERR_NOT_IN_RANGE) {
     const result = move.cheap(creep, target)
-    if (creep.name === 'J5') console.log('fill', result)
     if (result === ERR_NO_PATH) {
       move.anywhere(creep, creep.pos.getDirectionTo(target))
       return 0
