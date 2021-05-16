@@ -90,6 +90,7 @@ interface RoomPosition {
   building<T extends StructureConstant>(
     type: T,
   ): ConcreteStructure<T> | undefined
+  disbordered(): RoomPosition
 }
 
 interface Creep {

@@ -21,7 +21,11 @@ export default class RoomInspector {
 
   private checkSafety(room: Room, info: RoomNeighbourPath) {
     if (room.owner === this.room.owner) return true
-    const entryPosition = new RoomPosition(info.x, info.y, info.name)
+    const entryPosition = new RoomPosition(
+      info.x,
+      info.y,
+      info.name,
+    ).disbordered()
     const towers = this.room
       .find(FIND_STRUCTURES)
       .filter(

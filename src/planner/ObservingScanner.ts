@@ -29,7 +29,11 @@ export default class ObservingScanner {
     if (!room) {
       console.log('Scanning ', name)
       this.scannedRoom = name
-      observer.observeRoom(name)
+      const res = observer.observeRoom(name)
+      if (res === ERR_NOT_IN_RANGE) {
+        delete this.scanningRoom
+        delete this.scannedRoom
+      }
     } else {
       console.log('Scanned ', name)
       this.scanned[name] = 1
@@ -52,7 +56,7 @@ export default class ObservingScanner {
   private findObserver() {
     const currentRoom = Game.rooms[this.scanningRoom || '']
     let observer = currentRoom?.buildings.observer
-    while (!observer) {
+    while (!observer?.isActive()) {
       this.scanningRoom = this.observerRooms.pop()
       if (!this.scanningRoom) return
       const newRoom = Game.rooms[this.scanningRoom]
@@ -78,8 +82,6 @@ export default class ObservingScanner {
         } else {
           this.scannedY++
         }
-        if (this.scannedY > location.y + OBSERVER_RANGE)
-          delete this.scanningRoom
       }
       if (typeof this.scannedY === 'undefined')
         this.scannedY = location.y - OBSERVER_RANGE

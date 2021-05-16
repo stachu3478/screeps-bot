@@ -21,3 +21,13 @@ RoomPosition.prototype.building = function <T extends StructureConstant>(
 RoomPosition.prototype.isBorder = function () {
   return this.x === 49 || this.y === 49 || this.x === 0 || this.y === 0
 }
+
+RoomPosition.prototype.disbordered = function () {
+  let x = this.x
+  let y = this.y
+  if (x === 49) x = 48
+  if (y === 49) y = 48
+  if (x === 0) x = 1
+  if (y === 0) y = 1
+  return new RoomPosition(x, y, this.roomName)
+}

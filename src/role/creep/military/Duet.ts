@@ -33,16 +33,9 @@ export default class Duet {
     let res = -1
     const keeper = this.keep
     const protector = this.protect
-    if (keeper) res = keeper.moveTo(target)
+    if (keeper) res = move.cheap(keeper, target)
     if (protector) {
-      if (
-        keeper &&
-        keeper.pos.x !== 49 &&
-        keeper.pos.x !== 0 &&
-        keeper.pos.y !== 49 &&
-        keeper.pos.y !== 0
-      )
-        protector.moveTo(keeper)
+      if (keeper && !keeper?.pos.isBorder()) protector.moveTo(keeper)
       else res = protector.moveTo(target)
     }
     console.log(res)
@@ -93,9 +86,11 @@ export default class Duet {
 
   destroy() {
     const keeper = this.keep
-    if (keeper) keeper.memory.role = Role.DESTROYER
+    if (keeper && keeper.memory.role === Role.DUAL)
+      keeper.memory.role = Role.DESTROYER
     const protector = this.protect
-    if (protector) protector.memory.role = Role.TOWER_EKHAUSTER
+    if (protector && protector.memory.role === Role.DUAL)
+      protector.memory.role = Role.TOWER_EKHAUSTER
   }
 
   attack(target: Structure) {

@@ -55,6 +55,7 @@ export default class DuetHandler {
           pos.findClosestByPath(FIND_STRUCTURES, {
             maxRooms: 1,
             filter: (s) =>
+              s.hits &&
               s.structureType !== STRUCTURE_WALL &&
               s.structureType !== STRUCTURE_RAMPART &&
               s.structureType !== STRUCTURE_ROAD &&
@@ -63,8 +64,9 @@ export default class DuetHandler {
           pos.findClosestByPath(FIND_STRUCTURES, {
             maxRooms: 1,
             filter: (s) =>
-              s.structureType === STRUCTURE_WALL ||
-              s.structureType === STRUCTURE_RAMPART,
+              s.hits &&
+              (s.structureType === STRUCTURE_WALL ||
+                s.structureType === STRUCTURE_RAMPART),
           })
         if (!target) return this.safeDestroyDuet(duet)
         this.target = new Memoized(target)
@@ -87,14 +89,21 @@ export default class DuetHandler {
     if (!creeps) return
     const keeper = Game.creeps[creeps[0]]
     const protector = Game.creeps[creeps[1]]
-    if (keeper && protector) this.duet = new Duet(keeper, protector)
+    if (
+      keeper &&
+      keeper.memory.role === Role.DUAL &&
+      protector &&
+      protector.memory.role === Role.DUAL
+    )
+      this.duet = new Duet(keeper, protector)
     else delete this.room.memory[RoomMemoryKeys.duet]
   }
 
   private safeDestroyDuet(duet: Duet) {
-    if (duet.safe && !duet.atBorder) {
+    if (duet.safe && !duet.atBorder && this.room.name === duet.pos.roomName) {
       duet.destroy()
       delete this.duet
+      delete this.room.memory[RoomMemoryKeys.duet]
     } else {
       duet.moveTo({ pos: this.room.sources.colonyPosition })
     }
@@ -102,14 +111,18 @@ export default class DuetHandler {
 
   private findOrCreateDuet() {
     if (this.duet) return this.duet
-    const keeper = this.room
-      .find(FIND_MY_CREEPS)
-      .find((c) => c.memory.role === Role.DESTROYER)
-    if (!keeper) return
-    const protector = keeper.pos.findClosestByRange(FIND_MY_CREEPS, {
-      filter: (c) => c.memory.role === Role.TOWER_EKHAUSTER,
-    })
-    if (!protector) return
+    const creeps = this.room.memory.creeps
+    if (!creeps) return
+    const keeperName = Object.keys(creeps).find(
+      (c) => Game.creeps[c]?.memory.role === Role.DESTROYER,
+    )
+    if (!keeperName) return
+    const protectorName = Object.keys(creeps).find(
+      (c) => Game.creeps[c]?.memory.role === Role.TOWER_EKHAUSTER,
+    )
+    if (!protectorName) return
+    const keeper = Game.creeps[keeperName]
+    const protector = Game.creeps[protectorName]
     keeper.memory.role = Role.DUAL
     protector.memory.role = Role.DUAL
     this.room.memory[RoomMemoryKeys.duet] = [keeper.name, protector.name]

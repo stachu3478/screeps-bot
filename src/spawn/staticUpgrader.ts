@@ -2,7 +2,13 @@ import { progressiveStaticUpgrader } from './body/work'
 import { energyToUpgradeThreshold } from 'config/storage'
 
 export function needsStaticUpgraders(spawn: StructureSpawn, count: number) {
-  return !count && spawn.room.linked
+  if (count || !spawn.room.linked) return false
+  const controller = spawn.room.controller
+  if (!controller) return false // xd?
+  if (controller.level < 8) return true
+  return (
+    controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[controller.level] / 2
+  )
 }
 
 export default function spawnStaticUpgrader(
