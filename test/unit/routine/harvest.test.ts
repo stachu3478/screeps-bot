@@ -23,15 +23,22 @@ describe('routine/harvest', () => {
     assert.isTrue(typeof harvest === 'function')
   })
 
-  it('should return number when called with no context', () => {
+  it('should return number when called with oh no context', () => {
+    const room = {} as Room
+    room.find = () => []
+    room.sources = {} as SourceHandler
     assert.isNumber(
-      harvest({
-        store: { getFreeCapacity: () => 50 },
-        memory: {} as CreepMemory,
-        pos: {
-          findClosestByPath: (CNST: FindConstant) => null,
-        },
-      } as Harvester),
+      harvest(
+        {
+          store: { getFreeCapacity: () => 50 },
+          memory: {} as CreepMemory,
+          pos: {
+            findClosestByPath: (CNST: FindConstant) => null,
+          },
+          room,
+        } as Harvester,
+        0,
+      ),
     )
   })
 })

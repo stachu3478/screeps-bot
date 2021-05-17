@@ -88,7 +88,7 @@ describe('Creep boost role', () => {
     describe('boosting done', () => {
       beforeEach(() => {
         sinon.stub(routineBooster, 'run').returns(SUCCESS)
-        creep.room.boosts.clearRequest = sinon.stub()
+        creep.room.boosts.clearRequests = sinon.stub()
       })
 
       it('clears state', () => {
@@ -96,7 +96,7 @@ describe('Creep boost role', () => {
         expect(creep.memory.state).to.be.undefined
         expect(creep.memory.role).to.eql(Role.BOOSTER, 'Invalid role')
         expect(routineBooster.run).to.be.calledWithExactly(creep, lab1)
-        expect(creep.room.boosts.clearRequest).to.be.calledWithExactly(
+        expect(creep.room.boosts.clearRequests).to.be.calledWithExactly(
           creep.name,
           lab1.mineralType,
           true,
@@ -107,14 +107,14 @@ describe('Creep boost role', () => {
     describe('boosting failed', () => {
       beforeEach(() => {
         sinon.stub(routineBooster, 'run').returns(FAILED)
-        creep.room.boosts.clearRequest = sinon.stub()
+        creep.room.boosts.clearRequests = sinon.stub()
       })
 
       it('Should clear state', () => {
         roleBooster.run(creep)
         expect(creep.memory.state).to.be.undefined
         expect(routineBooster.run).to.be.calledWithExactly(creep, lab1)
-        expect(creep.room.boosts.clearRequest).to.be.calledWithExactly(
+        expect(creep.room.boosts.clearRequests).to.be.calledWithExactly(
           creep.name,
           lab1.mineralType,
           false,

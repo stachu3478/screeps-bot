@@ -13,7 +13,7 @@ declare class BoostManager {
     partCount: number,
     mandatory?: boolean,
   ) => void
-  clearRequest: (
+  clearRequests: (
     creepName: string,
     resource: ResourceConstant | null,
     done?: boolean,

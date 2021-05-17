@@ -20,7 +20,7 @@ const roleBooster = {
         const result = routineBooster.run(creep, lab)
         if (result !== NOTHING_DONE) {
           delete creep.memory.state
-          creep.room.boosts.clearRequest(
+          creep.room.boosts.clearRequests(
             creep.name,
             lab && lab.mineralType,
             result === SUCCESS,
@@ -29,7 +29,6 @@ const roleBooster = {
         break
       default:
         const boosts = creep.room.boosts
-        // FIXME: not always forcing works
         const targetLabId = boosts.getRequest(creep.name)
         if (targetLabId) {
           creep.memory.state = State.BOOST

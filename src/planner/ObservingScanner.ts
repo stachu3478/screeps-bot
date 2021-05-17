@@ -1,5 +1,6 @@
 import _ from 'lodash'
 import RoomLocation from 'overloads/room/RoomLocation'
+import MyRooms from 'room/MyRooms'
 
 const instance = _.memoize(() => new ObservingScanner())
 export default class ObservingScanner {
@@ -9,11 +10,11 @@ export default class ObservingScanner {
   private scannedX?: number
   private scannedY?: number
   private scannedRoom?: string
+  private lastRoomIndex: number = 0
 
   constructor() {
     this.scanned = {}
     this.observerRooms = Object.keys(Memory.myRooms)
-    this.scanningRoom = this.observerRooms.pop()
   }
 
   scan(callback: (room: Room) => any) {
@@ -44,29 +45,21 @@ export default class ObservingScanner {
   }
 
   filterToScanFromPathScanners() {
-    this.observerRooms.forEach((n) => {
-      const rooms = Game.rooms[n]?.pathScanner.rooms
-      if (!rooms) return
-      Object.keys(rooms).forEach((n) => {
+    MyRooms.get().forEach((room) => {
+      Object.keys(room.pathScanner.rooms).forEach((n) => {
         this.scanned[n] = 1
       })
     })
   }
 
   private findObserver() {
+    this.lastRoomIndex =
+      this.observerRooms.slice(this.lastRoomIndex).findIndex((n) => {
+        return Game.rooms[n]?.buildings.observer?.isActive()
+      }) + this.lastRoomIndex
+    this.scanningRoom = this.observerRooms[this.lastRoomIndex]
     const currentRoom = Game.rooms[this.scanningRoom || '']
-    let observer = currentRoom?.buildings.observer
-    while (!observer?.isActive()) {
-      this.scanningRoom = this.observerRooms.pop()
-      if (!this.scanningRoom) return
-      const newRoom = Game.rooms[this.scanningRoom]
-      observer = newRoom?.buildings.observer
-      if (observer) {
-        delete this.scannedX
-        delete this.scannedY
-      }
-    }
-    return observer
+    return currentRoom?.buildings.observer
   }
 
   private findRoomToScan(observer: StructureObserver): string | void {

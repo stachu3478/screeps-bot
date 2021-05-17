@@ -47,7 +47,7 @@ export default class BoostManager {
     })
     toBeRemoved
       .reverse()
-      .forEach((resource) => this.clearRequest(creepName, resource))
+      .forEach((resource) => this.clearRequests(creepName, resource))
     return labId
   }
 
@@ -101,42 +101,50 @@ export default class BoostManager {
     this.creeps.push([creepName, resource, amountForCreep, mandatory ? 1 : 0])
   }
 
-  clearRequest(
-    creepName: string,
-    resource: ResourceConstant | null,
-    done: boolean = false,
-  ) {
-    if (!resource) return
-    let toRemove: string | undefined = undefined
-    let resourceToRemove: ResourceConstant = RESOURCE_ENERGY
-    const indexToRemove = this.creeps.findIndex((creepBoostData) => {
-      const [name, resourceType, , mandatory] = creepBoostData
-      if (name === creepName)
-        return resourceType === resource && (done || !mandatory)
-      const creep = Game.creeps[name]
-      if (name && (!creep || creep.memory.role !== Role.BOOSTER)) {
-        toRemove = name
-        resourceToRemove = resourceType
-      }
-      return false
+  clearRequests(creepName: string, resource: string | null, done = false) {
+    const resourcesToRemove: { [key: string]: number | undefined } = {}
+    const toRemove = this.creeps
+      .map((c, i) => {
+        const ci: [[string, ResourceConstant, number, 0 | 1], number] = [c, i]
+        return ci
+      })
+      .filter(([creepBoostData]) => {
+        const [name, resourceType, count, mandatory] = creepBoostData
+        const creep = Game.creeps[name]
+        const isToRemove =
+          !creep ||
+          creep.memory.role !== Role.BOOSTER ||
+          (name === creepName &&
+            resourceType === resource &&
+            (done || !mandatory))
+        if (isToRemove) {
+          if (!resourcesToRemove[resourceType])
+            resourcesToRemove[resourceType] = 0
+          resourcesToRemove[resourceType]! += count
+        }
+        return isToRemove
+      })
+    toRemove.reverse().forEach(([_, i]) => {
+      this.creeps.splice(i, 1)
     })
-    if (indexToRemove !== -1) {
+    Object.keys(resourcesToRemove).forEach((resource) => {
       const labIndex = this.labs.findIndex(
         (labBoostRecord) =>
           labBoostRecord[LabBoostDataKeys.resourceType] === resource,
       )
       const labBoostData = this.labs[labIndex]
-      const [resourceType, amount] = labBoostData
-      if (amount)
-        labBoostData[LabBoostDataKeys.amount] =
-          amount - this.creeps[indexToRemove][CreepBoostDataKeys.amount]
-      if (amount === 0) {
-        if (this.labs.length === labIndex + 1) this.labs.pop()
-        else this.labs[labIndex] = [resourceType, 0]
+      let [, amount] = labBoostData
+      if (amount) {
+        const toBeRemoved = resourcesToRemove[resource]!
+        amount -= toBeRemoved
+        labBoostData[LabBoostDataKeys.amount] = amount
       }
-      this.creeps.splice(indexToRemove, 1)
-    }
-    if (toRemove) this.clearRequest(toRemove, resourceToRemove)
+    })
+    while (
+      this.labs.length &&
+      this.labs[this.labs.length - 1][LabBoostDataKeys.amount] <= 0
+    )
+      this.labs.pop()
   }
 
   prepareData(

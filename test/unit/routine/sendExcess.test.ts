@@ -27,7 +27,7 @@ describe('routine/terminal/sendExcess', () => {
     sandbox.restore()
   })
 
-  it('should return NOTHING_TODO number when called with no context', () => {
+  it('returns NOTHING_TODO number when called with no context', () => {
     const term = {
       room: { memory: {} },
       store: {},
@@ -37,7 +37,7 @@ describe('routine/terminal/sendExcess', () => {
     expect(sendExcess(term)).to.eql(NOTHING_TODO)
   })
 
-  it('should perform send while has excess resources and other term to fill', () => {
+  it('performs send while has excess resources and other term to fill', () => {
     const term = {
       cache: { dealResourceType: RESOURCE_HYDROGEN },
       store: { [RESOURCE_HYDROGEN]: Infinity, [RESOURCE_ENERGY]: Infinity },
@@ -45,16 +45,21 @@ describe('routine/terminal/sendExcess', () => {
     } as StructureTerminal
     term.room.store = () => Infinity
     Memory.myRooms.test = 0
+
+    const mem = { creeps: { John: 0 } } as RoomMemory
     Game.rooms.test = {
       terminal: { my: true, store: { [RESOURCE_HYDROGEN]: 0 } },
+      controller: {} as StructureController,
+      memory: mem,
     } as Room
+
     Game.rooms.test.store = () => 0
     term.send = sinon.fake.returns(OK)
     expect(sendExcess(term)).to.eql(SUCCESS)
     expect(term.send).to.be.called
   })
 
-  it('should do nothing at all', () => {
+  it('does nothing at all', () => {
     const term = {
       cache: { dealResourceType: RESOURCE_HYDROGEN },
       store: { [RESOURCE_HYDROGEN]: Infinity, [RESOURCE_ENERGY]: Infinity },

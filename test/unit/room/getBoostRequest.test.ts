@@ -19,7 +19,7 @@ describe('Getting a boost request', () => {
     boosts = room.memory.boosts = boostData()
     room.boosts = new BoostManager(room)
     sinon.restore()
-    sinon.spy(room.boosts, 'clearRequest')
+    sinon.spy(room.boosts, 'clearRequests')
     lab = { id: 'lab', mineralType: RESOURCE_UTRIUM_ACID } as StructureLab
     room.externalLabs = [lab]
   })
@@ -38,7 +38,7 @@ describe('Getting a boost request', () => {
       const sameBoosts = _.clone(boosts, true)
       room.boosts.getRequest('John')
       expect(room.boosts.getRequest('John')).to.be.undefined
-      expect(room.boosts.clearRequest).to.not.be.called
+      expect(room.boosts.clearRequests).to.not.be.called
       expect(boosts).to.eql(sameBoosts)
     })
   })
@@ -66,15 +66,11 @@ describe('Getting a boost request', () => {
         boosts.creeps.push(['John', RESOURCE_UTRIUM_ACID, 300, 0])
         boosts.labs.push([RESOURCE_UTRIUM_ACID, 300])
         room.boosts.getRequest('John')
-        expect(room.boosts.clearRequest).to.be.calledOnce
+        expect(room.boosts.clearRequests).to.be.calledOnce
         expect(room.boosts.getRequest('John')).to.be.undefined
       })
 
       it('should return null and call delete for all for missing resources', () => {
-        boosts.labs.push(
-          [RESOURCE_UTRIUM_ALKALIDE, 0],
-          [RESOURCE_CATALYZED_GHODIUM_ACID, 0],
-        )
         const sameBoosts = _.clone(boosts, true)
         boosts.creeps.push(
           ['John', RESOURCE_UTRIUM_ALKALIDE, 300, 0],
@@ -85,7 +81,7 @@ describe('Getting a boost request', () => {
           [RESOURCE_CATALYZED_GHODIUM_ACID, 600],
         ]
         room.boosts.getRequest('John')
-        expect(room.boosts.clearRequest).to.be.calledTwice
+        expect(room.boosts.clearRequests).to.be.calledTwice
         expect(room.boosts.getRequest('John')).to.be.undefined
         expect(boosts).to.eql(sameBoosts)
       })

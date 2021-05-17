@@ -3,24 +3,24 @@ import 'overloads/all'
 import sinon from 'sinon'
 import { expect } from '../../expect'
 import SourceHandler from 'handler/SourceHandler'
-import xyToChar, { roomPos } from 'planner/pos'
+import xyToChar from 'planner/pos'
 import { Miner } from 'role/creep/miner'
 import Game from '../mock/Game'
 
 const sourcePosition = String.fromCharCode(xyToChar(12, 34))
 const sourceDistance = String.fromCharCode(123)
 const creepName = 'creepName'
-let colonySources: SourceMap
+let colonySources: string[]
 let room: Room
 let sourceHandler: SourceHandler
 describe('SourceHandler', () => {
   beforeEach(() => {
-    colonySources = {
-      test: `${sourcePosition}${sourceDistance}${creepName}`,
-      test2: '12John',
-    }
+    colonySources = [`${sourcePosition}${sourceDistance}${creepName}`, '12John']
     room = {
-      memory: { colonySources, colonySourceId: 'test2' } as RoomMemory,
+      memory: {
+        [RoomMemoryKeys.sourceInfo]: colonySources,
+        [RoomMemoryKeys.colonySourceIndex]: 1,
+      } as RoomMemory,
       name: 'roomName',
     } as Room
     sourceHandler = new SourceHandler(room)
@@ -33,11 +33,11 @@ describe('SourceHandler', () => {
     context('when source is being assigned to new creep', () => {
       const newCreepName = 'newCreepName'
       beforeEach(() => {
-        sourceHandler.assign('newCreepName', 'test')
+        sourceHandler.assign('newCreepName', 0)
       })
 
       it('overwrites creep name part', () => {
-        expect(colonySources['test']).to.eq(
+        expect(colonySources[0]).to.eq(
           `${sourcePosition}${sourceDistance}${newCreepName}`,
         )
       })
@@ -51,20 +51,20 @@ describe('SourceHandler', () => {
     })
 
     it('returns mining position', () => {
-      expect(sourceHandler.getPosition('test')).to.eq(returnValue)
+      expect(sourceHandler.getPosition(0)).to.eq(returnValue)
     })
 
     it('calls roomPosition wizard', () => {
-      sourceHandler.getPosition('test')
+      sourceHandler.getPosition(0)
       expect(room.positionFromChar).to.be.calledOnceWithExactly(
-        colonySources['test'],
+        colonySources[0],
       )
     })
   })
 
   describe('#getDistance', () => {
     it('returns distance to source', () => {
-      expect(sourceHandler.getDistance('test')).to.eq(123)
+      expect(sourceHandler.getDistance(0)).to.eq(123)
     })
   })
 
@@ -72,7 +72,6 @@ describe('SourceHandler', () => {
     beforeEach(() => {
       Game.creeps[creepName] = {
         memory: {
-          _harvest: 'test',
           role: Role.MINER,
           room: '',
           deprivity: 0,
@@ -82,14 +81,13 @@ describe('SourceHandler', () => {
 
     context('when there is free source', () => {
       it('returns free source id', () => {
-        expect(sourceHandler.free).to.eq('test2')
+        expect(sourceHandler.free).to.eq(1)
       })
     })
 
     context('when there is not free source', () => {
       const creepJohn = {
         memory: {
-          _harvest: 'test2',
           role: Role.MINER,
           room: '',
           deprivity: 0,
@@ -99,8 +97,8 @@ describe('SourceHandler', () => {
         Game.creeps['John'] = creepJohn
       })
 
-      it('returns undefined', () => {
-        expect(sourceHandler.free).to.be.undefined
+      it('returns -1', () => {
+        expect(sourceHandler.free).to.eq(-1)
       })
 
       context('when there is not free source but some creep is retired', () => {
@@ -109,22 +107,9 @@ describe('SourceHandler', () => {
         })
 
         it('returns that source', () => {
-          expect(sourceHandler.free).to.eq('test2')
+          expect(sourceHandler.free).to.eq(1)
         })
       })
-
-      context(
-        'when there is not free source but some creep not mining exaclty what declared',
-        () => {
-          beforeEach(() => {
-            creepJohn.memory._harvest = 'someOther' as Id<Source>
-          })
-
-          it('returns that source', () => {
-            expect(sourceHandler.free).to.eq('test2')
-          })
-        },
-      )
     })
   })
 
@@ -142,14 +127,12 @@ describe('SourceHandler', () => {
 
     context('when 1 value', () => {
       beforeEach(() => {
-        delete colonySources['test2']
+        delete colonySources[1]
       })
 
       it('calls position wizard with char', () => {
         sourceHandler.positions
-        expect(room.positionFromChar).to.be.calledOnceWith(
-          colonySources['test'],
-        )
+        expect(room.positionFromChar).to.be.calledOnceWith(colonySources[0])
       })
     })
   })
@@ -167,7 +150,7 @@ describe('SourceHandler', () => {
     it('calls #getPosition', () => {
       sourceHandler.colonyPosition
       expect(sourceHandler.getPosition).to.be.calledOnceWithExactly(
-        room.memory.colonySourceId,
+        room.memory[RoomMemoryKeys.colonySourceIndex],
       )
     })
   })
