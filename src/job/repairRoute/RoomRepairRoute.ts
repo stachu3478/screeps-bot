@@ -1,5 +1,6 @@
 import RepairRoute from './RepairRoute'
 import StructureMatcher from '../resourceRoute/matcher/structureMatcher'
+import _ from 'lodash'
 
 export default class RoomRepairRoute {
   private roomName: string
@@ -19,6 +20,16 @@ export default class RoomRepairRoute {
   findSources() {
     const match = this.route.sources.call(this.room) as AnyStoreStructure[]
     return match.filter((s) => this.route.validateSource(s))
+  }
+
+  choose(pos: RoomPosition, opts?: FindPathOpts) {
+    const targets = this.findTargets()
+    if (!targets.length) return null
+    if (this.route.orderByHits) {
+      return _.min(targets, (t) => t.hits)
+    } else {
+      return pos.findClosestByPath(targets, opts)
+    }
   }
 
   findTargets() {

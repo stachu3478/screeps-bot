@@ -19,7 +19,6 @@ export interface Miner extends Creep {
 }
 
 export interface MinerMemory extends CreepMemory {
-  [Keys.sourceIndex]?: number
   _draw?: Id<AnyStoreStructure>
 }
 
@@ -31,12 +30,15 @@ interface MinerCache extends CreepCache {
 }
 
 export default profiler.registerFN(function miner(creep: Miner) {
+  const sourceHandler = creep.motherRoom.sources
+  const index = sourceHandler.getOrAssign(creep)
   switch (creep.memory.state) {
     case State.HARVESTING:
-      if (!creep.memory[Keys.sourceIndex])
-        creep.memory[Keys.sourceIndex] =
-          creep.room.memory[RoomMemoryKeys.colonySourceIndex]
-      switch (harvest(creep, creep.memory[Keys.sourceIndex]!)) {
+      if (index === -1) {
+        creep.say('^_^t')
+        break
+      }
+      switch (harvest(creep, index)) {
         case NOTHING_TODO:
           delete creep.cache.pick_pos
           autoPick(creep)
@@ -48,10 +50,8 @@ export default profiler.registerFN(function miner(creep: Miner) {
             creep.memory.state = State.REPAIR
           else if (autoBuild(creep) in ACCEPTABLE)
             creep.memory.state = State.BUILD
-          else if (creep.memory[Keys.sourceIndex]) {
-            const miningPosition = creep.room.sources.getPosition(
-              creep.memory[Keys.sourceIndex]!,
-            )
+          else if (index) {
+            const miningPosition = creep.room.sources.getPosition(index)
             if (creep.pos.range(miningPosition)) return
             const structures = miningPosition.lookFor(LOOK_STRUCTURES)
             const container = structures.find(
@@ -99,7 +99,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
     case State.REPAIR:
       switch (autoRepair(creep)) {
         case NO_RESOURCE:
-          harvest(creep, creep.memory[Keys.sourceIndex] || 0)
+          harvest(creep, index)
           creep.memory.state = State.HARVESTING
           break
         case NOTHING_TODO:
@@ -110,7 +110,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
     case State.BUILD:
       switch (autoBuild(creep)) {
         case NO_RESOURCE:
-          harvest(creep, creep.memory[Keys.sourceIndex] || 0)
+          harvest(creep, index)
           creep.memory.state = State.HARVESTING
           break
         case NOTHING_TODO:

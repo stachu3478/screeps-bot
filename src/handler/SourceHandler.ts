@@ -14,8 +14,12 @@ export default class SourceHandler {
     this.colony = room.memory[RoomMemoryKeys.colonySourceIndex] || 0
   }
 
-  assign(creepName: string, sourceIndex: number) {
-    this.memory[sourceIndex] = this.memory[sourceIndex].slice(0, 2) + creepName
+  assign(creepName: string, sourceIndex: number = this.free) {
+    if (sourceIndex !== -1) {
+      this.memory[sourceIndex] =
+        this.memory[sourceIndex].slice(0, 2) + creepName
+    }
+    return sourceIndex
   }
 
   getPosition(sourceIndex: number) {
@@ -26,12 +30,20 @@ export default class SourceHandler {
     return this.memory[sourceIndex].charCodeAt(1)
   }
 
+  getOrAssign(creep: Creep): number {
+    const index = this.memory.findIndex((info) => {
+      const name = info.slice(2)
+      return creep.name === name
+    })
+    if (index === -1) return this.assign(creep.name)
+    return index
+  }
+
   get free() {
     return this.memory.findIndex((info, i) => {
       const name = info.slice(2)
       const creep = Game.creeps[name] as Miner
       if (!creep) return true
-      if (creep.memory[Keys.sourceIndex] !== i) return false
       return creep.isRetired
     })
   }

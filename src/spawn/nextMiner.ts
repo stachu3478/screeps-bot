@@ -16,7 +16,6 @@ export function spawnNextMiner(spawn: StructureSpawn) {
   const memory: MinerMemory = {
     role: Role.MINER,
     room: spawn.room.name,
-    [Keys.sourceIndex]: freeSource,
     deprivity: spec,
   }
   spawn.trySpawnCreep(parts, 'M', memory)

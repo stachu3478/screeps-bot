@@ -45,12 +45,12 @@ export default [
     from: findStorageAndTerminal,
     minimalStore: 1000,
   },
-  // repair ramparts and walls
+  // repair ramparts --and-walls--
   {
-    structure: findFortifications,
+    structure: STRUCTURE_RAMPART,
     hits: RAMPART_HITS_MAX[8],
     from: findStorageAndTerminal,
     minimalStore: 100000,
-    //orderByHits: true
+    orderByHits: true,
   },
 ].map((opt) => new RepairRoute(opt))

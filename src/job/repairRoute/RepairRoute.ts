@@ -22,6 +22,11 @@ interface RepairRouteOptions {
    * NOTE: More of the recourse can be taken
    */
   minimalStore?: number
+  /**
+   * Whether the structure has to be chosen
+   * by least hits, otherwise nearest
+   */
+  orderByHits?: boolean
 }
 
 export default class RepairRoute {
@@ -47,6 +52,10 @@ export default class RepairRoute {
 
   get structure() {
     return this.options.structure
+  }
+
+  get orderByHits() {
+    return !!this.options.orderByHits
   }
 
   private get minimalStoreToDraw() {

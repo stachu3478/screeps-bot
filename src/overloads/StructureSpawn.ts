@@ -77,8 +77,6 @@ StructureSpawn.prototype.trySpawnCreep = function (
       directions: this.getDirections() /*energyStructures: getDistanceOrderedHatches(this.room, creepCost(body))*/,
     })
     motherMemory.creeps[name] = 0
-    if (memory.role === Role.MINER)
-      this.room.sources.assign(name, cache.sourceId)
     boost.forEach((data) => {
       this.room.boosts.createRequest(name, data.resource, data.partCount)
     })
