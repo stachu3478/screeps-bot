@@ -1,9 +1,9 @@
 import './constants'
 import 'overloads/all'
 import _ from 'lodash'
-import { addFirstRoom } from '../../src/main'
 import { Memory } from './mock'
 import { expect } from '../expect'
+import MyRooms from 'room/MyRooms'
 
 describe('addFirstRoom', () => {
   before(() => {
@@ -21,13 +21,13 @@ describe('addFirstRoom', () => {
 
   it('adds automatically room to myRooms if there are none in memory', () => {
     global.Memory.myRooms = {}
-    addFirstRoom(global.Game, global.Memory)
+    MyRooms.addFirst(global.Game, global.Memory)
     expect(global.Memory.myRooms.W14N15).to.not.be.undefined
   })
 
   it('does not add room to myRooms if there are some owned', () => {
     global.Memory.myRooms = { W15N14: 0 }
-    addFirstRoom(global.Game, global.Memory)
+    MyRooms.addFirst(global.Game, global.Memory)
     expect(global.Memory.myRooms.W14N15).to.be.undefined
   })
 })

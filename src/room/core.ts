@@ -101,10 +101,10 @@ export default function run(controller: StructureController, cpuUsed: number) {
   if (spawn) spawnLoop(spawn, controller, creepCountByRole, needFighters)
   else {
     room.visual.text('All spawns busy', 0, 3, infoStyle)
-    if (needFighters) {
-      const claimer = Game.rooms[mem._claimer || '']
-      if (claimer) claimer.memory._attack = room.name
-    }
+  }
+  if (needFighters && !spawn && room.energyAvailable < SPAWN_ENERGY_START) {
+    const claimer = Game.rooms[mem._claimer || '']
+    if (claimer) claimer.memory._attack = room.name
   }
   room.visual.text(
     'Population: ' +

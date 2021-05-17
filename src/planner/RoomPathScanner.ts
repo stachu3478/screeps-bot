@@ -3,6 +3,7 @@ import RoomNeighbourPathScanner from './RoomNeighbourPathScanner'
 import RoomLocation from 'overloads/room/RoomLocation'
 import { infoStyle } from 'room/style'
 import RoomInspector from './RoomInspector'
+import MyRooms from 'room/MyRooms'
 
 interface RoomPathScannerConfig {
   maxCost: number

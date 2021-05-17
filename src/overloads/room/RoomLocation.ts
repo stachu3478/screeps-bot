@@ -1,4 +1,5 @@
 import { FindExitConstant } from 'planner/RoomNeighbourPathScanner'
+import MyRooms from 'room/MyRooms'
 import range from 'utils/range'
 
 export default class RoomLocation {
@@ -37,9 +38,7 @@ export default class RoomLocation {
   }
 
   findRoomPathStep(current: string, to: string) {
-    const allRooms = Object.keys(Memory.myRooms)
-      .map((r) => Game.rooms[r])
-      .filter((r) => r)
+    const allRooms = MyRooms.get()
     let found: RoomNeighbourPath | undefined
     allRooms.some((r) => {
       const rooms = r.pathScanner.rooms

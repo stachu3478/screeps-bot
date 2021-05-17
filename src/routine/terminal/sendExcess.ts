@@ -6,6 +6,7 @@ import {
   NO_RESOURCE,
 } from 'constants/response'
 import { storageSendThreshold } from 'config/terminal'
+import MyRooms from 'room/MyRooms'
 
 export default function sendExcess(terminal: StructureTerminal) {
   const room = terminal.room
@@ -21,17 +22,17 @@ export default function sendExcess(terminal: StructureTerminal) {
   const amountInTerminal = terminal.store[resourceType]
   if (Math.min(excessLocalAmount, amountInTerminal) <= TERMINAL_MIN_SEND)
     return NO_RESOURCE
-  for (const name in Memory.myRooms) {
-    const room = Game.rooms[name]
-    if (!room) continue
+  let result = 1
+  const sentExcess = MyRooms.get().some((room) => {
     const roomTerminal = room.terminal
-    if (!roomTerminal || !roomTerminal.my) continue
+    if (!roomTerminal || !roomTerminal.my) return false
     const missing = storageSendThreshold - room.store(resourceType)
-    if (missing < TERMINAL_MIN_SEND) continue
+    if (missing < TERMINAL_MIN_SEND) return false
     const toSend = Math.min(missing, excessLocalAmount, amountInTerminal)
-    const result = terminal.send(resourceType, toSend, name)
-    if (result !== 0) return FAILED
-    return SUCCESS
-  }
-  return DONE
+    result = terminal.send(resourceType, toSend, room.name)
+    return true
+  })
+  if (!sentExcess) return DONE
+  if (result !== 0) return FAILED
+  return SUCCESS
 }

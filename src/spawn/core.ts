@@ -16,6 +16,7 @@ import { needsFighters, spawnFighter } from './fighter'
 import spawnBuilder, { needsBuilder } from './builder'
 import { needsTowerEkhauster, spawnTowerEkhauster } from './towerEkhauster'
 import { needsDestroyer, spawnDestroyer } from './destroyer'
+import { needsNextMiner, spawnNextMiner } from './nextMiner'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -28,7 +29,7 @@ export default profiler.registerFN(function loop(
   const cache = spawn.cache
   if (!mem.creeps) mem.creeps = {}
   if (mem.maxWorkController === undefined) return
-  const max = mem[RoomMemoryKeys.sourceInfo]?.length || 0
+
   if (cache.trySpawn) {
     const { creep, memory, name, cooldown, boost } = cache.trySpawn
     const result = spawn.trySpawnCreep(
@@ -85,19 +86,8 @@ export default profiler.registerFN(function loop(
     )
   } else if (needsFighters(needsFighter)) {
     spawnFighter(spawn)
-  } else if (minerCount < max) {
-    const parts = progressiveMiner(spawn.room.energyCapacityAvailable)
-    const freeSource = controller.room.sources.free
-    if (freeSource === -1) return
-    cache.sourceId = freeSource
-    const spec = controller.room.sources.getDistance(freeSource)
-    const memory: MinerMemory = {
-      role: Role.MINER,
-      room: spawn.room.name,
-      [Keys.sourceIndex]: freeSource,
-      deprivity: spec,
-    }
-    spawn.trySpawnCreep(parts, 'M', memory)
+  } else if (needsNextMiner(spawn, creepCountByRole[Role.MINER] || 0)) {
+    spawnNextMiner(spawn)
   } else if (
     needsUpgraders(
       spawn,

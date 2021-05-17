@@ -9,37 +9,22 @@ import roomVisual from 'utils/visual'
 import { memHackBeforeLoop, memHackAfterLoop } from 'utils/memHack'
 import pixelsHandler from 'utils/pixelsHandler'
 import handleRuntimeStats from 'utils/runtime'
-import CloneScanner from 'planner/military/CloneScanner'
 import ObservingScanner from 'planner/ObservingScanner'
-
-export const addFirstRoom = (game = Game, memory = Memory) => {
-  // Automatically add first room to owned if there are none
-  if (!memory.myRooms) memory.myRooms = {}
-  if (!Object.keys(memory.myRooms)[0]) {
-    const name = Object.keys(game.rooms)[0]
-    if (name) memory.myRooms[name] = 0
-  }
-}
+import MyRooms from 'room/MyRooms'
 
 let saved = false
 export const loop = () => {
   memHackBeforeLoop()
 
+  const rooms = MyRooms.get()
   let error
   try {
     profiler.wrap(() => {
-      addFirstRoom()
       let usage = Game.cpu.getUsed()
       roomVisual.text('Memory overhead: ' + usage.toFixed(3), 0, 49, infoStyle)
-      const roomsToRemove = new Set()
-      for (const name in Memory.myRooms) {
-        const room = Game.rooms[name]
-        if (room) {
-          if (room.controller) usage += run(room.controller, usage)
-          else roomsToRemove.add(name)
-        }
-      }
-      for (const room in roomsToRemove) delete Memory.myRooms[room]
+      rooms.forEach((room) => {
+        usage += run(room.controller, usage)
+      })
 
       if (Memory.debugStructures)
         for (const name in Memory.myRooms) {
@@ -56,13 +41,7 @@ export const loop = () => {
   handleStats()
   memHackAfterLoop()
   saveCpuUsage()
-  if (
-    Object.keys(Memory.myRooms).every((r) => {
-      const room = Game.rooms[r]
-      if (!room) return true
-      return room.pathScanner.done
-    })
-  ) {
+  if (rooms.every((room) => room.pathScanner.done)) {
     if (saved) {
       ObservingScanner.instance.scan((r) => {
         console.log('elo', r.name)

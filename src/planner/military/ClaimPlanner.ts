@@ -1,4 +1,5 @@
 import config from 'config/claim'
+import MyRooms from 'room/MyRooms'
 
 export default class ClaimPlanner {
   private config: ClaimConfig
@@ -14,9 +15,8 @@ export default class ClaimPlanner {
     if (this.currentTarget) return this.currentTarget
     if (this.searchTime === Game.time) return null
     this.searchTime = Game.time
-    const roomNames = Object.keys(Memory.myRooms)
-    if (roomNames.length >= this.maxRooms) return null
-    const rooms = roomNames.map((n) => Game.rooms[n]).filter((r) => r)
+    const rooms = MyRooms.get()
+    if (rooms.length >= this.maxRooms) return null
     if (!rooms.every((r) => r.pathScanner.done)) {
       return null
     }

@@ -7,6 +7,7 @@ import {
   FAILED,
   DONE,
 } from 'constants/response'
+import MyRooms from 'room/MyRooms'
 
 interface ClaimCreep extends Creep {
   memory: ClaimMemory
@@ -30,11 +31,7 @@ export default function claim(creep: ClaimCreep) {
     result = creep.claimController(target)
     if (result === 0) {
       creep.signController(target, 'Auto-claiming. Redefined')
-      Memory.myRooms[creep.room.name] = 0
-      creep.room.memory._claimer = creep.memory.room
-      const mem = Memory.rooms[creep.memory.room]
-      if (!mem._claimed) mem._claimed = []
-      mem._claimed.push(creep.room.name)
+      MyRooms.add(creep.room, creep.motherRoom)
       return DONE
     } else if (creep.reserveController(target) === 0) return SUCCESS
     return FAILED

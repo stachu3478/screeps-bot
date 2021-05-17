@@ -30,10 +30,9 @@ export default class SourceHandler {
     return this.memory.findIndex((info, i) => {
       const name = info.slice(2)
       const creep = Game.creeps[name] as Miner
-      if (!creep || creep.memory[Keys.sourceIndex] !== i || creep.isRetired) {
-        return !!i
-      }
-      return false
+      if (!creep) return true
+      if (creep.memory[Keys.sourceIndex] !== i) return false
+      return creep.isRetired
     })
   }
 

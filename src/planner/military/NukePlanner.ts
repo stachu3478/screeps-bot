@@ -1,3 +1,4 @@
+import MyRooms from 'room/MyRooms'
 import NukeVoyager from './NukeVoyager'
 
 export default class NukerPlanner {
@@ -29,9 +30,8 @@ export default class NukerPlanner {
   }
 
   private get availableNukers() {
-    return Object.keys(Memory.myRooms)
-      .map((r) => Game.rooms[r])
-      .filter((r) => r?.location.inRangeTo(this.room, NUKE_RANGE))
+    return MyRooms.get()
+      .filter((r) => r.location.inRangeTo(this.room, NUKE_RANGE))
       .map((r) => r.buildings.nuker)
       .filter((n) => n?.readyToLaunch) as StructureNuker[]
   }
