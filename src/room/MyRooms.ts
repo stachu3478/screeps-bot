@@ -13,7 +13,7 @@ export default class MyRooms {
           this.remove(n)
           return false
         }
-        if (_.isEmpty(room.memory.creeps)) {
+        if (!room.my && _.isEmpty(room.memory.creeps)) {
           this.remove(n)
           return false
         }
