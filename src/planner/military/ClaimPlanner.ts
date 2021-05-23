@@ -1,6 +1,8 @@
+import _ from 'lodash'
 import config from 'config/claim'
 import MyRooms from 'room/MyRooms'
 
+const instance = _.memoize(() => new ClaimPlanner(config))
 export default class ClaimPlanner {
   private config: ClaimConfig
   private currentTarget?: ClaimTarget
@@ -73,9 +75,6 @@ export default class ClaimPlanner {
   }
 
   static get instance() {
-    return (
-      global.Cache.claimPlanner ||
-      (global.Cache.claimPlanner = new ClaimPlanner(config))
-    )
+    return instance()
   }
 }

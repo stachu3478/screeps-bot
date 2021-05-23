@@ -103,8 +103,6 @@ interface GlobalCache {
   feromon: {
     [key: string]: number
   }
-  capturePlanner?: EnemiesPlanner
-  claimPlanner?: ClaimPlanner
 }
 
 interface WrappedGlobalCache extends GlobalCache {

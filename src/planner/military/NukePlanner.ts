@@ -4,6 +4,7 @@ import NukeVoyager from './NukeVoyager'
 export default class NukerPlanner {
   private room: Room
   private xys?: [number, number][]
+  private nukers: StructureNuker[] = []
 
   constructor(room: Room) {
     this.room = room
@@ -25,14 +26,23 @@ export default class NukerPlanner {
     return !this.room.find(FIND_NUKES).length
   }
 
+  /**
+   * Let dat wicked bois get smashed again!
+   */
+  launch() {
+    this.positions.forEach((p, i) => {
+      this.nukers[i].launchNuke(new RoomPosition(p[0], p[1], this.room.name))
+    })
+  }
+
   get positions() {
     return this.xys || []
   }
 
   private get availableNukers() {
-    return MyRooms.get()
+    return (this.nukers = MyRooms.get()
       .filter((r) => r.location.inRangeTo(this.room, NUKE_RANGE))
       .map((r) => r.buildings.nuker)
-      .filter((n) => n?.readyToLaunch) as StructureNuker[]
+      .filter((n) => n?.readyToLaunch) as StructureNuker[])
   }
 }

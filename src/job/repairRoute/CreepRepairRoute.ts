@@ -63,8 +63,10 @@ export default class CreepRepairRoute extends CreepMemoized<RepairCreep> {
     const memory = this.creep.memory
     const id = memory[Keys.repairTarget]
     const memorizedStructure = id && Game.getObjectById(id)
-    if (memorizedStructure && this.route.validateTarget(memorizedStructure))
+    if (memorizedStructure && this.route.validateTarget(memorizedStructure)) {
       return memorizedStructure
+    }
+    console.log(memorizedStructure, 'invalidated')
     return this.route.choose(this.creep.pos, ignoreCreeps)
   }
 }

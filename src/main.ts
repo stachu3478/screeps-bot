@@ -9,10 +9,9 @@ import roomVisual from 'utils/visual'
 import { memHackBeforeLoop, memHackAfterLoop } from 'utils/memHack'
 import pixelsHandler from 'utils/pixelsHandler'
 import handleRuntimeStats from 'utils/runtime'
-import ObservingScanner from 'planner/ObservingScanner'
+import MainNuker from 'planner/military/MainNuker'
 import MyRooms from 'room/MyRooms'
 
-let saved = false
 export const loop = () => {
   memHackBeforeLoop()
 
@@ -41,16 +40,6 @@ export const loop = () => {
   handleStats()
   memHackAfterLoop()
   saveCpuUsage()
-  if (rooms.every((room) => room.pathScanner.done)) {
-    if (saved) {
-      ObservingScanner.instance.scan((r) => {
-        console.log('elo', r.name)
-      })
-    } else {
-      ObservingScanner.instance.filterToScanFromPathScanners()
-      saved = true
-      console.log('filtering')
-    }
-  }
+  MainNuker.instance.work()
   if (error) throw error
 }

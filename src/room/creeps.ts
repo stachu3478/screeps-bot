@@ -125,8 +125,8 @@ export default function creeps(
     } catch (err) {
       console.log(err.message, err.stack)
     }
-    creep.memory.r = creep.room.name
-    creep.memory.l = creep.ticksToLive
+    creep.memory[Keys.lastRoom] = creep.room.name
+    creep.memory[Keys.lastTicksToLive] = creep.ticksToLive
   }
 
   if (creepCountByRole[Role.DUAL] || room.memory[RoomMemoryKeys.ekhaust])

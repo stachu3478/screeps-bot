@@ -33,7 +33,7 @@ const config: EnemiesConfig = {
   /**
    * Enable nuking rooms
    */
-  nukes: false,
+  nukes: true,
 }
 
 export default config

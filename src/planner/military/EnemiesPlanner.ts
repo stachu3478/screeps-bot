@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import AlianceScanner from './AlianceScanner'
 import config from 'config/enemies'
 import CloneScanner from './CloneScanner'
@@ -14,6 +15,7 @@ export interface EnemiesConfig {
   }
 }
 
+const instance = _.memoize(() => new EnemiesPlanner(config))
 export default class EnemiesPlanner {
   private aliances: AlianceScanner
   private aliancesLoaded: boolean = false
@@ -75,9 +77,6 @@ export default class EnemiesPlanner {
   }
 
   static get instance() {
-    return (
-      global.Cache.capturePlanner ||
-      (global.Cache.capturePlanner = new EnemiesPlanner(config))
-    )
+    return instance()
   }
 }

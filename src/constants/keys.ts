@@ -7,7 +7,9 @@ const enum Keys {
   dumping = 'D',
   buildTarget = 'b',
   buildingRoute = 'c',
-  repairTarget = 'r',
+  repairTarget = 'B',
+  lastRoom = 'r',
+  lastTicksToLive = 'l',
   roomPath = 'R',
   sourceIndex = 'S',
 }
