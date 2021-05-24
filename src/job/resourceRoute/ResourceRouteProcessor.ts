@@ -25,7 +25,7 @@ export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
   }
 
   process() {
-    return this.failer.call()
+    return this.findJob()
   }
 
   isJobFound() {

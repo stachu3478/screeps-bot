@@ -38,7 +38,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
         creep.say('^_^t')
         break
       }
-      switch (harvest(creep, index)) {
+      switch (harvest(creep, index, creep.motherRoom)) {
         case NOTHING_TODO:
           delete creep.cache.pick_pos
           autoPick(creep)
@@ -50,8 +50,8 @@ export default profiler.registerFN(function miner(creep: Miner) {
             creep.memory.state = State.REPAIR
           else if (autoBuild(creep) in ACCEPTABLE)
             creep.memory.state = State.BUILD
-          else if (index) {
-            const miningPosition = creep.room.sources.getPosition(index)
+          else if (index !== -1) {
+            const miningPosition = creep.motherRoom.sources.getPosition(index)
             if (creep.pos.range(miningPosition)) return
             const structures = miningPosition.lookFor(LOOK_STRUCTURES)
             const container = structures.find(
@@ -59,7 +59,7 @@ export default profiler.registerFN(function miner(creep: Miner) {
             )
             if (!container) {
               if (
-                creep.room.createConstructionSite(
+                creep.motherRoom.createConstructionSite(
                   miningPosition,
                   STRUCTURE_CONTAINER,
                 ) === 0

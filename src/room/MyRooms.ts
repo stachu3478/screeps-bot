@@ -5,15 +5,13 @@ interface ControllerRoom extends Room {
 }
 
 export default class MyRooms {
+  private static lastAdded: Set<string> = new Set()
+
   static get() {
     const rooms = Object.keys(Memory.myRooms)
       .filter((n) => {
         const room = this.getControlledRoom(n)
-        if (!room) {
-          this.remove(n)
-          return false
-        }
-        if (!room.my && _.isEmpty(room.memory.creeps)) {
+        if (!room && _.isEmpty(Memory.rooms[n]?.creeps)) {
           this.remove(n)
           return false
         }
@@ -25,6 +23,7 @@ export default class MyRooms {
   }
 
   static add(room: Room, claimerRoom?: Room) {
+    this.lastAdded.add(room.name)
     Memory.myRooms[room.name] = 0
     if (!claimerRoom) return
     const claimerRoomName = claimerRoom.name
@@ -35,6 +34,7 @@ export default class MyRooms {
   }
 
   static remove(name: string) {
+    if (this.lastAdded.has(name)) return
     delete Memory.myRooms[name]
     delete Memory.rooms[name]
   }
@@ -50,7 +50,7 @@ export default class MyRooms {
 
   private static getControlledRoom(name: string): ControllerRoom | undefined {
     const room = Game.rooms[name]
-    if (!room || !room.controller) return
+    if (!room?.controller?.my) return
     return room as ControllerRoom
   }
 }

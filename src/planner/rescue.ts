@@ -11,7 +11,7 @@ export default function callRescue(room: Room) {
       console.log('No claimer room')
       return false
     }
-    const spawn = claimer.spawn
+    const spawn = claimer.find(FIND_MY_SPAWNS).find((s) => !s.spawning)
     if (!spawn) {
       console.log('No spawn in claimer room')
       return false
