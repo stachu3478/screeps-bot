@@ -92,6 +92,10 @@ interface RoomPosition {
     type: T,
   ): ConcreteStructure<T> | undefined
   disbordered(): RoomPosition
+  lookForAtInRange<T extends keyof AllLookAtTypes>(
+    type: T,
+    range: number,
+  ): LookForAtAreaResultArray<Structure, T>
 }
 
 interface Creep {

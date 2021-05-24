@@ -31,3 +31,13 @@ RoomPosition.prototype.disbordered = function () {
   if (y === 0) y = 1
   return new RoomPosition(x, y, this.roomName)
 }
+
+RoomPosition.prototype.lookForAtInRange = function (type, range) {
+  const room = Game.rooms[this.roomName]
+  if (!room) return []
+  const minY = Math.max(0, this.y - range)
+  const minX = Math.max(0, this.x - range)
+  const maxY = Math.min(49, this.y + range)
+  const maxX = Math.min(49, this.x + range)
+  return room.lookForAtArea(type, minY, minX, maxY, maxX, true)
+}

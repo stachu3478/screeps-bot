@@ -136,9 +136,8 @@ interface ToFill {
 }
 const fillPriority: ToFill = _.invert(energyDistribution)
 export const findNearStructureToFillWithPriority = (creep: Creep) => {
-  const { x, y } = creep.pos
-  const structures = creep.room
-    .lookForAtArea(LOOK_STRUCTURES, y - 1, x - 1, y + 1, x + 1, true)
+  const structures = creep.pos
+    .lookForAtInRange(LOOK_STRUCTURES, 1)
     .filter((s) => (s.structure as AnyStoreStructure).store)
     .sort(
       (a, b) =>
