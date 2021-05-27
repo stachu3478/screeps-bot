@@ -28,8 +28,12 @@ export default class DuetHandler {
     const pos = duet.pos
     if (!pos) return
     if (!safe || !duet.healed) {
-      console.log('unsafe')
-      if (duet.keep?.room.name !== duet.protect?.room.name || duet.atBorder) {
+      if (!safe) console.log('unsafe')
+      else console.log('unhealed')
+      if (
+        !duet.fullHealed &&
+        (duet.keep?.room.name !== duet.protect?.room.name || duet.atBorder)
+      ) {
         console.log('tragical')
         return duet.moveTo({ pos: this.room.sources.colonyPosition })
       }
@@ -70,15 +74,27 @@ export default class DuetHandler {
                 s.structureType === STRUCTURE_RAMPART),
           })
         if (!target) {
-          delete this.room.memory[RoomMemoryKeys.ekhaust]
+          // delete this.room.memory[RoomMemoryKeys.ekhaust]
+          console.log(
+            'deleting blocked until fake reason will be removed',
+            target,
+            duet.pos,
+          )
           return this.safeDestroyDuet(duet)
         }
         this.target = new Memoized(target)
       }
       const calc = new HitCalculator(room)
       calc.fetch(false)
-      const dealers = room.find(FIND_HOSTILE_CREEPS)
-      if (!pos.isNearTo(target)) duet.moveToWithSafety(target, calc, dealers)
+
+      if (!pos.isNearTo(target)) {
+        if (duet.fullHealed) {
+          duet.moveTo(target)
+        } else {
+          const dealers = room.find(FIND_HOSTILE_CREEPS)
+          duet.moveToWithSafety(target, calc, dealers)
+        }
+      }
       return duet.attack(target)
     }
   }

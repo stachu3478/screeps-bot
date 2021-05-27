@@ -24,8 +24,10 @@ export default function memoryLessFill(
       move.anywhere(creep, creep.pos.getDirectionTo(target))
       return 0
     }
-  } else if (result !== 0) return FAILED
-  else {
+  } else if (result !== 0) {
+    throw new Error(`Invalid response: ${result}`)
+    //return FAILED
+  } else {
     if (toBeTransfered === stored) return DONE
     return SUCCESS
   }

@@ -32,11 +32,17 @@ export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
     return this.jobFound
   }
 
-  findJob() {
+  public findJob() {
     const currentRoute = this.routes[this.i]
     this.jobFound = currentRoute && currentRoute.work()
     if (this.jobFound) {
       this.status[RouteStatusKey.id] = this.i
+      this.creep.room.visual.text(
+        'Resource route processing ' + this.i,
+        0,
+        9,
+        infoStyle,
+      )
       return true
     }
     this.creep.room.visual.text(

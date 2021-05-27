@@ -10,6 +10,12 @@ export default [
   // collect energy to storage
   // from containers if no link present
   {
+    from: () => [],
+    to: STRUCTURE_STORAGE,
+    type: RESOURCE_ENERGY,
+    dump: true, // temp dump resources on start searching
+  },
+  {
     from: (room: Room) => {
       const container = room.sources.colonyPosition.building(
         STRUCTURE_CONTAINER,

@@ -12,11 +12,14 @@ export default class NukerPlanner {
 
   canNukeSpawns() {
     const nukers = this.availableNukers
-    const targets = this.room.find(FIND_HOSTILE_SPAWNS).map((s) => ({
-      x: s.pos.x,
-      y: s.pos.y,
-      hits: s.effectiveHits,
-    }))
+    const targets = this.room
+      .find(FIND_HOSTILE_SPAWNS)
+      .filter((s) => s.owner.username === this.room.owner)
+      .map((s) => ({
+        x: s.pos.x,
+        y: s.pos.y,
+        hits: s.effectiveHits,
+      }))
     this.xys = new NukeVoyager(targets, nukers.length).search()
     if (!this.xys.length) return false
     return true

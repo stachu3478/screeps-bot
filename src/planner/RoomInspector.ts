@@ -32,7 +32,7 @@ export default class RoomInspector {
         (s) => s.structureType === STRUCTURE_TOWER && s.isActive(),
       ) as StructureTower[]
     const entranceTowerDamage = _.sum(towers, (t) =>
-      t.attackPowerAt({ pos: entryPosition }),
+      t.attackPowerAt({ pos: entryPosition }, true),
     )
     info.entranceDamage = entranceTowerDamage
     if (info.safe === false) return false

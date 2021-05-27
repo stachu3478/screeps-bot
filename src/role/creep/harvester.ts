@@ -42,17 +42,20 @@ export default profiler.registerFN(function harvester(creep: Harvester) {
         case FAILED:
           delete creep.motherRoom.memory._dismantle
         case DONE:
-          {
-            creep.memory._arrive = creep.memory.room
-            creep.memory.state = State.ARRIVE
-          }
+          creep.memory._arrive = creep.memory.room
+          creep.memory.state = State.ARRIVE
           break
       }
       break
     case State.HARVESTING:
-      if (creep.routeProcessor.process()) {
+      const res = creep.routeProcessor.process()
+      if (res) {
+        creep.say('doin')
         autoPick(creep) && move.check(creep) && autoRepair(creep)
-      } else creep.memory.state = State.IDLE
+      } else {
+        creep.say('idling')
+        creep.memory.state = State.IDLE
+      }
       break
     case State.BUILD:
       if (creep.routeProcessor.process() && creep.routeProcessor.isJobFound()) {

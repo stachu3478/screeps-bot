@@ -15,7 +15,8 @@ export default function fight(
   if (!enemy) return NOTHING_TODO
   if (keepDistance) {
     const range = creep.pos.rangeTo(enemy)
-    if (range > 4) creep.moveTo(enemy)
+    creep.say(range.toString())
+    if (range > 4) move.cheap(creep, enemy)
     else if (range < 4) move.anywhere(creep, enemy.pos.getDirectionTo(creep))
     return NOTHING_DONE
   }

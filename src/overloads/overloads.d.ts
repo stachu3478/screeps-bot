@@ -121,7 +121,7 @@ interface PowerCreep {
 }
 
 interface StructureTower {
-  attackPowerAt: (creep: _HasRoomPosition) => number
+  attackPowerAt: (creep: _HasRoomPosition, assumeEnergy?: boolean) => number
 }
 
 interface StructureNuker {

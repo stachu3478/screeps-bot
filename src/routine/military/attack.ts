@@ -20,7 +20,7 @@ export default function attack(creep: AttackCreep) {
     target = newTarget
   }
   if (!creep.pos.isNearTo(target)) {
-    creep.moveTo(target)
+    creep.moveTo(target, { maxRooms: 1 })
     return NOTHING_DONE
   }
   if (creep.hits === creep.hitsMax) {

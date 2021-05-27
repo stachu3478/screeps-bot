@@ -11,8 +11,10 @@ export default class MyRooms {
     const rooms = Object.keys(Memory.myRooms)
       .filter((n) => {
         const room = this.getControlledRoom(n)
-        if (!room && _.isEmpty(Memory.rooms[n]?.creeps)) {
-          this.remove(n)
+        if (!room) {
+          if (_.isEmpty(Memory.rooms[n]?.creeps)) {
+            this.remove(n)
+          }
           return false
         }
         return true

@@ -32,7 +32,7 @@ export default function spawnUpgrader(
     ) {
       mem.maxWorkController++
       mem.workControllerOver++
-    } else if (stored < 500) {
+    } else if (stored < 500 && mem.maxWorkController > 1) {
       mem.maxWorkController--
       mem.workControllerOver--
     }

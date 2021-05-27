@@ -18,6 +18,7 @@ export function findTarget(
         s.structureType !== STRUCTURE_POWER_BANK &&
         lastFiler(s),
       range: ranged ? 3 : 1,
+      maxRooms: 1,
     },
   )
   if (!newTarget)

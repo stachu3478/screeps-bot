@@ -31,10 +31,6 @@ export const findDamagedCreeps = (room: Room) =>
 export const findClosestDamagedCreeps = (pos: RoomPosition) =>
   pos.findClosestByPath(FIND_MY_CREEPS, damagedCreepsFilter)
 
-const lookResultDeobfuscator = ({
-  structure,
-}: LookForAtAreaResultWithPos<Structure, LOOK_STRUCTURES>) => structure
-
 const droppedResourceFilter = (type: ResourceConstant) => (r: Resource) =>
   r.resourceType === type
 export const findNearDroppedResource = (
@@ -43,8 +39,12 @@ export const findNearDroppedResource = (
 ) =>
   pos.findInRange(FIND_DROPPED_RESOURCES, 1).find(droppedResourceFilter(type))
 export const getDroppedResource = (pos: RoomPosition) =>
-  pos.findClosestByPath(FIND_DROPPED_RESOURCES) ||
-  pos.findClosestByRange(FIND_DROPPED_RESOURCES)
+  pos.findClosestByPath(FIND_DROPPED_RESOURCES, {
+    filter: (r) => r.amount > 50,
+  }) ||
+  pos.findClosestByRange(FIND_DROPPED_RESOURCES, {
+    filter: (r) => r.amount > 50,
+  })
 
 const filledFilter = (s: Ruin | Tombstone | StructureContainer) =>
   s.store.getUsedCapacity() > 0

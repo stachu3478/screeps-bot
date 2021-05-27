@@ -1,8 +1,9 @@
+import player from 'constants/player'
 import _ from 'lodash'
 
 export default class HitCalculator {
   private room: Room
-  private towerDealers!: StructureTower[]
+  private towerDealers: StructureTower[] = []
 
   constructor(room: Room) {
     this.room = room
@@ -10,7 +11,7 @@ export default class HitCalculator {
 
   fetch(friendly: boolean) {
     this.towerDealers = this.room.buildings.towers.filter(
-      (t) => friendly === (t.owner.username === 'mocnyFull'),
+      (t) => friendly === (t.owner.username === player),
     )
   }
 
@@ -28,7 +29,7 @@ export default class HitCalculator {
     return creep.corpus.damageDealt(damage) - heal
   }
 
-  private healPower(enemies: Creep[], target: Creep) {
+  healPower(enemies: Creep[], target: Creep) {
     return _.sum(enemies, (e) => e.corpus.healPowerAt(target))
   }
 

@@ -100,7 +100,6 @@ export default profiler.registerFN(function factoryManager(
           creep.memory.state = State.IDLE
           break
         case NOTHING_TODO:
-        case FAILED:
           const storage = getFillableGenericStruture(
             creep.room,
             creep.store.getUsedCapacity(),

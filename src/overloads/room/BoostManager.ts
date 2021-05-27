@@ -33,10 +33,12 @@ export default class BoostManager {
     const toBeRemoved: ResourceConstant[] = []
     let labId
     this.creeps.find((creepBoostData, i) => {
-      const [name, resourceNeeded] = creepBoostData
+      const [name, resourceNeeded, needed] = creepBoostData
       if (name !== creepName) return false
       const lab = this.externalLabs.find(
-        (lab) => lab.mineralType === resourceNeeded,
+        (lab) =>
+          lab.mineralType === resourceNeeded &&
+          lab.store[resourceNeeded] >= needed,
       )
       if (lab) {
         labId = lab.id

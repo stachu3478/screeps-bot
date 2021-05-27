@@ -9,6 +9,8 @@ export default class EnemyPicker {
   private calculator: HitCalculator
   private enemyCreep?: Creep
   private maxHitsDealt: number = -Infinity
+  private maxAllyDamage: number = -Infinity
+  private maxOptimisticHitsDealt: number = -Infinity
 
   constructor(room: Room) {
     this.room = room
@@ -20,11 +22,19 @@ export default class EnemyPicker {
     this.calculator.fetch(true)
     const enemies = this.enemies.find()
     const allies = findFighters(this.room)
-    const enemySummary = enemies.map((c, i) =>
-      this.calculator.getFor(c, allies, enemies),
+    this.maxAllyDamage = _.sum(allies, (a) => a.corpus.attackPower)
+    const enemyHitsHealed = enemies.map((c, i) =>
+      this.calculator.healPower(allies, c),
+    )
+    const enemySummary = enemies.map(
+      (c, i) => this.calculator.getFor(c, allies, []) - enemyHitsHealed[i],
+    )
+    const enemyOptimisticSummary = enemies.map(
+      (c, i) => this.maxAllyDamage - enemyHitsHealed[i],
     )
     this.enemyCreep = _.max(enemies, (v, i) => enemySummary[i])
     this.maxHitsDealt = _.max(enemySummary)
+    this.maxOptimisticHitsDealt = _.max(enemyOptimisticSummary)
   }
 
   get any() {
@@ -37,5 +47,9 @@ export default class EnemyPicker {
 
   get dealt() {
     return this.maxHitsDealt
+  }
+
+  get maxDealable() {
+    return this.maxOptimisticHitsDealt
   }
 }

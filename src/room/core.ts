@@ -26,19 +26,20 @@ export default function run(controller: StructureController, cpuUsed: number) {
   enemyPicker.fetch()
   let enemy: Creep | undefined
   let needFighters = false
+  let shouldAttack = false
   let towersProcessed = false
   const towers = room.buildings.towers
   if (enemyPicker.any) {
     enemy = enemyPicker.enemy!
     const canDeal = enemyPicker.dealt > 0
-    const shouldAttack = room.defencePolicy.shouldAttack(canDeal)
-    if (!shouldAttack) needFighters = true
-    else {
+    shouldAttack = room.defencePolicy.shouldAttack(canDeal)
+    needFighters = enemyPicker.maxDealable <= 0
+    if (shouldAttack) {
       towers.forEach((t) => tower(t, enemy))
       towersProcessed = true
     }
     room.visual.text(
-      `Enemy tracked: ${enemy.name} Vulnerability: ${enemyPicker.dealt} ${shouldAttack}`,
+      `Enemy tracked: ${enemy.name} Vulnerability: ${enemyPicker.dealt} / ${enemyPicker.maxDealable} ${shouldAttack} / ${canDeal}`,
       0,
       4,
       dangerStyle,
@@ -65,7 +66,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
     mem.creeps,
     room,
     enemy,
-    needFighters,
+    !shouldAttack,
   )
 
   handleLog(cache, controller)

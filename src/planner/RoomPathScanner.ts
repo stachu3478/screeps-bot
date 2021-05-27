@@ -48,7 +48,7 @@ export default class RoomPathScanner {
   }
 
   private traverse() {
-    if (this.traversedTick === Game.time || Game.cpu.bucket < 1000) return
+    if (this.traversedTick === Game.time || Game.cpu.bucket < 500) return
     this.traversedTick = Game.time
     if (this.traversed) return
     if (!this.scanned[this.room.name]) {
@@ -85,8 +85,21 @@ export default class RoomPathScanner {
     if (!room) {
       if (observer) {
         observer.observeRoom(roomName)
-      } else this.toBeTraversed = roomName
-      this.room.visual.text('Trying to scan room ' + roomName, 0, 11, infoStyle)
+        this.room.visual.text(
+          'Trying to observe room ' + roomName + ' with ' + observer,
+          0,
+          11,
+          infoStyle,
+        )
+      } else {
+        this.toBeTraversed = roomName
+        this.room.visual.text(
+          'Trying to scout room ' + roomName,
+          0,
+          11,
+          infoStyle,
+        )
+      }
       // TODO else send scouts here
     }
     return !!room
@@ -121,6 +134,10 @@ export default class RoomPathScanner {
 
   private findObserver(room: string) {
     const location = new RoomLocation(room)
+    const myObserver = this.room.buildings.observer
+    if (myObserver && location.inRangeTo(this.room, OBSERVER_RANGE)) {
+      return myObserver
+    }
     return Object.keys(Memory.myRooms)
       .map((r) => Game.rooms[r]?.buildings.observer)
       .find((o) => o && location.inRangeTo(o.room, OBSERVER_RANGE))

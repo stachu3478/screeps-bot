@@ -62,7 +62,6 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
           creep.memory.state = State.IDLE
           break
         case NOTHING_TODO:
-        case FAILED:
           const storage = getFillableGenericStruture(
             creep.room,
             creep.store.getUsedCapacity(),
@@ -101,7 +100,6 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
           creep.memory.state = State.IDLE
           break
         case NOTHING_TODO:
-        case FAILED:
           if (creep.memory[Keys.fillType])
             creep.drop(creep.memory[Keys.fillType]!)
           creep.memory.state = State.IDLE

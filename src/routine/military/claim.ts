@@ -1,4 +1,3 @@
-import _ from 'lodash'
 import move from '../../utils/path'
 import {
   SUCCESS,
@@ -8,22 +7,14 @@ import {
   DONE,
 } from 'constants/response'
 import MyRooms from 'room/MyRooms'
+import player from 'constants/player'
 
-interface ClaimCreep extends Creep {
-  memory: ClaimMemory
-}
-
-interface ClaimMemory extends CreepMemory {}
-
-const myStructure = _.find(Game.spawns) || _.find(Game.creeps)
-const myUsername = myStructure && myStructure.owner.username
-
-export default function claim(creep: ClaimCreep) {
+export default function claim(creep: Creep) {
   const target = creep.room.controller
   if (!target || target.my) return NOTHING_TODO
   let result
   if (
-    (target.reservation && target.reservation.username !== myUsername) ||
+    (target.reservation && target.reservation.username !== player) ||
     (target.level && !target.my)
   )
     result = creep.attackController(target)

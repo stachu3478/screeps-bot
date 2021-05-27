@@ -86,7 +86,11 @@ export default class Duet {
     if (protector) res = protector.moveToRoom(target)
     if (keeper) {
       if (protector) {
-        keeper.moveTo(protector)
+        if (keeper.pos.isNearTo(keeper)) {
+          keeper.moveTo(protector)
+        } else {
+          move.cheap(keeper, protector)
+        }
         if (protector.room.name !== keeper.room.name) {
           move.anywhere(protector, protector.pos.getDirectionTo(25, 25))
         }
@@ -152,6 +156,10 @@ export default class Duet {
     return this.creeps.every((c) => c.memory.role === Role.DUAL)
   }
 
+  get fullHealed() {
+    return this.creeps.every((c) => c.hits === c.hitsMax)
+  }
+
   get healed() {
     const creeps = this.creeps
     return (
@@ -162,7 +170,7 @@ export default class Duet {
 
   get safe() {
     const creeps = this.creeps
-    if (!creeps.length) return true
+    if (!creeps.length || creeps.some((c) => c.pos.isBorder())) return true
     const room = creeps[0].room
     const hitCalc = new HitCalculator(room)
     hitCalc.fetch(false)
@@ -177,7 +185,12 @@ export default class Duet {
     if (!keeper || !protector) return false
     const range = keeper.pos.rangeTo(protector)
     console.log(range)
-    if (range > 25 || isNaN(range)) {
+    if (
+      range > 25 ||
+      isNaN(range) ||
+      keeper?.pos.isBorder() ||
+      protector?.pos.isBorder()
+    ) {
       // todo fix when passing through rooms
       return true
     }
