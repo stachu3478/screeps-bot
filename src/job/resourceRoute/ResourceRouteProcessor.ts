@@ -1,7 +1,6 @@
 import routes from '../../config/resourceRoutes'
 import CreepResourceRoute from './CreepResourceRoute'
 import CreepMemoized from 'utils/CreepMemoized'
-import Failer from 'utils/Failer'
 import { infoStyle } from 'room/style'
 
 const enum RouteStatusKey {
@@ -10,7 +9,6 @@ const enum RouteStatusKey {
 export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
   private routes: CreepResourceRoute[]
   private status: RouteStatus
-  private failer: Failer
   private i: number
   private jobFound: boolean = false
 
@@ -21,7 +19,6 @@ export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
       this.creep.memory[Keys.resourceRoute] ||
       (this.creep.memory[Keys.resourceRoute] = [0, Game.time, 0])
     this.i = this.status[RouteStatusKey.id]
-    this.failer = new Failer(() => this.findJob(), this.status)
   }
 
   process() {
@@ -34,7 +31,8 @@ export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
 
   public findJob() {
     const currentRoute = this.routes[this.i]
-    this.jobFound = currentRoute && currentRoute.work()
+    this.jobFound = this.i !== 13 && currentRoute && currentRoute.work()
+    // route id 13 always has bugs idk
     if (this.jobFound) {
       this.status[RouteStatusKey.id] = this.i
       this.creep.room.visual.text(

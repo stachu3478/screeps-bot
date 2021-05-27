@@ -17,10 +17,7 @@ export default class HitCalculator {
 
   getDamage(pos: RoomPosition, dealers: Creep[]) {
     const hasPos = { pos }
-    return (
-      this.attackPower(dealers, hasPos) +
-      this.towersAttackPower(this.towerDealers, hasPos)
-    )
+    return this.attackPower(dealers, hasPos) + this.towersAttackPower(hasPos)
   }
 
   getFor(creep: Creep, dealers: Creep[], healers: Creep[]) {
@@ -33,14 +30,14 @@ export default class HitCalculator {
     return _.sum(enemies, (e) => e.corpus.healPowerAt(target))
   }
 
-  private attackPower(allies: Creep[], target: _HasRoomPosition) {
-    return _.sum(allies, (a) => a.corpus.attackPowerAt(target))
-  }
-
-  private towersAttackPower(
-    towers: StructureTower[],
+  towersAttackPower(
     target: _HasRoomPosition,
+    towers: StructureTower[] = this.towerDealers,
   ) {
     return _.sum(towers, (t) => t.attackPowerAt(target))
+  }
+
+  private attackPower(allies: Creep[], target: _HasRoomPosition) {
+    return _.sum(allies, (a) => a.corpus.attackPowerAt(target))
   }
 }

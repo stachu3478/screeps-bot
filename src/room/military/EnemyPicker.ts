@@ -30,7 +30,10 @@ export default class EnemyPicker {
       (c, i) => this.calculator.getFor(c, allies, []) - enemyHitsHealed[i],
     )
     const enemyOptimisticSummary = enemies.map(
-      (c, i) => this.maxAllyDamage - enemyHitsHealed[i],
+      (c, i) =>
+        this.maxAllyDamage -
+        enemyHitsHealed[i] +
+        this.calculator.towersAttackPower(c),
     )
     this.enemyCreep = _.max(enemies, (v, i) => enemySummary[i])
     this.maxHitsDealt = _.max(enemySummary)

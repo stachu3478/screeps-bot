@@ -3,11 +3,9 @@ import {
   NOTHING_DONE,
   NOTHING_TODO,
   FAILED,
-  NO_RESOURCE,
   SUCCESS,
 } from 'constants/response'
 import storageFill from 'routine/haul/storageFill'
-import repair from 'routine/work/repair'
 import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/haul/autoPick'
 import arrive from 'routine/arrive'

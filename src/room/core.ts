@@ -13,6 +13,35 @@ import lab from 'role/lab'
 import factory from 'role/factory'
 import rolePowerSpawn from 'role/powerSpawn'
 import EnemyPicker from './military/EnemyPicker'
+import move, { isWalkable, offsetsByDirection } from 'utils/path'
+
+function moveCreepsOutOfSpawnsIfBlocked(spawns: StructureSpawn[]) {
+  spawns.forEach((s) => {
+    const spawning = s.spawning
+    if (!spawning) return
+    if (spawning.remainingTime) return
+    if (
+      spawning.directions.some((d) => {
+        isWalkable(
+          s.room,
+          s.pos.x + offsetsByDirection[d][0],
+          s.pos.y + offsetsByDirection[d][1],
+        )
+      })
+    )
+      return
+    console.log('moving from spawn', s)
+    spawning.directions.find((d) => {
+      s.room
+        .getPositionAt(
+          s.pos.x + offsetsByDirection[d][0],
+          s.pos.y + offsetsByDirection[d][1],
+        )
+        ?.lookFor(LOOK_CREEPS)
+        .find((c) => c.my && move.anywhere(c))
+    })
+  })
+}
 
 export default function run(controller: StructureController, cpuUsed: number) {
   const room = controller.room
@@ -72,6 +101,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
   handleLog(cache, controller)
 
   const spawns = room.find(FIND_MY_SPAWNS)
+  moveCreepsOutOfSpawnsIfBlocked(spawns)
   if (!spawns.length) {
     if (count === 0 && !creepCountByRole[Role.RETIRED]) callRescue(room)
     const sites = room.find(FIND_CONSTRUCTION_SITES)

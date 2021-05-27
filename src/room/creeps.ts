@@ -17,7 +17,6 @@ import collectGarbage from 'utils/collectGarbage'
 import ranger, { Ranger } from 'role/creep/military/ranger'
 import mover from 'role/creep/mover'
 import builder from 'role/creep/builder'
-import towerEkhauster from 'role/creep/military/towerEkhauster'
 import recycle from 'routine/recycle'
 
 interface Creeps {

@@ -108,6 +108,12 @@ export default [
     maximumFilledAmount: energyBufferingThreshold,
   },
   {
+    from: () => [],
+    to: STRUCTURE_STORAGE,
+    type: RESOURCE_ENERGY,
+  },
+  // route id 13 always has bugs idk ^
+  {
     from: STRUCTURE_TERMINAL,
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
