@@ -75,7 +75,7 @@ Creep.prototype.moveToRoom = function (room: string) {
     roomPathStep.y,
     roomPathStep.name,
   )
-  return move.cheap(this, pos, true)
+  return move.cheap(this, pos, true, undefined, 1)
 }
 
 Creep.prototype._transfer = Creep.prototype.transfer

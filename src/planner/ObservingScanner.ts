@@ -10,7 +10,7 @@ export default class ObservingScanner {
   private scannedX?: number
   private scannedY?: number
   private scannedRoom?: string
-  private lastRoomIndex: number = 0
+  private lastRoomIndex = -1
 
   constructor() {
     this.scanned = {}
@@ -44,8 +44,8 @@ export default class ObservingScanner {
     return true
   }
 
-  filterToScanFromPathScanners() {
-    MyRooms.get().forEach((room) => {
+  filterToScanFromPathScanners(myRooms = MyRooms) {
+    myRooms.get().forEach((room) => {
       Object.keys(room.pathScanner.rooms).forEach((n) => {
         this.scanned[n] = 1
       })
@@ -53,13 +53,24 @@ export default class ObservingScanner {
   }
 
   private findObserver() {
-    this.lastRoomIndex =
-      this.observerRooms.slice(this.lastRoomIndex).findIndex((n) => {
-        return Game.rooms[n]?.buildings.observer?.isActive()
-      }) + this.lastRoomIndex
-    this.scanningRoom = this.observerRooms[this.lastRoomIndex]
-    const currentRoom = Game.rooms[this.scanningRoom || '']
-    return currentRoom?.buildings.observer
+    let observer: StructureObserver | undefined
+    while (!observer && this.lastRoomIndex < this.observerRooms.length) {
+      if (!this.scanningRoom) {
+        this.lastRoomIndex++
+        this.scanningRoom = this.observerRooms[this.lastRoomIndex]
+      }
+      const currentRoom = Game.rooms[this.scanningRoom || '']
+      observer = currentRoom?.buildings.observer
+      if (!observer) {
+        delete this.scanningRoom
+      }
+    }
+    console.log(
+      'Selecting scanning room',
+      this.lastRoomIndex,
+      this.scanningRoom,
+    )
+    return observer
   }
 
   private findRoomToScan(observer: StructureObserver): string | void {
@@ -74,6 +85,11 @@ export default class ObservingScanner {
           this.scannedY = location.y - OBSERVER_RANGE
         } else {
           this.scannedY++
+          if (this.scannedY > location.y + OBSERVER_RANGE) {
+            delete this.scannedX
+            delete this.scannedY
+            return
+          }
         }
       }
       if (typeof this.scannedY === 'undefined')

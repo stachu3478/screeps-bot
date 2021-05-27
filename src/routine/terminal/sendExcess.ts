@@ -8,7 +8,10 @@ import {
 import { storageSendThreshold } from 'config/terminal'
 import MyRooms from 'room/MyRooms'
 
-export default function sendExcess(terminal: StructureTerminal) {
+export default function sendExcess(
+  terminal: StructureTerminal,
+  myRooms = MyRooms,
+) {
   const room = terminal.room
   const resourceType =
     terminal.cache.dealResourceType ||
@@ -23,7 +26,7 @@ export default function sendExcess(terminal: StructureTerminal) {
   if (Math.min(excessLocalAmount, amountInTerminal) <= TERMINAL_MIN_SEND)
     return NO_RESOURCE
   let result = 1
-  const sentExcess = MyRooms.get().some((room) => {
+  const sentExcess = myRooms.get().some((room) => {
     const roomTerminal = room.terminal
     if (!roomTerminal || !roomTerminal.my) return false
     const missing = storageSendThreshold - room.store(resourceType)

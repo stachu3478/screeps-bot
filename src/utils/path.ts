@@ -196,6 +196,7 @@ const move = {
     target: RoomPosition | _HasRoomPosition,
     safe: boolean = false,
     range: number = 0,
+    maxRooms = 16,
   ): ScreepsReturnCode => {
     if (creep.fatigue) return ERR_TIRED
     if (safe && !move.keepAwayFromHostiles(creep)) return 0
@@ -205,6 +206,7 @@ const move = {
       reusePath: 100,
       costCallback: safe ? roomCallback : undefined,
       range,
+      maxRooms,
     }
     let result: ScreepsReturnCode = creep.moveTo(target, options)
     if (result === ERR_NOT_FOUND) {

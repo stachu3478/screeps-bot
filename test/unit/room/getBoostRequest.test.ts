@@ -20,19 +20,23 @@ describe('Getting a boost request', () => {
     room.boosts = new BoostManager(room)
     sinon.restore()
     sinon.spy(room.boosts, 'clearRequests')
-    lab = { id: 'lab', mineralType: RESOURCE_UTRIUM_ACID } as StructureLab
+    lab = {
+      id: 'lab',
+      mineralType: RESOURCE_UTRIUM_ACID,
+      store: {},
+    } as StructureLab
     room.externalLabs = [lab]
   })
 
   describe('empty boost data', () => {
-    it('should return null', () => {
+    it('returns null', () => {
       room.boosts.getRequest('John')
       expect(room.boosts.getRequest('John')).to.be.undefined
     })
   })
 
   describe('no creep matching', () => {
-    it('should return null and call no action', () => {
+    it('returns null and call no action', () => {
       boosts.creeps.push(['Johny', RESOURCE_UTRIUM_ACID, 300, 0])
       boosts.labs.push([RESOURCE_UTRIUM_ACID, 300])
       const sameBoosts = _.clone(boosts, true)
@@ -70,7 +74,7 @@ describe('Getting a boost request', () => {
         expect(room.boosts.getRequest('John')).to.be.undefined
       })
 
-      it('should return null and call delete for all for missing resources', () => {
+      it('returns null and call delete for all for missing resources', () => {
         const sameBoosts = _.clone(boosts, true)
         boosts.creeps.push(
           ['John', RESOURCE_UTRIUM_ALKALIDE, 300, 0],
@@ -88,11 +92,22 @@ describe('Getting a boost request', () => {
     })
 
     describe('exact lab exists', () => {
-      it('should return boost data', () => {
+      it('returns boost data', () => {
         boosts.creeps.push(['John', RESOURCE_UTRIUM_ACID, 300, 0])
         boosts.labs.push([RESOURCE_UTRIUM_ACID, 300])
+        lab.store[RESOURCE_UTRIUM_ACID] = 300
         room.boosts.getRequest('John')
         expect(room.boosts.getRequest('John')).to.eql('lab')
+      })
+
+      describe('not enough resource in lab', () => {
+        it('returns boost data', () => {
+          boosts.creeps.push(['John', RESOURCE_UTRIUM_ACID, 300, 0])
+          boosts.labs.push([RESOURCE_UTRIUM_ACID, 300])
+          lab.store[RESOURCE_UTRIUM_ACID] = 299
+          room.boosts.getRequest('John')
+          expect(room.boosts.getRequest('John')).to.be.undefined
+        })
       })
     })
   })
