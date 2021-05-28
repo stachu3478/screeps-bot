@@ -1,4 +1,3 @@
-import { infoStyle } from 'room/style'
 import sanitizeBody from 'utils/sanitizeBody'
 import { uniqName } from 'spawn/name'
 import defineGetter from 'utils/defineGetter'
@@ -82,6 +81,6 @@ StructureSpawn.prototype.trySpawnCreep = function (
     delete cache.sourceId
     delete cache.trySpawn
   }
-  this.room.visual.text('Try to spawn ' + name, 0, 3, infoStyle)
+  this.room.visual.info('Try to spawn ' + name, 0, 3)
   return result
 }

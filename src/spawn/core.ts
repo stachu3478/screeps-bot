@@ -1,7 +1,6 @@
 import profiler from 'screeps-profiler'
 import { progressiveMiner, progressiveLiteWorker } from './body/work'
 import domination from './domination'
-import { infoStyle } from '../room/style'
 import extract, { needsExtractor } from './extract'
 import spawnUpgrader, { needsUpgraders } from './upgrader'
 import { MinerMemory } from 'role/creep/miner'
@@ -109,12 +108,7 @@ export default profiler.registerFN(function loop(
   } else if (needsClaimer(spawn, creepCountByRole[Role.CLAIMER])) {
     spawnClaimer(spawn)
   } else if (domination(spawn, creepCountByRole))
-    spawn.room.visual.text(
-      '                            in domination',
-      0,
-      3,
-      infoStyle,
-    )
+    spawn.room.visual.info('                            in domination', 0, 3)
   else if (needsExtractor(spawn, creepCountByRole[Role.EXTRACTOR]))
     extract(spawn)
   else if (needsRanger(spawn, creepCountByRole[Role.RANGER])) spawnRanger(spawn)
@@ -124,11 +118,10 @@ export default profiler.registerFN(function loop(
   } else if (needsDestroyer(spawn, creepCountByRole[Role.DESTROYER])) {
     spawnDestroyer(spawn)
   } else
-    spawn.room.visual.text(
+    spawn.room.visual.info(
       'Spawn is idle. (' + (Game.cpu.getUsed() - cpu).toPrecision(2) + ')',
       0,
       3,
-      infoStyle,
     )
 },
 'spawnLoop')

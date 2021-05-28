@@ -1,4 +1,3 @@
-import { infoStyle } from 'room/style'
 import handleFactory, {
   com,
   factoryStoragePerResource,
@@ -9,10 +8,10 @@ export default function factory(factory: StructureFactory) {
   const cache = factory.cache
   switch (cache.state) {
     case State.IDLE:
-      factory.room.visual.text('Factory: Idle', 0, 6, infoStyle)
+      factory.room.visual.info('Factory: Idle', 0, 6)
       break
     case State.FACT_BOARD:
-      factory.room.visual.text('Factory: Withdrawing', 0, 6, infoStyle)
+      factory.room.visual.info('Factory: Withdrawing', 0, 6)
       cache.state = State.FACT_WORKING
       break
     case State.FACT_WORKING:
@@ -39,12 +38,7 @@ export default function factory(factory: StructureFactory) {
       }
       // @ts-ignore no generic type for produced factory resource
       const result = factory.produce(cache.producing)
-      factory.room.visual.text(
-        'Factory: Producing ' + cache.producing,
-        0,
-        6,
-        infoStyle,
-      )
+      factory.room.visual.info('Factory: Producing ' + cache.producing, 0, 6)
       if (result === ERR_NOT_ENOUGH_RESOURCES) delete cache.producing
       break
     default:

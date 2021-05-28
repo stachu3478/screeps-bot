@@ -144,3 +144,8 @@ interface Tombstone {
 interface Ruin {
   onWithdraw: (amount: number) => void
 }
+
+interface RoomVisual {
+  info: (text: string, x: number, y: number) => void
+  danger: (text: string, x: number, y: number) => void
+}

@@ -1,5 +1,4 @@
 import roomVisual from 'utils/visual'
-import { infoStyle } from 'room/style'
 import { collectGarbageAll } from './collectGarbage'
 
 let runtimeTicks = 0
@@ -17,7 +16,7 @@ function handleRuntimeReset() {
 export default function handleRuntimeStats() {
   if (wasReset) handleRuntimeReset()
   Memory.runtimeTicks = runtimeTicks++
-  roomVisual.text(
+  roomVisual.info(
     'Runtime ticks: ' +
       runtimeTicks +
       ' (avg. ' +
@@ -25,6 +24,5 @@ export default function handleRuntimeStats() {
       ')',
     0,
     48,
-    infoStyle,
   )
 }

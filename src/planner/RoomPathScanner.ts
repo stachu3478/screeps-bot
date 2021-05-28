@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import RoomNeighbourPathScanner from './RoomNeighbourPathScanner'
 import RoomLocation from 'overloads/room/RoomLocation'
-import { infoStyle } from 'room/style'
 import RoomInspector from './RoomInspector'
 
 interface RoomPathScannerConfig {
@@ -85,20 +84,14 @@ export default class RoomPathScanner {
     if (!room) {
       if (observer) {
         observer.observeRoom(roomName)
-        this.room.visual.text(
+        this.room.visual.info(
           'Trying to observe room ' + roomName + ' with ' + observer,
           0,
           11,
-          infoStyle,
         )
       } else {
         this.toBeTraversed = roomName
-        this.room.visual.text(
-          'Trying to scout room ' + roomName,
-          0,
-          11,
-          infoStyle,
-        )
+        this.room.visual.info('Trying to scout room ' + roomName, 0, 11)
       }
       // TODO else send scouts here
     }
@@ -128,7 +121,7 @@ export default class RoomPathScanner {
         safe: currentRoomPath ? currentRoomPath.safe : true,
       }
     })
-    this.room.visual.text('Scanned ' + room, 0, 11, infoStyle)
+    this.room.visual.info('Scanned ' + room, 0, 11)
     return true
   }
 

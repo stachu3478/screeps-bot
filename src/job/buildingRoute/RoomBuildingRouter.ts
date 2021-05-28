@@ -1,7 +1,6 @@
 import routes from '../../config/buildingRoutes'
 import ArrayLooper from 'utils/ArrayLooper'
 import RoomBuildingRoute from './RoomBuildingRoute'
-import { infoStyle } from 'room/style'
 
 export default class RoomBuildingRouter {
   private routesLooper: ArrayLooper<RoomBuildingRoute>
@@ -21,12 +20,7 @@ export default class RoomBuildingRouter {
   }
 
   hasJob() {
-    this.room.visual.text(
-      'Building route search ' + this.routesLooper.i,
-      0,
-      8,
-      infoStyle,
-    )
+    this.room.visual.info('Building route search ' + this.routesLooper.i, 0, 8)
     if (this.hadJob) {
       return (this.hadJob = this.routesLooper.current.hasJob())
     } else {

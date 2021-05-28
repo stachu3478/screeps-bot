@@ -1,7 +1,6 @@
 import routes from '../../config/repairRoutes'
 import ArrayLooper from 'utils/ArrayLooper'
 import RoomRepairRoute from './RoomRepairRoute'
-import { infoStyle } from 'room/style'
 
 export default class RoomRepairRouter {
   private routesLooper: ArrayLooper<RoomRepairRoute>
@@ -22,7 +21,7 @@ export default class RoomRepairRouter {
 
   hasJob() {
     const i = this.routesLooper.i
-    this.room.visual.text('Repair route search ' + i, 0, 10, infoStyle)
+    this.room.visual.info('Repair route search ' + i, 0, 10)
     if (this.hadJob) {
       return (this.hadJob = this.routesLooper.current.hasJob())
     } else {

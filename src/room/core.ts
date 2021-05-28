@@ -4,7 +4,6 @@ import spawnLoop from 'spawn/core'
 import plan from 'planner/core'
 import callRescue from 'planner/rescue'
 import usage from './usage'
-import { infoStyle, dangerStyle } from './style'
 import handleLog from './log'
 import creeps from './creeps'
 import terminal from 'role/terminal'
@@ -67,11 +66,10 @@ export default function run(controller: StructureController, cpuUsed: number) {
       towers.forEach((t) => tower(t, enemy))
       towersProcessed = true
     }
-    room.visual.text(
+    room.visual.danger(
       `Enemy tracked: ${enemy.name} Vulnerability: ${enemyPicker.dealt} / ${enemyPicker.maxDealable} ${shouldAttack} / ${canDeal}`,
       0,
       4,
-      dangerStyle,
     )
     cache.healthy = 0
   } else {
@@ -131,7 +129,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
   const spawn = spawns.find((s) => !s.spawning)
   if (spawn) spawnLoop(spawn, controller, creepCountByRole, needFighters)
   else {
-    room.visual.text('All spawns busy', 0, 3, infoStyle)
+    room.visual.info('All spawns busy', 0, 3)
   }
   if (needFighters && !spawn && room.energyAvailable < SPAWN_ENERGY_START) {
     const claimer = Game.rooms[mem._claimer || '']

@@ -1,6 +1,5 @@
 import 'overloads/all'
 import run from 'room/core'
-import { infoStyle } from 'room/style'
 import profiler from 'screeps-profiler'
 import 'utils/profiler'
 import handleStats, { saveCpuUsage } from 'utils/stats'
@@ -20,7 +19,7 @@ export const loop = () => {
   try {
     profiler.wrap(() => {
       let usage = Game.cpu.getUsed()
-      roomVisual.text('Memory overhead: ' + usage.toFixed(3), 0, 49, infoStyle)
+      roomVisual.info('Memory overhead: ' + usage.toFixed(3), 0, 49)
       rooms.forEach((room) => {
         usage += run(room.controller, usage)
       })

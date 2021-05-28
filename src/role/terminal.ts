@@ -7,7 +7,6 @@ import {
   SUCCESS,
 } from 'constants/response'
 import sellExcess from 'routine/terminal/sellExcess'
-import { infoStyle } from 'room/style'
 import buyMissing from 'routine/terminal/buyMissing'
 
 export default function terminal(term: StructureTerminal) {
@@ -15,15 +14,10 @@ export default function terminal(term: StructureTerminal) {
   const cache = term.cache
   switch (cache.state) {
     case State.IDLE:
-      term.room.visual.text('Terminal: Idle', 0, 4, infoStyle)
+      term.room.visual.info('Terminal: Idle', 0, 4)
       break
     case State.TERM_SEND_EXCESS:
-      term.room.visual.text(
-        'Terminal: Sending excess resources.',
-        0,
-        4,
-        infoStyle,
-      )
+      term.room.visual.info('Terminal: Sending excess resources.', 0, 4)
       switch (sendExcess(term)) {
         case NO_RESOURCE:
         case NOTHING_TODO:
@@ -36,12 +30,7 @@ export default function terminal(term: StructureTerminal) {
       }
       break
     case State.TERM_SELL_EXCESS:
-      term.room.visual.text(
-        'Terminal: Selling excess resources.',
-        0,
-        4,
-        infoStyle,
-      )
+      term.room.visual.info('Terminal: Selling excess resources.', 0, 4)
       switch (sellExcess(term)) {
         case SUCCESS:
           break
@@ -50,12 +39,7 @@ export default function terminal(term: StructureTerminal) {
       }
       break
     case State.TERM_BUY_MISSING:
-      term.room.visual.text(
-        'Terminal: Buying missing resources.',
-        0,
-        4,
-        infoStyle,
-      )
+      term.room.visual.info('Terminal: Buying missing resources.', 0, 4)
       switch (buyMissing(term)) {
         case SUCCESS:
           break

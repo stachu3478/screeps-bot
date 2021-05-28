@@ -1,7 +1,6 @@
 import routes from '../../config/resourceRoutes'
 import CreepResourceRoute from './CreepResourceRoute'
 import CreepMemoized from 'utils/CreepMemoized'
-import { infoStyle } from 'room/style'
 
 const enum RouteStatusKey {
   id = 2,
@@ -35,20 +34,10 @@ export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
     // route id 13 always has bugs idk
     if (this.jobFound) {
       this.status[RouteStatusKey.id] = this.i
-      this.creep.room.visual.text(
-        'Resource route processing ' + this.i,
-        0,
-        9,
-        infoStyle,
-      )
+      this.creep.room.visual.info('Resource route processing ' + this.i, 0, 9)
       return true
     }
-    this.creep.room.visual.text(
-      'Resource route search ' + this.i,
-      0,
-      9,
-      infoStyle,
-    )
+    this.creep.room.visual.info('Resource route search ' + this.i, 0, 9)
     this.i++
     if (this.i >= this.routes.length) {
       this.i = 0
