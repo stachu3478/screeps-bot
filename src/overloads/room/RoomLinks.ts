@@ -1,5 +1,3 @@
-import { getLink } from 'utils/selectFromPos'
-
 export default class RoomLinks {
   private room: Room
 
@@ -20,20 +18,21 @@ export default class RoomLinks {
   }
 
   get spawny() {
-    if (!this.room.memory.structs) return
-    return getLink(this.room, this.room.memory.structs.charCodeAt(0))
+    const structurePosns = this.room.memory.structs
+    if (!structurePosns) return
+    return this.room.buildingAt(structurePosns.charCodeAt(0), STRUCTURE_LINK)
   }
 
   get controller() {
     const linkPos = this.room.memory.controllerLink || ''
-    return getLink(this.room, linkPos.charCodeAt(0))
+    return this.room.buildingAt(linkPos.charCodeAt(0), STRUCTURE_LINK)
   }
 
   get drains() {
     const linkPoses = this.room.memory.links || ''
     return linkPoses
       .split('')
-      .map((p) => getLink(this.room, p.charCodeAt(0)))
+      .map((p) => this.room.buildingAt(p.charCodeAt(0), STRUCTURE_LINK))
       .filter((l) => l) as StructureLink[]
   }
 }

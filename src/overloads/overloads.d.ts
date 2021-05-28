@@ -39,6 +39,11 @@ interface Room {
     charCode: number,
     type: T,
   ): ConcreteStructure<T> | undefined
+  buildingAtXY<T extends StructureConstant>(
+    x: number,
+    y: number,
+    type: T,
+  ): ConcreteStructure<T> | undefined
   store: (resource: ResourceConstant) => number
   positionFromChar: (char: string) => RoomPosition
   labsFromChars: (char: string) => StructureLab[]

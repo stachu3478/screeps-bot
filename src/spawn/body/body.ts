@@ -23,16 +23,23 @@ export function ranger() {
 
 export function progressiveClaimer(
   energy: number,
+  healRecommend: number,
   maxParts: number = MAX_CREEP_SIZE,
 ) {
-  const parts = [CLAIM, MOVE]
-  const dualCost = BODYPART_COST[CLAIM] + BODYPART_COST[MOVE]
-  let remaining = energy - dualCost
+  const parts: BodyPartConstant[] = [CLAIM, MOVE]
+  let remaining = energy - BODYPART_COST[MOVE] - BODYPART_COST[CLAIM]
   let partsRemaining = maxParts - 2
-  while (remaining >= dualCost) {
-    parts.push(MOVE, CLAIM)
-    remaining -= dualCost
+  let healPartsRemaining = healRecommend
+  const moveHealCost = BODYPART_COST[MOVE] + BODYPART_COST[HEAL]
+  while (
+    remaining >= moveHealCost &&
+    healPartsRemaining > 0 &&
+    partsRemaining > 1
+  ) {
+    parts.push(MOVE, HEAL)
+    remaining -= moveHealCost
     partsRemaining -= 2
+    healPartsRemaining--
   }
   if (remaining >= BODYPART_COST[MOVE] && partsRemaining > 0) parts.push(MOVE)
   return parts

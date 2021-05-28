@@ -1,12 +1,15 @@
 import '../constants'
-import { progressiveCommander } from '../../../src/spawn/body/body'
+import {
+  progressiveClaimer,
+  progressiveCommander,
+} from '../../../src/spawn/body/body'
 import {
   progressiveWorker,
   progressiveMobileWorker,
 } from '../../../src/spawn/body/work'
 import { Memory } from '../mock'
 import Game from '../mock/Game'
-import { assert } from '../../expect'
+import { assert, expect } from '../../expect'
 
 describe('spawn/body', () => {
   beforeEach(() => {
@@ -75,5 +78,35 @@ describe('spawn/body', () => {
       const energy = result.reduce((c, p) => c + BODYPART_COST[p], 0)
       assert.isAtMost(energy, e)
     }
+  })
+
+  it('returns minimalist claimer', () => {
+    expect(progressiveClaimer(699, 0, 50)).to.eql([CLAIM, MOVE])
+  })
+
+  it('returns claimer with 1 heal part from missing energy', () => {
+    expect(progressiveClaimer(1000, 2, 50)).to.eql([
+      CLAIM,
+      MOVE,
+      MOVE,
+      HEAL,
+      MOVE,
+    ])
+  })
+
+  it('returns claimer with 2 heal parts', () => {
+    expect(progressiveClaimer(1300, 2, 50)).to.eql([
+      CLAIM,
+      MOVE,
+      MOVE,
+      HEAL,
+      MOVE,
+      HEAL,
+      MOVE,
+    ])
+  })
+
+  it('returns maxed claimer', () => {
+    expect(progressiveClaimer(100000, 200, 50)).to.have.lengthOf(50)
   })
 })

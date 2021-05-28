@@ -1,5 +1,3 @@
-import { getXYWall } from 'utils/selectFromPos'
-
 // make walls around controller
 export default class WallPlacer {
   private controller: StructureController
@@ -21,14 +19,14 @@ export default class WallPlacer {
           return xPos !== x || yPos !== y
         })
         if (!notBlockingSources) continue
-        const wall = getXYWall(this.room, xPos, yPos)
+        /*const wall = getXYWall(this.room, xPos, yPos)
         if (wall) continue
         const result = this.room.createConstructionSite(
           xPos,
           yPos,
           STRUCTURE_WALL,
         )
-        if (result === 0) return true
+        if (result === 0) return true*/
       }
     return false
   }

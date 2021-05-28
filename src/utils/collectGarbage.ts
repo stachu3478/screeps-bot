@@ -1,3 +1,5 @@
+import ClaimPlanner from 'planner/military/ClaimPlanner'
+
 function handleRoomBlackList(memory: CreepMemory) {
   const room = Game.rooms[memory.r || '']
   if (!room || room.my) return
@@ -9,6 +11,13 @@ function handleRoomBlackList(memory: CreepMemory) {
   }
 }
 
+function handleClaimerDeadthBeforeClaiming(mem: CreepMemory) {
+  if (mem.role !== Role.CLAIMER) return
+  const claimPlanner = ClaimPlanner.instance
+  if (mem[Keys.lastRoom] === claimPlanner.target?.target) return
+  claimPlanner.claimerDeaths++
+}
+
 export default function collectGarbage(name: string) {
   delete global.Cache.creeps[name]
   if (!Memory.creeps) {
@@ -18,6 +27,7 @@ export default function collectGarbage(name: string) {
   const mem = Memory.creeps[name]
   if (!mem) return
   handleRoomBlackList(mem)
+  handleClaimerDeadthBeforeClaiming(mem)
   delete Memory.creeps[name]
   const room = Memory.rooms[mem.room]
   if (!room) return

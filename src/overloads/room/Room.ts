@@ -190,7 +190,15 @@ Room.prototype.buildingAt = function <T extends StructureConstant>(
   charCode: number,
   type: T,
 ) {
-  return this.lookForAt(LOOK_STRUCTURES, charCode & 63, charCode >> 6).find(
+  return this.buildingAtXY(charCode & 63, charCode >> 6, type)
+}
+
+Room.prototype.buildingAtXY = function <T extends StructureConstant>(
+  x: number,
+  y: number,
+  type: T,
+) {
+  return this.lookForAt(LOOK_STRUCTURES, x, y).find(
     (s) => s.structureType === type,
   ) as ConcreteStructure<T>
 }

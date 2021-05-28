@@ -1,4 +1,3 @@
-import { getXYRoad } from 'utils/selectFromPos'
 import { infoStyle } from 'room/style'
 import sanitizeBody from 'utils/sanitizeBody'
 import { uniqName } from 'spawn/name'
@@ -38,7 +37,7 @@ StructureSpawn.prototype.getDirections = function () {
   const directions: DirectionConstant[] = []
   for (let x = -1; x <= 1; x++)
     for (let y = -1; y <= 1; y++) {
-      const road = getXYRoad(room, sx + x, sy + y)
+      const road = room.buildingAtXY(sx + x, sy + y, STRUCTURE_ROAD)
       if (!road) continue
       const direction = this.pos.getDirectionTo(sx + x, sy + y)
       if (direction) directions.push(direction)

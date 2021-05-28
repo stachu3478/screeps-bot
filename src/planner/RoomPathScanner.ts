@@ -48,7 +48,7 @@ export default class RoomPathScanner {
   }
 
   private traverse() {
-    if (this.traversedTick === Game.time || Game.cpu.bucket < 500) return
+    if (this.traversedTick === Game.time || Game.cpu.bucket < 1000) return
     this.traversedTick = Game.time
     if (this.traversed) return
     if (!this.scanned[this.room.name]) {

@@ -14,6 +14,9 @@ interface ClaimerMemory extends CreepMemory {
 }
 
 export default function run(creep: Claimer) {
+  if (creep.corpus.hasActive(HEAL)) {
+    creep.heal(creep)
+  }
   const target = ClaimPlanner.instance.target
   if (!target) return
   switch (creep.memory.state) {

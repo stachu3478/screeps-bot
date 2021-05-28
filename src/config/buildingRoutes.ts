@@ -31,6 +31,7 @@ export const findStorageAndTerminal = (room: Room) => {
   if (terminal) structures.push(terminal)
   return structures
 }
+// todo force replacement at index below 15
 export default [
   // most important spawn
   {

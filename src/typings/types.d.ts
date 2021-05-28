@@ -63,7 +63,6 @@ interface Memory {
   debugStructures?: 0 | 1
   roomLimit?: number
   autoScout?: boolean
-  slimClaimers?: boolean
   maxUpgradersCount?: number
   pathRoomBlacklist?: {
     [key: string]: 1

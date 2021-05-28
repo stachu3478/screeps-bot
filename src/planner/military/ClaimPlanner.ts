@@ -7,6 +7,7 @@ export default class ClaimPlanner {
   private config: ClaimConfig
   private currentTarget?: ClaimTarget
   private searchTime: number = 0
+  claimerDeaths = 0
 
   constructor(config: ClaimConfig) {
     this.config = config

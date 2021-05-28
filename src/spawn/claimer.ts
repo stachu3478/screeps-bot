@@ -1,3 +1,4 @@
+import ClaimPlanner from 'planner/military/ClaimPlanner'
 import { progressiveClaimer } from './body/body'
 import { needsClaim } from './scout'
 
@@ -6,14 +7,10 @@ export function needsClaimer(spawn: StructureSpawn, count: number) {
 }
 
 export function spawnClaimer(spawn: StructureSpawn) {
-  let body = [MOVE, CLAIM]
-  if (!Memory.slimClaimers)
-    body = progressiveClaimer(spawn.room.energyCapacityAvailable)
-  spawn.trySpawnCreep(
-    body,
-    'C',
-    { role: Role.CLAIMER, room: spawn.room.name, deprivity: 0 },
-    false,
-    20,
+  const body = progressiveClaimer(
+    spawn.room.energyAvailable,
+    ClaimPlanner.instance.claimerDeaths,
   )
+  const memory = { role: Role.CLAIMER, room: spawn.room.name, deprivity: 0 }
+  spawn.trySpawnCreep(body, 'C', memory, false, 20)
 }
