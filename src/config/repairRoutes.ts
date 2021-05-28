@@ -51,6 +51,7 @@ export default [
     hits: RAMPART_HITS_MAX[8],
     from: findStorageAndTerminal,
     minimalStore: 100000,
+    minimalStoreToSpawn: 120000,
     orderByHits: true,
   },
 ].map((opt) => new RepairRoute(opt))

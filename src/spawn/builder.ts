@@ -2,7 +2,9 @@ import { progressiveWorker } from './body/work'
 
 export function needsBuilder(spawn: StructureSpawn, buildersCount?: number) {
   if (buildersCount) return false
-  return spawn.room.buildingRouter.hasJob() || spawn.room.repairRouter.hasJob()
+  return (
+    spawn.room.buildingRouter.hasJob() || spawn.room.repairRouter.hasJob(true)
+  )
 }
 
 export default function spawnBuilder(spawn: StructureSpawn) {

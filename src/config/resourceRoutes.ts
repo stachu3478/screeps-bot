@@ -74,16 +74,16 @@ export default [
     from: STRUCTURE_STORAGE,
     to: (room: Room) => (room.links.spawny ? [room.links.spawny] : []),
     type: RESOURCE_ENERGY,
-    minimalFreeCapacityToFill: LINK_CAPACITY,
-    maximumFilledAmount: (LINK_CAPACITY * 3) / 4,
+    minimalFreeCapacityToFill: (LINK_CAPACITY * 7) / 8 + 1,
+    maximumFilledAmount: (LINK_CAPACITY * 7) / 8,
     minimalStoreToDraw: 10000,
   },
   {
     from: (room: Room) => (room.links.spawny ? [room.links.spawny] : []),
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
-    minimalStoreToDraw: (LINK_CAPACITY * 7) / 8,
-    keep: LINK_CAPACITY / 4,
+    minimalStoreToDraw: (LINK_CAPACITY * 7) / 8 + 1,
+    keep: LINK_CAPACITY / 8,
   },
   // fill more expensive things with energy
   {

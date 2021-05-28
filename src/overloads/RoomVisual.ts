@@ -1,9 +1,9 @@
-const infoStyle: TextStyle = {
+export const infoStyle: TextStyle = {
   align: 'left',
   font: '0.7 Consolas',
   color: '#ffffff',
 }
-const dangerStyle: TextStyle = {
+export const dangerStyle: TextStyle = {
   align: 'left',
   font: '0.7 Consolas',
   color: '#ee1111',

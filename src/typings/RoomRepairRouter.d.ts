@@ -1,5 +1,5 @@
 declare class RoomRepairRouter {
   findJob(): RoomRepairRoute | boolean
-  hasJob(): boolean
+  hasJob(toSpawn?: boolean): boolean
   routes: RoomRepairRoute[]
 }

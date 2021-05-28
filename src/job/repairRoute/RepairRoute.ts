@@ -23,6 +23,11 @@ interface RepairRouteOptions {
    */
   minimalStore?: number
   /**
+   * Conditional minimal amount in sources to force creep
+   * spawn that performs that job
+   */
+  minimalStoreToSpawn?: number
+  /**
    * Whether the structure has to be chosen
    * by least hits, otherwise nearest
    */
@@ -38,12 +43,18 @@ export default class RepairRoute {
     this.sourceMatcher = new StructureMatcher(this.options.from)
   }
 
-  validateSource(s: AnyStoreStructure) {
-    return s.store[RESOURCE_ENERGY] >= this.minimalStoreToDraw
+  validateSource(s: AnyStoreStructure, toSpawn = false) {
+    return s.store[RESOURCE_ENERGY] >= this.getMinimalStoreToDraw(toSpawn)
   }
 
   validateTarget(s: Structure<BuildableStructureConstant>) {
     return s.hits < this.options.hits && s.hits < s.hitsMax
+  }
+
+  private getMinimalStoreToDraw(toSpawn = false) {
+    const nominal = this.minimalStoreToDraw
+    if (toSpawn) return Math.max(nominal, this.options.minimalStoreToSpawn || 0)
+    return nominal
   }
 
   get sources() {

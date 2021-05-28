@@ -13,13 +13,13 @@ export default class RoomRepairRoute {
     this.structureMatcher = new StructureMatcher(route.structure)
   }
 
-  hasJob() {
-    return !!(this.findTargets().length && this.findSources().length)
+  hasJob(toSpawn = false) {
+    return !!(this.findTargets().length && this.findSources(toSpawn).length)
   }
 
-  findSources() {
+  findSources(toSpawn = false) {
     const match = this.route.sources.call(this.room) as AnyStoreStructure[]
-    return match.filter((s) => this.route.validateSource(s))
+    return match.filter((s) => this.validateSource(s, toSpawn))
   }
 
   choose(pos: RoomPosition, opts?: FindPathOpts) {
@@ -39,8 +39,8 @@ export default class RoomRepairRoute {
     return match.filter((s) => this.route.validateTarget(s))
   }
 
-  validateSource(s: AnyStoreStructure) {
-    return this.route.validateSource(s)
+  validateSource(s: AnyStoreStructure, toSpawn = false) {
+    return this.route.validateSource(s, toSpawn)
   }
 
   validateTarget(s: Structure<BuildableStructureConstant>) {

@@ -13,6 +13,7 @@ import factory from 'role/factory'
 import rolePowerSpawn from 'role/powerSpawn'
 import EnemyPicker from './military/EnemyPicker'
 import move, { isWalkable, offsetsByDirection } from 'utils/path'
+import { dangerStyle, infoStyle } from 'overloads/RoomVisual'
 
 function moveCreepsOutOfSpawnsIfBlocked(spawns: StructureSpawn[]) {
   spawns.forEach((s) => {

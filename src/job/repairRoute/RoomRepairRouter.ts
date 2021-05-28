@@ -14,18 +14,18 @@ export default class RoomRepairRouter {
     this.routesLooper = new ArrayLooper(this.roomRoutes, 0 /* TODO: memorize */)
   }
 
-  findJob() {
-    if (this.hasJob()) return this.routesLooper.current
+  findJob(toSpawn = false) {
+    if (this.hasJob(toSpawn)) return this.routesLooper.current
     return !this.routesLooper.end
   }
 
-  hasJob() {
+  hasJob(toSpawn = false) {
     const i = this.routesLooper.i
     this.room.visual.info('Repair route search ' + i, 0, 10)
     if (this.hadJob) {
-      return (this.hadJob = this.routesLooper.current.hasJob())
+      return (this.hadJob = this.routesLooper.current.hasJob(toSpawn))
     } else {
-      return (this.hadJob = this.routesLooper.next.hasJob())
+      return (this.hadJob = this.routesLooper.next.hasJob(toSpawn))
     }
   }
 

@@ -36,6 +36,7 @@ export default class ShieldPlanner {
     })
 
     this.generateFromPathTargets(positionsToBeShielded)
+    this.positions.push(...this.room.sources.positions)
     this.room.memory[RoomMemoryKeys.shields] = [
       ...new Set(this.positions.map(posToChar)),
     ].join('')
