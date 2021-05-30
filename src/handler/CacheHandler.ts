@@ -37,14 +37,6 @@ export default class CacheHandler {
     return this.cache.factories
   }
 
-  get roomKeepers() {
-    return this.cache.roomKeepers
-  }
-
-  get roomStructures() {
-    return this.cache.roomStructures
-  }
-
   get ownedRooms() {
     return (this.cache.ownedRooms = this.intershardMemoryHandler.ownedRooms =
       this.cache.ownedRooms || _.size(Memory.myRooms))

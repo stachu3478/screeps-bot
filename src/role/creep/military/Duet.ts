@@ -1,24 +1,18 @@
 import _ from 'lodash'
-import Memoized from 'utils/Memoized'
 import HitCalculator from 'room/military/HitCalculator'
 import move, { offsetsByDirection } from 'utils/path'
+import CreepSquad from './CreepSquad'
 
-export default class Duet {
-  private keeper: Memoized<Creep>
-  private protector: Memoized<Creep>
-
+export default class Duet extends CreepSquad {
   constructor(keeper: Creep, protector: Creep) {
-    this.keeper = new Memoized(keeper)
-    this.protector = new Memoized(protector)
-    keeper.notifyWhenAttacked(false)
-    protector.notifyWhenAttacked(false)
+    super([keeper, protector])
   }
 
   move(direction: DirectionConstant) {
     console.log('move')
     if (this.fatigued) return false
-    const keeper = this.keep
-    const protector = this.protect
+    const keeper = this.keeper
+    const protector = this.protector
     if (keeper) keeper.move(direction)
     if (protector) {
       if (keeper) protector.moveTo(keeper)
@@ -31,8 +25,8 @@ export default class Duet {
     console.log('move to target')
     if (this.fatigued) return false
     let res = -1
-    const keeper = this.keep
-    const protector = this.protect
+    const keeper = this.keeper
+    const protector = this.protector
     if (keeper) res = move.cheap(keeper, target)
     if (protector) {
       if (keeper && !keeper?.pos.isBorder()) protector.moveTo(keeper)
@@ -50,15 +44,15 @@ export default class Duet {
     console.log('move to target')
     if (this.fatigued) return false
     let res = -1
-    const keeper = this.keep
-    const protector = this.protect
+    const keeper = this.keeper
+    const protector = this.protector
 
     const pos = this.pos
     if (!pos) return false
     const dir = pos.getDirectionTo(target)
     const x = pos.x + offsetsByDirection[dir][0]
     const y = pos.y + offsetsByDirection[dir][1]
-    const damaged = this.creeps.some((c) => {
+    const damaged = this.validCreeps.some((c) => {
       const damage = calc.getDamage(
         new RoomPosition(x, y, pos.roomName),
         enemies,
@@ -81,8 +75,8 @@ export default class Duet {
   arrive(target: string) {
     let res: ScreepsReturnCode = -1
     if (this.fatigued) return false
-    const keeper = this.keep
-    const protector = this.protect
+    const keeper = this.keeper
+    const protector = this.protector
     if (protector) res = protector.moveToRoom(target)
     if (keeper) {
       if (protector) {
@@ -102,21 +96,10 @@ export default class Duet {
     return true
   }
 
-  heal() {
-    console.log('heal')
-    const creeps = this.creeps
-    const healer = creeps[creeps.length - 1]
-    if (!healer) return false
-    const localCreeps = creeps.filter((c) => c.pos.getRangeTo(healer) <= 3)
-    const toBeHealed = _.max(localCreeps, (c) => c.hitsMax - c.hits)
-    if (healer.pos.isNearTo(toBeHealed)) return healer.heal(toBeHealed) === 0
-    return healer.rangedHeal(toBeHealed) === 0
-  }
-
   connect() {
-    const keeper = this.keep
+    const keeper = this.keeper
     if (!keeper) return false
-    const protector = this.protect
+    const protector = this.protector
     if (!protector) return false
     console.log('connecting', protector.name, keeper.name)
     if (keeper.pos.getRangeTo(protector) > 1) keeper.moveTo(protector)
@@ -125,19 +108,19 @@ export default class Duet {
   }
 
   destroy() {
-    const keeper = this.keep
+    const keeper = this.keeper
     if (keeper && keeper.memory.role === Role.DUAL)
       keeper.memory.role = Role.DESTROYER
-    const protector = this.protect
+    const protector = this.protector
     if (protector && protector.memory.role === Role.DUAL)
       protector.memory.role = Role.TOWER_EKHAUSTER
   }
 
   attack(target: Structure) {
     console.log('attacking')
-    const keeper = this.keep
+    const keeper = this.keeper
     if (keeper && target.pos.isNearTo(keeper)) keeper.dismantle(target)
-    const protector = this.protect
+    const protector = this.protector
     if (protector) {
       if (
         (keeper && keeper.pos.isNearTo(protector)) ||
@@ -148,28 +131,12 @@ export default class Duet {
     }
   }
 
-  get atBorder() {
-    return this.creeps.some((c) => c.pos.rangeXY(25, 25) > 21)
-  }
-
   get valid() {
-    return this.creeps.every((c) => c.memory.role === Role.DUAL)
-  }
-
-  get fullHealed() {
-    return this.creeps.every((c) => c.hits === c.hitsMax)
-  }
-
-  get healed() {
-    const creeps = this.creeps
-    return (
-      !creeps.every((c) => c.hits !== c.hitsMax) &&
-      creeps.every((c) => c.corpus.hasActive(TOUGH))
-    )
+    return this.validCreeps.every((c) => c.memory.role === Role.DUAL)
   }
 
   get safe() {
-    const creeps = this.creeps
+    const creeps = this.validCreeps
     if (!creeps.length || creeps.some((c) => c.pos.isBorder())) return true
     const room = creeps[0].room
     const hitCalc = new HitCalculator(room)
@@ -180,8 +147,8 @@ export default class Duet {
   }
 
   get connected() {
-    const keeper = this.keep
-    const protector = this.protect
+    const keeper = this.keeper
+    const protector = this.protector
     if (!keeper || !protector) return false
     const range = keeper.pos.rangeTo(protector)
     console.log(range)
@@ -197,38 +164,21 @@ export default class Duet {
     return range <= 1
   }
 
-  get whole() {
-    return !!(this.keep && this.protect)
-  }
-
   get pos(): RoomPosition | undefined {
-    const creeps = this.creeps
+    const creeps = this.validCreeps
     return creeps[0] && creeps[0].pos
   }
 
-  get keep() {
-    return this.keeper.object
+  get keeper() {
+    return this.creeps[0].object
   }
 
-  get protect() {
-    return this.protector.object
-  }
-
-  get creeps() {
-    const creeps: Creep[] = []
-    const keeper = this.keep
-    if (keeper) creeps.push(keeper)
-    const protector = this.protect
-    if (protector) creeps.push(protector)
-    return creeps
+  get protector() {
+    return this.creeps[1].object
   }
 
   get room() {
-    const creeps = this.creeps
+    const creeps = this.validCreeps
     return creeps[0] && creeps[0].room
-  }
-
-  private get fatigued() {
-    return this.creeps.some((c) => c.fatigue)
   }
 }

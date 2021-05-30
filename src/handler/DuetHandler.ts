@@ -19,7 +19,7 @@ export default class DuetHandler {
   handle() {
     const duet = this.findOrCreateDuet()
     if (!duet) return
-    duet.heal()
+    duet.autoHeal()
     const safe = duet.safe
     if (safe && Game.cpu.bucket < 100) return
     if (!duet.whole || !duet.valid) return this.safeDestroyDuet(duet)
@@ -27,12 +27,12 @@ export default class DuetHandler {
     const room = duet.room
     const pos = duet.pos
     if (!pos) return
-    if (!safe || !duet.healed) {
+    if (!safe || !duet.safetyHealed) {
       if (!safe) console.log('unsafe')
       else console.log('unhealed')
       if (
         !duet.fullHealed &&
-        (duet.keep?.room.name !== duet.protect?.room.name || duet.atBorder)
+        (duet.keeper?.room.name !== duet.protector?.room.name || duet.atBorder)
       ) {
         console.log('tragical')
         return duet.moveTo({ pos: this.room.sources.colonyPosition })
@@ -100,11 +100,11 @@ export default class DuetHandler {
   }
 
   get keeperPresent() {
-    return !!this.duet?.keep
+    return !!this.duet?.keeper
   }
 
   get protectorPresent() {
-    return !!this.duet?.protect
+    return !!this.duet?.protector
   }
 
   private recover() {

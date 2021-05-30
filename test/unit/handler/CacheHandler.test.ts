@@ -16,8 +16,6 @@ describe('CacheHandler', () => {
       rooms: {},
       terminals: {},
       factories: {},
-      roomKeepers: {},
-      roomStructures: {},
       feromon: {},
       links: {},
     }
@@ -25,7 +23,7 @@ describe('CacheHandler', () => {
     cacheHandler = new CacheHandler(cache, intershardMemoryHandler)
   })
 
-  'creeps spawns powerSpawns rooms terminals factories roomKeepers roomStructures'
+  'creeps spawns powerSpawns rooms terminals factories'
     .split(' ')
     .forEach((property) => {
       const key = property as keyof GlobalCache & keyof CacheHandler

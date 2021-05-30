@@ -14,29 +14,21 @@ describe('Room', () => {
     room.memory.controllerLink = '9'
   })
   ;[
-    ['cache', 'rooms', { scoutsWorking: 0 }],
+    [
+      'cache',
+      'rooms',
+      { scoutsWorking: 0, sourceKeeperPositions: [], structurePositions: [] },
+    ],
     ['factoryCache', 'factories', {}],
     ['powerSpawnCache', 'powerSpawns', {}],
   ].forEach((keys) => {
     describe(`#${keys[0]}`, () => {
-      context('value is not cached', () => {
-        it('returns default value', () => {
-          expect(room[keys[0] as keyof Room]).to.eql(keys[2])
-        })
+      it('value is cached', () => {
+        expect(room[keys[0] as keyof Room]).to.eq(room[keys[0] as keyof Room])
       })
 
-      context('value is cached', () => {
-        const cachedObject = { lvl: 1, scoutsWorking: 0 }
-        beforeEach(() => {
-          const typedCache = global.Cache[
-            keys[1] as keyof WrappedGlobalCache
-          ] as GlobalCache['rooms']
-          typedCache['test'] = cachedObject
-        })
-
-        it('returns cached object', () => {
-          expect(room[keys[0] as keyof Room]).to.eq(cachedObject)
-        })
+      it('has default value specified such', () => {
+        expect(room[keys[0] as keyof Room]).to.eql(keys[2])
       })
     })
   })
@@ -123,25 +115,8 @@ describe('Room', () => {
   })
 
   describe('#sources', () => {
-    context('when value not cached', () => {
-      beforeEach(() => {
-        delete room._sourceHandler
-      })
-
-      it('returns new instance', () => {
-        expect(room.sources).to.eq(room._sourceHandler)
-      })
-    })
-
-    context('when value cached', () => {
-      const cached = {} as SourceHandler
-      beforeEach(() => {
-        room._sourceHandler = cached
-      })
-
-      it('returns cached instance', () => {
-        expect(room.sources).to.eq(cached)
-      })
+    it('value is cached', () => {
+      expect(room.sources).to.eq(room.sources)
     })
   })
 

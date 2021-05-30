@@ -1,8 +1,7 @@
-import { posToChar } from 'planner/pos'
 import { findSourceKeepers } from './find'
-import charPosIterator from './charPosIterator'
 import Feromon from './feromon'
 import { pickBestDirectionFrom } from 'routine/shared'
+import _ from 'lodash'
 
 interface OffsetByDirection {
   [key: number]: number[]
@@ -18,15 +17,6 @@ export const offsetsByDirection: OffsetByDirection = {
   [TOP_LEFT]: [-1, -1],
 }
 
-function saveCache(positions: RoomPosition[]) {
-  if (!positions.length) return
-  let poses = ''
-  positions.forEach((p) => {
-    poses += posToChar(p)
-  })
-  global.Cache.roomKeepers[positions[0].roomName] = poses
-}
-
 export function createUnwalkableMatrix() {
   const matrix = new PathFinder.CostMatrix()
   for (let ox = 0; ox <= 49; ox++)
@@ -34,34 +24,24 @@ export function createUnwalkableMatrix() {
   return matrix
 }
 
-const blackMatrix = createUnwalkableMatrix()
 function roomCallback(roomName: string, costMatrix: CostMatrix) {
-  if (Memory.pathRoomBlacklist && Memory.pathRoomBlacklist[roomName])
-    return blackMatrix
   const room = Game.rooms[roomName]
-  if (!room) {
-    const cache = global.Cache.roomKeepers[roomName]
-    if (cache)
-      charPosIterator(cache, (x, y) => {
-        for (let ox = -3; ox <= 3; ox++)
-          for (let oy = -3; oy <= 3; oy++) costMatrix.set(x + ox, y + oy, 25)
-      })
-    const structs = global.Cache.roomStructures[roomName]
-    if (structs) charPosIterator(structs, (x, y) => costMatrix.set(x, y, 255))
+  if (room) {
+    const sourceKeepers = findSourceKeepers(room)
+    room.cache.sourceKeeperPositions = sourceKeepers.map((c) => c.pos)
+    room.cache.structurePositions = room.find(FIND_STRUCTURES).map((s) => s.pos)
+  }
+  const roomCache = global.Cache.rooms[roomName]
+  if (!roomCache) {
     return costMatrix
   }
-  const sourceKeepers = findSourceKeepers(room)
-  sourceKeepers.forEach((c) => {
-    const { x, y } = c.pos
+  roomCache.sourceKeeperPositions.forEach(({ x, y }) => {
     for (let ox = -3; ox <= 3; ox++)
       for (let oy = -3; oy <= 3; oy++) costMatrix.set(x + ox, y + oy, 25)
   })
-  saveCache(sourceKeepers.map((c) => c.pos))
-  let structStr = ''
-  room.find(FIND_STRUCTURES).forEach((s) => {
-    structStr += posToChar(s.pos)
+  roomCache.structurePositions.forEach(({ x, y }) => {
+    costMatrix.set(x, y, 255)
   })
-  global.Cache.roomStructures[roomName] = structStr
   return costMatrix
 }
 

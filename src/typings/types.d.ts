@@ -64,9 +64,6 @@ interface Memory {
   roomLimit?: number
   autoScout?: boolean
   maxUpgradersCount?: number
-  pathRoomBlacklist?: {
-    [key: string]: 1
-  }
 
   profiler: any
 }

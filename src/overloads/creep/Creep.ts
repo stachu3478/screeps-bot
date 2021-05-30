@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import defineGetter from 'utils/defineGetter'
 import ResourceRouteProcessor from 'job/resourceRoute/ResourceRouteProcessor'
 import BuildingRouteProcessor from 'job/buildingRoute/BuildingRouteProcessor'
@@ -12,11 +13,12 @@ function defineCreepGetter<T extends keyof Creep>(
   defineGetter<Creep, CreepConstructor, T>(Creep, property, handler)
 }
 
-defineCreepGetter('cache', (self) => {
-  const cache = global.Cache.creeps
-  const key = self.my ? self.name : self.owner.username + self.name
-  return cache[key] || (cache[key] = {})
-})
+function memoizeByCreep<T>(fn: (c: Creep) => T) {
+  return _.memoize(fn, (c: Creep) => c.id)
+}
+
+const creepCache = memoizeByCreep(() => ({}))
+defineCreepGetter('cache', (self) => creepCache(self))
 
 defineCreepGetter('motherRoom', (self) => {
   return Game.rooms[self.memory.room] || self.room
@@ -29,30 +31,25 @@ defineCreepGetter('isRetired', (self) => {
   )
 })
 
-defineCreepGetter('routeProcessor', (self) => {
-  return (
-    self.cache.routeProcessor ||
-    (self.cache.routeProcessor = new ResourceRouteProcessor(self))
-  )
-})
+const creepRouteProcessor = memoizeByCreep((c) => new ResourceRouteProcessor(c))
+defineCreepGetter('routeProcessor', (self) => creepRouteProcessor(self))
 
-defineCreepGetter('buildingRouteProcessor', (self) => {
-  return (
-    self.cache.buildingRouteProcessor ||
-    (self.cache.buildingRouteProcessor = new BuildingRouteProcessor(self))
-  )
-})
+const creepBuildingRouteProcessor = memoizeByCreep(
+  (c) => new BuildingRouteProcessor(c),
+)
+defineCreepGetter('buildingRouteProcessor', (self) =>
+  creepBuildingRouteProcessor(self),
+)
 
-defineCreepGetter('repairRouteProcessor', (self) => {
-  return (
-    self.cache.repairRouteProcessor ||
-    (self.cache.repairRouteProcessor = new RepairRouteProcessor(self))
-  )
-})
+const creepRepairRouteProcessor = memoizeByCreep(
+  (c) => new RepairRouteProcessor(c),
+)
+defineCreepGetter('repairRouteProcessor', (self) =>
+  creepRepairRouteProcessor(self),
+)
 
-defineCreepGetter('corpus', (self) => {
-  return self.cache.corpus || (self.cache.corpus = new CreepCorpus(self))
-})
+const creepCorpus = memoizeByCreep((c) => new CreepCorpus(c))
+defineCreepGetter('corpus', (self) => creepCorpus(self))
 
 Creep.prototype.isSafeFrom = function (creep: Creep) {
   return this.pos.getRangeTo(creep) > creep.corpus.safeDistance
@@ -108,4 +105,23 @@ Creep.prototype.withdraw = function (
     t.onWithdraw(transfered)
   }
   return res
+}
+
+Creep.prototype._rangedHeal = Creep.prototype.rangedHeal
+Creep.prototype.rangedHeal = function (t) {
+  if (this.cache.lastRangedHealPerformed === Game.time) {
+    return OK
+  }
+  const res = this._rangedHeal(t)
+  if (res === OK) {
+    this.cache.lastRangedHealPerformed = Game.time
+  }
+  return res
+}
+
+Creep.prototype.dismantleOrAttack = function (t) {
+  if (t instanceof Structure && this.corpus.hasActive(WORK)) {
+    return this.dismantle(t)
+  }
+  return this.attack(t)
 }

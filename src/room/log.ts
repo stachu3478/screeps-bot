@@ -37,23 +37,10 @@ export default function handleLog(
           case STRUCTURE_ROAD:
             cache.roadBuilt = 0
             break
-          case STRUCTURE_RAMPART:
-          case STRUCTURE_WALL:
-            cache.shielded = 0
-            break
           default:
-            cache.built = 0
             console.log('Structure has been destroyed: ' + type)
         }
         break
-      case EVENT_UPGRADE_CONTROLLER:
-        const controllerLevel = controller.level
-        if (controllerLevel !== cache.lvl) {
-          cache.built = 0
-          cache.shielded = 0
-          cache.lvl = controllerLevel
-          cache.struct_iteration = 0
-        }
     }
   })
 }

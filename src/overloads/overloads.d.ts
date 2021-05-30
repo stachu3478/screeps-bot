@@ -14,7 +14,6 @@ interface Room {
   factoryCache: FactoryCache
   powerSpawnCache: PowerSpawnCache
   sources: SourceHandler
-  _sourceHandler?: SourceHandler
   my: boolean
   shieldPositions: RoomPosition[]
   defencePolicy: DefencePolicy
@@ -100,7 +99,7 @@ interface RoomPosition {
   lookForAtInRange<T extends keyof AllLookAtTypes>(
     type: T,
     range: number,
-  ): LookForAtAreaResultArray<Structure, T>
+  ): LookForAtAreaResultArray<AllLookAtTypes[T], T>
 }
 
 interface Creep {
@@ -116,8 +115,12 @@ interface Creep {
   moveToRoom: (room: string) => ScreepsReturnCode
   _transfer: Creep['transfer']
   _withdraw: Creep['withdraw']
+  _rangedHeal: Creep['rangedHeal']
   onWithdraw: (amount: number) => void
   onTransfer: (amount: number) => void
+  dismantleOrAttack: (
+    target: Structure<StructureConstant> | AnyCreep,
+  ) => ScreepsReturnCode
 }
 
 interface PowerCreep {

@@ -1,5 +1,6 @@
 import './buildingManagement'
 
+import _ from 'lodash'
 import defineGetter from 'utils/defineGetter'
 import SourceHandler from 'handler/SourceHandler'
 import ShieldPlanner from 'planner/shieldPlanner'
@@ -26,10 +27,16 @@ function defineRoomGetter<T extends keyof Room>(
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
 }
 
-defineRoomGetter('cache', (self) => {
-  const cache = global.Cache.rooms
-  return cache[self.name] || (cache[self.name] = { scoutsWorking: 0 })
-})
+function memoizeByRoom<T>(fn: (r: Room) => T) {
+  return _.memoize(fn, (r: Room) => r.name)
+}
+
+const roomCache = memoizeByRoom((r) => ({
+  scoutsWorking: 0,
+  sourceKeeperPositions: [],
+  structurePositions: [],
+}))
+defineRoomGetter('cache', (self) => roomCache(self))
 
 defineRoomGetter('factoryCache', (self) => {
   const cache = global.Cache.factories
@@ -67,43 +74,30 @@ defineRoomGetter('spawn', (self) => {
   return self.find(FIND_MY_SPAWNS)[0]
 })
 
-defineRoomGetter('sources', (self) => {
-  return self._sourceHandler || (self._sourceHandler = new SourceHandler(self))
-})
+const roomSourceHandler = memoizeByRoom((r) => new SourceHandler(r))
+defineRoomGetter('sources', (self) => roomSourceHandler(self))
 
 defineRoomGetter('my', (self) => {
   return self.controller ? self.controller.my === true : false
 })
 
-defineRoomGetter('shieldPositions', (self) => {
-  const cache = self.cache
-  if (!cache.shieldPlanner) cache.shieldPlanner = new ShieldPlanner(self)
-  return cache.shieldPlanner.roomPositions
-})
+const roomShieldPlanner = memoizeByRoom((r) => new ShieldPlanner(r))
+defineRoomGetter(
+  'shieldPositions',
+  (self) => roomShieldPlanner(self).roomPositions,
+)
 
-defineRoomGetter('defencePolicy', (self) => {
-  const cache = self.cache
-  if (!cache.defencePolicy) cache.defencePolicy = new DefencePolicy(self)
-  return cache.defencePolicy
-})
+const roomDefencePolicy = memoizeByRoom((r) => new DefencePolicy(r))
+defineRoomGetter('defencePolicy', (self) => roomDefencePolicy(self))
 
-defineRoomGetter('buildingRouter', (self) => {
-  return (
-    self.cache.buildingRouter ||
-    (self.cache.buildingRouter = new RoomBuildingRouter(self))
-  )
-})
+const roomBuildingRouter = memoizeByRoom((r) => new RoomBuildingRouter(r))
+defineRoomGetter('buildingRouter', (self) => roomBuildingRouter(self))
 
-defineRoomGetter('repairRouter', (self) => {
-  return (
-    self.cache.repairRouter ||
-    (self.cache.repairRouter = new RoomRepairRouter(self))
-  )
-})
+const roomRepairRouter = memoizeByRoom((r) => new RoomRepairRouter(r))
+defineRoomGetter('repairRouter', (self) => roomRepairRouter(self))
 
-defineRoomGetter('links', (self) => {
-  return self.cache.links || (self.cache.links = new RoomLinks(self))
-})
+const roomLinks = memoizeByRoom((r) => new RoomLinks(r))
+defineRoomGetter('links', (self) => roomLinks(self))
 
 defineRoomGetter('leastAvailablePosition', (self) => {
   const saved = self.cache.leastAvailablePosition
@@ -128,18 +122,16 @@ defineRoomGetter('leastAvailablePosition', (self) => {
   return lastPosition
 })
 
-defineRoomGetter('location', (self) => {
-  return new RoomLocation(self.name)
-})
+const roomLocation = memoizeByRoom((r) => new RoomLocation(r.name))
+defineRoomGetter('location', (self) => roomLocation(self))
 
-defineRoomGetter('pathScanner', (self) => {
-  return (
-    self.cache.pathScanner ||
-    (self.cache.pathScanner = new RoomPathScanner(self, {
+const roomPathScanner = memoizeByRoom(
+  (r) =>
+    new RoomPathScanner(r, {
       maxCost: Math.max(enemies.maxCost, claim.maxCost),
-    }))
-  )
-})
+    }),
+)
+defineRoomGetter('pathScanner', (self) => roomPathScanner(self))
 
 defineRoomGetter('owner', (self) => {
   const controller = self.controller
@@ -149,26 +141,17 @@ defineRoomGetter('owner', (self) => {
   return owner.username
 })
 
-defineRoomGetter('enemyDetector', (self) => {
-  return (
-    self.cache.enemyDetector ||
-    (self.cache.enemyDetector = new EnemyRoomDetector(self))
-  )
-})
+const roomEnemyDetector = memoizeByRoom((r) => new EnemyRoomDetector(r))
+defineRoomGetter('enemyDetector', (self) => roomEnemyDetector(self))
 
-defineRoomGetter('boosts', (self) => {
-  return self.cache.boosts || (self.cache.boosts = new BoostManager(self))
-})
+const roomBoostManager = memoizeByRoom((r) => new BoostManager(r))
+defineRoomGetter('boosts', (self) => roomBoostManager(self))
 
-defineRoomGetter('buildings', (self) => {
-  const cache = self.cache
-  return cache.buildings || (cache.buildings = new RoomBuildings(self))
-})
+const roomBuildings = memoizeByRoom((r) => new RoomBuildings(r))
+defineRoomGetter('buildings', (self) => roomBuildings(self))
 
-defineRoomGetter('duet', (self) => {
-  const cache = self.cache
-  return cache.duet || (cache.duet = new DuetHandler(self))
-})
+const roomDuetHandler = memoizeByRoom((r) => new DuetHandler(r))
+defineRoomGetter('duet', (self) => roomDuetHandler(self))
 
 Room.prototype.store = function (resource: ResourceConstant) {
   const storage = this.storage

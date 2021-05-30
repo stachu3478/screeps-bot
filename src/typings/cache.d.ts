@@ -1,28 +1,13 @@
 // cache.d.ts
 interface RoomCache {
   repaired?: 0 | 1
-  struct_iteration?: number
-  road_iteration?: number
   averageUsage?: number
-  built?: 0 | 1
   roadBuilt?: number
-  lvl?: number
   healthy?: 0 | 1
-  shielded?: number
-  quadSquad?: QuadSquadHandler
-  shieldPlanner?: ShieldPlanner
-  defencePolicy?: DefencePolicy
-  buildingRouter?: RoomBuildingRouter
-  repairRouter?: RoomRepairRouter
   leastAvailablePosition?: string
-  pathScanner?: RoomPathScanner
-  enemyDetector?: EnemyRoomDetector
-  boosts?: BoostManager
   scoutsWorking: number
-  buildings?: RoomBuildings
-  duet?: DuetHandler
-  links?: RoomLinks
-
+  sourceKeeperPositions: RoomPosition[]
+  structurePositions: RoomPosition[]
   labCooldown?: number
 }
 
@@ -40,12 +25,7 @@ interface SpawnCache {
 
 interface CreepCache {
   moverPath?: PathStep[]
-  workpartCount?: number
-  routeProcessor?: ResourceRouteProcessor
-  buildingRouteProcessor?: BuildingRouteProcessor
-  repairRouteProcessor?: RepairRouteProcessor
-  _bodypartHitThreshold?: Record<BodyPartConstant, number>
-  corpus?: CreepCorpus
+  lastRangedHealPerformed?: number
 }
 
 interface PowerSpawnCache {
@@ -54,7 +34,6 @@ interface PowerSpawnCache {
 
 interface TerminalCache {
   state?: number
-  businessHandler?: BusinessHandler
   dealResourceType?: ResourceConstant
 }
 
@@ -93,12 +72,6 @@ interface GlobalCache {
     [key: string]: LinkCache
   }
 
-  roomKeepers: {
-    [key: string]: string
-  }
-  roomStructures: {
-    [key: string]: string
-  }
   ownedRooms?: number
   feromon: {
     [key: string]: number
