@@ -50,7 +50,7 @@ export default [
   // protect your base
   {
     structure: STRUCTURE_RAMPART,
-    positions: (room: Room) => room.shieldPositions,
+    positions: (room: Room) => room.positions.forShield,
     from: findStorageTerminalAndContainers,
     //afterBuild: (creep: Creep, rampart: StructureRampart) => creep.repair(rampart)
   },
@@ -127,10 +127,12 @@ export default [
       charToPositionMapper(room, room.memory.structs, 4, 1),
     from: findStorageAndTerminal,
   },
-  /*{ // todo funciton returning lab positions clearly & check integrity after planning lab
+  {
     structure: STRUCTURE_LAB,
-    positions: (room: Room) => charToPositionMapper(room, room.memory.structs, 4, 1)
-  },*/
+    positions: (room: Room) => room.positions.forLabs,
+    from: findStorageAndTerminal,
+    forceReplacement: true,
+  },
   {
     structure: STRUCTURE_POWER_SPAWN,
     positions: (room: Room) =>
@@ -145,7 +147,7 @@ export default [
   },
   {
     structure: STRUCTURE_OBSERVER,
-    positions: (room: Room) => [room.leastAvailablePosition],
+    positions: (room: Room) => [room.positions.leastAvailable],
     from: findStorageAndTerminal,
   },
 ].map((options) => new BuildingRoute(options))

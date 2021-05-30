@@ -1,13 +1,28 @@
-import PlannerMatrix from './matrix'
-import xyToChar from './pos'
 import charPosIterator from 'utils/charPosIterator'
+import PlannerMatrix from './matrix'
+import checkIntegrity from './place/checkIntegrity'
+import xyToChar from './pos'
 
-export default {
-  run: function run(room: Room) {
-    if (!room.controller) return
-    const mem = room.memory
+export default class LabPlanner {
+  private positions: RoomPosition[]
+  private room: Room
+
+  constructor(room: Room) {
+    this.room = room
+    this.positions = []
+    const labsMemory = this.labsMemory
+    if (labsMemory) this.generateFromMemory(labsMemory)
+    else this.generate()
+  }
+
+  get roomPositions() {
+    return this.positions
+  }
+
+  private generate() {
+    const mem = this.room.memory
     if (!mem.structs) return
-    const terrain = room.getTerrain()
+    const terrain = this.room.getTerrain()
     const pm = new PlannerMatrix(terrain)
     pm.coverBorder()
 
@@ -69,13 +84,25 @@ export default {
     bestExternalPoses.forEach((xy) => {
       pm.setField(xy & 63, xy >> 6, 1)
     })
-
-    const newStructs: number[] = []
-    pm.each((v, xy) => {
-      if (v === 3) newStructs.push(xy)
-    })
-    mem.structs = mem.structs.substr(0, 12) + String.fromCharCode(...newStructs)
     mem.internalLabs = String.fromCharCode(...bestInternalPoses)
     mem.externalLabs = String.fromCharCode(...bestExternalPoses)
-  },
+    mem.structs = checkIntegrity(
+      mem.structs,
+      mem.internalLabs + mem.externalLabs,
+    )
+  }
+
+  private generateFromMemory(labsMemory: string) {
+    this.positions = labsMemory
+      .split('')
+      .map((c) => this.room.positionFromChar(c))
+  }
+
+  private get labsMemory() {
+    const mem = this.room.memory
+    if (!mem.internalLabs || !mem.externalLabs) {
+      return
+    }
+    return mem.internalLabs + mem.externalLabs
+  }
 }

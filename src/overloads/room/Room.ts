@@ -3,12 +3,8 @@ import './buildingManagement'
 import _ from 'lodash'
 import defineGetter from 'utils/defineGetter'
 import SourceHandler from 'handler/SourceHandler'
-import ShieldPlanner from 'planner/shieldPlanner'
 import DefencePolicy from 'room/DefencePolicy'
 import RoomBuildingRouter from 'job/buildingRoute/RoomBuildingRouter'
-import { posToChar } from 'planner/pos'
-import whirl from 'utils/whirl'
-import { isWalkable } from 'utils/path'
 import RoomRepairRouter from 'job/repairRoute/RoomRepairRouter'
 import RoomLocation from './RoomLocation'
 import RoomPathScanner from 'planner/RoomPathScanner'
@@ -19,6 +15,7 @@ import BoostManager from './BoostManager'
 import RoomBuildings from './RoomBuildings'
 import DuetHandler from 'handler/DuetHandler'
 import RoomLinks from './RoomLinks'
+import RoomPositions from './RoomPositions'
 
 function defineRoomGetter<T extends keyof Room>(
   property: T,
@@ -81,11 +78,8 @@ defineRoomGetter('my', (self) => {
   return self.controller ? self.controller.my === true : false
 })
 
-const roomShieldPlanner = memoizeByRoom((r) => new ShieldPlanner(r))
-defineRoomGetter(
-  'shieldPositions',
-  (self) => roomShieldPlanner(self).roomPositions,
-)
+const roomPositions = memoizeByRoom((r) => new RoomPositions(r))
+defineRoomGetter('positions', (self) => roomPositions(self))
 
 const roomDefencePolicy = memoizeByRoom((r) => new DefencePolicy(r))
 defineRoomGetter('defencePolicy', (self) => roomDefencePolicy(self))
@@ -98,29 +92,6 @@ defineRoomGetter('repairRouter', (self) => roomRepairRouter(self))
 
 const roomLinks = memoizeByRoom((r) => new RoomLinks(r))
 defineRoomGetter('links', (self) => roomLinks(self))
-
-defineRoomGetter('leastAvailablePosition', (self) => {
-  const saved = self.cache.leastAvailablePosition
-  if (saved) return self.positionFromChar(saved)
-  const positions = PathFinder.search(
-    self.sources.colonyPosition,
-    self.find(FIND_EXIT).map((p) => ({ pos: p, range: 500 })),
-    { flee: true, maxRooms: 1, swampCost: 2 },
-  ).path
-  let lastPosition = positions.find((p) => !p.lookFor(LOOK_STRUCTURES).length)
-  if (!lastPosition) {
-    const xy = whirl(
-      25,
-      25,
-      (x, y) =>
-        isWalkable(self, x, y) && !self.lookForAt(LOOK_STRUCTURES, x, y).length,
-    )
-    if (!xy) throw new Error('Failed to find least available position')
-    lastPosition = new RoomPosition(xy[0], xy[1], self.name)
-  }
-  self.cache.leastAvailablePosition = posToChar(lastPosition)
-  return lastPosition
-})
 
 const roomLocation = memoizeByRoom((r) => new RoomLocation(r.name))
 defineRoomGetter('location', (self) => roomLocation(self))

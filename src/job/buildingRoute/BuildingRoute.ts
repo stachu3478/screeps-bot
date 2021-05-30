@@ -22,6 +22,10 @@ interface BuildingRouteOptions {
    * Function launched when all work is done
    */
   done?: (room: Room) => any
+  /**
+   * Whether building should be replaced if an other type exists there
+   */
+  forceReplacement?: boolean
 }
 
 const truther = () => true
@@ -56,6 +60,10 @@ export default class BuildingRoute {
 
   get structure() {
     return this.options.structure
+  }
+
+  get forceReplacement() {
+    return !!this.options.forceReplacement
   }
 
   private get minimalStoreToDraw() {

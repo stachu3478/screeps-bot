@@ -15,11 +15,10 @@ interface Room {
   powerSpawnCache: PowerSpawnCache
   sources: SourceHandler
   my: boolean
-  shieldPositions: RoomPosition[]
+  positions: RoomPositions
   defencePolicy: DefencePolicy
   buildingRouter: RoomBuildingRouter
   repairRouter: RoomRepairRouter
-  leastAvailablePosition: RoomPosition
   location: RoomLocation
   pathScanner: RoomPathScanner
   owner?: string

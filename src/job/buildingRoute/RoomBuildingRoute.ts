@@ -60,12 +60,16 @@ export default class RoomBuildingRoute {
   createTarget(positions: RoomPosition[] = this.positions) {
     let result = 1
     positions.some((pos) => {
-      if (
-        pos
-          .lookFor(LOOK_STRUCTURES)
-          .some((s) => s.structureType === this.route.structure)
+      const structuresAt = pos.lookFor(LOOK_STRUCTURES)
+      const matchingStructure = structuresAt.some(
+        (s) => s.structureType === this.route.structure,
       )
+      if (matchingStructure) {
         return false
+      }
+      if (this.clearSpace(structuresAt)) {
+        return true
+      }
       result = pos.createConstructionSite(this.route.structure)
       if (result === OK) return true
       if (result === ERR_RCL_NOT_ENOUGH) return true
@@ -73,6 +77,13 @@ export default class RoomBuildingRoute {
       return false
     })
     return result === OK
+  }
+
+  private clearSpace(structuresAt: Structure[]) {
+    if (this.route.forceReplacement) {
+      return structuresAt.some((s) => !s.isWalkable && s.destroy() === OK)
+    }
+    return false
   }
 
   private get room() {
