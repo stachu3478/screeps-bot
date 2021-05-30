@@ -43,6 +43,7 @@ interface Room {
     type: T,
   ): ConcreteStructure<T> | undefined
   store: (resource: ResourceConstant) => number
+  totalStore: (resource: ResourceConstant) => number
   positionFromChar: (char: string) => RoomPosition
   labsFromChars: (char: string) => StructureLab[]
 }
@@ -79,6 +80,7 @@ interface StructurePowerSpawn {
 
 interface StructureFactory {
   cache: FactoryCache
+  router: FactoryRouter
 }
 
 interface StructureTerminal {

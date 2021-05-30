@@ -9,4 +9,12 @@ export default class Memoized<T extends { id: Id<T> }> {
     const id = this.t ? this.t.id : ('' as Id<T>)
     return Game.getObjectById(id)
   }
+
+  get permitted() {
+    const object = this.object
+    if (!object) {
+      throw new Error('Memoized object not found')
+    }
+    return object
+  }
 }

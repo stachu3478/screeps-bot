@@ -41,7 +41,7 @@ interface FactoryCache {
   state?: number
   needs?: ResourceConstant
   dumps?: ResourceConstant
-  producing?: ResourceConstant
+  producing?: CommodityConstant
 }
 
 interface LinkCache {

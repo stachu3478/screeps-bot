@@ -5,10 +5,6 @@ export const factoryStoragePerResource = Math.floor(
 )
 export const com = COMMODITIES as CommoMap
 
-interface ResourceMap {
-  [key: string]: number
-}
-
 interface ComponentMap {
   [key: string]: {
     [key: string]: number
@@ -49,43 +45,12 @@ export function isProducableByFactory(
   return true
 }
 
-function isNeededByFactory(
-  resources: StoreDefinition,
-  resource: ResourceConstant,
-) {
-  for (const name in commoditiesComponents[resource]) {
-    if (isProducableByFactory(resources, name as ResourceConstant)) {
-      return true
-    }
-  }
-  return false
-}
-
-export default function handleFactory(
-  resources: StoreDefinition,
-  factory: StructureFactory,
-) {
+export default function handleFactory(factory: StructureFactory) {
   const cache = factory.cache
   if (!cache.needs) {
-    for (const n in resources) {
-      const name = n as ResourceConstant
-      if (factory.store[name] >= factoryStoragePerResource) continue
-      if (isNeededByFactory(resources, name)) {
-        cache.needs = name
-        cache.state = State.FACT_BOARD
-        break
-      }
-    }
+    cache.needs = factory.router.findNeededRecipeComponent()
   }
-
   if (!cache.dumps) {
-    for (const n in factory.store) {
-      const name = n as ResourceConstant
-      if (resources[name] >= nominalStorage) continue
-      if (!isNeededByFactory(factory.store, name)) {
-        cache.dumps = name
-        break
-      }
-    }
+    cache.dumps = factory.router.findNeededRecipeComponent()
   }
 }

@@ -1,6 +1,6 @@
-import { energyToNukerThreshold } from './storage'
+import { energyToNukerThreshold } from '../storage'
 import ResourceRoute from 'job/resourceRoute/ResourceRoute'
-import { energyBufferingThreshold } from './terminal'
+import { energyBufferingThreshold } from '../terminal'
 
 /**
  * All definitions of the system of transferring

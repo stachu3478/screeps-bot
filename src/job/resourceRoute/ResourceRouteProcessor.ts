@@ -1,4 +1,4 @@
-import routes from '../../config/resourceRoutes'
+import routes from '../../config/routes/resource'
 import CreepResourceRoute from './CreepResourceRoute'
 import CreepMemoized from 'utils/CreepMemoized'
 

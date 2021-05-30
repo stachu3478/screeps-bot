@@ -1,4 +1,4 @@
-import routes from '../../config/buildingRoutes'
+import routes from '../../config/routes/building'
 import ArrayLooper from 'utils/ArrayLooper'
 import RoomBuildingRoute from './RoomBuildingRoute'
 

@@ -132,6 +132,13 @@ Room.prototype.store = function (resource: ResourceConstant) {
   return inStorage + inTerminal
 }
 
+Room.prototype.totalStore = function (resource: ResourceConstant) {
+  const factory = this.buildings.factory
+  const inFactory = factory ? factory.store[resource] : 0
+  const inCreeps = _.sum(this.find(FIND_MY_CREEPS), (c) => c.store[resource])
+  return inFactory + inCreeps + this.store(resource)
+}
+
 Room.prototype.positionFromChar = function (char: string) {
   const charCode = char.charCodeAt(0)
   return (

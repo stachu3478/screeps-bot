@@ -1,4 +1,4 @@
-import { findStorageAndTerminal } from './buildingRoutes'
+import { findStorageAndTerminal } from './building'
 import RepairRoute from 'job/repairRoute/RepairRoute'
 
 const fortificationsAndRoads: Record<string, 1 | undefined> = {

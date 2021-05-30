@@ -1,4 +1,4 @@
-import routes from '../../config/repairRoutes'
+import routes from '../../config/routes/repair'
 import ArrayLooper from 'utils/ArrayLooper'
 import RoomRepairRoute from './RoomRepairRoute'
 
