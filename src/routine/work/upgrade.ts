@@ -12,7 +12,7 @@ export default function upgrade(creep: Creep, staticMode: boolean = false) {
   else if (result !== 0) return FAILED
   else {
     if (!staticMode && creep.pos.rangeTo(target) > 2)
-      move.cheap(creep, target, false, 3)
+      move.cheap(creep, target, false, 2)
     if (remaining <= 0) return NO_RESOURCE
     return SUCCESS
   }

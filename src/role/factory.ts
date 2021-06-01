@@ -23,6 +23,10 @@ export default function factory(factory: StructureFactory) {
       }
       const result = factory.produce(cache.producing)
       if (result === ERR_NOT_ENOUGH_RESOURCES) delete cache.producing
+      if (result === ERR_FULL) {
+        cache.state = State.IDLE
+        handleFactory(factory)
+      }
       break
     default:
       cache.state = State.FACT_BOARD
