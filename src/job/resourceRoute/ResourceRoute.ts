@@ -12,8 +12,9 @@ interface ResourceRouteOptions {
   to: AnyStoreStructure['structureType'] | StoreStructureSelector
   /**
    * Type of the resource
+   * NOTE: Resource returned by function should not change while processing route
    */
-  type: ResourceConstant // | ResourceSelector
+  type: ResourceConstant | ((room: Room) => ResourceConstant | undefined) // | ResourceSelector
   /**
    * Conditional minimum available space in target to be filled
    */
@@ -39,64 +40,26 @@ interface ResourceRouteOptions {
    * Conditional function to select source
    */
   if?: (s: AnyStoreStructure) => boolean
+  /**
+   * Function when is called when route has no job to process
+   */
+  done?: (room: Room) => void
 }
 
 const truthier = () => true
 export default class ResourceRoute {
   private options: ResourceRouteOptions
-  private sourceMatcher: StructureMatcher
-  private targetMatcher: StructureMatcher
 
   constructor(options: ResourceRouteOptions) {
     this.options = options
-    this.sourceMatcher = new StructureMatcher(this.options.from)
-    this.targetMatcher = new StructureMatcher(this.options.to)
   }
 
-  findSources(room: Room, differ?: Structure) {
-    const match = this.sourceMatcher.call(room) as AnyStoreStructure[]
-    return match.filter(
-      (s) => s !== differ && this.if(s) && this.validateSource(s),
-    )
+  get done() {
+    return this.options.done
   }
 
-  findTargets(room: Room, differ?: Structure) {
-    const match = this.targetMatcher.call(room) as AnyStoreStructure[]
-    return match.filter((s) => s !== differ && this.validateTarget(s))
-  }
-
-  /**
-   * Validates previously selected source
-   */
-  validateSource(s: AnyStoreStructure | Tombstone | Ruin) {
-    const stored = s.store[this.type] || 0
-    return (
-      stored >= this.minimalStoreToDraw && stored >= (this.options.keep || 0)
-    )
-  }
-
-  /**
-   * Validates previously selected target
-   */
-  validateTarget(s: AnyStoreStructure) {
-    return (
-      (s.store.getFreeCapacity(this.type) || 0) >=
-        this.minimalFreeCapacityToFill && this.fillAmount(s) > 0
-    )
-  }
-
-  drawAmount(source: AnyStoreStructure) {
-    if (!this.options.keep) return source.store[this.type] || 0
-    const amount = (source.store[this.type] || 0) - this.options.keep
-    return amount
-  }
-
-  fillAmount(target: AnyStoreStructure) {
-    if (!this.options.maximumFilledAmount)
-      return target.store.getFreeCapacity(this.type) || 0
-    const amount =
-      this.options.maximumFilledAmount - (target.store[this.type] || 0)
-    return amount
+  get maximumFilledAmount() {
+    return this.options.maximumFilledAmount
   }
 
   get type() {
@@ -108,7 +71,10 @@ export default class ResourceRoute {
   }
 
   get minimalStoreToDraw() {
-    return this.options.minimalStoreToDraw || 50
+    return Math.max(
+      this.options.minimalStoreToDraw || 50,
+      this.options.keep || 0,
+    )
   }
 
   get dump() {
@@ -119,7 +85,15 @@ export default class ResourceRoute {
     return this.options.if || truthier
   }
 
-  /*get drawMoreThanCanBeFilled() {
-    return !!this.options.drawMoreThanCanBeFilled
-  }*/
+  get keepAmount() {
+    return this.options.keep || 0
+  }
+
+  get from() {
+    return this.options.from
+  }
+
+  get to() {
+    return this.options.to
+  }
 }

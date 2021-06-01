@@ -37,5 +37,4 @@ const routes = [
     ),
   },
 ].map((o) => new FactoryRoute(o))
-console.log(JSON.stringify(routes))
 export default routes

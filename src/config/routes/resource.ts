@@ -1,6 +1,7 @@
 import { energyToNukerThreshold } from '../storage'
 import ResourceRoute from 'job/resourceRoute/ResourceRoute'
 import { energyBufferingThreshold } from '../terminal'
+import { factoryStoragePerResource } from 'utils/handleFactory'
 
 /**
  * All definitions of the system of transferring
@@ -108,12 +109,6 @@ export default [
     maximumFilledAmount: energyBufferingThreshold,
   },
   {
-    from: () => [],
-    to: STRUCTURE_STORAGE,
-    type: RESOURCE_ENERGY,
-  },
-  // route id 13 always has bugs idk ^
-  {
     from: STRUCTURE_TERMINAL,
     to: STRUCTURE_STORAGE,
     type: RESOURCE_ENERGY,
@@ -149,5 +144,34 @@ export default [
     type: RESOURCE_GHODIUM,
     minimalStoreToDraw: 2000,
     dump: true,
+  },
+  {
+    // factory exchange
+    from: STRUCTURE_TERMINAL,
+    to: STRUCTURE_FACTORY,
+    type: (room: Room) => room.factoryCache.needs,
+    maximumFilledAmount: factoryStoragePerResource,
+    dump: true,
+    done: (room: Room) => {
+      const factory = room.buildings.factory
+      room.factoryCache.needs = factory?.router.findNeededRecipeComponent()
+      if (factory) {
+        factory.cache.state = State.FACT_BOARD
+      }
+    },
+  },
+  {
+    from: STRUCTURE_FACTORY,
+    to: STRUCTURE_TERMINAL,
+    type: (room: Room) => room.factoryCache.dumps,
+    minimalStoreToDraw: 1,
+    dump: true,
+    done: (room: Room) => {
+      const factory = room.buildings.factory
+      room.factoryCache.dumps = factory?.router.findNotNeededRecipeComponent()
+      if (factory) {
+        factory.cache.state = State.FACT_BOARD
+      }
+    },
   },
 ].map((options) => new ResourceRoute(options))

@@ -15,9 +15,12 @@ import EnemyPicker from './military/EnemyPicker'
 import move, { isWalkable, offsetsByDirection } from 'utils/path'
 import { dangerStyle, infoStyle } from 'overloads/RoomVisual'
 
-function moveCreepsOutOfSpawnsIfBlocked(spawns: StructureSpawn[]) {
+function probabilisticallyMoveCreepsOutOfSpawnsIfBlocked(
+  spawns: StructureSpawn[],
+) {
   spawns.forEach((s) => {
     const spawning = s.spawning
+    if (Math.random() < 0.5) return
     if (!spawning) return
     if (spawning.remainingTime) return
     if (
@@ -100,7 +103,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
   handleLog(cache, controller)
 
   const spawns = room.find(FIND_MY_SPAWNS)
-  moveCreepsOutOfSpawnsIfBlocked(spawns)
+  probabilisticallyMoveCreepsOutOfSpawnsIfBlocked(spawns)
   if (!spawns.length) {
     if (count === 0 && !creepCountByRole[Role.RETIRED]) callRescue(room)
     const sites = room.find(FIND_CONSTRUCTION_SITES)

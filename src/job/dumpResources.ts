@@ -10,7 +10,7 @@ export default function dumpResources(
   if (creep.store.getUsedCapacity() === 0) return false
   for (const name in creep.store) {
     const resource = name as ResourceConstant
-    if (creep.store[resource] > 0) {
+    if (creep.store[resource]) {
       const potentialStructure = getFillableGenericStruture(creep.motherRoom)
       if (potentialStructure) {
         creep.memory[Keys.fillTarget] = potentialStructure.id

@@ -1,11 +1,5 @@
 import move from '../../utils/path'
-import {
-  SUCCESS,
-  NOTHING_TODO,
-  NOTHING_DONE,
-  FAILED,
-  DONE,
-} from 'constants/response'
+import { SUCCESS, NOTHING_TODO, NOTHING_DONE, DONE } from 'constants/response'
 
 export default function memoryLessFill(
   creep: Creep,
@@ -25,6 +19,9 @@ export default function memoryLessFill(
       return 0
     }
   } else if (result !== 0) {
+    if (result === ERR_FULL) {
+      return NOTHING_TODO // idk?
+    }
     throw new Error(`Invalid response: ${result}`)
     //return FAILED
   } else {

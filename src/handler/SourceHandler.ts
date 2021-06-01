@@ -31,6 +31,11 @@ export default class SourceHandler {
   }
 
   getOrAssign(creep: Creep): number {
+    if (creep.isRetired) {
+      return this.positions.indexOf(
+        creep.pos.findClosestByPath(this.positions) as any,
+      )
+    }
     const index = this.memory.findIndex((info) => {
       const name = info.slice(2)
       return creep.name === name

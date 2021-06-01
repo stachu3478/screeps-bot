@@ -1,12 +1,19 @@
-import ResourceRoute from './ResourceRoute'
 import memoryLessFill from 'routine/haul/memoryLessFill'
 import memoryLessDraw from 'routine/haul/memoryLessDraw'
 import dumpResources from '../dumpResources'
-import { NOTHING_DONE, SUCCESS, DONE } from 'constants/response'
+import {
+  NOTHING_DONE,
+  SUCCESS,
+  DONE,
+  NOTHING_TODO,
+  FAILED,
+} from 'constants/response'
 import move from 'utils/path'
 import CreepMemoized from 'utils/CreepMemoized'
+import RoomResourceRoute from './RoomResourceRoute'
+import { FillCreep } from 'routine/haul/fill'
 
-export interface TransferCreep extends Creep {
+export interface TransferCreep extends FillCreep {
   cache: TransferCache
 }
 
@@ -19,14 +26,11 @@ interface TransferCache extends CreepCache {
 
 const ignoreCreeps = { ignoreCreeps: true }
 export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
-  private room: Room
-  private resourceRoute: ResourceRoute
-  private operated: boolean = false
+  private route: RoomResourceRoute
 
-  constructor(creep: TransferCreep, resourceRoute: ResourceRoute) {
+  constructor(creep: TransferCreep, resourceRoute: RoomResourceRoute) {
     super(creep)
-    this.room = creep.motherRoom
-    this.resourceRoute = resourceRoute
+    this.route = resourceRoute
   }
 
   work() {
@@ -36,7 +40,7 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
       delete creep.cache[Keys.dumping]
       delete creep.cache[Keys.fillTarget]
       delete creep.cache[Keys.drawSource]
-      this.operated = false
+      this.route.done()
     }
     return result
   }
@@ -44,13 +48,23 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
   private deliverAndDump() {
     const creep = this.creep
     if (creep.cache[Keys.dumping]) {
-      const id = creep.cache[Keys.fillTarget]
+      const id = creep.memory[Keys.fillTarget]
       const structure = id && Game.getObjectById(id)
-      const res =
-        structure &&
-        memoryLessFill(creep, structure, creep.cache[Keys.fillType] || 'X')
+      const fillType = creep.memory[Keys.fillType]
+      if (!fillType) {
+        return dumpResources(
+          this.creep,
+          this.creep.memory.state,
+          this.creep.memory.state,
+        )
+      }
+      const res = structure && memoryLessFill(creep, structure, fillType)
       if (res === NOTHING_DONE) return true
-      return dumpResources(this.creep)
+      return dumpResources(
+        this.creep,
+        this.creep.memory.state,
+        this.creep.memory.state,
+      )
     } else if (!this.drawAndFill()) {
       if (this.ableToDump) {
         return !!(creep.cache[Keys.dumping] = dumpResources(creep) ? 1 : 0)
@@ -65,17 +79,20 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
     const target = this.findStructureToFill() as AnyStoreStructure | null
     if (!target) return false
     creep.cache[Keys.fillTarget] = target.id
-    const route = this.resourceRoute
+    const route = this.route
     const toFill = route.fillAmount(target)
-    const result = memoryLessFill(creep, target, route.type, toFill)
+    const result = memoryLessFill(creep, target, route.permittedType, toFill)
     if (result === DONE) {
       const source = this.findStructureToDraw() as AnyStoreStructure | null
       if (!source) return false
-      this.operated = true
       creep.cache[Keys.drawSource] = source.id
-      memoryLessDraw(creep, source, route.type, route.drawAmount(source))
+      memoryLessDraw(
+        creep,
+        source,
+        route.permittedType,
+        route.drawAmount(source),
+      )
     } else {
-      this.operated = true
       if (result === SUCCESS) this.moveWithSpeculation(target)
     }
     return true
@@ -93,32 +110,30 @@ export default class CreepResourceRoute extends CreepMemoized<TransferCreep> {
   }
 
   private findStructureToDraw() {
-    const route = this.resourceRoute
+    const route = this.route
     const cache = this.creep.cache
     const id = cache[Keys.drawSource]
     const memorizedStructure = id && Game.getObjectById(id)
     if (memorizedStructure && route.validateSource(memorizedStructure))
       return memorizedStructure
-    return this.creep.pos.findClosestByPath(
-      route.findSources(this.room),
-      ignoreCreeps,
-    )
+    return this.creep.pos.findClosestByPath(route.findSources(), ignoreCreeps)
   }
 
   private findStructureToFill(differ?: AnyStoreStructure) {
-    const route = this.resourceRoute
+    const route = this.route
     const cache = this.creep.cache
     const id = cache[Keys.fillTarget]
     const memorizedStructure = id && Game.getObjectById(id)
     if (memorizedStructure && route.validateTarget(memorizedStructure))
       return memorizedStructure
     return this.creep.pos.findClosestByPath(
-      route.findTargets(this.room, differ),
+      route.findTargets(differ),
       ignoreCreeps,
     )
   }
 
   private get ableToDump() {
-    return this.resourceRoute.dump && this.operated
+    // too few dump operations
+    return this.route.dump
   }
 }

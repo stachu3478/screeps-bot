@@ -1,6 +1,7 @@
 import routes from '../../config/routes/resource'
 import CreepResourceRoute from './CreepResourceRoute'
 import CreepMemoized from 'utils/CreepMemoized'
+import RoomResourceRoute from './RoomResourceRoute'
 
 const enum RouteStatusKey {
   id = 2,
@@ -13,7 +14,13 @@ export default class ResourceRouteProcessor extends CreepMemoized<Creep> {
 
   constructor(creep: Creep) {
     super(creep)
-    this.routes = routes.map((route) => new CreepResourceRoute(creep, route))
+    this.routes = routes.map(
+      (route) =>
+        new CreepResourceRoute(
+          creep,
+          new RoomResourceRoute(creep.motherRoom, route),
+        ),
+    )
     this.status =
       this.creep.memory[Keys.resourceRoute] ||
       (this.creep.memory[Keys.resourceRoute] = [0, Game.time, 0])

@@ -65,11 +65,6 @@ export default class ObservingScanner {
         delete this.scanningRoom
       }
     }
-    console.log(
-      'Selecting scanning room',
-      this.lastRoomIndex,
-      this.scanningRoom,
-    )
     return observer
   }
 

@@ -1,7 +1,6 @@
 import { DONE, NOTHING_TODO, FAILED, SUCCESS } from 'constants/response'
 import draw from 'routine/haul/draw'
 import fill from 'routine/haul/fill'
-import { factoryStoragePerResource } from 'utils/handleFactory'
 import profiler from 'screeps-profiler'
 import dumpResources from 'job/dumpResources'
 import { getFillableGenericStruture } from 'utils/fill'
@@ -19,47 +18,11 @@ interface FactoryManagerMemory extends CreepMemory {
   [Keys.fillType]?: ResourceConstant
 }
 
-function findJob(creep: FactoryManager) {
-  creep.memory.state = State.IDLE
-  const motherRoom = creep.motherRoom
-  const factory = motherRoom.buildings.factory
-  if (!factory) return false
-  const cache = factory.cache
-  if (!motherRoom.terminal) return false
-  if (cache.needs) {
-    const type = cache.needs
-    const amount = factoryStoragePerResource - factory.store[type]
-    if (amount > motherRoom.terminal.store[type]) return false
-    storageManagement.prepareToTakeResource(
-      creep,
-      type,
-      amount,
-      motherRoom.terminal,
-      factory,
-    )
-    creep.memory.state = State.DRAW
-  } else if (cache.dumps) {
-    const type = cache.dumps
-    const amount = factory.store[type]
-    if (amount > motherRoom.terminal.store[type]) return false
-    storageManagement.prepareToTakeResource(
-      creep,
-      type,
-      amount,
-      factory,
-      motherRoom.terminal,
-    )
-    creep.memory.state = State.DRAW
-  } else return false
-  return true
-}
-
 export default profiler.registerFN(function factoryManager(
   creep: FactoryManager,
 ) {
   switch (creep.memory.state) {
     case State.IDLE:
-      if (findJob(creep)) break
       if (storageManagement.findJob(creep)) {
         creep.memory.state = State.DRAW
         break
@@ -82,9 +45,6 @@ export default profiler.registerFN(function factoryManager(
         case NOTHING_TODO:
         case FAILED:
           creep.memory.state = State.IDLE
-          const factoryCache = creep.room.factoryCache
-          delete factoryCache.needs
-          delete factoryCache.dumps
           break
       }
       break
@@ -92,11 +52,6 @@ export default profiler.registerFN(function factoryManager(
       switch (fill(creep)) {
         case DONE:
         case SUCCESS:
-          const factoryCache = creep.room.factoryCache
-          factoryCache.state = State.FACT_BOARD
-          creep.room.powerSpawnCache.idle = 0
-          delete factoryCache.needs
-          delete factoryCache.dumps
           creep.memory.state = State.IDLE
           break
         case NOTHING_TODO:
@@ -110,7 +65,7 @@ export default profiler.registerFN(function factoryManager(
       }
       break
     default:
-      findJob(creep)
+      storageManagement.findJob(creep)
   }
 },
 'roleFactoryManager')
