@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { expect } from '../../expect'
 import BoostManager from 'overloads/room/BoostManager'
+import roomCache from '../mock/RoomCache'
 
 describe('When lab system is in producing state', () => {
   let room: Room
@@ -16,7 +17,7 @@ describe('When lab system is in producing state', () => {
     room.lab2 = {} as StructureLab
     room.externalLabs = []
     room.memory = { labState: State.LAB_PRODUCING }
-    room.cache = { labCooldown: 0, scoutsWorking: 0 }
+    room.cache = roomCache()
     room.visual = new RoomVisual()
     lab = {} as StructureLab
     lab.shouldRunReaction = StructureLab.prototype.shouldRunReaction

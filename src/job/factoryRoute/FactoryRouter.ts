@@ -70,16 +70,14 @@ export default class FactoryRouter {
     })
   }
 
-  private validateRecipe(
-    route: FactoryRoute,
-    commodity: CommodityConstant,
-    storeFunc = (c: CommodityConstant) => this.room.store(c),
-  ) {
+  private validateRecipe(route: FactoryRoute, commodity: CommodityConstant) {
     const recipe = COMMODITIES[commodity]
     if (recipe.level && recipe.level !== this.factory.level) {
       return false
     }
-    return route.validateRecipe(commodity, storeFunc)
+    return route.validateRecipe(commodity, (c: CommodityConstant) =>
+      this.room.totalStore(c),
+    )
   }
 
   private canBeProduced(commodity: CommodityConstant) {

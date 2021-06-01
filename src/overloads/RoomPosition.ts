@@ -1,3 +1,17 @@
+import defineGetter from 'utils/defineGetter'
+import { isWalkable, offsetsByDirection } from 'utils/path'
+
+function defineRoomPositionGetter<T extends keyof RoomPosition>(
+  property: T,
+  handler: (self: RoomPosition) => RoomPosition[T],
+) {
+  defineGetter<RoomPosition, RoomPositionConstructor, T>(
+    RoomPosition,
+    property,
+    handler,
+  )
+}
+
 RoomPosition.prototype.rangeXY = function (x: number, y: number) {
   return Math.max(Math.abs(this.x - x), Math.abs(this.y - y))
 }
@@ -41,3 +55,17 @@ RoomPosition.prototype.lookForAtInRange = function (type, range) {
   const maxX = Math.min(49, this.x + range)
   return room.lookForAtArea(type, minY, minX, maxY, maxX, true)
 }
+
+RoomPosition.prototype.offset = function (direction) {
+  const x = this.x + offsetsByDirection[direction][0]
+  const y = this.y + offsetsByDirection[direction][1]
+  return new RoomPosition(x, y, this.roomName)
+}
+
+defineRoomPositionGetter('isWalkable', (self) => {
+  const room = Game.rooms[self.roomName]
+  if (!room) {
+    return self.lookFor(LOOK_TERRAIN).every((t) => t !== 'wall')
+  }
+  return isWalkable(room, self.x, self.x)
+})

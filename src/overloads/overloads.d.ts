@@ -89,6 +89,7 @@ interface StructureTerminal {
 }
 
 interface RoomPosition {
+  offset: (direction: DirectionConstant) => RoomPosition
   rangeXY: (x: number, y: number) => number
   range: (pos: RoomPosition) => number
   rangeTo: (obj: _HasRoomPosition) => number
@@ -101,6 +102,7 @@ interface RoomPosition {
     type: T,
     range: number,
   ): LookForAtAreaResultArray<AllLookAtTypes[T], T>
+  isWalkable: boolean
 }
 
 interface Creep {

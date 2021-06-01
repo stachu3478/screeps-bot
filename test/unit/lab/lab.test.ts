@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import lab from 'role/lab'
 import { expect } from '../../expect'
+import roomCache from '../mock/RoomCache'
 
 describe('Lab system initialization', () => {
   let room: Room
@@ -13,33 +14,29 @@ describe('Lab system initialization', () => {
     room = {} as Room
     room.lab1 = {} as StructureLab
     room.visual = new RoomVisual()
+    room.cache = roomCache()
+    room.memory = {}
   })
 
-  it('should do nothing if system is cooling down', function () {
-    room.cache = { labCooldown: 1, scoutsWorking: 0 }
-    room.memory = {}
+  it('does nothing if system is cooling down', () => {
+    room.cache.labCooldown = 1
     room.lab2 = {} as StructureLab
     lab(room)
     expect(room.memory.labState).to.be.undefined
   })
 
-  it('should do nothing if main labs are missing', function () {
-    room.cache = { labCooldown: 0, scoutsWorking: 0 }
-    room.memory = {}
+  it('does nothing if main labs are missing', () => {
     lab(room)
     expect(room.memory.labState).to.be.undefined
   })
 
-  it('should return to IDLE state if no more data are present', function () {
-    room.cache = { labCooldown: 0, scoutsWorking: 0 }
-    room.memory = {}
+  it('returns to IDLE state if no more data are present', () => {
     room.lab2 = {} as StructureLab
     lab(room)
     expect(room.memory.labState).to.eql(State.IDLE)
   })
 
-  it('should return to LAB_PRODUCING state if recipe is present', function () {
-    room.cache = { labCooldown: 0, scoutsWorking: 0 }
+  it('returns to LAB_PRODUCING state if recipe is present', () => {
     room.memory = { labRecipe: RESOURCE_UTRIUM_HYDRIDE }
     room.lab2 = {} as StructureLab
     lab(room)

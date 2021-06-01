@@ -54,7 +54,6 @@ export default class RepairRoute {
   private getMinimalStoreToDraw(toSpawn = false) {
     const nominal = this.minimalStoreToDraw
     if (toSpawn) {
-      console.log('to spawn', nominal, this.options.minimalStoreToSpawn)
       return Math.max(nominal, this.options.minimalStoreToSpawn || 0)
     }
     return nominal

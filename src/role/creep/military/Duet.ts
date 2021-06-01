@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import HitCalculator from 'room/military/HitCalculator'
-import move, { offsetsByDirection } from 'utils/path'
+import move from 'utils/path'
 import CreepSquad from './CreepSquad'
 
 export default class Duet extends CreepSquad {
@@ -50,13 +50,9 @@ export default class Duet extends CreepSquad {
     const pos = this.pos
     if (!pos) return false
     const dir = pos.getDirectionTo(target)
-    const x = pos.x + offsetsByDirection[dir][0]
-    const y = pos.y + offsetsByDirection[dir][1]
+    const offsetPos = pos.offset(dir)
     const damaged = this.validCreeps.some((c) => {
-      const damage = calc.getDamage(
-        new RoomPosition(x, y, pos.roomName),
-        enemies,
-      )
+      const damage = calc.getDamage(offsetPos, enemies)
       const dealt =
         c.corpus.damageDealt(damage) - (protector?.corpus.healPower || 0)
       return dealt > 0

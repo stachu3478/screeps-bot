@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import Duet from 'role/creep/military/Duet'
 import HitCalculator from 'room/military/HitCalculator'
-import { offsetsByDirection, isWalkable } from 'utils/path'
 import Memoized from 'utils/Memoized'
 
 const directions: DirectionConstant[] = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -41,10 +40,8 @@ export default class DuetHandler {
       calc.fetch(false)
       const dealers = room.find(FIND_HOSTILE_CREEPS)
       const saferDir = _.min(directions, (d) => {
-        const x = pos.x + offsetsByDirection[d][0]
-        const y = pos.y + offsetsByDirection[d][1]
-        if (!isWalkable(room, x, y)) return Infinity
-        const newPos = new RoomPosition(x, y, room.name)
+        const newPos = pos.offset(d)
+        if (!newPos.isWalkable) return Infinity
         return calc.getDamage(newPos, dealers)
       })
       duet.move(saferDir)
