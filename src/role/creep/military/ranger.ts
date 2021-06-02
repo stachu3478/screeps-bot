@@ -2,6 +2,7 @@ import { DONE, NOTHING_TODO } from 'constants/response'
 import arrive from 'routine/arrive'
 import heal from 'routine/military/heal'
 import rangedAttack from 'routine/military/rangedAttack'
+import { findTargetCreeps } from 'routine/military/shared'
 
 export interface Ranger extends Creep {
   memory: RangerMemory
@@ -35,7 +36,7 @@ export default function ranger(creep: Ranger) {
       tryArriveToAttackDestination(creep)
       break
     case State.IDLE:
-      const hostiles = creep.room.find(FIND_HOSTILE_CREEPS)
+      const hostiles = findTargetCreeps(creep)
       if (hostiles.length) creep.memory.state = State.ATTACKING
       const location = creep.room.name
       if (location !== creep.motherRoom.memory._rangedAttack)

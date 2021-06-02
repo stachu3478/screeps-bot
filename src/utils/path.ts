@@ -2,6 +2,7 @@ import { findSourceKeepers } from './find'
 import Feromon from './feromon'
 import { pickBestDirectionFrom } from 'routine/shared'
 import _ from 'lodash'
+import { findTargetCreeps } from 'routine/military/shared'
 
 interface OffsetByDirection {
   [key: number]: number[]
@@ -141,12 +142,7 @@ const move = {
     return parseInt(path.charAt(4)) as DirectionConstant
   },
   keepAwayFromHostiles: (creep: Creep) => {
-    const hostiles = creep.room
-      .find(FIND_HOSTILE_CREEPS)
-      .filter(
-        (creep) =>
-          creep.owner.username !== 'Source Keeper' && creep.corpus.armed,
-      )
+    const hostiles = findTargetCreeps(creep, (creep) => creep.corpus.armed)
     if (hostiles.every((hostile) => creep.isSafeFrom(hostile))) return true
     const direction = pickBestDirectionFrom(
       creep,

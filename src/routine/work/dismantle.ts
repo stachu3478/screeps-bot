@@ -6,7 +6,7 @@ import {
   FAILED,
   DONE,
 } from '../../constants/response'
-import { findClosestHostileHittableStructures } from 'utils/find'
+import { findTargetStructure } from 'routine/military/shared'
 
 interface DismantleCreep extends Creep {
   cache: DismantleCache
@@ -24,7 +24,7 @@ export default function dismantle(
   const cache = creep.cache
   let target = targetStructure
   if (!target || !target.hits) {
-    const newTarget = findClosestHostileHittableStructures(creep.pos)
+    const newTarget = findTargetStructure(creep)
     if (newTarget) {
       target = newTarget
       cache.dismantle = newTarget.id

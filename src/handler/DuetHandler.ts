@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import Duet from 'role/creep/military/Duet'
 import HitCalculator from 'room/military/HitCalculator'
+import { findTarget, findTargetStructure } from 'routine/military/shared'
 import Memoized from 'utils/Memoized'
 
 const directions: DirectionConstant[] = [1, 2, 3, 4, 5, 6, 7, 8]
@@ -38,7 +39,7 @@ export default class DuetHandler {
       }
       const calc = new HitCalculator(room)
       calc.fetch(false)
-      const dealers = room.find(FIND_HOSTILE_CREEPS)
+      const dealers = room.findHostileCreeps()
       const saferDir = _.min(directions, (d) => {
         const newPos = pos.offset(d)
         if (!newPos.isWalkable) return Infinity
@@ -53,23 +54,7 @@ export default class DuetHandler {
       console.log('attacking')
       let target = this.target.object
       if (!target) {
-        target =
-          pos.findClosestByPath(FIND_STRUCTURES, {
-            maxRooms: 1,
-            filter: (s) =>
-              s.hits &&
-              s.structureType !== STRUCTURE_WALL &&
-              s.structureType !== STRUCTURE_RAMPART &&
-              s.structureType !== STRUCTURE_ROAD &&
-              s.structureType !== STRUCTURE_CONTAINER,
-          }) ||
-          pos.findClosestByPath(FIND_STRUCTURES, {
-            maxRooms: 1,
-            filter: (s) =>
-              s.hits &&
-              (s.structureType === STRUCTURE_WALL ||
-                s.structureType === STRUCTURE_RAMPART),
-          })
+        target = findTargetStructure(duet.validCreeps[0])
         if (!target) {
           // delete this.room.memory[RoomMemoryKeys.ekhaust]
           console.log(
@@ -88,7 +73,7 @@ export default class DuetHandler {
         if (duet.fullHealed) {
           duet.moveTo(target)
         } else {
-          const dealers = room.find(FIND_HOSTILE_CREEPS)
+          const dealers = room.findHostileCreeps()
           duet.moveToWithSafety(target, calc, dealers)
         }
       }

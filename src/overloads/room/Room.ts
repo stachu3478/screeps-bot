@@ -170,3 +170,19 @@ Room.prototype.labsFromChars = function (chars: string) {
     .map((char) => this.buildingAt(char.charCodeAt(0), STRUCTURE_LAB))
     .filter((l) => l) as StructureLab[]
 }
+
+Room.prototype.findHostileCreeps = function (filter) {
+  const list = enemies.allies
+  const lastFiler = filter || (() => true)
+  return this.find(FIND_HOSTILE_CREEPS, {
+    filter: (c) => !list[c.owner.username] && lastFiler(c),
+  })
+}
+
+Room.prototype.findHostilePowerCreeps = function (filter) {
+  const list = enemies.allies
+  const lastFiler = filter || (() => true)
+  return this.find(FIND_HOSTILE_POWER_CREEPS, {
+    filter: (c) => !list[c.owner.username] && lastFiler(c),
+  })
+}

@@ -65,7 +65,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
     )
     cache.healthy = 0
   } else {
-    const powerEnemy = room.find(FIND_HOSTILE_POWER_CREEPS)[0]
+    const powerEnemy = room.findHostilePowerCreeps()[0]
     if (powerEnemy) {
       towers.forEach((t) => tower(t, powerEnemy))
       towersProcessed = true

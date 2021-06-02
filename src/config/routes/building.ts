@@ -52,7 +52,6 @@ export default [
     structure: STRUCTURE_RAMPART,
     positions: (room: Room) => room.positions.forShield,
     from: findStorageTerminalAndContainers,
-    //afterBuild: (creep: Creep, rampart: StructureRampart) => creep.repair(rampart)
   },
   /*{ // todo get wall positions
     structure: STRUCTURE_WALL,
@@ -106,6 +105,7 @@ export default [
     positions: (room: Room) => {
       let links = room.memory.links || ''
       links += room.memory.structs ? room.memory.structs[0] : ''
+      links += room.memory.controllerLink || ''
       return charToPositionMapper(room, links)
     },
     from: findStorageAndTerminal,

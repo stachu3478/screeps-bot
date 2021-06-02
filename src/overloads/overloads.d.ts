@@ -46,6 +46,8 @@ interface Room {
   totalStore: (resource: ResourceConstant) => number
   positionFromChar: (char: string) => RoomPosition
   labsFromChars: (char: string) => StructureLab[]
+  findHostileCreeps: (filter?: (s: Creep) => boolean) => Creep[]
+  findHostilePowerCreeps: (filter?: (s: PowerCreep) => boolean) => PowerCreep[]
 }
 
 interface Structure {

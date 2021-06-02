@@ -137,7 +137,7 @@ export default class Duet extends CreepSquad {
     const room = creeps[0].room
     const hitCalc = new HitCalculator(room)
     hitCalc.fetch(false)
-    const hostiles = room.find(FIND_HOSTILE_CREEPS)
+    const hostiles = room.findHostileCreeps()
     const damage = hitCalc.getFor(creeps[0], hostiles, creeps)
     return damage <= 0
   }

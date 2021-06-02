@@ -15,9 +15,7 @@ export default class RoomEnemies {
   }
 
   find() {
-    return this.room.find(FIND_HOSTILE_CREEPS, {
-      filter: (creep) => this.isEnemy(creep),
-    })
+    return this.room.findHostileCreeps((creep) => this.isEnemy(creep))
   }
 
   private isEnemy(creep: Creep) {

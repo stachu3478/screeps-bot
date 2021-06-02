@@ -1,5 +1,5 @@
 import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from 'constants/response'
-import { findTarget } from './shared'
+import { findTarget, findTargetCreeps } from './shared'
 import { pickBestDirectionFrom } from '../shared'
 import move from 'utils/path'
 
@@ -74,9 +74,7 @@ export function handleCachedTarget(
 export default function rangedAttack(creep: AttackCreep) {
   const target = handleCachedTarget(creep)
   if (!target) return NOTHING_TODO
-  const hostiles = creep.room
-    .find(FIND_HOSTILE_CREEPS)
-    .filter((creep) => creep.corpus.armed)
+  const hostiles = findTargetCreeps(creep, (creep) => creep.corpus.armed)
 
   const isDanger = (target as Creep).corpus.armed
   const distances = hostiles.map((hostile) => creep.pos.rangeTo(hostile))

@@ -59,9 +59,6 @@ export const findHaulable = (room: Room, pos: RoomPosition) => {
         filter: (s) => s.structureType === STRUCTURE_CONTAINER,
       }),
     )
-  potential = potential.concat(
-    room.find(10011 as FindConstant) as StructureContainer[],
-  )
   potential = potential.filter(filledFilter)
   return pos.findClosestByPath(potential) || pos.findClosestByRange(potential)
 }
@@ -79,10 +76,6 @@ export const findClosestFilledContainer = (pos: RoomPosition) =>
   pos.findClosestByRange(
     findContainers(Game.rooms[pos.roomName]).filter(filledContainerFilter),
   )
-
-const hittableFilter = { filter: (s: Structure) => s.hits }
-export const findClosestHostileHittableStructures = (pos: RoomPosition) =>
-  pos.findClosestByPath(FIND_HOSTILE_STRUCTURES, hittableFilter)
 
 interface ObjectNumber {
   [key: string]: number
