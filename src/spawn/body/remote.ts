@@ -9,7 +9,11 @@ function getEfficiency(
   return carryParts / (distance + (cooldown * carryParts) / workParts)
 }
 
-export function optimalRemoteMiner(energy: number, distance: number) {
+export function optimalRemoteMiner(
+  energy: number,
+  distance: number,
+  cooldown = EXTRACTOR_COOLDOWN,
+) {
   const max = MAX_CREEP_SIZE
   let usedParts = 4
   let used = carryCost + workCost + 2 * moveCost
@@ -24,8 +28,8 @@ export function optimalRemoteMiner(energy: number, distance: number) {
   }
   const twoWay = 2 * distance
 
-  let currentEfficiency = getEfficiency(carryCount, workCount, twoWay)
-  let nextEfficiency = getEfficiency(carryCount, workCount, twoWay)
+  let currentEfficiency = getEfficiency(carryCount, workCount, twoWay, cooldown)
+  let nextEfficiency = getEfficiency(carryCount, workCount, twoWay, cooldown)
   do {
     currentEfficiency = nextEfficiency
     // get next limited with one more work
@@ -39,7 +43,7 @@ export function optimalRemoteMiner(energy: number, distance: number) {
       usedParts -= 2
       used -= liteCarryPack
     }
-    nextEfficiency = getEfficiency(carryCount, workCount, twoWay)
+    nextEfficiency = getEfficiency(carryCount, workCount, twoWay, cooldown)
   } while (nextEfficiency > currentEfficiency)
 
   // restore previous state

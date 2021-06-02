@@ -1,6 +1,7 @@
 import { FindExitConstant } from 'planner/RoomNeighbourPathScanner'
 import MyRooms from 'room/MyRooms'
 import range from 'utils/range'
+import { reverseCord } from '../RoomPosition'
 
 export default class RoomLocation {
   private roomName: string
@@ -37,8 +38,12 @@ export default class RoomLocation {
     return roomName
   }
 
-  findRoomPathStep(current: string, to: string) {
-    const allRooms = MyRooms.get()
+  findRoomPathStep(
+    current: string,
+    to: string,
+    myRooms = MyRooms,
+  ): RoomNeighbourPath | undefined {
+    const allRooms = myRooms.get()
     let found: RoomNeighbourPath | undefined
     allRooms.some((r) => {
       const rooms = r.pathScanner.rooms
@@ -52,7 +57,36 @@ export default class RoomLocation {
       if (room) found = room
       return !!room
     })
-    return found
+
+    if (found) {
+      return found
+    }
+    allRooms.some((r) => {
+      const rooms = r.pathScanner.rooms
+      const currentRoom = rooms && rooms[current]
+      found = currentRoom && {
+        ...currentRoom,
+        x: reverseCord(currentRoom.x),
+        y: reverseCord(currentRoom.y),
+        through: currentRoom.name,
+        name: currentRoom.through,
+      }
+      return !!found
+    })
+    if (found) {
+      return found
+    }
+    if (to === this.roomName) {
+      return {
+        x: 25,
+        y: 25,
+        name: this.roomName,
+        cost: 0,
+        through: this.roomName,
+        deposits: [],
+      }
+    }
+    return undefined
   }
 
   private getIndex(): [number, number] {

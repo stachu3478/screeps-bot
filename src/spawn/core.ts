@@ -16,6 +16,7 @@ import spawnBuilder, { needsBuilder } from './builder'
 import { needsTowerEkhauster, spawnTowerEkhauster } from './towerEkhauster'
 import { needsDestroyer, spawnDestroyer } from './destroyer'
 import { needsNextMiner, spawnNextMiner } from './nextMiner'
+import { needsDepositMiner, spawnDepositMiner } from './depositMiner'
 
 export default profiler.registerFN(function loop(
   spawn: StructureSpawn,
@@ -117,7 +118,11 @@ export default profiler.registerFN(function loop(
     spawnTowerEkhauster(spawn)
   } else if (needsDestroyer(spawn, creepCountByRole[Role.DESTROYER])) {
     spawnDestroyer(spawn)
-  } else
+  } else if (
+    needsDepositMiner(spawn, creepCountByRole[Role.DEPOSIT_MINER] || 0)
+  )
+    spawnDepositMiner(spawn)
+  else
     spawn.room.visual.info(
       'Spawn is idle. (' + (Game.cpu.getUsed() - cpu).toPrecision(2) + ')',
       0,

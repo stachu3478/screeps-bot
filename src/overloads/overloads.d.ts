@@ -26,6 +26,7 @@ interface Room {
   boosts: BoostManager
   buildings: RoomBuildings
   duet: DuetHandler
+  depositPlanner: DepositPlanner
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void
@@ -105,6 +106,7 @@ interface RoomPosition {
     range: number,
   ): LookForAtAreaResultArray<AllLookAtTypes[T], T>
   isWalkable: boolean
+  mirror: RoomPosition
 }
 
 interface Creep {

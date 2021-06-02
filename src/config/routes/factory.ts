@@ -3,6 +3,7 @@ import FactoryRoute, {
   COMMODITY_RESOURCES,
 } from 'job/factoryRoute/FactoryRoute'
 import _ from 'lodash'
+import { factoryStoragePerResource } from 'utils/handleFactory'
 
 const isDecompressingRecipe = (commodity: CommodityConstant) => {
   // @ts-ignore invalid commodity -> COMMODITIES typing
@@ -19,14 +20,14 @@ const routes = [
   {
     // decompress minerals and energy if too much in
     make: compressableMinerals,
-    minComponentAmount: 1100,
+    minComponentAmount: factoryStoragePerResource + 100,
   },
   {
     // compress minerals and energy  if too low in
     make: COMMODITY_RESOURCES.filter((r) =>
       isCompressingRecipe(COMMODITIES[r].components),
     ),
-    maxAmount: 1000,
+    maxAmount: factoryStoragePerResource,
   },
   {
     // make everything other without limits

@@ -18,6 +18,7 @@ import ranger, { Ranger } from 'role/creep/military/ranger'
 import mover from 'role/creep/mover'
 import builder from 'role/creep/builder'
 import recycle from 'routine/recycle'
+import depositMiner from 'role/creep/depositMiner'
 
 interface Creeps {
   [key: string]: 0
@@ -111,6 +112,9 @@ export default function creeps(
           break
         case Role.BUILDER:
           builder(creep)
+          break
+        case Role.DEPOSIT_MINER:
+          depositMiner(creep)
           break
         case Role.TOWER_EKHAUSTER:
         case Role.DESTROYER:

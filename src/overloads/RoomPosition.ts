@@ -67,5 +67,16 @@ defineRoomPositionGetter('isWalkable', (self) => {
   if (!room) {
     return self.lookFor(LOOK_TERRAIN).every((t) => t !== 'wall')
   }
-  return isWalkable(room, self.x, self.x)
+  return isWalkable(room, self.x, self.y)
+})
+
+export const reverseCord = (v: number) => {
+  if (v === 0) return 49
+  if (v === 49) return 0
+  return v
+}
+defineRoomPositionGetter('mirror', (self) => {
+  const x = reverseCord(self.x)
+  const y = reverseCord(self.y)
+  return new RoomPosition(x, y, self.roomName)
 })

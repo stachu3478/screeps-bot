@@ -21,4 +21,5 @@ const enum Role {
   TOWER_EKHAUSTER = 22,
   DESTROYER = 23,
   DUAL = 24,
+  DEPOSIT_MINER = 25,
 }

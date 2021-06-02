@@ -1,5 +1,4 @@
 import plan from 'planner/core'
-import { Miner } from 'role/creep/miner'
 
 export default class SourceHandler {
   private room: Room
@@ -47,8 +46,8 @@ export default class SourceHandler {
   get free() {
     return this.memory.findIndex((info, i) => {
       const name = info.slice(2)
-      const creep = Game.creeps[name] as Miner
-      if (!creep) return true
+      const creep = Game.creeps[name]
+      if (!creep || creep.motherRoom.name !== this.room.name) return true
       return creep.isRetired
     })
   }

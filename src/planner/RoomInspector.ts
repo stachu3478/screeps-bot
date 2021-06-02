@@ -1,3 +1,4 @@
+import { ALL_DIRECTIONS } from 'constants/support'
 import _ from 'lodash'
 
 export default class RoomInspector {
@@ -17,6 +18,25 @@ export default class RoomInspector {
     if (controller) this.inspectController(info, controller, startingPosition)
     info.sources = this.room.find(FIND_SOURCES).length
     info.safe = this.checkSafety(room, info)
+    this.inspectDeposits(info)
+  }
+
+  private inspectDeposits(info: RoomNeighbourPath) {
+    const deposits = this.room.find(FIND_DEPOSITS)
+    info.deposits.push(
+      ...deposits.map((deposit) => {
+        let coverage = ALL_DIRECTIONS.filter((d) => {
+          const offsetPos = deposit.pos.offset(d)
+          return offsetPos.lookFor(LOOK_TERRAIN).some((t) => t === 'plain')
+        }).length
+        return {
+          x: deposit.pos.x,
+          y: deposit.pos.y,
+          coverage,
+          lastCooldown: deposit.lastCooldown,
+        }
+      }),
+    )
   }
 
   private checkSafety(room: Room, info: RoomNeighbourPath) {

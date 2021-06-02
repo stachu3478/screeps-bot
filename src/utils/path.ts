@@ -75,7 +75,7 @@ const move = {
       me,
     )
     if (bestDir === 0) return false
-    creep.move(bestDir as DirectionConstant)
+    creep.move(bestDir)
     Feromon.increment(room.name, x, y)
     return true
   },
@@ -86,7 +86,7 @@ const move = {
     me?: Creep,
   ) => {
     let dirOffset = 0
-    let bestDir = 0
+    let bestDir: DirectionConstant | 0 = 0
     let leastFeromon = Infinity
     for (let i = 0; i < 8; i++) {
       const dir = (zmod(direction + dirOffset - 1, 8) + 1) as DirectionConstant
@@ -131,7 +131,7 @@ const move = {
           Math.random() > 0.8
         const dirTo = creepOnRoad.pos.getDirectionTo(creep)
         move.anywhere(creepOnRoad, swap ? dirTo : dir, creep) ||
-          creepOnRoad.move(dirTo)
+          creepOnRoad.move(swap ? dir : dirTo)
       }
     }
     return result

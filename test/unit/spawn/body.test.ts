@@ -6,6 +6,7 @@ import {
 import {
   progressiveWorker,
   progressiveMobileWorker,
+  progressiveDepositMiner,
 } from '../../../src/spawn/body/work'
 import { Memory } from '../mock'
 import Game from '../mock/Game'
@@ -108,5 +109,13 @@ describe('spawn/body', () => {
 
   it('returns maxed claimer', () => {
     expect(progressiveClaimer(100000, 200, 50)).to.have.lengthOf(50)
+  })
+
+  it('returns balanced deposit miner', () => {
+    const body = progressiveDepositMiner(100000, 200, 50)
+    expect(body).to.have.lengthOf(50)
+    expect(body).to.include(WORK)
+    expect(body).to.include(CARRY)
+    expect(body.filter((p) => p === MOVE)).to.have.lengthOf(25)
   })
 })

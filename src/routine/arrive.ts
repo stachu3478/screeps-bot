@@ -16,17 +16,16 @@ export default function arrive(
   creep: ArriveCreep,
   dumpCarry: boolean = true,
   journal: boolean = false,
+  target: string | undefined = creep.memory._arrive,
 ) {
   if (dumpCarry && creep.store.getUsedCapacity() > 0) {
     ensureEmpty(creep)
   }
   if (journal) keepJournal(creep)
-  const memory = creep.memory
-  const targetRoom = memory._arrive
-  if (!targetRoom) return NOTHING_TODO
-  const result = creep.moveToRoom(targetRoom)
+  if (!target) return NOTHING_TODO
+  const result = creep.moveToRoom(target)
   if (result === ERR_NOT_FOUND) return NOTHING_TODO
-  if (creep.room.name === targetRoom && result === 0) {
+  if (creep.room.name === target && result === 0) {
     delete creep.memory._arrive
     return DONE
   }

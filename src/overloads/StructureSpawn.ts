@@ -1,6 +1,7 @@
 import sanitizeBody from 'utils/sanitizeBody'
 import { uniqName } from 'spawn/name'
 import defineGetter from 'utils/defineGetter'
+import { ALL_DIRECTIONS } from 'constants/support'
 
 function defineSpawnGetter<T extends keyof StructureSpawn>(
   property: T,
@@ -28,21 +29,13 @@ defineSpawnGetter('distanceToController', (self) => {
   )
 })
 
-const allDirections: DirectionConstant[] = [1, 2, 3, 4, 5, 6, 7, 8]
 StructureSpawn.prototype.getDirections = function () {
-  const room = this.room
-  const sx = this.pos.x
-  const sy = this.pos.y
-  const directions: DirectionConstant[] = []
-  for (let x = -1; x <= 1; x++)
-    for (let y = -1; y <= 1; y++) {
-      const road = room.buildingAtXY(sx + x, sy + y, STRUCTURE_ROAD)
-      if (!road) continue
-      const direction = this.pos.getDirectionTo(sx + x, sy + y)
-      if (direction) directions.push(direction)
-    }
+  const directions = ALL_DIRECTIONS.filter((d) => {
+    const offset = this.pos.offset(d)
+    return offset.building(STRUCTURE_ROAD)
+  })
   if (directions.length > 0) return directions
-  return allDirections
+  return ALL_DIRECTIONS
 }
 
 StructureSpawn.prototype.trySpawnCreep = function (

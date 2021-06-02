@@ -28,7 +28,7 @@ function probabilisticallyMoveCreepsOutOfSpawnsIfBlocked(
     spawning.directions.find((d) => {
       s.pos
         .offset(d)
-        ?.lookFor(LOOK_CREEPS)
+        .lookFor(LOOK_CREEPS)
         .find((c) => c.my && move.anywhere(c))
     })
   })

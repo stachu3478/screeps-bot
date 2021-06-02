@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import {
   workPack,
   liteWorkPack,
@@ -5,6 +6,7 @@ import {
   liteCarryPack,
   moveWorkPack,
 } from './packs'
+import ResourceMiningCalculator from './ResourceMiningCalculator'
 
 function progressiveStaticWorker(energy: number, maxWork: number) {
   let currentWork = 0
@@ -41,6 +43,40 @@ export function progressiveStaticUpgrader(
 export function progressiveMiner(energy: number) {
   const maxWork = 1 + SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME / HARVEST_POWER
   return progressiveStaticWorker(energy, maxWork)
+}
+
+export function progressiveDepositMiner(
+  energy: number,
+  cost: number,
+  lastCooldown: number,
+) {
+  const maxUsedEnergy =
+    (MAX_CREEP_SIZE / 2) * BODYPART_COST[MOVE] +
+    (MAX_CREEP_SIZE / 2 - 1) * BODYPART_COST[WORK] +
+    BODYPART_COST[CARRY]
+  if (energy < maxUsedEnergy) return [WORK, CARRY, MOVE, MOVE]
+  const parts: BodyPartConstant[] = new Array(MAX_CREEP_SIZE / 2).fill(MOVE)
+  const maxWorkParts = MAX_CREEP_SIZE / 2 - 1
+  const workCombinations = new Array(maxWorkParts + 1).fill(0).map((_, i) => i)
+  const resourceMiningCalc = new ResourceMiningCalculator(
+    cost,
+    HARVEST_DEPOSIT_POWER,
+    lastCooldown,
+  )
+  const workParts = _.max(workCombinations, (_, i) => {
+    if (i === 0) {
+      return -Infinity
+    }
+    const carryParts = maxWorkParts - i + 1
+    const mined = resourceMiningCalc.getFor(carryParts, i)
+    console.log(mined, 'time')
+    return mined
+  })
+  console.log(workParts, 'parts')
+  const carryParts = maxWorkParts - workParts + 1
+  return parts
+    .concat(new Array(workParts).fill(WORK))
+    .concat(new Array(carryParts).fill(CARRY))
 }
 
 export function progressiveMobileWorker(energy: number) {

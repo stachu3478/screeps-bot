@@ -1,3 +1,5 @@
+import { ALL_DIRECTIONS } from 'constants/support'
+
 /**
  * Tries to find best move direction basing on least distance to other room positions
  */
@@ -6,12 +8,11 @@ export function pickBestDirectionFrom(
   hostiles: Creep[],
   predicate: (leastSafeDistance: number) => number,
 ) {
-  let bestDirection: DirectionConstant = 1
+  let bestDirection = ALL_DIRECTIONS[0]
   let bestPrediction = -Infinity
-  for (let i = 1; i <= 8; i++) {
-    const direction = i as DirectionConstant
+  ALL_DIRECTIONS.forEach((direction) => {
     const offsetPos = creep.pos.offset(direction)
-    if (!offsetPos.isWalkable) continue
+    if (!offsetPos.isWalkable) return
     let worstPrediction = Infinity
     hostiles.forEach((hostile) => {
       const distanceFrom = hostile.safeRangeXY(offsetPos.x, offsetPos.y)
@@ -25,6 +26,6 @@ export function pickBestDirectionFrom(
       bestPrediction = worstPrediction
       bestDirection = direction
     }
-  }
+  })
   return bestDirection
 }

@@ -52,10 +52,11 @@ export default class RoomNeighbourPathScanner {
         const result = PathFinder.search(from, targets, pathfindingOpts)
         if (result.incomplete) return
         const lastPosition = result.path[result.path.length - 1]
+        const mirror = lastPosition.mirror
         paths.push({
           cost: result.cost + 1,
-          x: this.reverseCord(lastPosition.x),
-          y: this.reverseCord(lastPosition.y),
+          x: mirror.x,
+          y: mirror.y,
           dir: c,
         })
       })
@@ -68,11 +69,5 @@ export default class RoomNeighbourPathScanner {
     if (pos.x === 0) return FIND_EXIT_LEFT
     if (pos.x === 49) return FIND_EXIT_RIGHT
     return null
-  }
-
-  private reverseCord(v: number) {
-    if (v === 0) return 49
-    if (v === 49) return 0
-    return v
   }
 }

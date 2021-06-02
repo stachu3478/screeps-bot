@@ -119,6 +119,7 @@ export default class RoomPathScanner {
         y: path.y,
         through: pos.roomName,
         safe: currentRoomPath ? currentRoomPath.safe : true,
+        deposits: [],
       }
     })
     this.room.visual.info('Scanned ' + room, 0, 11)

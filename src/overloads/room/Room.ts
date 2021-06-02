@@ -16,6 +16,7 @@ import RoomBuildings from './RoomBuildings'
 import DuetHandler from 'handler/DuetHandler'
 import RoomLinks from './RoomLinks'
 import RoomPositions from './RoomPositions'
+import DepositPlanner from 'planner/DepositPlanner'
 
 function defineRoomGetter<T extends keyof Room>(
   property: T,
@@ -123,6 +124,14 @@ defineRoomGetter('buildings', (self) => roomBuildings(self))
 
 const roomDuetHandler = memoizeByRoom((r) => new DuetHandler(r))
 defineRoomGetter('duet', (self) => roomDuetHandler(self))
+
+// const roomDepositPlanner = memoizeByRoom((r) => new DepositPlanner(r.memory.mineDeposit))
+// nie zapisuje sie jak znajdzie
+defineRoomGetter(
+  'depositPlanner',
+  (self) =>
+    new DepositPlanner(self.pathScanner.rooms[self.memory.mineDeposit || '']),
+)
 
 Room.prototype.store = function (resource: ResourceConstant) {
   const storage = this.storage

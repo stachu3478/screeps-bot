@@ -1,10 +1,10 @@
+import { ALL_DIRECTIONS } from 'constants/support'
 import _ from 'lodash'
 import Duet from 'role/creep/military/Duet'
 import HitCalculator from 'room/military/HitCalculator'
-import { findTarget, findTargetStructure } from 'routine/military/shared'
+import { findTargetStructure } from 'routine/military/shared'
 import Memoized from 'utils/Memoized'
 
-const directions: DirectionConstant[] = [1, 2, 3, 4, 5, 6, 7, 8]
 export default class DuetHandler {
   private room: Room
   private duet?: Duet
@@ -40,7 +40,7 @@ export default class DuetHandler {
       const calc = new HitCalculator(room)
       calc.fetch(false)
       const dealers = room.findHostileCreeps()
-      const saferDir = _.min(directions, (d) => {
+      const saferDir = _.min(ALL_DIRECTIONS, (d) => {
         const newPos = pos.offset(d)
         if (!newPos.isWalkable) return Infinity
         return calc.getDamage(newPos, dealers)

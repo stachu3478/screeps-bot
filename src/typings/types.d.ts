@@ -73,6 +73,13 @@ interface BoostData {
   creeps: [string, ResourceConstant, number, 0 | 1][]
 }
 
+interface DepositTraits {
+  x: number
+  y: number
+  coverage: number
+  lastCooldown: number
+}
+
 interface RoomNeighbourPath {
   name: string
   cost: number
@@ -85,6 +92,7 @@ interface RoomNeighbourPath {
   controllerFortified?: boolean
   safe?: boolean
   entranceDamage?: number
+  deposits: DepositTraits[]
 }
 
 interface RoomMemory {
@@ -132,6 +140,7 @@ interface RoomMemory {
   _dig?: string
   _digger?: string
   _moveNeeds?: number
+  mineDeposit?: string
 
   boosts?: BoostData
   r?: RemoteMemory[] // remotes

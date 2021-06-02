@@ -35,7 +35,7 @@ export default class RoomPosition {
       {
         x: that.x,
         y: that.y,
-        direction: 4 as DirectionConstant,
+        direction: BOTTOM_RIGHT,
         dx: 1,
         dy: -1,
       },
