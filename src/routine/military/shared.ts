@@ -1,4 +1,5 @@
 import enemies from '../../config/enemies'
+import attack from '../../config/attack'
 
 export const hittable = (obj: Creep | Structure) => obj.hits
 
@@ -17,48 +18,63 @@ export function findTargetCreep(
   return creep.pos.findClosestByPath(targets, { maxRooms: 1 })
 }
 
+export function findTargetStructures(
+  creep: Creep,
+  filter = (s: Structure) => true,
+) {
+  const allies = enemies.allies
+  return creep.room
+    .find(FIND_STRUCTURES)
+    .filter((s) => {
+      if (s.my) {
+        return false
+      }
+      const owner = s.owner
+      if (owner && allies[owner.username]) {
+        return false
+      }
+      if (!hittable(s)) {
+        return false
+      }
+      if (!filter(s)) {
+        return false
+      }
+      return attack.structurePriority[s.structureType]
+    })
+    .sort(
+      (a, b) =>
+        (attack.structurePriority[b.structureType] || 0) -
+        (attack.structurePriority[a.structureType] || 0),
+    )
+}
+
 export function findTargetStructure(
   creep: Creep,
   ranged = false,
-  filter?: (creep: Structure) => boolean,
+  filter = (s: Structure) => true,
 ) {
-  const list = enemies.allies
-  const lastFiler = filter || (() => true)
+  const targets = findTargetStructures(creep, filter)
   const minRange = ranged ? 3 : 1
-  let newTarget: Structure | null = creep.pos.findClosestByPath(
-    FIND_HOSTILE_STRUCTURES,
-    {
+  return (
+    creep.pos.findClosestByPath(targets, {
       filter: (s) =>
-        !list[s.owner ? s.owner.username : ''] &&
         hittable(s) &&
-        s.structureType !== STRUCTURE_STORAGE &&
-        s.structureType !== STRUCTURE_TERMINAL &&
-        s.structureType !== STRUCTURE_POWER_BANK &&
         s.structureType !== STRUCTURE_RAMPART &&
-        lastFiler(s),
+        s.structureType !== STRUCTURE_WALL &&
+        s.structureType !== STRUCTURE_ROAD &&
+        filter(s),
       range: minRange,
       maxRooms: 1,
-    },
+    }) ||
+    creep.pos.findClosestByPath(targets, {
+      filter: (s) =>
+        (s.structureType === STRUCTURE_RAMPART ||
+          s.structureType === STRUCTURE_WALL) &&
+        filter(s),
+      range: minRange,
+      maxRooms: 1,
+    })
   )
-  const roomOwner = creep.room.owner
-  if (!newTarget && (!creep.room.my || !roomOwner || !list[roomOwner]))
-    newTarget =
-      creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: (s) =>
-          hittable(s) &&
-          s.structureType !== STRUCTURE_POWER_BANK &&
-          s.structureType !== STRUCTURE_ROAD &&
-          s.structureType !== STRUCTURE_CONTAINER &&
-          lastFiler(s),
-        range: minRange,
-        maxRooms: 1,
-      }) ||
-      creep.pos.findClosestByPath(FIND_STRUCTURES, {
-        filter: (s) => s.structureType === STRUCTURE_RAMPART && lastFiler(s),
-        range: minRange,
-        maxRooms: 1,
-      })
-  return newTarget
 }
 
 export function findTarget(
@@ -75,4 +91,14 @@ export function findTarget(
     return findTargetCreep(creep, filter)
   }
   return newTarget
+}
+
+export function findTargets(
+  creep: Creep,
+  filter?: (creep: Creep | Structure) => boolean,
+) {
+  const targets: (Creep | Structure)[] = []
+  return targets
+    .concat(findTargetStructures(creep, filter))
+    .concat(findTargetCreeps(creep, filter))
 }

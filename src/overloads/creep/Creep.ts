@@ -5,6 +5,12 @@ import BuildingRouteProcessor from 'job/buildingRoute/BuildingRouteProcessor'
 import RepairRouteProcessor from 'job/repairRoute/RepairRouteProcessor'
 import move from 'utils/path'
 import CreepCorpus from './CreepCorpus'
+import {
+  findTarget,
+  findTargetCreep,
+  findTargets,
+} from 'routine/military/shared'
+import { CREEP_RANGE, RANGED_MASS_ATTACK_POWER } from 'constants/support'
 
 function defineCreepGetter<T extends keyof Creep>(
   property: T,
@@ -124,4 +130,50 @@ Creep.prototype.dismantleOrAttack = function (t) {
     return this.dismantle(t)
   }
   return this.attack(t)
+}
+
+Creep.prototype.autoHeal = function () {
+  const creeps = this.pos.findInRange(FIND_MY_CREEPS, CREEP_RANGE)
+  const nearCreeps = creeps.filter((c) => c.pos.isNearTo(this))
+  const nearCreepToHeal = _.min(nearCreeps, (c) => c.hits - c.hitsMax)
+  if (!nearCreepToHeal.corpus.healthy) {
+    this.heal(nearCreepToHeal)
+    return
+  }
+  const creepToHeal = _.min(nearCreeps, (c) => c.hits - c.hitsMax)
+  if (!creepToHeal.corpus.healthy) {
+    this.heal(creepToHeal)
+    return
+  }
+  this.heal(this)
+}
+
+Creep.prototype.autoAttack = function () {
+  const target = findTargets(this, (c) => c.pos.isNearTo(this))[0]
+  if (target) {
+    this.attack(target)
+  }
+}
+
+Creep.prototype.autoRangedAttack = function () {
+  const targets = findTargets(this, (t) => t.pos.rangeTo(this) <= CREEP_RANGE)
+  if (!targets.length) {
+    return
+  }
+  const corpus = this.corpus
+  const massAttackEffect = _.sum(targets, (t) =>
+    corpus.rangedMassAttackPowerAt(t),
+  )
+  if (massAttackEffect < RANGED_ATTACK_POWER) {
+    this.rangedAttack(targets[0])
+  } else {
+    this.rangedMassAttack()
+  }
+}
+
+Creep.prototype.autoDismantleOrAttack = function () {
+  const target = findTargets(this, (c) => c.pos.isNearTo(this))[0]
+  if (target) {
+    this.dismantleOrAttack(target)
+  }
 }

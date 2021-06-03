@@ -20,7 +20,6 @@ export default class FactoryRouter {
         return this.canBeProduced(c)
       }))
     })
-    console.log('to prod', commodity)
     return commodity
   }
 

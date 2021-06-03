@@ -1,3 +1,4 @@
+import player from 'constants/player'
 import _ from 'lodash'
 import defineGetter from 'utils/defineGetter'
 
@@ -24,6 +25,18 @@ defineStructureGetter('effectiveHits', (self) => {
   const ranpartHits = rampart ? rampart.hits : 0
   const baseHits = self.hits || 0
   return baseHits + ranpartHits
+})
+
+defineStructureGetter('owner', (self) => {
+  const username = self.room.owner
+  if (_.isUndefined(username)) {
+    return
+  }
+  return { username: username as string }
+})
+
+defineStructureGetter('my', (self) => {
+  return self.owner?.username === player
 })
 
 Structure.prototype.onTransfer = _.noop

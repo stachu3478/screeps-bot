@@ -1,7 +1,11 @@
+import {
+  BODYPART_HITS,
+  CREEP_RANGE,
+  RANGED_MASS_ATTACK_POWER,
+} from 'constants/support'
 import _, { Dictionary } from 'lodash'
 import Memoized from 'utils/Memoized'
 
-const CREEP_BODY_HITS = 100
 export default class CreepCorpus extends Memoized<Creep> {
   private bodyPartCount: { [key: string]: number | undefined } = {}
   private hitThresholds: Dictionary<number> = {}
@@ -23,7 +27,7 @@ export default class CreepCorpus extends Memoized<Creep> {
   healPowerAt(creep: _HasRoomPosition) {
     if (!this.object) return 0
     const range = this.object.pos.getRangeTo(creep)
-    if (range > 3) return 0
+    if (range > CREEP_RANGE) return 0
     if (range > 1) return this.rangedHealPower
     return this.healPower
   }
@@ -31,9 +35,20 @@ export default class CreepCorpus extends Memoized<Creep> {
   attackPowerAt(creep: _HasRoomPosition) {
     if (!this.object) return 0
     const range = this.object.pos.getRangeTo(creep)
-    if (range > 3) return 0
+    if (range > CREEP_RANGE) return 0
     if (range > 1) return this.rangedAttackPower
     return this.attackPower + this.rangedAttackPower
+  }
+
+  rangedMassAttackPowerAt(roomObject: RoomObject) {
+    if (!this.object) return 0
+    if (
+      !(roomObject instanceof Creep || roomObject instanceof OwnedStructure)
+    ) {
+      return 0
+    }
+    const range = this.object.pos.getRangeTo(roomObject)
+    return RANGED_MASS_ATTACK_POWER[range] || 0
   }
 
   damageDealt(baseAmount: number) {
@@ -59,7 +74,7 @@ export default class CreepCorpus extends Memoized<Creep> {
   }
 
   get safeDistance() {
-    if (this.hasActive(RANGED_ATTACK)) return 5
+    if (this.hasActive(RANGED_ATTACK)) return 2 + CREEP_RANGE
     else if (this.hasActive(ATTACK)) return 3
     return 1
   }
@@ -83,6 +98,11 @@ export default class CreepCorpus extends Memoized<Creep> {
     return this.object.body.reduce((sum, p) => sum + this.partRangedPower(p), 0)
   }
 
+  get healthy() {
+    const creep = this.object
+    return !!creep && creep.hits === creep.hitsMax
+  }
+
   private partHealPower(part: Creep['body'][0]) {
     if (part.type !== HEAL || !part.hits) return 0
     if (!part.boost) return HEAL_POWER
@@ -102,12 +122,12 @@ export default class CreepCorpus extends Memoized<Creep> {
   }
 
   private computeBodyPartHitThresholdAndCount() {
-    const minUnreachableHits = MAX_CREEP_SIZE * CREEP_BODY_HITS + 1
+    const minUnreachableHits = MAX_CREEP_SIZE * BODYPART_HITS + 1
     const dict = _.mapValues(BODYPART_COST, (_) => minUnreachableHits)
     if (!this.object) return
     this.object.body.reverse().forEach((part, i) => {
       const type = part.type
-      dict[type] = Math.min(i * CREEP_BODY_HITS, dict[type])
+      dict[type] = Math.min(i * BODYPART_HITS, dict[type])
       if (!this.bodyPartCount[type]) this.bodyPartCount[type] = 0
       this.bodyPartCount[type]!++
     })

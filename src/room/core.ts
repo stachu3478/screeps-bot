@@ -23,12 +23,12 @@ function probabilisticallyMoveCreepsOutOfSpawnsIfBlocked(
     if (Math.random() < 0.5) return
     if (!spawning) return
     if (spawning.remainingTime) return
-    if (spawning.directions.some((d) => s.pos.offset(d).isWalkable)) return
+    if (spawning.directions.some((d) => s.pos.offset(d)?.isWalkable)) return
     console.log('moving from spawn', s)
     spawning.directions.find((d) => {
       s.pos
         .offset(d)
-        .lookFor(LOOK_CREEPS)
+        ?.lookFor(LOOK_CREEPS)
         .find((c) => c.my && move.anywhere(c))
     })
   })

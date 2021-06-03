@@ -6,6 +6,7 @@ import {
   FAILED,
   NO_RESOURCE,
 } from '../../constants/response'
+import { CREEP_RANGE } from 'constants/support'
 
 export default function memoryLessBuild(
   creep: Creep,
@@ -16,7 +17,7 @@ export default function memoryLessBuild(
   if (!target) return NOTHING_TODO
   const result = creep.build(target)
   const remaining = storedEnergy - creep.corpus.count(WORK) * BUILD_POWER
-  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target, false, 3)
+  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target, false, CREEP_RANGE)
   else if (result === ERR_INVALID_TARGET) {
     return FAILED
   } else if (result !== 0) {

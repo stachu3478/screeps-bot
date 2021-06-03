@@ -3,7 +3,6 @@ import arrive, { ArriveCreep } from 'routine/arrive'
 import recycle from 'routine/recycle'
 import profiler from 'screeps-profiler'
 import collectGarbage from 'utils/collectGarbage'
-import memoryLessAutoRangedAttack from 'routine/military/memoryLessAutoRangedAttack'
 import move from 'utils/path'
 
 export default profiler.registerFN(function towerEkhauster(creep: ArriveCreep) {

@@ -13,15 +13,9 @@ export default class CreepSquad {
 
   autoHeal() {
     console.log('heal')
-    const creeps = this.validCreeps
-    const healers = creeps.filter((c) => c.corpus.hasActive(HEAL))
-    healers.forEach((h) => {
-      const localCreeps = creeps.filter((c) => c.pos.getRangeTo(h) <= 3)
-      const toBeHealed = _.max(localCreeps, (c) => c.hitsMax - c.hits)
-      if (toBeHealed && toBeHealed.hits !== toBeHealed.hitsMax) {
-        h.heal(toBeHealed)
-      } else {
-        h.heal(h)
+    this.validCreeps.forEach((c) => {
+      if (c.corpus.hasActive(HEAL)) {
+        c.autoHeal()
       }
     })
   }

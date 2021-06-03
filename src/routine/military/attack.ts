@@ -23,7 +23,7 @@ export default function attack(creep: AttackCreep) {
     creep.moveTo(target, { maxRooms: 1 })
     return NOTHING_DONE
   }
-  if (creep.hits === creep.hitsMax) {
+  if (creep.corpus.healthy) {
     if (creep.attack(target) !== OK) return FAILED
   } else creep.heal(creep)
   return SUCCESS

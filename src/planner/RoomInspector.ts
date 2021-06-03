@@ -27,7 +27,7 @@ export default class RoomInspector {
       ...deposits.map((deposit) => {
         let coverage = ALL_DIRECTIONS.filter((d) => {
           const offsetPos = deposit.pos.offset(d)
-          return offsetPos.lookFor(LOOK_TERRAIN).some((t) => t === 'plain')
+          return offsetPos?.lookFor(LOOK_TERRAIN).some((t) => t === 'plain')
         }).length
         return {
           x: deposit.pos.x,

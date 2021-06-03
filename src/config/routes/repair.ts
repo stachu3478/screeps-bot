@@ -54,4 +54,12 @@ export default [
     minimalStoreToSpawn: 120000,
     orderByHits: true,
   },
+  // repair all roads
+  {
+    structure: STRUCTURE_ROAD,
+    hits: ROAD_HITS - 1000,
+    from: findStorageAndTerminal,
+    minimalStore: 1000,
+    minimalStoreToSpawn: Infinity,
+  },
 ].map((opt) => new RepairRoute(opt))

@@ -1,3 +1,4 @@
+import { CREEP_RANGE } from 'constants/support'
 import _ from 'lodash'
 import HitCalculator from 'room/military/HitCalculator'
 import move from 'utils/path'
@@ -52,7 +53,7 @@ export default class Duet extends CreepSquad {
     const dir = pos.getDirectionTo(target)
     const offsetPos = pos.offset(dir)
     const damaged = this.validCreeps.some((c) => {
-      const damage = calc.getDamage(offsetPos, enemies)
+      const damage = offsetPos ? calc.getDamage(offsetPos, enemies) : Infinity
       const dealt =
         c.corpus.damageDealt(damage) - (protector?.corpus.healPower || 0)
       return dealt > 0
@@ -76,10 +77,8 @@ export default class Duet extends CreepSquad {
     if (protector) res = protector.moveToRoom(target)
     if (keeper) {
       if (protector) {
-        if (keeper.pos.isNearTo(keeper)) {
-          keeper.moveTo(protector)
-        } else {
-          move.cheap(keeper, protector)
+        if (!keeper.pos.isNearTo(protector)) {
+          move.cheap(keeper, protector, false, 1, 1)
         }
         if (protector.room.name !== keeper.room.name) {
           move.anywhere(protector, protector.pos.getDirectionTo(25, 25))
@@ -115,15 +114,24 @@ export default class Duet extends CreepSquad {
   attack(target: Structure) {
     console.log('attacking')
     const keeper = this.keeper
-    if (keeper && target.pos.isNearTo(keeper)) keeper.dismantle(target)
+    if (keeper && target.pos.isNearTo(keeper)) {
+      keeper.dismantleOrAttack(target)
+    } else {
+      keeper?.autoDismantleOrAttack()
+    }
     const protector = this.protector
     if (protector) {
-      if (
-        (keeper && keeper.pos.isNearTo(protector)) ||
-        protector.pos.isNearTo(target)
-      )
+      const shouldDoRangedAttack = !keeper || keeper.pos.isNearTo(protector)
+      if (!shouldDoRangedAttack) {
+        return
+      }
+      if (protector.pos.isNearTo(target) && target instanceof OwnedStructure) {
+        protector.rangedMassAttack()
+      } else if (protector.pos.inRangeTo(target, CREEP_RANGE)) {
         protector.rangedAttack(target)
-      else protector.rangedMassAttack()
+      } else {
+        protector.autoRangedAttack()
+      }
     }
   }
 

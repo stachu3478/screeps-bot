@@ -1,4 +1,5 @@
 import energyDistribution from 'config/energyDistribution'
+import { CREEP_RANGE } from 'constants/support'
 import _ from 'lodash'
 import { Fighter } from 'role/creep/military/fighter'
 
@@ -118,7 +119,10 @@ export const findCloseMostDamagedStructure = (
   threshold: number,
 ) => {
   const structures = pos
-    .findInRange<Structure<BuildableStructureConstant>>(FIND_STRUCTURES, 3)
+    .findInRange<Structure<BuildableStructureConstant>>(
+      FIND_STRUCTURES,
+      CREEP_RANGE,
+    )
     .filter(damagedFilter(threshold))
   if (!structures.length) return null
   return structures.reduce(damagePrioritySelector, structures[0])

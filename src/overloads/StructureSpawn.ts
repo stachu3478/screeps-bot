@@ -32,7 +32,7 @@ defineSpawnGetter('distanceToController', (self) => {
 StructureSpawn.prototype.getDirections = function () {
   const directions = ALL_DIRECTIONS.filter((d) => {
     const offset = this.pos.offset(d)
-    return offset.building(STRUCTURE_ROAD)
+    return offset?.building(STRUCTURE_ROAD)
   })
   if (directions.length > 0) return directions
   return ALL_DIRECTIONS

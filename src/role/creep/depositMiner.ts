@@ -24,7 +24,7 @@ export default profiler.registerFN(function depositMiner(creep: Creep) {
         if (result === ERR_NOT_IN_RANGE) {
           const targetPos = ALL_DIRECTIONS.map((d) => {
             return target.pos.offset(d)
-          }).find((pos) => pos.isWalkable)
+          }).find((pos) => pos && pos.isWalkable)
           if (targetPos) {
             move.cheap(creep, targetPos, true, 0, 1)
           }

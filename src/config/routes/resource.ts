@@ -11,12 +11,6 @@ export default [
   // collect energy to storage
   // from containers if no link present
   {
-    from: () => [],
-    to: STRUCTURE_STORAGE,
-    type: RESOURCE_ENERGY,
-    dump: true, // temp dump resources on start searching
-  },
-  {
     from: (room: Room) => {
       const container = room.sources.colonyPosition.building(
         STRUCTURE_CONTAINER,
@@ -34,6 +28,7 @@ export default [
     minimalStoreToDraw: CONTAINER_CAPACITY / 2,
     maximumFilledAmount: 1000,
     if: (c: Structure) =>
+      !c.room.links.spawny ||
       !c.room.buildings.links.some((l) => l.pos.isNearTo(c)),
   },
   // fill everything with energy from storage

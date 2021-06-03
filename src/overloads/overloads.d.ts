@@ -54,6 +54,8 @@ interface Room {
 interface Structure {
   isWalkable: boolean
   effectiveHits: number
+  owner?: Owner
+  my: boolean
   onWithdraw: (amount: number) => void
   onTransfer: (amount: number) => void
 }
@@ -92,7 +94,7 @@ interface StructureTerminal {
 }
 
 interface RoomPosition {
-  offset: (direction: DirectionConstant) => RoomPosition
+  offset: (direction: DirectionConstant) => RoomPosition | undefined
   rangeXY: (x: number, y: number) => number
   range: (pos: RoomPosition) => number
   rangeTo: (obj: _HasRoomPosition) => number
@@ -128,6 +130,10 @@ interface Creep {
   dismantleOrAttack: (
     target: Structure<StructureConstant> | AnyCreep,
   ) => ScreepsReturnCode
+  autoHeal: () => void
+  autoAttack: () => void
+  autoRangedAttack: () => void
+  autoDismantleOrAttack: () => void
 }
 
 interface PowerCreep {

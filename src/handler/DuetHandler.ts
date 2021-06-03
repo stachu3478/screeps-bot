@@ -42,7 +42,7 @@ export default class DuetHandler {
       const dealers = room.findHostileCreeps()
       const saferDir = _.min(ALL_DIRECTIONS, (d) => {
         const newPos = pos.offset(d)
-        if (!newPos.isWalkable) return Infinity
+        if (!newPos || !newPos.isWalkable) return Infinity
         return calc.getDamage(newPos, dealers)
       })
       duet.move(saferDir)

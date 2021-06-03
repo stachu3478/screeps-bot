@@ -6,6 +6,7 @@ import planLink from './links'
 import whirl from 'utils/whirl'
 import xyToChar from './pos'
 import range from 'utils/range'
+import { CREEP_RANGE } from 'constants/support'
 
 export default function plan(room: Room) {
   if (!room.controller) return
@@ -41,7 +42,7 @@ export default function plan(room: Room) {
     const ps = obj.pos
     const { path } = PathFinder.search(
       new RoomPosition(ps.x, ps.y, room.name),
-      { pos: controllerPos, range: 3 },
+      { pos: controllerPos, range: CREEP_RANGE },
       { plainCost: 2, roomCallback },
     )
     path.forEach((s: RoomPosition, step: number) => {
@@ -93,7 +94,7 @@ export default function plan(room: Room) {
   // plan controller link
   const { path } = PathFinder.search(
     furthestSource.pos,
-    { pos: controllerPos, range: 3 },
+    { pos: controllerPos, range: CREEP_RANGE },
     { plainCost: 2, roomCallback },
   )
   const lastPos = path[path.length - 1]

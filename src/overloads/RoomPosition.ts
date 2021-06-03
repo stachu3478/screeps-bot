@@ -59,7 +59,11 @@ RoomPosition.prototype.lookForAtInRange = function (type, range) {
 RoomPosition.prototype.offset = function (direction) {
   const x = this.x + offsetsByDirection[direction][0]
   const y = this.y + offsetsByDirection[direction][1]
-  return new RoomPosition(x, y, this.roomName)
+  try {
+    return new RoomPosition(x, y, this.roomName)
+  } catch (e) {
+    return
+  }
 }
 
 defineRoomPositionGetter('isWalkable', (self) => {

@@ -38,7 +38,7 @@ export default profiler.registerFN(function towerEkhauster(creep: ArriveCreep) {
       break
     case State.FALL_BACK:
       arrive(creep)
-      if (target && creep.hits === creep.hitsMax) {
+      if (target && creep.corpus.healthy) {
         creep.memory.state = State.ARRIVE
         creep.memory._arrive = target
       }

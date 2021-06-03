@@ -6,6 +6,7 @@ import {
   FAILED,
   NO_RESOURCE,
 } from '../../constants/response'
+import { CREEP_RANGE } from 'constants/support'
 
 interface BuildCreep extends Creep {
   cache: BuildCache
@@ -27,7 +28,7 @@ export default function build(creep: BuildCreep) {
   }
   const result = creep.build(target)
   const remaining = storedEnergy - creep.corpus.count(WORK) * BUILD_POWER
-  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target, false, 3)
+  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target, false, CREEP_RANGE)
   else if (result !== 0) return FAILED
   else {
     if (remaining <= 0) return NO_RESOURCE

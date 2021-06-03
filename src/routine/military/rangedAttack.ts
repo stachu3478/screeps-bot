@@ -2,6 +2,7 @@ import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from 'constants/response'
 import { findTarget, findTargetCreeps } from './shared'
 import { pickBestDirectionFrom } from '../shared'
 import move from 'utils/path'
+import { CREEP_RANGE } from 'constants/support'
 
 interface AttackCreep extends Creep {
   cache: AttackCache
@@ -79,7 +80,7 @@ export default function rangedAttack(creep: AttackCreep) {
   const isDanger = (target as Creep).corpus.armed
   const distances = hostiles.map((hostile) => creep.pos.rangeTo(hostile))
   const leastDistanceFromHostile = Math.min(...distances, Infinity)
-  if (creep.hits < creep.hitsMax) {
+  if (!creep.corpus.healthy) {
     creep.heal(creep)
   }
   if (leastDistanceFromHostile < 4) {
@@ -92,14 +93,14 @@ export default function rangedAttack(creep: AttackCreep) {
         (hostile) => creep.pos.rangeTo(hostile) === leastDistanceFromHostile,
       ) || hostiles[0]
     ).id
-  } else if (!creep.pos.inRangeTo(target, 3)) {
+  } else if (!creep.pos.inRangeTo(target, CREEP_RANGE)) {
     creep.moveTo(target)
     creep.rangedMassAttack()
     return NOTHING_DONE
-  } else if (!isDanger && !creep.pos.inRangeTo(target, 1)) {
+  } else if (!isDanger && !creep.pos.isNearTo(target)) {
     creep.moveTo(target)
   }
-  if (creep.pos.inRangeTo(target, 1)) {
+  if (creep.pos.isNearTo(target)) {
     if (creep.rangedMassAttack() !== OK) return FAILED
   } else if (creep.rangedAttack(target) !== OK) return FAILED
   return SUCCESS
