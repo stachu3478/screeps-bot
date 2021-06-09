@@ -1,3 +1,5 @@
+import ThrespassPathfinder from './military/ThrespassPathfinder'
+
 const pathfindingOpts: PathFinderOpts = {
   maxRooms: 1,
   plainCost: 1,
@@ -47,9 +49,9 @@ export default class RoomNeighbourPathScanner {
     exitConstants
       .filter((c) => c !== exitConstant)
       .forEach((c) => {
-        const targets = this.room.find(c).map((pos) => ({ pos, range: 0 }))
+        const targets = this.room.find(c)
         if (!targets.length) return
-        const result = PathFinder.search(from, targets, pathfindingOpts)
+        const result = PathFinder.search(from, targets, pathfindingOpts) // new ThrespassPathfinder(from, targets).search(this.room) //
         if (result.incomplete) return
         const lastPosition = result.path[result.path.length - 1]
         const mirror = lastPosition.mirror

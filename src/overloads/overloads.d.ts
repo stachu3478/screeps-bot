@@ -107,7 +107,8 @@ interface RoomPosition {
     type: T,
     range: number,
   ): LookForAtAreaResultArray<AllLookAtTypes[T], T>
-  isWalkable: boolean
+  isWalkable(me?: Creep): boolean
+  walkable: boolean
   mirror: RoomPosition
 }
 
@@ -164,4 +165,11 @@ interface Ruin {
 interface RoomVisual {
   info: (text: string, x: number, y: number) => void
   danger: (text: string, x: number, y: number) => void
+  enemy: (enemyPicker: any, shouldAttack: boolean) => void
+  spawnsBusy: () => void
+  details: (room: Room, creepCount: number, creepCountByRole: number[]) => void
+}
+
+interface ConstructionSite {
+  isWalkable: boolean
 }

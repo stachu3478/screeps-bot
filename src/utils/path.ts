@@ -56,6 +56,8 @@ export const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
     return false
   if (!structures.every((s) => s.isWalkable)) return false
   const creep = room.lookForAt(LOOK_CREEPS, x, y)[0]
+  const constructionSites = room.lookForAt(LOOK_CONSTRUCTION_SITES, x, y)
+  if (!constructionSites.every((s) => s.isWalkable)) return false
   return !creep || creep === me
 }
 
@@ -93,9 +95,10 @@ const move = {
       const offset = offsetsByDirection[dir]
       const mx = pos.x + offset[0]
       const my = pos.y + offset[1]
-      if (isWalkable(room, mx, my, me)) {
+      const walkable = isWalkable(room, mx, my, me)
+      if (walkable) {
         const feromon = Feromon.collect(room.name, mx, my)
-        if (feromon < leastFeromon) {
+        if (feromon < leastFeromon || bestDir === 0) {
           leastFeromon = feromon
           bestDir = dir
         }
@@ -115,6 +118,7 @@ const move = {
   ) => {
     if (!creepOnRoad.memory) {
       if (!creepOnRoad.my) {
+        options.noPathFinding = false
         options.ignoreCreeps = false
         options.reusePath = 0
         if (creep.corpus.armed) creep.attack(creepOnRoad)
@@ -197,11 +201,7 @@ const move = {
     if (!moveMemory) return result
     const dir = move.getPathDirection(moveMemory)
     if (dir) {
-      const creepOnRoad = creep.room.lookForAt(
-        LOOK_CREEPS,
-        creep.pos.x + offsetsByDirection[dir][0],
-        creep.pos.y + offsetsByDirection[dir][1],
-      )[0]
+      const creepOnRoad = creep.pos.offset(dir)?.lookFor(LOOK_CREEPS)[0]
       if (creepOnRoad)
         result = move.handleCreepOnRoad(
           creepOnRoad,

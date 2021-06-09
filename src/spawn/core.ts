@@ -1,4 +1,3 @@
-import profiler from 'screeps-profiler'
 import { progressiveMiner, progressiveLiteWorker } from './body/work'
 import domination from './domination'
 import extract, { needsExtractor } from './extract'
@@ -17,8 +16,9 @@ import { needsTowerEkhauster, spawnTowerEkhauster } from './towerEkhauster'
 import { needsDestroyer, spawnDestroyer } from './destroyer'
 import { needsNextMiner, spawnNextMiner } from './nextMiner'
 import { needsDepositMiner, spawnDepositMiner } from './depositMiner'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
-export default profiler.registerFN(function loop(
+export default ProfilerPlus.instance.overrideFn(function loop(
   spawn: StructureSpawn,
   controller: StructureController,
   creepCountByRole: number[],

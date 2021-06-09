@@ -1,5 +1,6 @@
 import defineGetter from 'utils/defineGetter'
 import { isWalkable, offsetsByDirection } from 'utils/path'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 function defineRoomPositionGetter<T extends keyof RoomPosition>(
   property: T,
@@ -66,7 +67,15 @@ RoomPosition.prototype.offset = function (direction) {
   }
 }
 
-defineRoomPositionGetter('isWalkable', (self) => {
+RoomPosition.prototype.isWalkable = function (me) {
+  const room = Game.rooms[this.roomName]
+  if (!room) {
+    return this.lookFor(LOOK_TERRAIN).every((t) => t !== 'wall')
+  }
+  return isWalkable(room, this.x, this.y, me)
+}
+
+defineRoomPositionGetter('walkable', (self) => {
   const room = Game.rooms[self.roomName]
   if (!room) {
     return self.lookFor(LOOK_TERRAIN).every((t) => t !== 'wall')
@@ -84,3 +93,5 @@ defineRoomPositionGetter('mirror', (self) => {
   const y = reverseCord(self.y)
   return new RoomPosition(x, y, self.roomName)
 })
+
+ProfilerPlus.instance.overrideObject(RoomPosition, 'RoomPosition')

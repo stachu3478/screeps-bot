@@ -5,6 +5,7 @@ declare class CreepCorpus {
   attackPowerAt(creep: _HasRoomPosition): number
   damageDealt(baseAmount: number): number
   rangedMassAttackPowerAt(roomObject: RoomObject): number
+  getActive(type: BodyPartConstant): number
   armed: boolean
   safeDistance: number
   healPower: number

@@ -69,10 +69,8 @@ export function progressiveDepositMiner(
     }
     const carryParts = maxWorkParts - i + 1
     const mined = resourceMiningCalc.getFor(carryParts, i)
-    console.log(mined, 'time')
     return mined
   })
-  console.log(workParts, 'parts')
   const carryParts = maxWorkParts - workParts + 1
   return parts
     .concat(new Array(workParts).fill(WORK))

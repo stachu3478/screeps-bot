@@ -65,6 +65,19 @@ describe('utils/path.isWalkable', () => {
       })
     })
 
+    context('when tile contains non-walkable construction site', () => {
+      beforeEach(() => {
+        room.lookForAt = ((type: LookConstant) => {
+          if (type === LOOK_CONSTRUCTION_SITES) return [{ isWalkable: false }]
+          return []
+        }) as Room['lookForAt']
+      })
+
+      it('returns false', () => {
+        expect(isWalkable(room, 12, 34)).to.eql(false)
+      })
+    })
+
     context('when tile contains creep', () => {
       beforeEach(() => {
         room.lookForAt = ((type: LookConstant) => {

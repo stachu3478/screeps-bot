@@ -66,7 +66,7 @@ export default class CreepSquad {
     const creeps = this.validCreeps
     return (
       !creeps.every((c) => c.hits !== c.hitsMax) &&
-      creeps.every((c) => c.corpus.hasActive(TOUGH))
+      creeps.every((c) => c.corpus.getActive(TOUGH) > c.corpus.count(TOUGH) / 2)
     )
   }
 

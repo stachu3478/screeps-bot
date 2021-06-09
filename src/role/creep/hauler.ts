@@ -2,7 +2,6 @@ import { DONE, NOTHING_DONE, NOTHING_TODO, SUCCESS } from 'constants/response'
 import autoPick from 'routine/haul/autoPick'
 import arrive from 'routine/arrive'
 import recycle from 'routine/recycle'
-import profiler from 'screeps-profiler'
 import Hauler from './hauler.d'
 import pick from 'routine/haul/pick'
 import resourceHaul from 'job/resourceHaul'
@@ -11,8 +10,9 @@ import draw from 'routine/haul/draw'
 import dumpResources from 'job/dumpResources'
 import collectGarbage from 'utils/collectGarbage'
 import { followJournal } from 'routine/arrive/journal'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
-export default profiler.registerFN(function hauler(creep: Hauler) {
+export default ProfilerPlus.instance.overrideFn(function hauler(creep: Hauler) {
   switch (creep.memory.state) {
     case State.IDLE:
       if (creep.store.getUsedCapacity()) creep.memory.state = State.STORAGE_FILL

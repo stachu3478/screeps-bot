@@ -12,8 +12,8 @@ import autoPick from 'routine/haul/autoPick'
 import storageDraw from 'routine/haul/storageDraw'
 import drawContainer from 'routine/haul/containerDraw'
 import draw from 'routine/haul/draw'
-import profiler from 'screeps-profiler'
 import { energyToUpgraderRepairThreshold } from 'config/storage'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 export interface UpgraderCreep extends Creep {
   memory: UpgraderMemory
@@ -25,7 +25,9 @@ interface UpgraderMemory extends CreepMemory {
   _drawType?: ResourceConstant
 }
 
-export default profiler.registerFN(function upgrader(creep: UpgraderCreep) {
+export default ProfilerPlus.instance.overrideFn(function upgrader(
+  creep: UpgraderCreep,
+) {
   switch (creep.memory.state) {
     case State.HARVESTING:
       switch (drawContainer(creep)) {
@@ -98,4 +100,5 @@ export default profiler.registerFN(function upgrader(creep: UpgraderCreep) {
     default:
       creep.memory.state = State.HARVESTING
   }
-}, 'roleUpgrader')
+},
+'roleUpgrader')

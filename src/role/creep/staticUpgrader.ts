@@ -10,7 +10,7 @@ import upgrade from 'routine/work/upgrade'
 import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/haul/autoPick'
 import draw from 'routine/haul/draw'
-import profiler from 'screeps-profiler'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 export interface StaticUpgrader extends Creep {
   memory: StaticUpgraderMemory
@@ -22,7 +22,7 @@ interface StaticUpgraderMemory extends CreepMemory {
   _drawType?: ResourceConstant
 }
 
-export default profiler.registerFN(function staticUpgrader(
+export default ProfilerPlus.instance.overrideFn(function staticUpgrader(
   creep: StaticUpgrader,
 ) {
   switch (creep.memory.state) {

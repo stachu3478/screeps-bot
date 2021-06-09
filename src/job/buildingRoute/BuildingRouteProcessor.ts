@@ -1,5 +1,6 @@
 import CreepBuildingRoute from './CreepBuldingRoute'
 import CreepMemoized from 'utils/CreepMemoized'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 export default class BuildingRouteProcessor extends CreepMemoized<Creep> {
   private room: Room
@@ -37,3 +38,5 @@ export default class BuildingRouteProcessor extends CreepMemoized<Creep> {
     return this.jobFound
   }
 }
+
+ProfilerPlus.instance.overrideObject(BuildingRouteProcessor)

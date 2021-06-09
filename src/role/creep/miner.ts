@@ -12,6 +12,7 @@ import autoRepair from 'routine/work/autoRepair'
 import autoBuild from 'routine/work/autoBuild'
 import autoPick from 'routine/haul/autoPick'
 import profiler from 'screeps-profiler'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 export interface Miner extends Creep {
   memory: MinerMemory
@@ -29,7 +30,7 @@ interface MinerCache extends CreepCache {
   build?: Id<ConstructionSite>
 }
 
-export default profiler.registerFN(function miner(creep: Miner) {
+export default ProfilerPlus.instance.overrideFn(function miner(creep: Miner) {
   const sourceHandler = creep.motherRoom.sources
   const index = sourceHandler.getOrAssign(creep)
   switch (creep.memory.state) {

@@ -91,6 +91,7 @@ export const SourcyCreep = {
 }
 
 export const Structure = class {}
+export const OwnedStructure = class extends Structure {}
 export const Spawn = {}
 export const Source = {}
 export const Flag = {}

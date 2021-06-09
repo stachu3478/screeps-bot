@@ -19,6 +19,14 @@ export default class CreepCorpus extends Memoized<Creep> {
     return this.bodyPartCount[type] || 0
   }
 
+  getActive(type: BodyPartConstant) {
+    if (!this.object) return 0
+    return this.object.body.reduce(
+      (sum, p) => sum + (p.type === type && this.partActive(p) ? 1 : 0),
+      0,
+    )
+  }
+
   hasActive(type: BodyPartConstant) {
     if (!this.object) return false
     return this.object.hits > this.hitThresholds[type]
@@ -103,20 +111,24 @@ export default class CreepCorpus extends Memoized<Creep> {
     return !!creep && creep.hits === creep.hitsMax
   }
 
+  private partActive(part: Creep['body'][0]) {
+    return !!part.hits
+  }
+
   private partHealPower(part: Creep['body'][0]) {
-    if (part.type !== HEAL || !part.hits) return 0
+    if (part.type !== HEAL || !this.partActive(part)) return 0
     if (!part.boost) return HEAL_POWER
     return BOOSTS.heal[part.boost].heal * HEAL_POWER
   }
 
   private partAttackPower(part: Creep['body'][0]) {
-    if (part.type !== ATTACK || !part.hits) return 0
+    if (part.type !== ATTACK || !this.partActive(part)) return 0
     if (!part.boost) return ATTACK_POWER
     return BOOSTS.attack[part.boost].attack * ATTACK_POWER
   }
 
   private partRangedPower(part: Creep['body'][0]) {
-    if (part.type !== RANGED_ATTACK || !part.hits) return 0
+    if (part.type !== RANGED_ATTACK || !this.partActive(part)) return 0
     if (!part.boost) return RANGED_ATTACK_POWER
     return BOOSTS.ranged_attack[part.boost].rangedAttack * RANGED_ATTACK_POWER
   }

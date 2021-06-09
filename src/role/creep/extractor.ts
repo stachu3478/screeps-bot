@@ -10,10 +10,12 @@ import {
 import recycle from 'routine/recycle'
 import extract from 'routine/work/extract'
 import autoPickResource from 'routine/haul/autoPickResource'
-import profiler from 'screeps-profiler'
 import collectGarbage from 'utils/collectGarbage'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
-export default profiler.registerFN(function extractor(creep: Creep) {
+export default ProfilerPlus.instance.overrideFn(function extractor(
+  creep: Creep,
+) {
   const mineral = creep.motherRoom.mineral
   const resourceType = mineral ? mineral.mineralType : 'U'
   switch (creep.memory.state) {
@@ -49,4 +51,5 @@ export default profiler.registerFN(function extractor(creep: Creep) {
     default:
       creep.memory.state = State.HARVESTING
   }
-}, 'roleExtractor')
+},
+'roleExtractor')

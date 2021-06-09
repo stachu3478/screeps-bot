@@ -1,14 +1,8 @@
 import move from 'utils/path'
-import {
-  SUCCESS,
-  NOTHING_TODO,
-  NOTHING_DONE,
-  FAILED,
-  DONE,
-} from 'constants/response'
-import profiler from 'screeps-profiler'
+import { SUCCESS, NOTHING_TODO, NOTHING_DONE, DONE } from 'constants/response'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
-export default profiler.registerFN(function harvest(
+export default ProfilerPlus.instance.overrideFn(function harvest(
   creep: Creep,
   index: number,
   room = creep.room,
@@ -18,7 +12,6 @@ export default profiler.registerFN(function harvest(
   if (!target) return NOTHING_TODO
   const targetPos = room.sources.getPosition(index)
   if (creep.pos.range(targetPos)) {
-    creep.say('m' + move.cheap(creep, targetPos, false, 0))
     return NOTHING_DONE
   }
   const result = creep.harvest(target)

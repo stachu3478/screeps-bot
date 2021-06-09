@@ -1,4 +1,5 @@
 import plan from 'planner/core'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 export default class SourceHandler {
   private room: Room
@@ -65,3 +66,5 @@ export default class SourceHandler {
     return this.getPosition(this.colony)
   }
 }
+
+ProfilerPlus.instance.overrideObject(SourceHandler)

@@ -1,9 +1,9 @@
 import autoRepair from 'routine/work/autoRepair'
 import autoPick from 'routine/haul/autoPick'
-import profiler from 'screeps-profiler'
 import move from 'utils/path'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
-export default profiler.registerFN(function builder(creep: Creep) {
+export default ProfilerPlus.instance.overrideFn(function builder(creep: Creep) {
   switch (creep.memory.state) {
     case State.IDLE:
       if (

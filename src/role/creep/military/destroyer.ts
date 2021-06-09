@@ -1,11 +1,13 @@
 import { DONE, NOTHING_TODO } from 'constants/response'
 import arrive, { ArriveCreep } from 'routine/arrive'
 import recycle from 'routine/recycle'
-import profiler from 'screeps-profiler'
 import collectGarbage from 'utils/collectGarbage'
 import move from 'utils/path'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
-export default profiler.registerFN(function towerEkhauster(creep: ArriveCreep) {
+export default ProfilerPlus.instance.overrideFn(function towerEkhauster(
+  creep: ArriveCreep,
+) {
   const target = creep.motherRoom.memory[RoomMemoryKeys.ekhaust]
   switch (creep.memory.state) {
     case State.IDLE:
@@ -47,4 +49,5 @@ export default profiler.registerFN(function towerEkhauster(creep: ArriveCreep) {
       creep.notifyWhenAttacked(false)
       creep.memory.state = State.IDLE
   }
-}, 'roleDestroyer')
+},
+'roleDestroyer')

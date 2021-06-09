@@ -7,6 +7,7 @@ import {
   NOTHING_DONE,
 } from '../../constants/response'
 import { getDroppedResource } from 'utils/find'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 interface AutoPickCreep extends Creep {
   cache: AutoPickCache
@@ -16,7 +17,9 @@ interface AutoPickCache extends CreepCache {
   pick?: Id<Resource>
 }
 
-export default profiler.registerFN(function pick(creep: AutoPickCreep) {
+export default ProfilerPlus.instance.overrideFn(function pick(
+  creep: AutoPickCreep,
+) {
   const cache = creep.cache
   let target = cache.pick && Game.getObjectById(cache.pick)
   let remaining = creep.store.getFreeCapacity()
@@ -38,4 +41,5 @@ export default profiler.registerFN(function pick(creep: AutoPickCreep) {
     if (remaining <= 0) return DONE
     return SUCCESS
   }
-}, 'autoPickRoutine')
+},
+'autoPickRoutine')

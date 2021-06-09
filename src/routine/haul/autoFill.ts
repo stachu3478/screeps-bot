@@ -4,10 +4,12 @@ import {
   DONE,
   NO_RESOURCE,
 } from '../../constants/response'
-import profiler from 'screeps-profiler'
 import { findNearStructureToFillWithPriority } from 'utils/find'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
-export default profiler.registerFN(function autoFill(creep: Creep) {
+export default ProfilerPlus.instance.overrideFn(function autoFill(
+  creep: Creep,
+) {
   const target = findNearStructureToFillWithPriority(creep)
   if (!target || !target.structureType) return NOTHING_TODO
   if (creep.store[RESOURCE_ENERGY] === 0) return NO_RESOURCE
@@ -23,4 +25,5 @@ export default profiler.registerFN(function autoFill(creep: Creep) {
   }
   if (remaining <= 0) return DONE
   return SUCCESS
-}, 'autoFillRoutine')
+},
+'autoFillRoutine')

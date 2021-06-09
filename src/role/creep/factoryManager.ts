@@ -1,10 +1,10 @@
 import { DONE, NOTHING_TODO, FAILED, SUCCESS } from 'constants/response'
 import draw from 'routine/haul/draw'
 import fill from 'routine/haul/fill'
-import profiler from 'screeps-profiler'
 import dumpResources from 'job/dumpResources'
 import { getFillableGenericStruture } from 'utils/fill'
 import storageManagement from 'job/storageManagement'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 export interface FactoryManager extends Creep {
   memory: FactoryManagerMemory
@@ -18,7 +18,7 @@ interface FactoryManagerMemory extends CreepMemory {
   [Keys.fillType]?: ResourceConstant
 }
 
-export default profiler.registerFN(function factoryManager(
+export default ProfilerPlus.instance.overrideFn(function factoryManager(
   creep: FactoryManager,
 ) {
   switch (creep.memory.state) {

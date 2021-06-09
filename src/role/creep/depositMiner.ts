@@ -1,8 +1,10 @@
 import { ALL_DIRECTIONS } from 'constants/support'
-import profiler from 'screeps-profiler'
 import move from 'utils/path'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
-export default profiler.registerFN(function depositMiner(creep: Creep) {
+export default ProfilerPlus.instance.overrideFn(function depositMiner(
+  creep: Creep,
+) {
   const planner = creep.motherRoom.depositPlanner
   const targetRoom = planner.room
   if (!targetRoom) {
@@ -57,4 +59,5 @@ export default profiler.registerFN(function depositMiner(creep: Creep) {
     default:
       creep.memory.state = State.HARVESTING
   }
-}, 'roleDepositMiner')
+},
+'roleDepositMiner')

@@ -1,6 +1,7 @@
 import '../constants'
 import 'overloads/all'
 import { expect } from '../../expect'
+import Game from '../mock/Game'
 
 describe('overloads/Structure#isWalkable', () => {
   let structure: Structure
@@ -8,6 +9,9 @@ describe('overloads/Structure#isWalkable', () => {
     structure = new Structure('test' as Id<Structure>)
     structure.pos = {} as RoomPosition
     structure.pos.building = () => undefined
+    // @ts-ignore : allow adding Game to global
+    global.Game = _.clone(Game)
+    global.Game.creeps['some'] = { owner: { username: 'Me' } } as Creep
   })
 
   describe('#isWalkable', () => {
@@ -22,7 +26,9 @@ describe('overloads/Structure#isWalkable', () => {
     )
 
     context('when structure is quite other', () => {
-      beforeEach(() => (structure.structureType = STRUCTURE_EXTENSION))
+      beforeEach(() => {
+        structure.structureType = STRUCTURE_EXTENSION
+      })
 
       it('returns false', () => {
         expect(structure.isWalkable).to.eq(false)
@@ -30,7 +36,13 @@ describe('overloads/Structure#isWalkable', () => {
     })
 
     context('when structure is rampart', () => {
-      beforeEach(() => (structure.structureType = STRUCTURE_RAMPART))
+      beforeEach(() => {
+        structure = new OwnedStructure('test' as Id<OwnedStructure>)
+        structure.pos = {} as RoomPosition
+        structure.pos.building = () => undefined
+        structure.room = { my: false } as Room
+        structure.structureType = STRUCTURE_RAMPART
+      })
 
       it('returns false', () => {
         expect(structure.isWalkable).to.eq(false)
@@ -45,7 +57,7 @@ describe('overloads/Structure#isWalkable', () => {
       })
 
       context('when rampart is my', () => {
-        beforeEach(() => ((structure as StructureRampart).my = true))
+        beforeEach(() => (structure.room = { my: true } as Room))
 
         it('returns true', () => {
           expect(structure.isWalkable).to.eq(true)

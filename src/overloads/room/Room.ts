@@ -17,6 +17,7 @@ import DuetHandler from 'handler/DuetHandler'
 import RoomLinks from './RoomLinks'
 import RoomPositions from './RoomPositions'
 import DepositPlanner from 'planner/DepositPlanner'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 function defineRoomGetter<T extends keyof Room>(
   property: T,
@@ -195,3 +196,5 @@ Room.prototype.findHostilePowerCreeps = function (filter) {
     filter: (c) => !list[c.owner.username] && lastFiler(c),
   })
 }
+
+ProfilerPlus.instance.overrideObject(Room, 'Room')

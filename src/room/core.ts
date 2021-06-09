@@ -13,7 +13,7 @@ import factory from 'role/factory'
 import rolePowerSpawn from 'role/powerSpawn'
 import EnemyPicker from './military/EnemyPicker'
 import move from 'utils/path'
-import { dangerStyle, infoStyle } from 'overloads/RoomVisual'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 function probabilisticallyMoveCreepsOutOfSpawnsIfBlocked(
   spawns: StructureSpawn[],
@@ -24,17 +24,19 @@ function probabilisticallyMoveCreepsOutOfSpawnsIfBlocked(
     if (!spawning) return
     if (spawning.remainingTime) return
     if (spawning.directions.some((d) => s.pos.offset(d)?.isWalkable)) return
-    console.log('moving from spawn', s)
     spawning.directions.find((d) => {
-      s.pos
+      return s.pos
         .offset(d)
         ?.lookFor(LOOK_CREEPS)
-        .find((c) => c.my && move.anywhere(c))
+        .some((c) => c.my && move.anywhere(c, d))
     })
   })
 }
 
-export default function run(controller: StructureController, cpuUsed: number) {
+export default ProfilerPlus.instance.overrideFn(function run(
+  controller: StructureController,
+  cpuUsed: number,
+) {
   const room = controller.room
   if (!room.memory.roads) plan(room)
 
@@ -58,11 +60,7 @@ export default function run(controller: StructureController, cpuUsed: number) {
       towers.forEach((t) => tower(t, enemy))
       towersProcessed = true
     }
-    room.visual.danger(
-      `Enemy tracked: ${enemy.name} Vulnerability: ${enemyPicker.dealt} / ${enemyPicker.maxDealable} ${shouldAttack} / ${canDeal}`,
-      0,
-      4,
-    )
+    room.visual.enemy(enemyPicker, shouldAttack)
     cache.healthy = 0
   } else {
     const powerEnemy = room.findHostilePowerCreeps()[0]
@@ -121,26 +119,13 @@ export default function run(controller: StructureController, cpuUsed: number) {
   const spawn = spawns.find((s) => !s.spawning)
   if (spawn) spawnLoop(spawn, controller, creepCountByRole, needFighters)
   else {
-    room.visual.info('All spawns busy', 0, 3)
+    room.visual.spawnsBusy()
   }
   if (needFighters && !spawn && room.energyAvailable < SPAWN_ENERGY_START) {
     const claimer = Game.rooms[mem._claimer || '']
     if (claimer) claimer.memory._attack = room.name
   }
-  room.visual.text(
-    'Population: ' +
-      count +
-      ' Retired: ' +
-      (creepCountByRole[Role.RETIRED] || 0),
-    0,
-    0,
-    count === 0 ? dangerStyle : infoStyle,
-  )
-  room.visual.text(
-    'Spawns: ' + room.energyAvailable + '/' + room.energyCapacityAvailable,
-    0,
-    1,
-    room.energyCapacityAvailable === 0 ? dangerStyle : infoStyle,
-  )
+  room.visual.details(room, count, creepCountByRole)
   return usage(room, cpuUsed)
-}
+},
+'roomCore')

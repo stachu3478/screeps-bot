@@ -1,4 +1,3 @@
-import player from 'constants/player'
 import _ from 'lodash'
 import defineGetter from 'utils/defineGetter'
 
@@ -36,7 +35,7 @@ defineStructureGetter('owner', (self) => {
 })
 
 defineStructureGetter('my', (self) => {
-  return self.owner?.username === player
+  return self.room.my
 })
 
 Structure.prototype.onTransfer = _.noop

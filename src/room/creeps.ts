@@ -19,12 +19,13 @@ import mover from 'role/creep/mover'
 import builder from 'role/creep/builder'
 import recycle from 'routine/recycle'
 import depositMiner from 'role/creep/depositMiner'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 interface Creeps {
   [key: string]: 0
 }
 
-export default function creeps(
+export default ProfilerPlus.instance.overrideFn(function creeps(
   creeps: Creeps,
   room: Room,
   enemy?: Creep,
@@ -139,4 +140,5 @@ export default function creeps(
     creepCountByRole,
     count,
   }
-}
+},
+'roomCreeps')

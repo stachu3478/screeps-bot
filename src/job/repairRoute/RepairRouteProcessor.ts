@@ -1,5 +1,6 @@
 import CreepRepairRoute, { RepairCreep } from './CreepRepairRoute'
 import CreepMemoized from 'utils/CreepMemoized'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 export default class RepairRouteProcessor extends CreepMemoized<Creep> {
   private room: Room
@@ -37,3 +38,5 @@ export default class RepairRouteProcessor extends CreepMemoized<Creep> {
     return this.jobFound
   }
 }
+
+ProfilerPlus.instance.overrideObject(RepairRouteProcessor)

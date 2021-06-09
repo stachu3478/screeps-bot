@@ -8,6 +8,7 @@ import {
   Creep,
   Source,
   Flag,
+  OwnedStructure,
 } from './mock'
 import Room from './mock/Room'
 import Game from './mock/Game'
@@ -26,14 +27,15 @@ Object.assign(global, {
   Source,
   Spawn,
   Structure,
-  StructureSpawn: class extends Structure {},
-  StructureLab: class extends Structure {},
-  StructureFactory: class extends Structure {},
-  StructurePowerSpawn: class extends Structure {},
-  StructureTerminal: class extends Structure {},
-  StructureTower: class extends Structure {},
-  StructureNuker: class extends Structure {},
-  StructureLink: class extends Structure {},
+  OwnedStructure,
+  StructureSpawn: class extends OwnedStructure {},
+  StructureLab: class extends OwnedStructure {},
+  StructureFactory: class extends OwnedStructure {},
+  StructurePowerSpawn: class extends OwnedStructure {},
+  StructureTerminal: class extends OwnedStructure {},
+  StructureTower: class extends OwnedStructure {},
+  StructureNuker: class extends OwnedStructure {},
+  StructureLink: class extends OwnedStructure {},
   Tombstone: class {},
   Ruin: class {},
   PathFinder: {

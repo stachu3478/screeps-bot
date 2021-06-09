@@ -5,10 +5,7 @@ export function needsStaticUpgraders(spawn: StructureSpawn, count: number) {
   if (count || !spawn.room.links.finished) return false
   const controller = spawn.room.controller
   if (!controller) return false // xd?
-  if (controller.level < 8) return true
-  return (
-    controller.ticksToDowngrade < CONTROLLER_DOWNGRADE[controller.level] / 2
-  )
+  return true
 }
 
 export default function spawnStaticUpgrader(

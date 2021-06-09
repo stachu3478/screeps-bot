@@ -7,6 +7,7 @@ import { LabManager } from './labManager.d'
 import labJobs from 'job/lab'
 import dumpResources from 'job/dumpResources'
 import { getFillableGenericStruture } from 'utils/fill'
+import ProfilerPlus from 'utils/ProfilerPlus'
 
 export function findJob(creep: LabManager) {
   const roomMemory = creep.room.memory
@@ -29,7 +30,9 @@ export function findJob(creep: LabManager) {
   return false
 }
 
-export default profiler.registerFN(function labManager(creep: LabManager) {
+export default ProfilerPlus.instance.overrideFn(function labManager(
+  creep: LabManager,
+) {
   switch (creep.memory.state) {
     case State.IDLE:
       if (findJob(creep)) break
@@ -109,4 +112,5 @@ export default profiler.registerFN(function labManager(creep: LabManager) {
     default:
       findJob(creep)
   }
-}, 'roleLabManager')
+},
+'roleLabManager')

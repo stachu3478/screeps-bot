@@ -1,4 +1,6 @@
-export default function handleLog(
+import ProfilerPlus from 'utils/ProfilerPlus'
+
+export default ProfilerPlus.instance.overrideFn(function handleLog(
   cache: RoomCache,
   controller: StructureController,
 ) {
@@ -43,4 +45,5 @@ export default function handleLog(
         break
     }
   })
-}
+},
+'handleLog')

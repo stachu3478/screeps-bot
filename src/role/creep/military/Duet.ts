@@ -77,7 +77,9 @@ export default class Duet extends CreepSquad {
     if (protector) res = protector.moveToRoom(target)
     if (keeper) {
       if (protector) {
-        if (!keeper.pos.isNearTo(protector)) {
+        if (keeper.pos.isNearTo(protector)) {
+          keeper.move(protector)
+        } else {
           move.cheap(keeper, protector, false, 1, 1)
         }
         if (protector.room.name !== keeper.room.name) {

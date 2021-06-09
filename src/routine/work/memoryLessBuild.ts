@@ -21,7 +21,9 @@ export default function memoryLessBuild(
   else if (result === ERR_INVALID_TARGET) {
     return FAILED
   } else if (result !== 0) {
-    target.pos.lookFor(LOOK_CREEPS).find((c) => c.my && move.anywhere(c))
+    if (target.pos.lookFor(LOOK_CREEPS).find((c) => c.my && move.anywhere(c)))
+      return SUCCESS
+    return FAILED
   } else {
     if (remaining <= 0) return NO_RESOURCE
     return SUCCESS

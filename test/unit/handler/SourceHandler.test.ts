@@ -76,6 +76,7 @@ describe('SourceHandler', () => {
           room: '',
           deprivity: 0,
         } as CreepMemory,
+        motherRoom: room,
       } as Creep
     })
 
@@ -92,6 +93,7 @@ describe('SourceHandler', () => {
           room: '',
           deprivity: 0,
         } as CreepMemory,
+        motherRoom: room,
       } as Miner
       beforeEach(() => {
         Game.creeps['John'] = creepJohn
@@ -110,6 +112,19 @@ describe('SourceHandler', () => {
           expect(sourceHandler.free).to.eq(1)
         })
       })
+
+      context(
+        'when there is not free source but the creep is not coming from this room',
+        () => {
+          beforeEach(() => {
+            creepJohn.motherRoom = { name: 'otherRoom' } as Room
+          })
+
+          it('returns that source', () => {
+            expect(sourceHandler.free).to.eq(1)
+          })
+        },
+      )
     })
   })
 

@@ -8,11 +8,11 @@ const config: EnemiesConfig = {
   /**
    * Choose aliances that have to be purged out
    */
-  aliances: ['UoP'],
+  aliances: [], // ['UoP'],
   /**
    * Choose players that have to be purged out
    */
-  players: ['qnz', 'Invader', 'Source Keeper'],
+  players: ['Invader', 'Source Keeper', 'Christianyo'],
   /**
    * Choose players that wont be attacked
    * (specify tolerance as max harmful bodypart count)
