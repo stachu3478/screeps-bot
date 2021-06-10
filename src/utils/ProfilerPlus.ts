@@ -9,11 +9,19 @@ export default class ProfilerPlus {
   private strResult = ''
 
   overrideFn<T>(object: T & any, name: string = object.name) {
+    if (this.overridenObjects[name]) {
+      console.log(`${name} is already registered. Please choose other name`)
+      return object
+    }
     this.overridenObjects[name] = { call: object }
     return (...args: any[]) => this.overridenObjects[name].call(...args)
   }
 
   overrideObject<T>(object: T & any, name: string = object.name) {
+    if (this.overridenObjects[name]) {
+      console.log(`${name} is already registered. Please choose other name`)
+      return object
+    }
     this.overridenObjects[name] = object.prototype || object
     return object
   }
@@ -22,7 +30,8 @@ export default class ProfilerPlus {
     this.ticksToMeasure = ticksToMeasure
     const that = this
     _.forEach(this.overridenObjects, (o, name) => {
-      _.forOwn(o, (fn, key) => {
+      const overridden: string[] = []
+      Object.getOwnPropertyNames(o).forEach((key) => {
         if (!key) {
           return
         }
@@ -30,6 +39,7 @@ export default class ProfilerPlus {
         if (!descriptor || descriptor.get || descriptor.set) {
           return
         }
+        const fn = o[key]
         if (
           typeof fn === 'function' &&
           key !== 'constructor' &&
@@ -45,9 +55,10 @@ export default class ProfilerPlus {
             that.callStack.pop()
             return result
           }
-          console.log('overriding', name, key)
+          overridden.push(`${name}#${key}`)
         }
       })
+      console.log('overriding', overridden)
     })
   }
 
@@ -64,7 +75,8 @@ export default class ProfilerPlus {
       _.forOwn(o, (fn, key) => {
         if (typeof fn === 'function' && key?.startsWith('_')) {
           o[key.slice(1)] = fn
-          console.log('overriding', name, key)
+          delete o[key]
+          console.log('restoring', name, key)
         }
       })
     })
@@ -95,24 +107,24 @@ export default class ProfilerPlus {
     })
   }
 
-  printResult(measures = this.measures, depthString = '|-') {
-    const topLevel = depthString === '|-'
+  printResult(measures = this.measures, depthString?: string) {
+    const topLevel = !depthString
     if (topLevel) {
       this.strResult =
-        '<table><th><td>Function name</td><td>Total calls</td><td>Min cost</td><td>Max cost</td><td>Avg cost</td></th>'
+        '<table><tr><th> Function name </th><th> Total calls </th><th> Min cost </th><th> Max cost </th><th> Avg cost </th></tr>'
     }
     _.forEach(measures, (measure, key) => {
       if (!key) {
         return
       }
       if (typeof measure === 'object') {
-        const name = depthString + key
+        const name = (depthString || '') + key
         const minCost = measure.min.toPrecision(3)
         const maxCost = measure.max.toPrecision(3)
         const calls = measure.calls
         const avgCost = (measure.time / measure.calls).toPrecision(3)
         this.strResult += `<tr><td>${name}</td><td>${calls}</td><td>${minCost}</td><td>${maxCost}</td><td>${avgCost}</td></tr>`
-        this.printResult(measure, '  ' + depthString)
+        this.printResult(measure, depthString ? '  ' + depthString : '|-')
       }
     })
     if (topLevel) {

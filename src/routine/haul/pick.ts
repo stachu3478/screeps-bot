@@ -1,4 +1,3 @@
-import profiler from 'screeps-profiler'
 import {
   SUCCESS,
   NOTHING_TODO,
@@ -42,4 +41,4 @@ export default ProfilerPlus.instance.overrideFn(function pick(
     return SUCCESS
   }
 },
-'autoPickRoutine')
+'pickRoutine')
