@@ -197,4 +197,4 @@ Room.prototype.findHostilePowerCreeps = function (filter) {
   })
 }
 
-ProfilerPlus.instance.overrideObject(Room, 'Room')
+// ProfilerPlus.instance.overrideObject(Room, 'Room')

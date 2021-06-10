@@ -94,4 +94,4 @@ defineRoomPositionGetter('mirror', (self) => {
   return new RoomPosition(x, y, self.roomName)
 })
 
-ProfilerPlus.instance.overrideObject(RoomPosition, 'RoomPosition')
+// ProfilerPlus.instance.overrideObject(RoomPosition, 'RoomPosition')
