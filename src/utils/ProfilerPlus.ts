@@ -1,5 +1,6 @@
 import _ from 'lodash'
 
+type ProfilableFunction<T, U> = (...args: T & any[]) => U
 const profilerPlus = _.memoize(() => new ProfilerPlus())
 export default class ProfilerPlus {
   private measures: { [key: string]: any } = {}
@@ -8,7 +9,10 @@ export default class ProfilerPlus {
   private ticksToMeasure: number = 0
   private strResult = ''
 
-  overrideFn<T>(object: T & any, name: string = object.name) {
+  overrideFn<T, U>(
+    object: ProfilableFunction<T, U>,
+    name: string = object.name,
+  ): ProfilableFunction<T, U> {
     const that = this
     if (this.overridenObjects[name]) {
       console.log(`${name} is already registered. Please choose other name`)

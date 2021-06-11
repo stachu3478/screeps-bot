@@ -7,7 +7,6 @@ import {
 } from 'constants/response'
 import storageFill from 'routine/haul/storageFill'
 import autoRepair from 'routine/work/autoRepair'
-import autoPick from 'routine/haul/autoPick'
 import arrive from 'routine/arrive'
 import dismantle from 'routine/work/dismantle'
 import drawStorage from 'routine/haul/storageDraw'
@@ -51,7 +50,7 @@ export default ProfilerPlus.instance.overrideFn(function harvester(
       const res = creep.routeProcessor.process()
       if (res) {
         creep.say('doin')
-        autoPick(creep) && move.check(creep) && autoRepair(creep)
+        move.check(creep) && autoRepair(creep)
       } else {
         creep.say('idling')
         creep.memory.state = State.IDLE
@@ -63,7 +62,7 @@ export default ProfilerPlus.instance.overrideFn(function harvester(
         break
       }
       if (creep.buildingRouteProcessor.process()) {
-        autoPick(creep) && move.check(creep) && autoRepair(creep)
+        move.check(creep) && autoRepair(creep)
       } else creep.memory.state = State.IDLE
       break
     case State.STORAGE_FILL:
@@ -72,7 +71,7 @@ export default ProfilerPlus.instance.overrideFn(function harvester(
           autoRepair(creep)
           break
         default:
-          if (autoPick(creep) !== SUCCESS) energyHaul(creep)
+          energyHaul(creep)
       }
       break
     case State.STORAGE_DRAW:
@@ -84,9 +83,6 @@ export default ProfilerPlus.instance.overrideFn(function harvester(
         case NOTHING_TODO:
         case FAILED:
           energyHaul(creep)
-        case NOTHING_DONE:
-          autoPick(creep)
-          break
       }
       break
     case State.ARRIVE:
@@ -127,10 +123,6 @@ export default ProfilerPlus.instance.overrideFn(function harvester(
           break
         default:
           creep.memory.state = State.IDLE // still need reset
-        /*if (creep.store.getUsedCapacity()) dumpResources(creep, State.FILL)
-          else if (autoPick(creep) !== SUCCESS) {
-            if (!haulCurrentRoom(creep)) creep.memory.state = State.IDLE
-          }*/
       }
       break
     default:

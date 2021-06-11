@@ -1,15 +1,7 @@
 import mineralFill from 'routine/haul/mineralFill'
-import {
-  SUCCESS,
-  DONE,
-  NOTHING_TODO,
-  NO_RESOURCE,
-  NOTHING_DONE,
-  ACCEPTABLE,
-} from 'constants/response'
+import { SUCCESS, DONE, NOTHING_TODO, NO_RESOURCE } from 'constants/response'
 import recycle from 'routine/recycle'
 import extract from 'routine/work/extract'
-import autoPickResource from 'routine/haul/autoPickResource'
 import collectGarbage from 'utils/collectGarbage'
 import ProfilerPlus from 'utils/ProfilerPlus'
 
@@ -28,17 +20,13 @@ export default ProfilerPlus.instance.overrideFn(function extractor(
           if (creep.store[resourceType]) creep.memory.state = State.STORAGE_FILL
           else creep.memory.state = State.RECYCLE
           break
-        case NOTHING_DONE:
-          autoPickResource(creep, resourceType)
       }
       break
     case State.STORAGE_FILL:
       switch (mineralFill(creep, resourceType)) {
         case SUCCESS:
         case NO_RESOURCE: {
-          if (autoPickResource(creep, resourceType) in ACCEPTABLE)
-            creep.memory.state = State.STORAGE_FILL
-          else creep.memory.state = State.HARVESTING
+          creep.memory.state = State.HARVESTING
         }
       }
       break

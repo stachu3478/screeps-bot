@@ -8,7 +8,6 @@ import {
 } from 'constants/response'
 import upgrade from 'routine/work/upgrade'
 import autoRepair from 'routine/work/autoRepair'
-import autoPick from 'routine/haul/autoPick'
 import draw from 'routine/haul/draw'
 import ProfilerPlus from 'utils/ProfilerPlus'
 
@@ -30,7 +29,6 @@ export default ProfilerPlus.instance.overrideFn(function staticUpgrader(
       switch (upgrade(creep, true)) {
         case NO_RESOURCE:
         case FAILED:
-          if (autoPick(creep) === SUCCESS) break
           const linkId = creep.room.links.controller?.id
           if (linkId) {
             creep.memory.state = State.DRAW
@@ -51,9 +49,6 @@ export default ProfilerPlus.instance.overrideFn(function staticUpgrader(
         case FAILED:
           creep.memory.state = State.UPGRADE
           upgrade(creep, true)
-          break
-        case NOTHING_DONE:
-          autoPick(creep)
           break
       }
       break

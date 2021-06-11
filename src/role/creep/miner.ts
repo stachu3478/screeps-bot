@@ -10,8 +10,6 @@ import harvest from 'routine/work/harvest'
 import autoFill from 'routine/haul/autoFill'
 import autoRepair from 'routine/work/autoRepair'
 import autoBuild from 'routine/work/autoBuild'
-import autoPick from 'routine/haul/autoPick'
-import profiler from 'screeps-profiler'
 import ProfilerPlus from 'utils/ProfilerPlus'
 
 export interface Miner extends Creep {
@@ -42,7 +40,6 @@ export default ProfilerPlus.instance.overrideFn(function miner(creep: Miner) {
       switch (harvest(creep, index, creep.motherRoom)) {
         case NOTHING_TODO:
           delete creep.cache.pick_pos
-          autoPick(creep)
         case DONE:
           const result = creep.motherRoom.spawn ? autoFill(creep) : FAILED
           if (result in ACCEPTABLE || result === NO_RESOURCE) {

@@ -44,13 +44,18 @@ export default class SourceHandler {
     return index
   }
 
+  private isFree(info: string) {
+    const name = info.slice(2)
+    const creep = Game.creeps[name]
+    if (!creep || creep.motherRoom.name !== this.room.name) return true
+    return creep.isRetired
+  }
+
   get free() {
-    return this.memory.findIndex((info, i) => {
-      const name = info.slice(2)
-      const creep = Game.creeps[name]
-      if (!creep || creep.motherRoom.name !== this.room.name) return true
-      return creep.isRetired
-    })
+    if (this.isFree(this.memory[this.colony])) {
+      return this.colony
+    }
+    return this.memory.findIndex((info) => this.isFree(info))
   }
 
   get positions() {

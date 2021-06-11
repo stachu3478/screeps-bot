@@ -1,6 +1,5 @@
 import {
   DONE,
-  NOTHING_DONE,
   FAILED,
   NO_RESOURCE,
   SUCCESS,
@@ -8,7 +7,6 @@ import {
 } from 'constants/response'
 import upgrade from 'routine/work/upgrade'
 import autoRepair from 'routine/work/autoRepair'
-import autoPick from 'routine/haul/autoPick'
 import storageDraw from 'routine/haul/storageDraw'
 import drawContainer from 'routine/haul/containerDraw'
 import draw from 'routine/haul/draw'
@@ -35,9 +33,6 @@ export default ProfilerPlus.instance.overrideFn(function upgrader(
         case SUCCESS:
           creep.memory.state = State.UPGRADE
           break
-        case NOTHING_DONE:
-          autoPick(creep)
-          break
         case NOTHING_TODO:
           creep.memory.state = State.STORAGE_DRAW
           break
@@ -47,7 +42,6 @@ export default ProfilerPlus.instance.overrideFn(function upgrader(
       switch (upgrade(creep)) {
         case NO_RESOURCE:
         case FAILED:
-          if (autoPick(creep) === SUCCESS) break
           const linkId = creep.room.links.controller?.id
           if (linkId) {
             creep.memory.state = State.DRAW
@@ -77,9 +71,6 @@ export default ProfilerPlus.instance.overrideFn(function upgrader(
         case FAILED:
           creep.memory.state = State.HARVESTING
           break
-        case NOTHING_DONE:
-          autoPick(creep)
-          break
       }
       break
     case State.DRAW:
@@ -91,9 +82,6 @@ export default ProfilerPlus.instance.overrideFn(function upgrader(
         case NOTHING_TODO:
         case FAILED:
           creep.memory.state = State.HARVESTING
-          break
-        case NOTHING_DONE:
-          autoPick(creep)
           break
       }
       break

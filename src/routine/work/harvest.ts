@@ -2,10 +2,10 @@ import move from 'utils/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, DONE } from 'constants/response'
 import ProfilerPlus from 'utils/ProfilerPlus'
 
-export default ProfilerPlus.instance.overrideFn(function harvest(
+const harvest = ProfilerPlus.instance.overrideFn(function harvest(
   creep: Creep,
   index: number,
-  room = creep.room,
+  room: Room = creep.room,
 ) {
   const free = creep.store.getFreeCapacity(RESOURCE_ENERGY)
   const target = room.find(FIND_SOURCES)[index]
@@ -26,3 +26,5 @@ export default ProfilerPlus.instance.overrideFn(function harvest(
   }
 },
 'routineHarvest')
+
+export default harvest

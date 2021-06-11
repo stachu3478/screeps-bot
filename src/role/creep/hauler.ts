@@ -1,5 +1,4 @@
-import { DONE, NOTHING_DONE, NOTHING_TODO, SUCCESS } from 'constants/response'
-import autoPick from 'routine/haul/autoPick'
+import { DONE, NOTHING_DONE, NOTHING_TODO } from 'constants/response'
 import arrive from 'routine/arrive'
 import recycle from 'routine/recycle'
 import Hauler from './hauler.d'
@@ -47,7 +46,7 @@ export default ProfilerPlus.instance.overrideFn(function hauler(creep: Hauler) {
         default:
           if (creep.store.getUsedCapacity())
             dumpResources(creep, State.STORAGE_FILL)
-          else if (autoPick(creep) !== SUCCESS) resourceHaul(creep)
+          else resourceHaul(creep)
       }
       break
     case State.ARRIVE:
