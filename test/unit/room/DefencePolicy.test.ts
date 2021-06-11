@@ -24,7 +24,7 @@ describe('room/DefencePolicy', () => {
     expect(policy.shouldAttack(true)).to.be.false
   })
 
-  it('returns true when once deal and once not deal cached', () => {
+  it('returns false when once deal and once not deal cached', () => {
     room.memory = { d: 1, D: 0 }
     const policy = new DefencePolicy(room)
     expect(policy.shouldAttack(true)).to.be.false

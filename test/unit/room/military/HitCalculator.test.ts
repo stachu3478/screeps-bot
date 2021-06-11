@@ -16,17 +16,17 @@ describe('HitCalculator', () => {
     room.buildings.towers = [tower]
 
     creep = {} as Creep
-    creep.corpus = {} as CreepCorpus
+    creep.corpus = {} as Corpus
     creep.corpus.healPowerAt = () => 2
     creep.corpus.damageDealt = (d) => d
 
     const dealer = {} as Creep
-    dealer.corpus = {} as CreepCorpus
+    dealer.corpus = {} as Corpus
     dealer.corpus.attackPowerAt = () => 4
     dealers = [dealer]
 
     const healer = {} as Creep
-    healer.corpus = {} as CreepCorpus
+    healer.corpus = {} as Corpus
     healer.corpus.healPowerAt = () => 8
     healers = [healer, creep]
 

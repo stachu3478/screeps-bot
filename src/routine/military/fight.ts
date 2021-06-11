@@ -9,7 +9,7 @@ interface FightMemory extends CreepMemory {}
 
 export default function fight(
   creep: FightCreep,
-  enemy?: Creep,
+  enemy?: AnyCreep,
   keepDistance: boolean = false,
 ) {
   if (!enemy) return NOTHING_TODO

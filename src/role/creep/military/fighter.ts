@@ -11,7 +11,7 @@ interface FighterMemory extends CreepMemory {}
 
 export default function fighter(
   creep: Fighter,
-  enemy?: Creep,
+  enemy?: AnyCreep,
   keepDistance?: boolean,
 ) {
   switch (creep.memory.state) {

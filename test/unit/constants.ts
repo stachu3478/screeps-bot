@@ -6,6 +6,7 @@ import {
   Structure,
   Spawn,
   Creep,
+  PowerCreep,
   Source,
   Flag,
   OwnedStructure,
@@ -16,6 +17,7 @@ import RoomPosition from './mock/RoomPosition'
 
 Object.assign(global, {
   Creep,
+  PowerCreep,
   Flag,
   Game,
   InterShardMemory: {},

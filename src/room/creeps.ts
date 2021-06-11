@@ -28,7 +28,7 @@ interface Creeps {
 export default ProfilerPlus.instance.overrideFn(function creeps(
   creeps: Creeps,
   room: Room,
-  enemy?: Creep,
+  enemy?: AnyCreep,
   holdFire?: boolean,
 ) {
   const creepCountByRole: number[] = []

@@ -5,12 +5,8 @@ import BuildingRouteProcessor from 'job/buildingRoute/BuildingRouteProcessor'
 import RepairRouteProcessor from 'job/repairRoute/RepairRouteProcessor'
 import move from 'utils/path'
 import CreepCorpus from './CreepCorpus'
-import {
-  findTarget,
-  findTargetCreep,
-  findTargets,
-} from 'routine/military/shared'
-import { CREEP_RANGE, RANGED_MASS_ATTACK_POWER } from 'constants/support'
+import { findTargets } from 'routine/military/shared'
+import { CREEP_RANGE } from 'constants/support'
 
 function defineCreepGetter<T extends keyof Creep>(
   property: T,
@@ -57,7 +53,7 @@ defineCreepGetter('repairRouteProcessor', (self) =>
 const creepCorpus = memoizeByCreep((c) => new CreepCorpus(c))
 defineCreepGetter('corpus', (self) => creepCorpus(self))
 
-Creep.prototype.isSafeFrom = function (creep: Creep) {
+Creep.prototype.isSafeFrom = function (creep: AnyCreep) {
   return this.pos.getRangeTo(creep) > creep.corpus.safeDistance
 }
 
@@ -81,18 +77,43 @@ Creep.prototype.moveToRoom = function (room: string) {
   return move.cheap(this, pos, true, undefined, 1)
 }
 
+export function doTransferFor(
+  creep: AnyCreep,
+  t: Structure | AnyCreep,
+  r: ResourceConstant,
+  a?: number,
+) {
+  const res = creep._transfer(t, r, a)
+  if (res === OK || res === ERR_FULL) {
+    const s = t as AnyStoreStructure
+    const transfered =
+      a || Math.min(s.store.getFreeCapacity(r) || 0, creep.store[r])
+    t.onTransfer(transfered)
+  }
+  return res
+}
+
 Creep.prototype._transfer = Creep.prototype.transfer
 Creep.prototype.transfer = function (
   t: Structure | AnyCreep,
   r: ResourceConstant,
   a?: number,
 ) {
-  const res = this._transfer(t, r, a)
-  if (res === OK || res === ERR_FULL) {
+  return doTransferFor(this, t, r, a)
+}
+
+export function doWithdrawFor(
+  creep: AnyCreep,
+  t: Structure | Tombstone | Ruin,
+  r: ResourceConstant,
+  a?: number,
+) {
+  const res = creep._withdraw(t, r, a)
+  if (res === OK || res === ERR_NOT_ENOUGH_RESOURCES) {
     const s = t as AnyStoreStructure
     const transfered =
-      a || Math.min(s.store.getFreeCapacity(r) || 0, this.store[r])
-    t.onTransfer(transfered)
+      a || Math.min(s.store[r] || 0, creep.store.getFreeCapacity(r))
+    t.onWithdraw(transfered)
   }
   return res
 }
@@ -103,14 +124,7 @@ Creep.prototype.withdraw = function (
   r: ResourceConstant,
   a?: number,
 ) {
-  const res = this._withdraw(t, r, a)
-  if (res === OK || res === ERR_NOT_ENOUGH_RESOURCES) {
-    const s = t as AnyStoreStructure
-    const transfered =
-      a || Math.min(s.store[r] || 0, this.store.getFreeCapacity(r))
-    t.onWithdraw(transfered)
-  }
-  return res
+  return doWithdrawFor(this, t, r, a)
 }
 
 Creep.prototype._rangedHeal = Creep.prototype.rangedHeal

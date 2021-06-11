@@ -46,7 +46,7 @@ export default ProfilerPlus.instance.overrideFn(function run(
 
   const enemyPicker = new EnemyPicker(room)
   enemyPicker.fetch()
-  let enemy: Creep | undefined
+  let enemy: AnyCreep | undefined
   let needFighters = false
   let shouldAttack = false
   let towersProcessed = false
@@ -63,13 +63,7 @@ export default ProfilerPlus.instance.overrideFn(function run(
     room.visual.enemy(enemyPicker, shouldAttack)
     cache.healthy = 0
   } else {
-    const powerEnemy = room.findHostilePowerCreeps()[0]
-    if (powerEnemy) {
-      towers.forEach((t) => tower(t, powerEnemy))
-      towersProcessed = true
-    } else {
-      room.defencePolicy.reset()
-    }
+    room.defencePolicy.reset()
   }
   if (!cache.healthy && !towersProcessed) {
     const creeps = findDamagedCreeps(room)

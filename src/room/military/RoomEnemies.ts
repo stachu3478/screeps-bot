@@ -15,10 +15,15 @@ export default class RoomEnemies {
   }
 
   find() {
-    return this.room.findHostileCreeps((creep) => this.isEnemy(creep))
+    const creeps: AnyCreep[] = this.room.findHostileCreeps((creep) =>
+      this.isEnemy(creep),
+    )
+    return creeps.concat(
+      this.room.findHostilePowerCreeps((creep) => this.isEnemy(creep)),
+    )
   }
 
-  private isEnemy(creep: Creep) {
+  private isEnemy(creep: AnyCreep) {
     const username = creep.owner.username
     if (this.enemies.isEnemy(username)) return true
     const tolerance = enemies.allies[username] || 0
@@ -28,7 +33,8 @@ export default class RoomEnemies {
     return !passes
   }
 
-  private getHarmfulBodypartCount(creep: Creep) {
+  private getHarmfulBodypartCount(creep: AnyCreep) {
+    if (creep instanceof PowerCreep) return 0
     return creep.body.reduce(
       (t, part) => t + (RoomEnemies.harmlessBodyparts.has(part.type) ? 1 : 0),
       0,

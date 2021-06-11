@@ -119,8 +119,8 @@ interface Creep {
   routeProcessor: ResourceRouteProcessor
   buildingRouteProcessor: BuildingRouteProcessor
   repairRouteProcessor: RepairRouteProcessor
-  corpus: CreepCorpus
-  isSafeFrom: (creep: Creep) => boolean
+  corpus: Corpus
+  isSafeFrom: (creep: AnyCreep) => boolean
   safeRangeXY: (x: number, y: number) => number
   moveToRoom: (room: string) => ScreepsReturnCode
   _transfer: Creep['transfer']
@@ -138,8 +138,11 @@ interface Creep {
 }
 
 interface PowerCreep {
+  _transfer: PowerCreep['transfer']
+  _withdraw: PowerCreep['withdraw']
   onWithdraw: (amount: number) => void
   onTransfer: (amount: number) => void
+  corpus: Corpus
 }
 
 interface StructureTower {

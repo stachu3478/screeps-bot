@@ -7,7 +7,7 @@ export default class EnemyPicker {
   private room: Room
   private enemies: RoomEnemies
   private calculator: HitCalculator
-  private enemyCreep?: Creep
+  private enemyCreep?: AnyCreep
   private maxHitsDealt: number = -Infinity
   private maxAllyDamage: number = -Infinity
   private maxOptimisticHitsDealt: number = -Infinity

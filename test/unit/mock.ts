@@ -52,7 +52,7 @@ export class RoomTerrain {
   }
 }
 
-export class Creep {
+class _AnyCreep {
   public name: string
   public store: Object
   public memory: Object
@@ -70,11 +70,14 @@ export class Creep {
     this.room = new Room('test')
     this.my = true
   }
+}
 
+export class Creep extends _AnyCreep {
   getActiveBodyparts() {
     throw new Error('Not implemented')
   }
 }
+export class PowerCreep extends _AnyCreep {}
 
 export const SourcyCreep = {
   store: { getFreeCapacity: () => 50 },

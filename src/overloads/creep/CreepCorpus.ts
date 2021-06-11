@@ -1,12 +1,8 @@
-import {
-  BODYPART_HITS,
-  CREEP_RANGE,
-  RANGED_MASS_ATTACK_POWER,
-} from 'constants/support'
+import { BODYPART_HITS } from 'constants/support'
 import _, { Dictionary } from 'lodash'
-import Memoized from 'utils/Memoized'
+import Corpus from '../Corpus'
 
-export default class CreepCorpus extends Memoized<Creep> {
+export default class CreepCorpus extends Corpus<Creep> {
   private bodyPartCount: { [key: string]: number | undefined } = {}
   private hitThresholds: Dictionary<number> = {}
 
@@ -32,33 +28,6 @@ export default class CreepCorpus extends Memoized<Creep> {
     return this.object.hits > this.hitThresholds[type]
   }
 
-  healPowerAt(creep: _HasRoomPosition) {
-    if (!this.object) return 0
-    const range = this.object.pos.getRangeTo(creep)
-    if (range > CREEP_RANGE) return 0
-    if (range > 1) return this.rangedHealPower
-    return this.healPower
-  }
-
-  attackPowerAt(creep: _HasRoomPosition) {
-    if (!this.object) return 0
-    const range = this.object.pos.getRangeTo(creep)
-    if (range > CREEP_RANGE) return 0
-    if (range > 1) return this.rangedAttackPower
-    return this.attackPower + this.rangedAttackPower
-  }
-
-  rangedMassAttackPowerAt(roomObject: RoomObject) {
-    if (!this.object) return 0
-    if (
-      !(roomObject instanceof Creep || roomObject instanceof OwnedStructure)
-    ) {
-      return 0
-    }
-    const range = this.object.pos.getRangeTo(roomObject)
-    return RANGED_MASS_ATTACK_POWER[range] || 0
-  }
-
   damageDealt(baseAmount: number) {
     let dealt = 0
     let remaining = baseAmount
@@ -77,23 +46,9 @@ export default class CreepCorpus extends Memoized<Creep> {
     return dealt + remaining
   }
 
-  get armed() {
-    return this.hasActive(ATTACK) || this.hasActive(RANGED_ATTACK)
-  }
-
-  get safeDistance() {
-    if (this.hasActive(RANGED_ATTACK)) return 2 + CREEP_RANGE
-    else if (this.hasActive(ATTACK)) return 3
-    return 1
-  }
-
   get healPower() {
     if (!this.object) return 0
     return this.object.body.reduce((sum, p) => sum + this.partHealPower(p), 0)
-  }
-
-  get rangedHealPower() {
-    return this.healPower * (RANGED_HEAL_POWER / HEAL_POWER)
   }
 
   get attackPower() {
@@ -104,11 +59,6 @@ export default class CreepCorpus extends Memoized<Creep> {
   get rangedAttackPower() {
     if (!this.object) return 0
     return this.object.body.reduce((sum, p) => sum + this.partRangedPower(p), 0)
-  }
-
-  get healthy() {
-    const creep = this.object
-    return !!creep && creep.hits === creep.hitsMax
   }
 
   private partActive(part: Creep['body'][0]) {

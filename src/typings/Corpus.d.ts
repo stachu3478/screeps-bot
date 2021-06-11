@@ -1,4 +1,4 @@
-declare class CreepCorpus {
+declare class Corpus {
   count(type: BodyPartConstant): number
   hasActive(type: BodyPartConstant): boolean
   healPowerAt(creep: _HasRoomPosition): number
