@@ -39,4 +39,7 @@ export default class BuildingRouteProcessor extends CreepMemoized<Creep> {
   }
 }
 
-// ProfilerPlus.instance.overrideObject(BuildingRouteProcessor, 'BuildingRouteProcessor')
+ProfilerPlus.instance.overrideObject(
+  BuildingRouteProcessor,
+  'BuildingRouteProcessor',
+)

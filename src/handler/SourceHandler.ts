@@ -67,4 +67,4 @@ export default class SourceHandler {
   }
 }
 
-// ProfilerPlus.instance.overrideObject(SourceHandler, 'SourceHandler')
+ProfilerPlus.instance.overrideObject(SourceHandler, 'SourceHandler')

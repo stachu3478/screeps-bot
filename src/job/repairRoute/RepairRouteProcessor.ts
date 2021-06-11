@@ -39,4 +39,7 @@ export default class RepairRouteProcessor extends CreepMemoized<Creep> {
   }
 }
 
-// ProfilerPlus.instance.overrideObject(RepairRouteProcessor, 'RepairRouteProcessor')
+ProfilerPlus.instance.overrideObject(
+  RepairRouteProcessor,
+  'RepairRouteProcessor',
+)
