@@ -9,12 +9,17 @@ export default class ProfilerPlus {
   private strResult = ''
 
   overrideFn<T>(object: T & any, name: string = object.name) {
+    const that = this
     if (this.overridenObjects[name]) {
       console.log(`${name} is already registered. Please choose other name`)
       return object
     }
     this.overridenObjects[name] = { call: object }
-    return (...args: any[]) => this.overridenObjects[name].call(...args)
+    function func() {
+      // @ts-expect-error implicit this
+      return that.overridenObjects[name].call.apply(this, arguments)
+    }
+    return func
   }
 
   overrideObject<T>(object: T & any, name: string = object.name) {

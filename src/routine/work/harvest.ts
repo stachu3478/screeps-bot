@@ -12,6 +12,7 @@ export default ProfilerPlus.instance.overrideFn(function harvest(
   if (!target) return NOTHING_TODO
   const targetPos = room.sources.getPosition(index)
   if (creep.pos.range(targetPos)) {
+    creep.moveTo(targetPos)
     return NOTHING_DONE
   }
   const result = creep.harvest(target)
