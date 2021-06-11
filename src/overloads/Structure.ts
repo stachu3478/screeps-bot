@@ -8,7 +8,7 @@ function defineStructureGetter<T extends keyof Structure>(
   defineGetter<Structure, StructureConstructor, T>(Structure, property, handler)
 }
 
-export function isWalkable(self: Structure) {
+export function isWalkable(self: Structure | ConstructionSite) {
   return (
     (self.structureType === STRUCTURE_RAMPART &&
       ((self as StructureRampart).my || (self as StructureRampart).isPublic)) ||

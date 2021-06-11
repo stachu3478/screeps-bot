@@ -1,4 +1,5 @@
 import defineGetter from 'utils/defineGetter'
+import { isWalkable } from './Structure'
 
 function defineConstructionSiteGetter<T extends keyof ConstructionSite>(
   property: T,
@@ -12,5 +13,5 @@ function defineConstructionSiteGetter<T extends keyof ConstructionSite>(
 }
 
 defineConstructionSiteGetter('isWalkable', (self) => {
-  return self.my
+  return !self.my || isWalkable(self)
 })

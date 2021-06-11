@@ -23,8 +23,7 @@ function probabilisticallyMoveCreepsOutOfSpawnsIfBlocked(
     if (Math.random() < 0.5) return
     if (!spawning) return
     if (spawning.remainingTime) return
-    if (spawning.directions.some((d) => s.pos.offset(d)?.isWalkable)) return
-    console.log('blocked spawn detected', s)
+    if (spawning.directions.some((d) => s.pos.offset(d)?.walkable)) return
     spawning.directions.find((d) => {
       return s.pos
         .offset(d)
