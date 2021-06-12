@@ -1,7 +1,6 @@
 import { FindExitConstant } from 'planner/RoomNeighbourPathScanner'
 import MyRooms from 'room/MyRooms'
 import range from 'utils/range'
-import { reverseCord } from '../RoomPosition'
 
 export default class RoomLocation {
   private roomName: string
@@ -25,17 +24,16 @@ export default class RoomLocation {
     return r >= range(this.x - location.x, this.y - location.y)
   }
 
-  getNeighbour(direction: FindExitConstant) {
-    let roomName: string = ''
+  getNeighbour(direction: FindExitConstant | string) {
     if (direction === FIND_EXIT_TOP)
-      roomName = RoomLocation.reverseIndex(this.x, this.y - 1)
+      return RoomLocation.reverseIndex(this.x, this.y - 1)
     if (direction === FIND_EXIT_BOTTOM)
-      roomName = RoomLocation.reverseIndex(this.x, this.y + 1)
+      return RoomLocation.reverseIndex(this.x, this.y + 1)
     if (direction === FIND_EXIT_LEFT)
-      roomName = RoomLocation.reverseIndex(this.x - 1, this.y)
+      return RoomLocation.reverseIndex(this.x - 1, this.y)
     if (direction === FIND_EXIT_RIGHT)
-      roomName = RoomLocation.reverseIndex(this.x + 1, this.y)
-    return roomName
+      return RoomLocation.reverseIndex(this.x + 1, this.y)
+    return direction.toString()
   }
 
   findRoomPathStep(
@@ -66,8 +64,10 @@ export default class RoomLocation {
       const currentRoom = rooms && rooms[current]
       found = currentRoom && {
         ...currentRoom,
-        x: reverseCord(currentRoom.x),
-        y: reverseCord(currentRoom.y),
+        x: currentRoom.newX,
+        y: currentRoom.newY,
+        newX: currentRoom.x,
+        newY: currentRoom.y,
         through: currentRoom.name,
         name: currentRoom.through,
       }
@@ -80,6 +80,8 @@ export default class RoomLocation {
       return {
         x: 25,
         y: 25,
+        newX: 25,
+        newY: 25,
         name: this.roomName,
         cost: 0,
         through: this.roomName,

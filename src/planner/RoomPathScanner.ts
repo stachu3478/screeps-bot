@@ -69,7 +69,7 @@ export default class RoomPathScanner {
     if (info.safe === false && !observer) return false
     const available = this.getOrRequestRoomAvailbility(roomName, observer)
     if (available) {
-      this.traversePos(new RoomPosition(info.x, info.y, roomName))
+      this.traversePos(new RoomPosition(info.newX, info.newY, roomName))
       this.scanned[roomName] = 1
     }
     this.traversed = false
@@ -113,10 +113,9 @@ export default class RoomPathScanner {
       if (cost > this.config.maxCost) return
       if (existingPath && existingPath.cost <= cost) return
       this.infos[roomName] = {
+        ...path,
         name: roomName,
         cost,
-        x: path.x,
-        y: path.y,
         through: pos.roomName,
         safe: currentRoomPath ? currentRoomPath.safe : true,
         deposits: [],

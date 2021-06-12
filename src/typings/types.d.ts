@@ -86,6 +86,8 @@ interface RoomNeighbourPath {
   cost: number
   x: number
   y: number
+  newX: number
+  newY: number
   through: string
   owner?: string
   controller?: boolean

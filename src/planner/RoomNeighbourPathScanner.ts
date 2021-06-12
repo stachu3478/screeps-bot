@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import ThrespassPathfinder from './military/ThrespassPathfinder'
 
 const pathfindingOpts: PathFinderOpts = {
@@ -30,7 +31,9 @@ export interface RoomNeighbour {
   cost: number
   x: number
   y: number
-  dir: FindExitConstant
+  newX: number
+  newY: number
+  dir: FindExitConstant | string
 }
 export default class RoomNeighbourPathScanner {
   private room: Room
@@ -41,11 +44,16 @@ export default class RoomNeighbourPathScanner {
 
   /**
    * Returns array of path length info to exits from specified position
-   * -1 at [0] means no path
    */
   findExitPaths(from: RoomPosition) {
-    const exitConstant = this.getExitConstantFromRoomPosition(from)
     const paths: RoomNeighbour[] = []
+    this.collectPathsFromExits(from, paths)
+    this.collectPathsFromPortals(from, paths)
+    return paths
+  }
+
+  private collectPathsFromExits(from: RoomPosition, paths: RoomNeighbour[]) {
+    const exitConstant = this.getExitConstantFromRoomPosition(from)
     exitConstants
       .filter((c) => c !== exitConstant)
       .forEach((c) => {
@@ -57,12 +65,73 @@ export default class RoomNeighbourPathScanner {
         const mirror = lastPosition.mirror
         paths.push({
           cost: result.cost + 1,
-          x: mirror.x,
-          y: mirror.y,
+          x: lastPosition.x,
+          y: lastPosition.y,
+          newX: mirror.x,
+          newY: mirror.y,
           dir: c,
         })
       })
-    return paths
+  }
+
+  private collectPathsFromPortals(from: RoomPosition, paths: RoomNeighbour[]) {
+    const interRoomPortals = this.room
+      .find(FIND_STRUCTURES)
+      .filter(
+        (s) =>
+          s.structureType === STRUCTURE_PORTAL &&
+          s.destination instanceof RoomPosition,
+      ) as StructurePortal[]
+    const portalDestinationsByRooms = _.groupBy(
+      interRoomPortals,
+      (p) => (p.destination as RoomPosition).roomName,
+    )
+    _.forEach(portalDestinationsByRooms, (portals, roomName) => {
+      const roomPositions = portals.map((p) => p.pos)
+      if (!roomName) {
+        return
+      }
+      const result = PathFinder.search(
+        from,
+        roomPositions.map((pos) => ({ pos, range: 1 })),
+        pathfindingOpts,
+      )
+      if (result.incomplete) {
+        console.log(
+          'interroom portal path not found',
+          result.path[result.path.length - 1],
+          result.ops,
+        )
+        return
+      }
+      const foundPortal = result.path[result.path.length - 1]
+        .lookForAtInRange(LOOK_STRUCTURES, 1)
+        .find(
+          (p) =>
+            p.structure.structureType === STRUCTURE_PORTAL &&
+            (p.structure as StructurePortal).destination instanceof
+              RoomPosition,
+        )?.structure as StructurePortal | undefined
+      if (!foundPortal) {
+        console.log(
+          'interroom portal position not found',
+          result.path[result.path.length - 1],
+          result.ops,
+        )
+        return
+      }
+      const lastPosition = foundPortal.pos
+      const destination = foundPortal.destination as RoomPosition
+      console.log('interroom portal registered', lastPosition, destination)
+      paths.push({
+        cost: result.cost + 1,
+        x: lastPosition.x,
+        y: lastPosition.y,
+        newX: destination.x,
+        newY: destination.y,
+        dir: roomName,
+      })
+    })
   }
 
   private getExitConstantFromRoomPosition(pos: RoomPosition | PathStep) {

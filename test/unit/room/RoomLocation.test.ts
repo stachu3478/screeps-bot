@@ -30,6 +30,8 @@ describe('RoomLocation', () => {
       room.pathScanner.rooms['sim'] = {
         x: 12,
         y: 34,
+        newX: 13,
+        newY: 34,
         through: 'test',
         name: 'sim',
         cost: 123,
@@ -49,6 +51,8 @@ describe('RoomLocation', () => {
       room.pathScanner.rooms['sim1'] = {
         x: 12,
         y: 0,
+        newX: 12,
+        newY: 49,
         through: 'test',
         name: 'sim1',
         cost: 123,
@@ -57,6 +61,8 @@ describe('RoomLocation', () => {
       room.pathScanner.rooms['sim2'] = {
         x: 15,
         y: 0,
+        newX: 15,
+        newY: 49,
         through: 'sim1',
         name: 'sim2',
         cost: 321,
@@ -69,6 +75,8 @@ describe('RoomLocation', () => {
       ).to.eql({
         x: 15,
         y: 49,
+        newX: 15,
+        newY: 0,
         through: 'sim2',
         name: 'sim1',
         cost: 321,

@@ -26,7 +26,10 @@ export default class NukerPlanner {
   }
 
   shouldNukeRoom() {
-    return !this.room.find(FIND_NUKES).length
+    return (
+      !this.room.find(FIND_NUKES).length &&
+      this.room.find(FIND_HOSTILE_SPAWNS).some((s) => s.isActive())
+    )
   }
 
   /**
