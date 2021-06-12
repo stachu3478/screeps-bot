@@ -22,6 +22,12 @@ export const loop = () => {
   try {
     let usage = Game.cpu.getUsed()
     roomVisual.info('Memory overhead: ' + usage.toFixed(3), 0, 49)
+    const heapStats = Game.cpu.getHeapStatistics && Game.cpu.getHeapStatistics()
+    if (heapStats) {
+      const heapUsage =
+        (100 * heapStats.total_heap_size) / heapStats.heap_size_limit
+      roomVisual.info('Heap usage: ' + heapUsage.toFixed(1) + '%', 0, 47)
+    }
     rooms.forEach((room) => {
       usage += run(room.controller, usage)
     })

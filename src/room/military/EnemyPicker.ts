@@ -12,10 +12,14 @@ export default class EnemyPicker {
   private maxAllyDamage: number = -Infinity
   private maxOptimisticHitsDealt: number = -Infinity
 
-  constructor(room: Room) {
+  constructor(
+    room: Room,
+    enemies = new RoomEnemies(room),
+    calculator = new HitCalculator(room),
+  ) {
     this.room = room
-    this.enemies = new RoomEnemies(room)
-    this.calculator = new HitCalculator(room)
+    this.enemies = enemies
+    this.calculator = calculator
   }
 
   fetch() {

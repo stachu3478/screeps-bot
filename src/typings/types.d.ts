@@ -78,6 +78,7 @@ interface DepositTraits {
   y: number
   coverage: number
   lastCooldown: number
+  type: DepositConstant
 }
 
 interface RoomNeighbourPath {

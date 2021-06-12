@@ -34,6 +34,7 @@ export default class RoomInspector {
           y: deposit.pos.y,
           coverage,
           lastCooldown: deposit.lastCooldown,
+          type: deposit.depositType,
         }
       }),
     )

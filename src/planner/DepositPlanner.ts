@@ -1,45 +1,79 @@
 import _ from 'lodash'
 import range from 'utils/range'
+import Game from '../../test/unit/mock/Game'
+import DepositValidator from './DepositValidator'
 
 export default class DepositPlanner {
   private info?: RoomNeighbourPath
+  private depositToMine?: DepositTraits
+  private currentCost?: number
+  private sourceRoom: Room
 
-  constructor(info?: RoomNeighbourPath) {
-    this.info = info
+  constructor(room: Room) {
+    this.sourceRoom = room
+    this.info = room.pathScanner.rooms[room.memory.mineDeposit || '']
+    if (this.info && this.info.deposits.length) {
+      this.depositToMine = _.min(this.info.deposits, (d) => d.lastCooldown)
+      if (new DepositValidator().validate(this.depositToMine, this.info)) {
+        this.currentCost = this.getDepositDistance(
+          this.depositToMine,
+          this.info,
+        )
+      } else {
+        delete this.depositToMine
+        delete room.memory.mineDeposit
+        this.findNewDeposit()
+      }
+    } else if (!(Game.time % 1000)) {
+      this.findNewDeposit()
+    }
+  }
+
+  private findNewDeposit() {
+    const validator = new DepositValidator()
+    const rooms = this.pathScanner.rooms
+    _.find(rooms, (room) => {
+      if (!room) {
+        return false
+      }
+      return room.deposits.find((traits) => {
+        const result = validator.validate(traits, room)
+        if (result) {
+          this.info = room
+          this.sourceRoom.memory.mineDeposit = room.name
+          this.depositToMine = traits
+          this.currentCost = this.getDepositDistance(traits, room)
+        }
+        return result
+      })
+    })
+  }
+
+  private getDepositDistance(
+    traits: DepositTraits,
+    pathRoom: RoomNeighbourPath,
+  ) {
+    return pathRoom.cost + range(traits.x + pathRoom.x, traits.y + pathRoom.y)
   }
 
   get deposit() {
-    const miningRoomInfo = this.info
-    if (!miningRoomInfo || !miningRoomInfo.deposits.length) {
-      return
-    }
-    return _.min(miningRoomInfo.deposits, (d) => d.lastCooldown)
+    return this.depositToMine
   }
 
   get cost() {
-    const deposit = this.deposit
-    if (!deposit || !this.info) {
-      return 0
-    }
-    return (
-      this.info.cost + range(deposit.x + this.info.x, deposit.y + this.info.y)
-    )
+    return this.currentCost || Infinity
   }
 
   get coverage() {
-    const deposit = this.deposit
-    if (!deposit || !this.info) {
-      return 0
-    }
-    return deposit.coverage
+    return this.depositToMine?.coverage || 0
   }
 
   get lastCooldown() {
-    const deposit = this.deposit
-    if (!deposit || !this.info) {
-      return 0
-    }
-    return deposit.lastCooldown
+    return this.depositToMine?.lastCooldown || Infinity
+  }
+
+  get pathScanner() {
+    return this.sourceRoom.pathScanner
   }
 
   get room() {

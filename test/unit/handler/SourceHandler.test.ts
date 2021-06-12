@@ -87,15 +87,16 @@ describe('SourceHandler', () => {
     })
 
     context('when there is not free source', () => {
-      const creepJohn = {
-        memory: {
-          role: Role.MINER,
-          room: '',
-          deprivity: 0,
-        } as CreepMemory,
-        motherRoom: room,
-      } as Miner
+      let creepJohn: Creep
       beforeEach(() => {
+        creepJohn = {
+          memory: {
+            role: Role.MINER,
+            room: '',
+            deprivity: 0,
+          } as CreepMemory,
+          motherRoom: room,
+        } as Miner
         Game.creeps['John'] = creepJohn
       })
 

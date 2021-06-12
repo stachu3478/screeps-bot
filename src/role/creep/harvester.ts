@@ -57,7 +57,11 @@ export default ProfilerPlus.instance.overrideFn(function harvester(
       }
       break
     case State.BUILD:
-      if (creep.routeProcessor.process() && creep.routeProcessor.isJobFound()) {
+      if (
+        !creep.store[RESOURCE_ENERGY] /* idk */ &&
+        creep.routeProcessor.process() &&
+        creep.routeProcessor.isJobFound()
+      ) {
         creep.memory.state = State.HARVESTING
         break
       }

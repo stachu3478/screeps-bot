@@ -45,6 +45,8 @@ export function progressiveMiner(energy: number) {
   return progressiveStaticWorker(energy, maxWork)
 }
 
+export const depositMinerEnergyCost =
+  (MAX_CREEP_SIZE * (BODYPART_COST[WORK] + BODYPART_COST[MOVE])) / 2
 export function progressiveDepositMiner(
   energy: number,
   cost: number,
@@ -56,22 +58,15 @@ export function progressiveDepositMiner(
     BODYPART_COST[CARRY]
   if (energy < maxUsedEnergy) return [WORK, CARRY, MOVE, MOVE]
   const parts: BodyPartConstant[] = new Array(MAX_CREEP_SIZE / 2).fill(MOVE)
-  const maxWorkParts = MAX_CREEP_SIZE / 2 - 1
-  const workCombinations = new Array(maxWorkParts + 1).fill(0).map((_, i) => i)
+  const power = HARVEST_DEPOSIT_POWER
   const resourceMiningCalc = new ResourceMiningCalculator(
     cost,
-    HARVEST_DEPOSIT_POWER,
+    power,
     lastCooldown,
   )
-  const workParts = _.max(workCombinations, (_, i) => {
-    if (i === 0) {
-      return -Infinity
-    }
-    const carryParts = maxWorkParts - i + 1
-    const mined = resourceMiningCalc.getFor(carryParts, i)
-    return mined
-  })
-  const carryParts = maxWorkParts - workParts + 1
+  resourceMiningCalc.optimize()
+  const workParts = resourceMiningCalc.work
+  const carryParts = resourceMiningCalc.carry
   return parts
     .concat(new Array(workParts).fill(WORK))
     .concat(new Array(carryParts).fill(CARRY))

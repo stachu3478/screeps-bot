@@ -126,13 +126,8 @@ defineRoomGetter('buildings', (self) => roomBuildings(self))
 const roomDuetHandler = memoizeByRoom((r) => new DuetHandler(r))
 defineRoomGetter('duet', (self) => roomDuetHandler(self))
 
-// const roomDepositPlanner = memoizeByRoom((r) => new DepositPlanner(r.memory.mineDeposit))
-// nie zapisuje sie jak znajdzie
-defineRoomGetter(
-  'depositPlanner',
-  (self) =>
-    new DepositPlanner(self.pathScanner.rooms[self.memory.mineDeposit || '']),
-)
+const roomDepositPlanner = memoizeByRoom((r) => new DepositPlanner(r))
+defineRoomGetter('depositPlanner', (self) => roomDepositPlanner(self))
 
 Room.prototype.store = function (resource: ResourceConstant) {
   const storage = this.storage

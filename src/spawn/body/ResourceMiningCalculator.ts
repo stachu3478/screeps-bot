@@ -1,8 +1,12 @@
+import _ from 'lodash'
+
 export default class ResourceMiningCalculator {
   private distance: number
   private power: number
   private cooldown: number
   private time: number
+  private carryParts: number = 0
+  private workParts: number = 0
 
   constructor(
     distance: number,
@@ -16,48 +20,73 @@ export default class ResourceMiningCalculator {
     this.time = time
   }
 
+  optimize() {
+    const partsToUse = MAX_CREEP_SIZE / 2
+    const workCombinations = new Array(partsToUse).fill(0).map((_, i) => i)
+    this.workParts = _.max(workCombinations, (_, i) => {
+      if (i === 0) {
+        return -Infinity
+      }
+      const carryParts = partsToUse - i
+      const mined = this.getFor(carryParts, i)
+      return mined
+    })
+    this.carryParts = partsToUse - this.workParts
+    return this.getFor(this.carryParts, this.workParts)
+  }
+
   getFor(carryParts: number, workParts: number) {
-    const fullRounds = this.getFullRoundCount(carryParts, workParts)
-    const resourcePerRound = this.getHarvestAmountPerRound(
-      carryParts,
-      workParts,
-    )
+    this.carryParts = carryParts
+    this.workParts = workParts
+    const fullRounds = this.getFullRoundCount()
+    const resourcePerRound = this.getHarvestAmountPerRound()
     const minedPerFullRounds = fullRounds * resourcePerRound
-    const remainingTime =
-      this.time - fullRounds * this.getFullRoundTime(carryParts, workParts)
+    const remainingTime = this.time - fullRounds * this.getFullRoundTime()
     const timeToMine = Math.max(0, remainingTime - this.distance)
-    const miningAtLast = this.getHarvestAmountPerTime(workParts, timeToMine)
+    const miningAtLast = this.getHarvestAmountPerTime(timeToMine)
     return minedPerFullRounds + miningAtLast
   }
 
-  private getHarvestAmountPerTime(workParts: number, time: number) {
+  private getHarvestAmountPerTime(time: number) {
     const miningOperations = Math.floor((time - 1) / this.cooldown + 1)
-    return miningOperations * this.power * workParts
+    return miningOperations * this.power * this.workParts
   }
 
-  private getFullRoundCount(carryParts: number, workParts: number) {
-    const roundTime = this.getFullRoundTime(carryParts, workParts)
+  private getFullRoundCount() {
+    const roundTime = this.getFullRoundTime()
     return Math.floor(this.time / roundTime)
   }
 
-  private getFullRoundTime(carryParts: number, workParts: number) {
-    const harvestOperations = this.getHarvestOperationsCount(
-      carryParts,
-      workParts,
-    )
+  private getFullRoundTime() {
+    const harvestOperations = this.getHarvestOperationsCount()
     const miningTime = (harvestOperations - 1) * this.cooldown + 1
     return miningTime + this.distance
   }
 
-  private getHarvestAmountPerRound(carryParts: number, workParts: number) {
-    return (
-      this.getHarvestOperationsCount(carryParts, workParts) *
-      this.power *
-      workParts
+  private getHarvestAmountPerRound() {
+    return this.getHarvestOperationsCount() * this.power * this.workParts
+  }
+
+  private getHarvestOperationsCount() {
+    return Math.floor(
+      (this.carryParts * CARRY_CAPACITY) / (this.power * this.workParts),
     )
   }
 
-  private getHarvestOperationsCount(carryParts: number, workParts: number) {
-    return Math.floor((carryParts * CARRY_CAPACITY) / (this.power * workParts))
+  get work() {
+    return this.workParts
+  }
+
+  get carry() {
+    return this.carryParts
+  }
+
+  get creepCost() {
+    return (
+      this.workParts * BODYPART_COST[WORK] +
+      this.carryParts +
+      BODYPART_COST[CARRY] +
+      (MAX_CREEP_SIZE / 2) * BODYPART_COST[MOVE]
+    )
   }
 }
