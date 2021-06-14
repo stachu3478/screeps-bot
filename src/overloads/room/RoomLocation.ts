@@ -1,4 +1,3 @@
-import { FindExitConstant } from 'planner/RoomNeighbourPathScanner'
 import MyRooms from 'room/MyRooms'
 import range from 'utils/range'
 

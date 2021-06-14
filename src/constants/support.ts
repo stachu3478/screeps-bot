@@ -23,3 +23,9 @@ export const ALL_DIRECTIONS: DirectionConstant[] = [
 export const BODYPART_HITS = getBodyPartHits()
 export const RANGED_MASS_ATTACK_POWER = [10, 10, 4, 1]
 export const CREEP_RANGE = 3
+export const ALL_EXIT_CONSTANTS: FindExitConstant[] = [
+  FIND_EXIT_TOP,
+  FIND_EXIT_RIGHT,
+  FIND_EXIT_LEFT,
+  FIND_EXIT_BOTTOM,
+]

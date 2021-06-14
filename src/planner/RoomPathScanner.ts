@@ -2,6 +2,7 @@ import _ from 'lodash'
 import RoomNeighbourPathScanner from './RoomNeighbourPathScanner'
 import RoomLocation from 'overloads/room/RoomLocation'
 import RoomInspector from './RoomInspector'
+import MyRooms from 'room/MyRooms'
 
 interface RoomPathScannerConfig {
   maxCost: number
@@ -55,8 +56,7 @@ export default class RoomPathScanner {
       this.scanned[this.room.name] = 1
       return
     }
-    this.traversed = true
-    Object.keys(this.infos).some((room) => {
+    this.traversed = !Object.keys(this.infos).some((room) => {
       const info = this.infos[room]
       return !!info && this.traverseIfAvailable(info, room)
     })
@@ -71,8 +71,8 @@ export default class RoomPathScanner {
     if (available) {
       this.traversePos(new RoomPosition(info.newX, info.newY, roomName))
       this.scanned[roomName] = 1
+      delete this.toBeTraversed
     }
-    this.traversed = false
     return true
   }
 
@@ -93,7 +93,6 @@ export default class RoomPathScanner {
         this.toBeTraversed = roomName
         this.room.visual.info('Trying to scout room ' + roomName, 0, 11)
       }
-      // TODO else send scouts here
     }
     return !!room
   }
@@ -131,8 +130,8 @@ export default class RoomPathScanner {
     if (myObserver && location.inRangeTo(this.room, OBSERVER_RANGE)) {
       return myObserver
     }
-    return Object.keys(Memory.myRooms)
-      .map((r) => Game.rooms[r]?.buildings.observer)
+    return MyRooms.get()
+      .map((r) => r.buildings.observer)
       .find((o) => o && location.inRangeTo(o.room, OBSERVER_RANGE))
   }
 }

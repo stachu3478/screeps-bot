@@ -63,6 +63,9 @@ Creep.prototype.safeRangeXY = function (x: number, y: number) {
 
 Creep.prototype.moveToRoom = function (room: string) {
   let target = this.memory[Keys.roomPath]
+  if (this.room.name === room) {
+    return move.cheap(this, new RoomPosition(25, 25, room), true, undefined, 1)
+  }
   if (!target || target[0] !== this.room.name || target[1] !== room) {
     const pathStep = this.room.location.findRoomPathStep(this.room.name, room)
     if (!pathStep) return ERR_NOT_FOUND
@@ -72,7 +75,7 @@ Creep.prototype.moveToRoom = function (room: string) {
   const pos = new RoomPosition(
     roomPathStep.x,
     roomPathStep.y,
-    roomPathStep.name,
+    roomPathStep.through,
   )
   return move.cheap(this, pos, true, undefined, 1)
 }

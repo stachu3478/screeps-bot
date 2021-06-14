@@ -10,9 +10,10 @@ export function pickBestDirectionFrom(
 ) {
   let bestDirection = ALL_DIRECTIONS[0]
   let bestPrediction = -Infinity
-  ALL_DIRECTIONS.forEach((direction) => {
-    const offsetPos = creep.pos.offset(direction)
-    if (!offsetPos || !offsetPos.isWalkable) return
+  creep.pos.eachOffset((offsetPos, direction) => {
+    if (!offsetPos.walkable) {
+      return
+    }
     let worstPrediction = Infinity
     hostiles.forEach((hostile) => {
       const distanceFrom = hostile.safeRangeXY(offsetPos.x, offsetPos.y)

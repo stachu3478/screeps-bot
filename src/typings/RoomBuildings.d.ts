@@ -1,4 +1,7 @@
 declare class RoomBuildings {
+  get<T>(
+    ...types: (T & StructureConstant)[]
+  ): ConcreteStructure<T & StructureConstant>[]
   factory?: StructureFactory
   labs: StructureLab[]
   extractor?: StructureExtractor
@@ -10,4 +13,7 @@ declare class RoomBuildings {
   extensions: StructureExtension[]
   nuker?: StructureNuker
   links: StructureLink[]
+  invaderCore?: StructureInvaderCore
+  roads: StructureRoad[]
+  containers: StructureContainer[]
 }

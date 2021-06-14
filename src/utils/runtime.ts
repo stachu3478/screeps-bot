@@ -7,7 +7,7 @@ let wasReset = true
 function handleRuntimeReset() {
   const currentResetTime = Memory.runtimeTicks || 0
   const avg = Memory.runtimeAvg || currentResetTime
-  Memory.runtimeAvg = Math.floor((avg * 9 + currentResetTime) / 10)
+  Memory.runtimeAvg = (avg * 9 + currentResetTime) / 10
   Memory.runtimeTicks = 0
   wasReset = false
   collectGarbageAll()
@@ -20,7 +20,7 @@ export default function handleRuntimeStats() {
     'Runtime ticks: ' +
       runtimeTicks +
       ' (avg. ' +
-      (Memory.runtimeAvg || 'unknown') +
+      (Math.round(Memory.runtimeAvg || 0) || 'unknown') +
       ')',
     0,
     48,

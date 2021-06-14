@@ -7,20 +7,10 @@ const fortificationsAndRoads: Record<string, 1 | undefined> = {
   [STRUCTURE_WALL]: 1,
   [STRUCTURE_CONTAINER]: 1,
 }
-const fortifications: Record<string, 1 | undefined> = {
-  [STRUCTURE_RAMPART]: 1,
-  [STRUCTURE_WALL]: 1,
-}
 const findAllOther = (room: Room) =>
   room
     .find(FIND_STRUCTURES)
     .filter((s) => !fortificationsAndRoads[s.structureType]) as Structure<
-    BuildableStructureConstant
-  >[]
-const findFortifications = (room: Room) =>
-  room
-    .find(FIND_STRUCTURES)
-    .filter((s) => !!fortifications[s.structureType]) as Structure<
     BuildableStructureConstant
   >[]
 export default [

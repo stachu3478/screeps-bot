@@ -53,16 +53,16 @@ export default class PlannerMatrix {
         const xy = pos(x + ox, y + oy)
         if (
           (matrix[xy] === 0 || matrix[xy] === 100) &&
-          terrain.get(x + ox, y + oy) !== 1
+          terrain.get(x + ox, y + oy) !== TERRAIN_MASK_WALL
         )
           rank++
       }
     return rank
   }
 
-  getBestPos(x: number, y: number) {
+  getBestPos(x: number, y: number, initialRank = 0) {
     let bestPos = pos(x, y)
-    let bestRank = 0
+    let bestRank = initialRank
     for (let ox = -1; ox <= 1; ox++)
       for (let oy = -1; oy <= 1; oy++) {
         const result = this.rankPos(x + ox, y + oy)
@@ -71,6 +71,22 @@ export default class PlannerMatrix {
           bestPos = pos(x + ox, y + oy)
         }
       }
+    return {
+      pos: bestPos,
+      rank: bestRank,
+    }
+  }
+
+  getBestOffset(position: RoomPosition, initialRank = 0) {
+    let bestPos = position
+    let bestRank = initialRank
+    position.eachOffset((offsetPos) => {
+      const result = this.rankPos(offsetPos.x, offsetPos.y)
+      if (result > bestRank) {
+        bestRank = result
+        bestPos = position
+      }
+    })
     return {
       pos: bestPos,
       rank: bestRank,

@@ -12,3 +12,10 @@ StructureTower.prototype.attackPowerAt = function (
   if (range <= TOWER_OPTIMAL_RANGE) return TOWER_POWER_ATTACK
   return TOWER_POWER_ATTACK - attackRangeFactor * (range - TOWER_OPTIMAL_RANGE)
 }
+
+StructureTower.prototype.isActive = function () {
+  if (this.owner.username === 'Invader') {
+    return !!this.room.buildings.invaderCore
+  }
+  return Structure.prototype.isActive.apply(this)
+}

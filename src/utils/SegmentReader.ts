@@ -18,7 +18,7 @@ export default class SegmentReader {
   read(name: string, id: number): string | void {
     const segment = RawMemory.foreignSegment
     const index = this.toRead.findIndex((s) => s.name === name && s.id === id)
-    if (segment.username === name && segment.id === id) {
+    if (segment && segment.username === name && segment.id === id) {
       if (index !== -1) this.toRead.splice(index, 1)
       return segment.data
     } else {

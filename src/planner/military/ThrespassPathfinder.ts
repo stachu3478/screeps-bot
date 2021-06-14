@@ -65,11 +65,7 @@ export default class ThrespassPathfinder {
     testingFields: RoomPosition[],
     type: number,
   ) {
-    ALL_DIRECTIONS.forEach((d) => {
-      const offset = pos.offset(d)
-      if (!offset) {
-        return
-      }
+    pos.eachOffset((offset) => {
       const mark = this.matrix.get(offset.x, offset.y)
       if (mark | UNWALKABLE) {
         return

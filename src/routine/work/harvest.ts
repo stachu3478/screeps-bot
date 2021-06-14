@@ -11,6 +11,7 @@ const harvest = ProfilerPlus.instance.overrideFn(function harvest(
   const target = room.find(FIND_SOURCES)[index]
   if (!target) return NOTHING_TODO
   const targetPos = room.sources.getPosition(index)
+  creep.say(creep.pos.range(targetPos).toString())
   if (creep.pos.range(targetPos)) {
     move.cheap(creep, targetPos, false, 0)
     return NOTHING_DONE

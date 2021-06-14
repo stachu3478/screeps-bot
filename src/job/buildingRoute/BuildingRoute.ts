@@ -25,7 +25,7 @@ interface BuildingRouteOptions {
   /**
    * Whether building should be replaced if an other type exists there
    */
-  forceReplacement?: boolean
+  forceReplacement?: boolean | ((room: Room) => boolean)
 }
 
 const truther = () => true
@@ -63,7 +63,7 @@ export default class BuildingRoute {
   }
 
   get forceReplacement() {
-    return !!this.options.forceReplacement
+    return this.options.forceReplacement
   }
 
   private get minimalStoreToDraw() {

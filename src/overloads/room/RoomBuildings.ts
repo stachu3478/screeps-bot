@@ -9,6 +9,20 @@ export default class RoomBuildings {
     this.room = room
   }
 
+  get<T>(...types: (T & StructureConstant)[]) {
+    let structures: ConcreteStructure<T & StructureConstant>[] = []
+    const fetched = this.fetched
+    types.forEach((type) => {
+      const structuresByType = fetched[type]
+      if (structuresByType) {
+        structures = structures.concat(
+          structuresByType as ConcreteStructure<T & StructureConstant>[],
+        )
+      }
+    })
+    return structures
+  }
+
   get factory() {
     const stack = this.fetched[STRUCTURE_FACTORY]
     return stack && (stack[0] as StructureFactory)
@@ -62,6 +76,21 @@ export default class RoomBuildings {
   get links() {
     const stack = this.fetched[STRUCTURE_LINK]
     return (stack || []) as StructureLink[]
+  }
+
+  get invaderCore() {
+    const stack = this.fetched[STRUCTURE_INVADER_CORE]
+    return stack && (stack[0] as StructureInvaderCore)
+  }
+
+  get roads() {
+    const stack = this.fetched[STRUCTURE_ROAD]
+    return (stack || []) as StructureRoad[]
+  }
+
+  get containers() {
+    const stack = this.fetched[STRUCTURE_CONTAINER]
+    return (stack || []) as StructureContainer[]
   }
 
   private get fetched() {

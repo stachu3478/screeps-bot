@@ -108,6 +108,10 @@ interface RoomPosition {
     range: number,
   ): LookForAtAreaResultArray<AllLookAtTypes[T], T>
   isWalkable(me?: Creep): boolean
+  eachOffset(
+    callback: (pos: RoomPosition, direction: DirectionConstant) => void,
+  ): void
+  allOffsets: RoomPosition[]
   walkable: boolean
   mirror: RoomPosition
 }

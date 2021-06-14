@@ -15,7 +15,7 @@ export function getAverageCost(resourceType: ResourceConstant) {
     if (typeof recentHistory == 'number') return 0.1
     return recentHistory.avgPrice
   } catch (e) {
-    console.log('Get avg cost error: ', e)
+    // sim error
     return 0.1
   }
 }

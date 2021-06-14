@@ -1,3 +1,4 @@
+import { ALL_DIRECTIONS } from 'constants/support'
 import defineGetter from 'utils/defineGetter'
 import { isWalkable, offsetsByDirection } from 'utils/path'
 import ProfilerPlus from 'utils/ProfilerPlus'
@@ -74,6 +75,26 @@ RoomPosition.prototype.isWalkable = function (me) {
   }
   return isWalkable(room, this.x, this.y, me)
 }
+
+RoomPosition.prototype.eachOffset = function (callback) {
+  ALL_DIRECTIONS.forEach((direction) => {
+    const offsetPos = this.offset(direction)
+    if (offsetPos) {
+      callback(offsetPos, direction)
+    }
+  })
+}
+
+defineRoomPositionGetter('allOffsets', (self) => {
+  const offsetPositions: RoomPosition[] = []
+  ALL_DIRECTIONS.forEach((direction) => {
+    const offsetPos = self.offset(direction)
+    if (offsetPos) {
+      offsetPositions.push(offsetPos)
+    }
+  })
+  return offsetPositions
+})
 
 defineRoomPositionGetter('walkable', (self) => {
   const room = Game.rooms[self.roomName]

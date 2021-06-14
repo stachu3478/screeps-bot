@@ -14,7 +14,7 @@ export default class ObservingScanner {
 
   constructor() {
     this.scanned = {}
-    this.observerRooms = Object.keys(Memory.myRooms)
+    this.observerRooms = Object.keys(MyRooms.findOrInitialize())
   }
 
   scan(callback: (room: Room) => any) {

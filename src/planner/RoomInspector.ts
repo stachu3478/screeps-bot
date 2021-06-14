@@ -47,11 +47,7 @@ export default class RoomInspector {
       info.y,
       info.name,
     ).disbordered()
-    const towers = this.room
-      .find(FIND_STRUCTURES)
-      .filter(
-        (s) => s.structureType === STRUCTURE_TOWER && s.isActive(),
-      ) as StructureTower[]
+    const towers = this.room.buildings.towers.filter((s) => s.isActive())
     const entranceTowerDamage = _.sum(towers, (t) =>
       t.attackPowerAt({ pos: entryPosition }, true),
     )

@@ -80,7 +80,7 @@ export default class RoomBuildingRoute {
   }
 
   private clearSpace(structuresAt: Structure[]) {
-    if (this.route.forceReplacement) {
+    if (this.forceReplacement) {
       return structuresAt.some((s) => !s.isWalkable && s.destroy() === OK)
     }
     return false
@@ -92,5 +92,12 @@ export default class RoomBuildingRoute {
 
   private get positions() {
     return this.route.positions(this.room)
+  }
+
+  private get forceReplacement() {
+    if (typeof this.route.forceReplacement === 'function') {
+      return this.route.forceReplacement(this.room)
+    }
+    return !!this.route.forceReplacement
   }
 }

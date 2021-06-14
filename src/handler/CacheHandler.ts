@@ -39,7 +39,7 @@ export default class CacheHandler {
 
   get ownedRooms() {
     return (this.cache.ownedRooms = this.intershardMemoryHandler.ownedRooms =
-      this.cache.ownedRooms || _.size(Memory.myRooms))
+      this.cache.ownedRooms || _.size(Memory.myRooms || {}))
   }
 
   set ownedRooms(val: number) {

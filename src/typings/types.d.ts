@@ -48,7 +48,7 @@ interface Stats {
 
 interface Memory {
   ticksToProfile?: number
-  myRooms: {
+  myRooms?: {
     [key: string]: 0
   }
   whitelist?: {
