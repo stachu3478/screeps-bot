@@ -1,10 +1,14 @@
+import StructureMatrix from './StructureMatrix'
+
 const ROAD_MASK = 1
 export default class PathMatrix {
+  private terrain: RoomTerrain
   private matrix: CostMatrix
   private paths: [RoomPosition, RoomPosition, PathFinderPath][] = []
   private setPaths: RoomPosition[] = []
 
-  constructor() {
+  constructor(terrain: RoomTerrain) {
+    this.terrain = terrain
     this.matrix = new PathFinder.CostMatrix()
   }
 
@@ -12,7 +16,6 @@ export default class PathMatrix {
     if (this.matrix.get(pos.x, pos.y) === 0) {
       this.matrix.set(pos.x, pos.y, ROAD_MASK)
       this.setPaths.push(pos)
-      console.log('road added', pos)
     }
   }
 
@@ -23,7 +26,6 @@ export default class PathMatrix {
         this.setPaths.findIndex((p) => p.isEqualTo(pos)),
         1,
       )
-      console.log('road removed', pos)
     }
   }
 
@@ -68,12 +70,6 @@ export default class PathMatrix {
       throw new Error('Precomputed path not found')
     }
     return triple[2]
-  }
-
-  markOffsets(pos: RoomPosition) {
-    pos.eachOffset((offsetPos) => {
-      this.set(offsetPos)
-    })
   }
 
   get positions() {

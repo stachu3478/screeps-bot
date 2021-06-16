@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import tower from '../role/tower'
 import spawnLoop from 'spawn/core'
-import plan from 'planner/core'
 import callRescue from 'planner/rescue'
 import usage from './usage'
 import handleLog from './log'
@@ -14,6 +13,7 @@ import rolePowerSpawn from 'role/powerSpawn'
 import EnemyPicker from './military/EnemyPicker'
 import move from 'utils/path'
 import ProfilerPlus from 'utils/ProfilerPlus'
+import RoomStructuresPlanner from 'planner/RoomStructuresPlanner'
 
 function probabilisticallyMoveCreepsOutOfSpawnsIfBlocked(
   spawns: StructureSpawn[],
@@ -38,7 +38,9 @@ export default ProfilerPlus.instance.overrideFn(function run(
   cpuUsed: number,
 ) {
   const room = controller.room
-  if (!room.memory.roads) plan(room)
+  if (!room.memory.roads) {
+    new RoomStructuresPlanner(room, controller.pos).run()
+  }
 
   const mem = room.memory
   const cache = room.cache

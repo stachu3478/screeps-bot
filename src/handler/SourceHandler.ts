@@ -1,4 +1,4 @@
-import plan from 'planner/core'
+import RoomStructuresPlanner from 'planner/RoomStructuresPlanner'
 import ProfilerPlus from 'utils/ProfilerPlus'
 
 export default class SourceHandler {
@@ -9,7 +9,9 @@ export default class SourceHandler {
 
   constructor(room: Room) {
     this.room = room
-    if (!room.memory[RoomMemoryKeys.sourceInfo]) plan(room)
+    if (!room.memory[RoomMemoryKeys.sourceInfo]) {
+      new RoomStructuresPlanner(room, room.controller!.pos).run()
+    }
     this.memory = room.memory[RoomMemoryKeys.sourceInfo] || []
     this.colony = room.memory[RoomMemoryKeys.colonySourceIndex] || 0
   }

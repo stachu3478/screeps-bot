@@ -8,12 +8,6 @@ export default function planPotencialPaths(
   furthestSourcePos: RoomPosition,
   pathMatrix: PathMatrix,
 ) {
-  // mineral
-  const mineral = room.mineral
-  if (mineral) {
-    pathMatrix.add(furthestSourcePos, mineral.pos, 1)
-    pathMatrix.markOffsets(mineral.pos) // for multicreep mining
-  }
   // exit positions
   ALL_EXIT_CONSTANTS.forEach((exitConstant) => {
     const exits = room.find(exitConstant)

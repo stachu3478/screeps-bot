@@ -20,8 +20,8 @@ export default class StructureMatrix {
     })
   }
 
-  add(pos: RoomPosition, color = 1) {
-    if (this.canBeAdded(pos)) {
+  add(pos: RoomPosition, color = 1, asRoad = false) {
+    if (this.canBeAdded(pos, undefined, asRoad)) {
       this.matrix.set(pos.x, pos.y, color)
       this.structurePositions.push(pos)
     }
@@ -32,16 +32,15 @@ export default class StructureMatrix {
     this.structurePositions = this.structurePositions.filter(
       (p) => !p.isEqualTo(pos),
     )
-    console.log('removal index:', this.structurePositions)
   }
 
-  canBeAdded(pos: RoomPosition, blackMatrix?: StructureMatrix) {
+  canBeAdded(pos: RoomPosition, blackMatrix?: StructureMatrix, asRoad = false) {
     if (blackMatrix?.isStructure(pos)) {
       return false
     }
     return (
       !this.isStructure(pos) &&
-      !this.pathMatrix.isRoad(pos) &&
+      (asRoad || !this.pathMatrix.isRoad(pos)) &&
       this.terrain.get(pos.x, pos.y) !== TERRAIN_MASK_WALL &&
       !this.exits.some((exit) => exit.isNearTo(pos))
     )

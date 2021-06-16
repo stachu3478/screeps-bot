@@ -19,12 +19,10 @@ export default class StructureDistanceMatrix {
     if (!currentDistance) {
       this.matrix.set(pos.x, pos.y, distance || this.createDistance(pos))
     }
-    console.log('structure added', pos)
   }
 
   remove(position: RoomPosition) {
     this.structureMatrix.remove(position)
-    console.log('structure removed', position)
   }
 
   isStructure(position: RoomPosition) {

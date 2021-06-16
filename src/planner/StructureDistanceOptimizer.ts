@@ -28,6 +28,7 @@ export default class StructureDistanceOptimizer {
     this.pathGarbageCollector = new PathGarbageCollector(
       this.distanceMatrix,
       pathMatrix,
+      blackStructuresMatrix,
     )
   }
 

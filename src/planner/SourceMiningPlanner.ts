@@ -1,10 +1,12 @@
 export default class SourceMiningPlanner {
   private miningPositions: RoomPosition[]
+  private exits: RoomPosition[]
   private sourcePositions: RoomPosition[]
   private terrain: RoomTerrain
 
-  constructor(sources: Source[], terrain: RoomTerrain) {
+  constructor(sources: Source[], terrain: RoomTerrain, exits: RoomPosition[]) {
     this.terrain = terrain
+    this.exits = exits
     this.miningPositions = sources.map((source) => {
       return this.getBestOffset(source.pos)
     })
@@ -16,7 +18,13 @@ export default class SourceMiningPlanner {
   }
 
   findIndexByMiningPosition(position: RoomPosition) {
-    return this.miningPositions.findIndex((pos) => pos.isEqualTo(position))
+    const index = this.miningPositions.findIndex((pos) =>
+      pos.isEqualTo(position),
+    )
+    if (index === -1) {
+      throw new Error('Index from mining position not found! ' + position)
+    }
+    return index
   }
 
   eachPair(callback: (pos1: RoomPosition, pos2: RoomPosition) => void) {
@@ -43,7 +51,10 @@ export default class SourceMiningPlanner {
       }
       let freeSpace = 0
       offsetPos.eachOffset((pos) => {
-        if (this.terrain.get(pos.x, pos.y) === TERRAIN_MASK_WALL) {
+        if (
+          this.terrain.get(pos.x, pos.y) === TERRAIN_MASK_WALL ||
+          this.exits.some((e) => e.isNearTo(pos))
+        ) {
           return
         }
         freeSpace++

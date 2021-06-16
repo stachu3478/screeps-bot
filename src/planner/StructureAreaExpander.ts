@@ -24,7 +24,6 @@ export default class StructureAreaExpander {
 
   findBestExpansionPosition(positions: RoomPosition[]) {
     const expansionPositions = this.findExpansionPositions(positions)
-    console.log('expansion positions:', expansionPositions)
     return (
       this.findExpansionPositionWithImprovement(expansionPositions) || // standard expansion
       this.findOnRoadExpansionPosition(expansionPositions) || // road fallback
@@ -56,7 +55,6 @@ export default class StructureAreaExpander {
       bestImprovement = improvement
       position = pos
     })
-    console.log('best improvement for', position, bestImprovement, minDistance)
     return position
   }
 
