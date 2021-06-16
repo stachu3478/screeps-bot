@@ -93,6 +93,7 @@ interface StructureTerminal {
   businessHandler: BusinessHandler
 }
 
+type Lookup<T> = string & Tag.OpaqueTag<T>
 interface RoomPosition {
   offset: (direction: DirectionConstant) => RoomPosition | undefined
   rangeXY: (x: number, y: number) => number
@@ -111,6 +112,7 @@ interface RoomPosition {
   eachOffset(
     callback: (pos: RoomPosition, direction: DirectionConstant) => void,
   ): void
+  lookup: Lookup<RoomPosition>
   allOffsets: RoomPosition[]
   walkable: boolean
   mirror: RoomPosition

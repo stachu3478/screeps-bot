@@ -1,5 +1,5 @@
 import { ALL_EXIT_CONSTANTS } from 'constants/support'
-import PathMatrix from './PathMatrix'
+import PathMatrix from '../PathMatrix'
 
 // make potencial paths and block eventual replacement
 // add potencial paths that could be blocked by planned structures

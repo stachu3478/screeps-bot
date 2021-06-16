@@ -1,4 +1,4 @@
-import StructureMatrix from './StructureMatrix'
+import StructureMatrix from './base/StructureMatrix'
 
 const ROAD_MASK = 1
 export default class PathMatrix {
@@ -37,8 +37,12 @@ export default class PathMatrix {
       roomCallback: () => this.matrix,
     }
     const result = PathFinder.search(source, { pos, range }, pathfindingOpts)
+    return this.addPath(result, source, pos)
+  }
+
+  addPath(result: PathFinderPath, source: RoomPosition, target: RoomPosition) {
     result.path.forEach((position) => this.set(position))
-    this.paths.push([source, pos, result])
+    this.paths.push([source, target, result])
     return result
   }
 

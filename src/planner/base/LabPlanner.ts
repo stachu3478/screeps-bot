@@ -1,7 +1,7 @@
 import charPosIterator from 'utils/charPosIterator'
-import PlannerMatrix from './matrix'
-import checkIntegrity from './place/checkIntegrity'
-import xyToChar from './pos'
+import PlannerMatrix from '../matrix'
+import checkIntegrity from '../place/checkIntegrity'
+import xyToChar from '../pos'
 
 export default class LabPlanner {
   private positions: RoomPosition[]

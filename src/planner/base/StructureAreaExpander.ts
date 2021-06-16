@@ -1,4 +1,4 @@
-import PathMatrix from './PathMatrix'
+import PathMatrix from '../PathMatrix'
 import StructureDistanceMatrix from './StructureDistanceMatrix'
 import StructureMatrix from './StructureMatrix'
 

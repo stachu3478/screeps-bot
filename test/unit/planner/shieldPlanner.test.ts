@@ -3,7 +3,7 @@ import _ from 'lodash'
 import { Memory } from '../mock'
 import Game from '../mock/Game'
 import { expect } from '../../expect'
-import ShieldPlanner from 'planner/ShieldPlanner'
+import ShieldPlanner from 'planner/base/ShieldPlanner'
 import { posToChar, roomPos } from 'planner/pos'
 
 const room = {

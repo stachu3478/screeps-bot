@@ -3,4 +3,7 @@ export default {
     maxCost: 200,
     minReturn: 2.0,
   },
+  sources: {
+    maxCost: 100,
+  },
 }

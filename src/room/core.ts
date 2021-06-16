@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import tower from '../role/tower'
 import spawnLoop from 'spawn/core'
-import callRescue from 'planner/rescue'
+import callRescue from 'planner/base/rescue'
 import usage from './usage'
 import handleLog from './log'
 import creeps from './creeps'
@@ -13,7 +13,7 @@ import rolePowerSpawn from 'role/powerSpawn'
 import EnemyPicker from './military/EnemyPicker'
 import move from 'utils/path'
 import ProfilerPlus from 'utils/ProfilerPlus'
-import RoomStructuresPlanner from 'planner/RoomStructuresPlanner'
+import RoomStructuresPlanner from 'planner/base/RoomStructuresPlanner'
 
 function probabilisticallyMoveCreepsOutOfSpawnsIfBlocked(
   spawns: StructureSpawn[],

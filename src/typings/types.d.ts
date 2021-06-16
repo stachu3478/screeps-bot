@@ -46,6 +46,14 @@ interface Stats {
   data: Record<string, string[] | undefined>
 }
 
+interface SourceMemory {
+  cost: number
+  miningPosition: Lookup<RoomPosition>
+  energyCapacity: number
+  miningCreep: string
+  haulerCreeps: string[]
+}
+
 interface Memory {
   ticksToProfile?: number
   myRooms?: {
@@ -57,12 +65,14 @@ interface Memory {
   trade_blacklist?: {
     [key: string]: number
   }
+  sources?: {
+    [key: string]: SourceMemory
+  }
   _stats?: Stats
   runtimeTicks?: number
   runtimeAvg?: number
   debugStructures?: 0 | 1
   roomLimit?: number
-  autoScout?: boolean
   maxUpgradersCount?: number
 
   profiler: any
@@ -114,6 +124,7 @@ interface RoomMemory {
    * Colony source index from room.find sources
    */
   c?: number
+  remoteRoads?: string
   links?: string
   controllerLink?: string
   maxWorkController?: number
@@ -146,7 +157,7 @@ interface RoomMemory {
   mineDeposit?: string
 
   boosts?: BoostData
-  r?: RemoteMemory[] // remotes
+  r?: string[] // remotes
   /**
    * During that many ticks defence units
    * will hold fire when they have positive
@@ -166,22 +177,6 @@ interface RoomMemory {
    */
   u?: [string, string]
   p?: RoomNeighbourPath[]
-}
-
-interface RemoteMemory {
-  c: RemoteCreepMemory[] // creeps
-  h: RemoteCreepMemory // harvester memory
-  s: {
-    // source
-    x: number
-    y: number
-    n: string // roomName
-  }
-}
-
-interface RemoteCreepMemory {
-  n: string // name
-  s: State // state
 }
 
 interface StableRoomMemory extends RoomMemory {

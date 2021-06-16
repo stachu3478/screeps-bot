@@ -1,4 +1,4 @@
-import { posToChar } from './pos'
+import { posToChar } from '../pos'
 import charPosIterator from 'utils/charPosIterator'
 import { createUnwalkableMatrix } from 'utils/path'
 

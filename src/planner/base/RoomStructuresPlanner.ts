@@ -1,13 +1,13 @@
 import _ from 'lodash'
 import dump from './dump'
 import planLink from './links'
-import { CREEP_RANGE } from '../constants/support'
-import PathMatrix from './PathMatrix'
+import { CREEP_RANGE } from '../../constants/support'
+import PathMatrix from '../PathMatrix'
 import SourceMiningPlanner from './SourceMiningPlanner'
 import planPotencialPaths from './planPotencialPaths'
 import StructureMatrix from './StructureMatrix'
 import StructureDistanceOptimizer from './StructureDistanceOptimizer'
-import { posToChar } from './pos'
+import { posToChar } from '../pos'
 
 const NATIVE_LINK_COLOR = 1
 const CONTROLLER_LINK_COLOR = 2

@@ -1,6 +1,6 @@
 import { charCodeIterator } from './charPosIterator'
 import roomVisual from 'utils/visual'
-import { polyRect } from 'planner/visual'
+import { polyRect } from 'planner/base/visual'
 
 const timers = [10, 10, 10]
 const dataRetension = 100

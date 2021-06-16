@@ -1,5 +1,5 @@
-import { getMaximumWorkPartsForSource, getWorkSaturation } from './opts'
-import { posToChar } from './pos'
+import { getMaximumWorkPartsForSource, getWorkSaturation } from '../opts'
+import { posToChar } from '../pos'
 
 export default function dump(
   room: Room,

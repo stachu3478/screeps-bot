@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import PathMatrix from './PathMatrix'
-import StructureDistanceMatrix from './StructureDistanceMatrix'
-import StructureMatrix from './StructureMatrix'
+import StructureDistanceMatrix from './base/StructureDistanceMatrix'
+import StructureMatrix from './base/StructureMatrix'
 
 export default class PathGarbageCollector {
   private structureDistanceMatrix: StructureDistanceMatrix

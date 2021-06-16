@@ -1,4 +1,4 @@
-import PathMatrix from './PathMatrix'
+import PathMatrix from '../PathMatrix'
 
 export default class StructureMatrix {
   private pathMatrix: PathMatrix

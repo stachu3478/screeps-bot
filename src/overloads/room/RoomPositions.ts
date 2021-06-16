@@ -1,6 +1,6 @@
-import LabPlanner from 'planner/LabPlanner'
+import LabPlanner from 'planner/base/LabPlanner'
 import LeastAvailablePositionPlanner from 'planner/LeastAvailablePositionPlanner'
-import ShieldPlanner from 'planner/ShieldPlanner'
+import ShieldPlanner from 'planner/base/ShieldPlanner'
 
 export default class RoomPositions {
   private shieldPlanner: ShieldPlanner

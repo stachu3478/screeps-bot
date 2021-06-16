@@ -1,4 +1,4 @@
-import RoomStructuresPlanner from 'planner/RoomStructuresPlanner'
+import RoomStructuresPlanner from 'planner/base/RoomStructuresPlanner'
 import ProfilerPlus from 'utils/ProfilerPlus'
 
 export default class SourceHandler {

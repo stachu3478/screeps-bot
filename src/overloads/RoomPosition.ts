@@ -1,7 +1,9 @@
 import { ALL_DIRECTIONS } from 'constants/support'
+import { Codec } from 'screeps-utf15'
 import defineGetter from 'utils/defineGetter'
 import { isWalkable, offsetsByDirection } from 'utils/path'
 import ProfilerPlus from 'utils/ProfilerPlus'
+import RoomLocation from './room/RoomLocation'
 
 function defineRoomPositionGetter<T extends keyof RoomPosition>(
   property: T,
@@ -113,6 +115,13 @@ defineRoomPositionGetter('mirror', (self) => {
   const x = reverseCord(self.x)
   const y = reverseCord(self.y)
   return new RoomPosition(x, y, self.roomName)
+})
+
+const roomPositionLookupCodec = new Codec<1>({ depth: [8, 8, 6, 6], array: 1 })
+defineRoomPositionGetter('lookup', (self) => {
+  const location = new RoomLocation(self.roomName)
+  const codecArray = [location.x, location.y, self.x, self.y]
+  return roomPositionLookupCodec.encode(codecArray) as Lookup<RoomPosition>
 })
 
 ProfilerPlus.instance.overrideObject(RoomPosition, 'RoomPosition')
