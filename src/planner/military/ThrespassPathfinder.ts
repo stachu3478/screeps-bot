@@ -1,4 +1,3 @@
-import { ALL_DIRECTIONS } from 'constants/support'
 import HitCalculator from 'room/military/HitCalculator'
 
 const SOURCE = 1
@@ -20,8 +19,8 @@ export default class ThrespassPathfinder {
     this.targets = targets
   }
 
-  search(room: Room) {
-    this.hitCalculator = new HitCalculator(room)
+  search(room: Room, hitCalculator = new HitCalculator(room)) {
+    this.hitCalculator = hitCalculator
     this.hitCalculator.fetch(false)
     this.enemies = room.find(FIND_CREEPS).filter((c) => !c.my && c.corpus.armed)
     this.find()
@@ -31,17 +30,21 @@ export default class ThrespassPathfinder {
   private find() {
     const sourceFields = [this.source]
     const targetFields = this.targets
+    this.thresholdDamage = Math.max(
+      this.getDamage(this.source),
+      Math.min(...this.targets.map((t) => this.getDamage(t))),
+    )
     let currentSource = sourceFields
     let currentTarget = targetFields
     while (!this.found) {
-      while (sourceFields.length && targetFields.length) {
+      while (currentSource.length && currentTarget.length) {
         let newSource: RoomPosition[] = []
         let newTarget: RoomPosition[] = []
         currentSource.forEach((pos) => {
           this.mark(pos, sourceFields, currentSource, SOURCE)
         })
         currentTarget.forEach((pos) => {
-          this.mark(pos, sourceFields, currentSource, SOURCE)
+          this.mark(pos, targetFields, currentTarget, TARGET)
         })
         currentSource = newSource
         currentTarget = newTarget
@@ -86,12 +89,12 @@ export default class ThrespassPathfinder {
       if (!mark) {
         allFields.push(offset)
       }
-      const damage = this.hitCalculator!.getDamage(offset, this.enemies)
+      const damage = this.getDamage(offset)
       if (damage > this.thresholdDamage) {
         if (damage < this.leastHigherThresholdDamage) {
           this.leastHigherThresholdDamage = damage
         }
-        return false
+        return
       }
       if (!(mark | type)) {
         testingFields.push(offset)
@@ -112,5 +115,13 @@ export default class ThrespassPathfinder {
       return SOURCE
     }
     return TARGET
+  }
+
+  private getDamage(pos: RoomPosition) {
+    return this.hitCalculator!.getDamage(pos, this.enemies)
+  }
+
+  get damage() {
+    return this.thresholdDamage
   }
 }

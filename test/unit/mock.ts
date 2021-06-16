@@ -98,3 +98,18 @@ export const OwnedStructure = class extends Structure {}
 export const Spawn = {}
 export const Source = {}
 export const Flag = {}
+export class CostMatrix {
+  private data: number[][] = []
+
+  set(x: number, y: number, v: number) {
+    console.log('set', x, y, v)
+    const yData = this.data[x] || (this.data[x] = [])
+    yData[y] = v
+  }
+
+  get(x: number, y: number) {
+    const yData = this.data[x] || []
+    console.log('get', x, y, yData[y] || 0)
+    return yData[y] || 0
+  }
+}

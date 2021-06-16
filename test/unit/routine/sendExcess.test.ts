@@ -67,7 +67,7 @@ describe('routine/terminal/sendExcess', () => {
       room: {},
     } as StructureTerminal
     term.room.store = () => Infinity
-    Memory.myRooms.test = 0
+    Memory.myRooms = { test: 0 }
     Game.rooms.test = {
       terminal: { my: true, store: { [RESOURCE_HYDROGEN]: Infinity } },
     } as Room

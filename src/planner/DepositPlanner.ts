@@ -12,21 +12,6 @@ export default class DepositPlanner {
   constructor(room: Room) {
     this.sourceRoom = room
     this.info = room.pathScanner.rooms[room.memory.mineDeposit || '']
-    if (this.info && this.info.deposits.length) {
-      this.depositToMine = _.min(this.info.deposits, (d) => d.lastCooldown)
-      if (new DepositValidator().validate(this.depositToMine, this.info)) {
-        this.currentCost = this.getDepositDistance(
-          this.depositToMine,
-          this.info,
-        )
-      } else {
-        delete this.depositToMine
-        delete room.memory.mineDeposit
-        this.findNewDeposit()
-      }
-    } else if (!(Game.time % 1000)) {
-      this.findNewDeposit()
-    }
   }
 
   private findNewDeposit() {
@@ -57,6 +42,24 @@ export default class DepositPlanner {
   }
 
   get deposit() {
+    if (this.depositToMine) {
+      return this.depositToMine
+    }
+    if (this.info && this.info.deposits.length) {
+      this.depositToMine = _.min(this.info.deposits, (d) => d.lastCooldown)
+      if (new DepositValidator().validate(this.depositToMine, this.info)) {
+        this.currentCost = this.getDepositDistance(
+          this.depositToMine,
+          this.info,
+        )
+      } else {
+        delete this.depositToMine
+        delete this.sourceRoom.memory.mineDeposit
+        this.findNewDeposit()
+      }
+    } else if (!(Game.time % 1000)) {
+      this.findNewDeposit()
+    }
     return this.depositToMine
   }
 
