@@ -40,8 +40,11 @@ export function progressiveStaticUpgrader(
   return progressiveStaticWorker(energy, maxWork)
 }
 
-export function progressiveMiner(energy: number) {
-  const maxWork = 1 + SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME / HARVEST_POWER
+export function progressiveMiner(
+  energy: number,
+  capacity: number = SOURCE_ENERGY_CAPACITY,
+) {
+  const maxWork = 1 + capacity / ENERGY_REGEN_TIME / HARVEST_POWER
   return progressiveStaticWorker(energy, maxWork)
 }
 

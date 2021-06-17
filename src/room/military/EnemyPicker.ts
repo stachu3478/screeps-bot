@@ -28,7 +28,7 @@ export default class EnemyPicker {
     const allies = findFighters(this.room)
     this.maxAllyDamage = _.sum(allies, (a) => a.corpus.attackPower)
     const enemyHitsHealed = enemies.map((c, i) =>
-      this.calculator.healPower(allies, c),
+      this.calculator.healPower(enemies, c),
     )
     const enemySummary = enemies.map(
       (c, i) => this.calculator.getFor(c, allies, []) - enemyHitsHealed[i],

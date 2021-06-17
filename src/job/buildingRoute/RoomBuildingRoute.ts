@@ -13,11 +13,14 @@ export default class RoomBuildingRoute {
    * Checks wherever the route processing should be skipped
    */
   skip() {
-    const controller = this.room.controller
-    if (!controller) return true
-    if (!controller.my) return true
-    if (!CONTROLLER_STRUCTURES[this.route.structure][controller.level])
-      return true
+    if (!this.route.remote) {
+      const controller = this.room.controller
+      if (!controller) return true
+      if (!controller.my) return true
+      if (!CONTROLLER_STRUCTURES[this.route.structure][controller.level]) {
+        return true
+      }
+    }
     return !this.route.if(this.room)
   }
 
@@ -47,12 +50,14 @@ export default class RoomBuildingRoute {
 
   findTarget(positions: RoomPosition[] = this.positions) {
     let site: ConstructionSite | undefined
-    positions.some((pos) =>
-      pos
-        .lookFor(LOOK_CONSTRUCTION_SITES)
-        .some(
-          (s) => !!(s.structureType === this.route.structure && (site = s)),
-        ),
+    positions.some(
+      (pos) =>
+        Game.rooms[pos.roomName] &&
+        pos
+          .lookFor(LOOK_CONSTRUCTION_SITES)
+          .some(
+            (s) => !!(s.structureType === this.route.structure && (site = s)),
+          ),
     )
     return site
   }
@@ -60,6 +65,9 @@ export default class RoomBuildingRoute {
   createTarget(positions: RoomPosition[] = this.positions) {
     let result = 1
     positions.some((pos) => {
+      if (!Game.rooms[pos.roomName]) {
+        return false
+      }
       const structuresAt = pos.lookFor(LOOK_STRUCTURES)
       const matchingStructure = structuresAt.some(
         (s) => s.structureType === this.route.structure,

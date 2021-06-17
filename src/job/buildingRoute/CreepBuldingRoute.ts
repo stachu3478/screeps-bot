@@ -26,9 +26,11 @@ export default class CreepBuildingRoute extends CreepMemoized<BuildingCreep> {
     const result = this.drawAndBuild()
     if (!result) {
       const creep = this.creep
+      if (creep.memory[Keys.buildTarget]) {
+        this.route.done()
+      }
       delete creep.memory[Keys.buildTarget]
       delete creep.memory[Keys.drawSource]
-      this.route.done()
     }
     return result
   }

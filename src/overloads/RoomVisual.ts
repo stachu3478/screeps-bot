@@ -1,3 +1,4 @@
+import DefencePolicy from 'room/DefencePolicy'
 import EnemyPicker from 'room/military/EnemyPicker'
 
 export const infoStyle: TextStyle = {
@@ -19,16 +20,18 @@ RoomVisual.prototype.danger = function (text, x, y) {
   this.text(text, x, y, dangerStyle)
 }
 
+// @ts-ignore error on private propetries
 RoomVisual.prototype.enemy = function (
   enemyPicker: EnemyPicker,
   shouldAttack: boolean,
+  policy: DefencePolicy,
 ) {
   const enemy = enemyPicker.enemy
   const currentDmg = enemyPicker.dealt
   const maxDmg = enemyPicker.maxDealable
   const canDeal = enemyPicker.dealt > 0
   this.danger(
-    `Enemy tracked: ${enemy?.name} Vulnerability: ${currentDmg} / ${maxDmg} ${shouldAttack} / ${canDeal}`,
+    `Enemy tracked: ${enemy?.name} Vulnerability: ${currentDmg} / ${maxDmg} ${shouldAttack} (${policy.holdingTimer} / ${policy.holdingTicks}) / ${canDeal}`,
     0,
     4,
   )

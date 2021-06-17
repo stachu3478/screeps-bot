@@ -11,6 +11,7 @@ import autoFill from 'routine/haul/autoFill'
 import autoRepair from 'routine/work/autoRepair'
 import autoBuild from 'routine/work/autoBuild'
 import ProfilerPlus from 'utils/ProfilerPlus'
+import maintainContainer from 'routine/work/maintainContainer'
 
 export interface Miner extends Creep {
   memory: MinerMemory
@@ -51,28 +52,10 @@ export default ProfilerPlus.instance.overrideFn(function miner(creep: Miner) {
           else if (index !== -1) {
             const miningPosition = creep.motherRoom.sources.getPosition(index)
             if (creep.pos.range(miningPosition)) return
-            const structures = miningPosition.lookFor(LOOK_STRUCTURES)
-            const container = structures.find(
-              (s) => s.structureType === STRUCTURE_CONTAINER,
-            )
-            if (!container) {
-              if (
-                creep.motherRoom.createConstructionSite(
-                  miningPosition,
-                  STRUCTURE_CONTAINER,
-                ) === 0
-              ) {
-                creep.memory.state = State.BUILD
-                break
-              }
-            } else if (container.hits < container.hitsMax) {
-              creep.cache.auto_repair = container.id
-              creep.memory.state = State.REPAIR
+            if (maintainContainer(creep, miningPosition)) {
               break
             }
-            const rampart = structures.find(
-              (s) => s.structureType === STRUCTURE_RAMPART,
-            )
+            const rampart = miningPosition.building(STRUCTURE_RAMPART)
             if (!rampart) {
               if (
                 creep.room.createConstructionSite(

@@ -17,8 +17,13 @@ export default function memoryLessBuild(
   if (!target) return NOTHING_TODO
   const result = creep.build(target)
   const remaining = storedEnergy - creep.corpus.count(WORK) * BUILD_POWER
-  if (result === ERR_NOT_IN_RANGE) move.cheap(creep, target, false, CREEP_RANGE)
-  else if (result === ERR_INVALID_TARGET) {
+  if (result === ERR_NOT_IN_RANGE) {
+    if (creep.room.name !== target.pos.roomName) {
+      creep.moveToRoom(target.pos.roomName)
+    } else {
+      move.cheap(creep, target, false, CREEP_RANGE)
+    }
+  } else if (result === ERR_INVALID_TARGET) {
     return FAILED
   } else if (result !== 0) {
     if (target.pos.lookFor(LOOK_CREEPS).find((c) => c.my && move.anywhere(c)))

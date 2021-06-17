@@ -22,4 +22,5 @@ const enum Role {
   DESTROYER = 23,
   DUAL = 24,
   DEPOSIT_MINER = 25,
+  REMOTE_MINER = 26,
 }

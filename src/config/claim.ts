@@ -1,5 +1,5 @@
 export default {
-  minCost: 150,
+  minCost: 200,
   maxCost: 500,
   minSources: 2,
   maxRooms: Game.gcl.level - 9,

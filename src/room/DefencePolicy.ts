@@ -1,7 +1,7 @@
 export default class DefencePolicy {
   private memory: RoomMemory
-  private holdingTicks: number
-  private holdingTimer: number
+  public holdingTicks: number
+  public holdingTimer: number
 
   constructor(room: Room) {
     this.memory = room.memory

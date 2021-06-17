@@ -93,6 +93,10 @@ interface StructureTerminal {
   businessHandler: BusinessHandler
 }
 
+interface RoomPositionConstructor {
+  from(l: Lookup<RoomPosition>): RoomPosition
+}
+
 type Lookup<T> = string & Tag.OpaqueTag<T>
 interface RoomPosition {
   offset: (direction: DirectionConstant) => RoomPosition | undefined
@@ -174,11 +178,19 @@ interface Ruin {
 interface RoomVisual {
   info: (text: string, x: number, y: number) => void
   danger: (text: string, x: number, y: number) => void
-  enemy: (enemyPicker: any, shouldAttack: boolean) => void
+  enemy: (
+    enemyPicker: any,
+    shouldAttack: boolean,
+    policy: DefencePolicy,
+  ) => void
   spawnsBusy: () => void
   details: (room: Room, creepCount: number, creepCountByRole: number[]) => void
 }
 
 interface ConstructionSite {
   isWalkable: boolean
+}
+
+interface StructureRoad {
+  vaporTime: number
 }

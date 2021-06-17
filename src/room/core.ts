@@ -62,7 +62,7 @@ export default ProfilerPlus.instance.overrideFn(function run(
       towers.forEach((t) => tower(t, enemy))
       towersProcessed = true
     }
-    room.visual.enemy(enemyPicker, shouldAttack)
+    room.visual.enemy(enemyPicker, shouldAttack, room.defencePolicy)
     cache.healthy = 0
   } else {
     room.defencePolicy.reset()

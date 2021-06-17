@@ -1,5 +1,6 @@
 import { ALL_DIRECTIONS } from 'constants/support'
 import _ from 'lodash'
+import RemoteMiningPlanner from './RemoteMiningPlanner'
 
 export default class RoomInspector {
   private room: Room
@@ -19,6 +20,7 @@ export default class RoomInspector {
     info.sources = this.room.find(FIND_SOURCES).length
     info.safe = this.checkSafety(room, info)
     this.inspectDeposits(info)
+    new RemoteMiningPlanner(info, this.room, room).run()
   }
 
   private inspectDeposits(info: RoomNeighbourPath) {

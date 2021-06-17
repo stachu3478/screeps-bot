@@ -17,6 +17,7 @@ import { needsDestroyer, spawnDestroyer } from './destroyer'
 import { needsNextMiner, spawnNextMiner } from './nextMiner'
 import { needsDepositMiner, spawnDepositMiner } from './depositMiner'
 import ProfilerPlus from 'utils/ProfilerPlus'
+import SpawnRemoteMiner from './remoteMiner'
 
 export default ProfilerPlus.instance.overrideFn(function loop(
   spawn: StructureSpawn,
@@ -55,6 +56,7 @@ export default ProfilerPlus.instance.overrideFn(function loop(
   const containersPresent = !!(
     findContainers(spawn.room).length || spawn.room.storage
   )
+  let spawnRemoteMiner: SpawnRemoteMiner
   if (minerCount === 0 && !creepCountByRole[Role.RETIRED]) {
     const colonySource = mem[RoomMemoryKeys.colonySourceIndex]
     cache.sourceId = colonySource
@@ -118,6 +120,11 @@ export default ProfilerPlus.instance.overrideFn(function loop(
     spawnTowerEkhauster(spawn)
   } else if (needsDestroyer(spawn, creepCountByRole[Role.DESTROYER])) {
     spawnDestroyer(spawn)
+  } else if (
+    (spawnRemoteMiner = new SpawnRemoteMiner(spawn)) &&
+    spawnRemoteMiner.needs() &&
+    spawnRemoteMiner.run()
+  ) {
   } else if (
     needsDepositMiner(spawn, creepCountByRole[Role.DEPOSIT_MINER] || 0)
   )

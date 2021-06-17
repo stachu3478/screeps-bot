@@ -1,5 +1,7 @@
 import _ from 'lodash'
 import BuildingRoute from 'job/buildingRoute/BuildingRoute'
+import checkIntegrity from 'planner/place/checkIntegrity'
+import RemoteMiningPlanner from 'planner/RemoteMiningPlanner'
 
 const charToPositionMapper = (
   room: Room,
@@ -70,12 +72,7 @@ export default [
     if: (room: Room) => (room.cache.roadBuilt || 0) > Game.time,
     done: (room: Room) =>
       (room.cache.roadBuilt = Math.min(
-        ...room.buildings.roads.map(
-          (r) =>
-            Game.time +
-            ROAD_DECAY_TIME * Math.floor(r.hits / ROAD_DECAY_AMOUNT) +
-            r.ticksToDecay,
-        ),
+        ...room.buildings.roads.map((r) => r.vaporTime),
         1500,
       )),
     forceReplacement,
@@ -124,6 +121,12 @@ export default [
     positions: (room: Room) => room.positions.forLabs,
     from: findStorageAndTerminal,
     forceReplacement,
+    done: (room: Room) => {
+      room.memory.structs = checkIntegrity(
+        room.memory.structs || '',
+        (room.memory.internalLabs || '') + (room.memory.externalLabs || ''),
+      )
+    },
   },
   {
     structure: STRUCTURE_POWER_SPAWN,
@@ -143,6 +146,54 @@ export default [
     structure: STRUCTURE_OBSERVER,
     positions: (room: Room) => [room.positions.leastAvailable],
     from: findStorageAndTerminal,
+    forceReplacement,
+  },
+  // remote roads for fast remote moving
+  {
+    structure: STRUCTURE_ROAD,
+    positions: (room: Room) => {
+      const roads = room.memory.remoteRoads || ''
+      const positions =
+        roads
+          .match(/.{1,2}/g)
+          ?.map((lookup) =>
+            RoomPosition.from(lookup as Lookup<RoomPosition>),
+          ) || []
+      const validPositions = positions.filter((p) => {
+        const r = Game.rooms[p.roomName]
+        if (!r) {
+          return true
+        }
+        return RemoteMiningPlanner.shouldMineIn(r, room)
+      })
+      room.memory.remoteRoads = validPositions.map((p) => p.lookup).join('')
+      return validPositions
+    },
+    from: findStorageTerminalAndContainers,
+    // it is expensive, lets check that rarely
+    if: (room: Room) => (room.cache.remoteRoadBuilt || 0) > Game.time,
+    done: (room: Room) => {
+      const roads = room.memory.remoteRoads || ''
+      const positions =
+        roads
+          .match(/.{1,2}/g)
+          ?.map((lookup) =>
+            RoomPosition.from(lookup as Lookup<RoomPosition>),
+          ) || []
+      room.cache.remoteRoadBuilt = Math.min.apply(
+        null,
+        positions
+          .map((p) => {
+            const road = p.building(STRUCTURE_ROAD)
+            if (!road) {
+              return Game.time + 10000
+            }
+            return road.vaporTime
+          })
+          .concat([Game.time + 10000]),
+      )
+      return positions
+    },
     forceReplacement,
   },
 ].map((options) => new BuildingRoute(options))

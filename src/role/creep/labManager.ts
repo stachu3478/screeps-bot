@@ -1,7 +1,6 @@
 import { DONE, NOTHING_TODO, FAILED, SUCCESS } from 'constants/response'
 import draw from 'routine/haul/draw'
 import fill from 'routine/haul/fill'
-import profiler from 'screeps-profiler'
 import handleLab from 'utils/handleLab'
 import { LabManager } from './labManager.d'
 import labJobs from 'job/lab'

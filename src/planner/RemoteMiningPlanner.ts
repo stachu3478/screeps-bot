@@ -1,4 +1,5 @@
 import remoteMining from 'config/remoteMining'
+import player from 'constants/player'
 import MemoryHandler from 'handler/MemoryHandler'
 import _ from 'lodash'
 import PathMatrix from './PathMatrix'
@@ -6,17 +7,47 @@ import PathMatrix from './PathMatrix'
 export default class RemoteMiningPlanner {
   private path: RoomNeighbourPath
   private room: Room
+  private inspectorRoom: Room
   private plannerPathMatrix?: PathMatrix
   private entryPosition: RoomPosition
 
-  constructor(path: RoomNeighbourPath, room: Room) {
+  constructor(path: RoomNeighbourPath, room: Room, inspectorRoom: Room) {
     this.path = path
     this.room = room
+    this.inspectorRoom = inspectorRoom
     this.entryPosition = new RoomPosition(path.newX, path.newY, room.name)
   }
 
+  static shouldMineIn(room: Room, inspectorRoom: Room) {
+    const controller = room.controller
+    if (!controller) {
+      return true
+    }
+    if (controller.owner?.username) {
+      return false
+    }
+    const reservation = controller.reservation
+    if (!reservation) {
+      return true
+    }
+    if (reservation.username !== player) {
+      return false
+    }
+    const roomPath = inspectorRoom.pathScanner.rooms[room.name]
+    if (!roomPath || !roomPath.safe) {
+      return false
+    }
+    return true
+  }
+
   run() {
+    if (!RemoteMiningPlanner.shouldMineIn(this.room, this.inspectorRoom)) {
+      return
+    }
     if (this.path.cost > remoteMining.sources.maxCost) {
+      return
+    }
+    if (!this.path.safe) {
       return
     }
     const sources = this.room.find(FIND_SOURCES)
@@ -29,6 +60,7 @@ export default class RemoteMiningPlanner {
   private runForSource(source: Source) {
     const lookup = source.pos.lookup
     if (MemoryHandler.sources[lookup]) {
+      console.log('source already locked', this.room.name)
       return
     }
     const path = PathFinder.search(this.entryPosition, {
@@ -63,17 +95,17 @@ export default class RemoteMiningPlanner {
   }
 
   private addRoadPositions(roads: RoomPosition[]) {
-    if (!this.room.memory.remoteRoads) {
-      this.room.memory.remoteRoads = ''
+    if (!this.memory.remoteRoads) {
+      this.memory.remoteRoads = ''
     }
-    this.room.memory.remoteRoads += roads.map((p) => p.lookup).join('')
+    this.memory.remoteRoads += roads.map((p) => p.lookup).join('')
   }
 
   get remoteMemory() {
-    if (!this.room.memory.r) {
-      this.room.memory.r = []
+    if (!this.memory.r) {
+      this.memory.r = []
     }
-    return this.room.memory.r
+    return this.memory.r
   }
 
   get pathMatrix() {
@@ -81,5 +113,9 @@ export default class RemoteMiningPlanner {
       this.plannerPathMatrix = new PathMatrix(this.room.getTerrain())
     }
     return this.plannerPathMatrix
+  }
+
+  private get memory() {
+    return this.inspectorRoom.memory
   }
 }

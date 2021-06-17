@@ -20,6 +20,7 @@ import builder from 'role/creep/builder'
 import recycle from 'routine/recycle'
 import depositMiner from 'role/creep/depositMiner'
 import ProfilerPlus from 'utils/ProfilerPlus'
+import remoteMiner, { RemoteMiner } from 'role/creep/remoteMiner'
 
 interface Creeps {
   [key: string]: 0
@@ -80,6 +81,9 @@ export default ProfilerPlus.instance.overrideFn(function creeps(
           break
         case Role.MINER:
           miner(creep)
+          break
+        case Role.REMOTE_MINER:
+          remoteMiner(creep as RemoteMiner)
           break
         case Role.EXTRACTOR:
           extractor(creep)

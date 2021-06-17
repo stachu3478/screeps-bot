@@ -157,7 +157,7 @@ interface RoomMemory {
   mineDeposit?: string
 
   boosts?: BoostData
-  r?: string[] // remotes
+  r?: Lookup<RoomPosition>[] // remotes
   /**
    * During that many ticks defence units
    * will hold fire when they have positive

@@ -65,7 +65,7 @@ export default class ClaimPlanner {
     if (room && room.owner) delete this.currentTarget
   }
 
-  private get minCost() {
+  get minCost() {
     const shardConfig = this.config.shards[Game.shard.name]
     return shardConfig ? shardConfig.minCost : this.config.minCost
   }
