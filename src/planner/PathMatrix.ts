@@ -1,14 +1,10 @@
-import StructureMatrix from './base/StructureMatrix'
-
 const ROAD_MASK = 1
 export default class PathMatrix {
-  private terrain: RoomTerrain
   private matrix: CostMatrix
   private paths: [RoomPosition, RoomPosition, PathFinderPath][] = []
   private setPaths: RoomPosition[] = []
 
-  constructor(terrain: RoomTerrain) {
-    this.terrain = terrain
+  constructor() {
     this.matrix = new PathFinder.CostMatrix()
   }
 
@@ -29,14 +25,18 @@ export default class PathMatrix {
     }
   }
 
-  add(source: RoomPosition, pos: RoomPosition, range = 0) {
+  findPath(source: RoomPosition, pos: RoomPosition, range = 0) {
     const pathfindingOpts: PathFinderOpts = {
       plainCost: 2,
       swampCost: 3,
       maxRooms: 1,
       roomCallback: () => this.matrix,
     }
-    const result = PathFinder.search(source, { pos, range }, pathfindingOpts)
+    return PathFinder.search(source, { pos, range }, pathfindingOpts)
+  }
+
+  add(source: RoomPosition, pos: RoomPosition, range = 0) {
+    const result = this.findPath(source, pos, range)
     return this.addPath(result, source, pos)
   }
 

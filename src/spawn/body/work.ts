@@ -115,26 +115,41 @@ export function progressiveWorker(
   return parts
 }
 
-export function progressiveLiteWorker(energy: number): BodyPartConstant[] {
+export function progressiveLiteWorker(
+  energy: number,
+  maxCarry = Infinity,
+): BodyPartConstant[] {
   let workRemaining =
     1 + SOURCE_ENERGY_CAPACITY / ENERGY_REGEN_TIME / BUILD_POWER
   const parts: BodyPartConstant[] = []
   let remaining = energy
   let partsRemaining = MAX_CREEP_SIZE
-  while (remaining >= workPack && partsRemaining >= 3 && workRemaining > 0) {
+  let carryRemaining = maxCarry
+  while (
+    remaining >= workPack &&
+    partsRemaining >= 3 &&
+    workRemaining > 0 &&
+    carryRemaining > 1
+  ) {
     parts.push(WORK, CARRY, MOVE)
     remaining -= workPack
     partsRemaining -= 3
     workRemaining--
+    carryRemaining--
   }
-  while (remaining >= carryPack && partsRemaining >= 3) {
+  while (remaining >= carryPack && partsRemaining >= 3 && carryRemaining > 2) {
     parts.push(CARRY, CARRY, MOVE)
     remaining -= carryPack
     partsRemaining -= 3
+    carryRemaining -= 2
   }
   if (remaining >= liteWorkPack && partsRemaining >= 2 && workRemaining > 0)
     parts.push(WORK, MOVE)
-  else if (remaining >= liteCarryPack && partsRemaining >= 2)
+  else if (
+    remaining >= liteCarryPack &&
+    partsRemaining >= 2 &&
+    carryRemaining > 1
+  )
     parts.push(CARRY, MOVE)
   return parts
 }

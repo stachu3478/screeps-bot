@@ -17,8 +17,16 @@ import { needsDestroyer, spawnDestroyer } from './destroyer'
 import { needsNextMiner, spawnNextMiner } from './nextMiner'
 import { needsDepositMiner, spawnDepositMiner } from './depositMiner'
 import ProfilerPlus from 'utils/ProfilerPlus'
+import SpawnCreep from './spawnCreep'
 import SpawnRemoteMiner from './remoteMiner'
+import SpawnCollector from './collector'
+import _ from 'lodash'
 
+const spawningClasses = [SpawnRemoteMiner, SpawnCollector]
+export const spawnClassRoleBinding: typeof SpawnCreep[] = []
+spawningClasses.forEach((klass) => {
+  spawnClassRoleBinding[new klass(_.find(Game.spawns)!, []).role] = klass
+})
 export default ProfilerPlus.instance.overrideFn(function loop(
   spawn: StructureSpawn,
   controller: StructureController,
@@ -53,10 +61,9 @@ export default ProfilerPlus.instance.overrideFn(function loop(
     (creepCountByRole[Role.FACTORY_MANAGER] || 0) +
     (creepCountByRole[Role.LAB_MANAGER] || 0)
   const minerCount = creepCountByRole[Role.MINER] || 0
-  const containersPresent = !!(
+  spawn.room.cache.containersPresent = !!(
     findContainers(spawn.room).length || spawn.room.storage
   )
-  let spawnRemoteMiner: SpawnRemoteMiner
   if (minerCount === 0 && !creepCountByRole[Role.RETIRED]) {
     const colonySource = mem[RoomMemoryKeys.colonySourceIndex]
     cache.sourceId = colonySource
@@ -73,7 +80,7 @@ export default ProfilerPlus.instance.overrideFn(function loop(
       } as MinerMemory,
     )
     console.log(`[${spawn.room.name}] Trying spawn a creep @ref`)
-  } else if (harvesterCount === 0 && containersPresent) {
+  } else if (harvesterCount === 0 && spawn.room.cache.containersPresent) {
     const energyDeclared = creepCountByRole[Role.RETIRED]
       ? spawn.room.energyCapacityAvailable
       : spawn.room.energyAvailable
@@ -94,7 +101,7 @@ export default ProfilerPlus.instance.overrideFn(function loop(
     needsUpgraders(
       spawn,
       creepCountByRole[Role.UPGRADER] || 0,
-      containersPresent,
+      spawn.room.cache.containersPresent,
     )
   ) {
     spawnUpgrader(spawn, mem as StableRoomMemory)
@@ -121,9 +128,9 @@ export default ProfilerPlus.instance.overrideFn(function loop(
   } else if (needsDestroyer(spawn, creepCountByRole[Role.DESTROYER])) {
     spawnDestroyer(spawn)
   } else if (
-    (spawnRemoteMiner = new SpawnRemoteMiner(spawn)) &&
-    spawnRemoteMiner.needs() &&
-    spawnRemoteMiner.run()
+    spawningClasses.some((klass) =>
+      new klass(spawn, creepCountByRole).runIfNeeded(),
+    )
   ) {
   } else if (
     needsDepositMiner(spawn, creepCountByRole[Role.DEPOSIT_MINER] || 0)

@@ -1,5 +1,6 @@
 import CacheHandler from 'handler/CacheHandler'
 import IntershardMemoryHandler from 'handler/IntershardMemoryHandler'
+import runMigration, { VERSION } from 'utils/migrate'
 
 global.InterShardMemory = global.InterShardMemory || {
   getLocal: () => '',
@@ -31,7 +32,6 @@ export function getMemory(): Memory {
   } catch (e) {
     return {
       myRooms: {},
-      profiler: {},
       creeps: {},
       powerCreeps: {},
       flags: {},
@@ -46,6 +46,12 @@ export const memHackBeforeLoop = () => {
   // @ts-ignore memhacked
   delete global.Memory
   global.Memory = memory
+
+  let version = Memory.version || 0
+  while (version < VERSION) {
+    runMigration()
+    version = Memory.version = VERSION
+  }
 }
 
 export const memHackAfterLoop = () => {

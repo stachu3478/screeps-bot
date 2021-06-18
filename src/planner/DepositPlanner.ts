@@ -57,7 +57,7 @@ export default class DepositPlanner {
         delete this.sourceRoom.memory.mineDeposit
         this.findNewDeposit()
       }
-    } else if (!(Game.time % 1000)) {
+    } else if (!(Game.time % 1)) {
       this.findNewDeposit()
     }
     return this.depositToMine

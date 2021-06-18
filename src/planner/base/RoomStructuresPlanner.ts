@@ -27,7 +27,7 @@ export default class RoomStructuresPlanner {
     this.room = room
     this.controllerPos = controllerPos
     this.terrain = room.getTerrain()
-    this.pathMatrix = new PathMatrix(this.terrain)
+    this.pathMatrix = new PathMatrix()
     this.firstPlanMatrix = new StructureMatrix(room, this.pathMatrix)
     const sources = room.find(FIND_SOURCES)
     this.sourceMiningPlanner = new SourceMiningPlanner(

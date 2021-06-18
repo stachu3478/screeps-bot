@@ -184,6 +184,9 @@ export default [
         null,
         positions
           .map((p) => {
+            if (!Game.rooms[p.roomName]) {
+              return Game.time + 10000
+            }
             const road = p.building(STRUCTURE_ROAD)
             if (!road) {
               return Game.time + 10000

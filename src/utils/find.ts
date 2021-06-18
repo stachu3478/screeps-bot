@@ -9,9 +9,7 @@ function persistFilter<T>(arr: (T | undefined)[]): T[] {
 
 export const findContainers = (room: Room) => {
   const potencialContainers = room.sources.positions.map((pos) =>
-    pos
-      .lookFor(LOOK_STRUCTURES)
-      .find((s) => s.structureType === STRUCTURE_CONTAINER),
+    pos.building(STRUCTURE_CONTAINER),
   )
   return persistFilter(potencialContainers) as StructureContainer[]
 }

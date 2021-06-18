@@ -12,7 +12,7 @@ export default class DepositValidator {
     const resourceMiningCalc = new ResourceMiningCalculator(
       cost,
       HARVEST_DEPOSIT_POWER,
-      traits.lastCooldown,
+      traits.lastCooldown || 1,
     )
     const profits = resourceMiningCalc.optimize()
     const creepCost = resourceMiningCalc.creepCost

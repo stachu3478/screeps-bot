@@ -110,7 +110,14 @@ export default class RoomPathScanner {
       const existingPath = this.infos[roomName]
       const cost = baseCost + path.cost
       if (cost > this.config.maxCost) return
-      if (existingPath && existingPath.cost <= cost) return
+      if (existingPath) {
+        if (existingPath.cost <= cost) {
+          return
+        }
+        if (currentRoomPath && existingPath.safe && !currentRoomPath.safe) {
+          return
+        }
+      }
       this.infos[roomName] = {
         ...path,
         name: roomName,

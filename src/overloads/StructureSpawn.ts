@@ -2,6 +2,7 @@ import sanitizeBody from 'utils/sanitizeBody'
 import { uniqName } from 'spawn/name'
 import defineGetter from 'utils/defineGetter'
 import { ALL_DIRECTIONS } from 'constants/support'
+import { spawnClassRoleBinding } from 'spawn/core'
 
 function defineSpawnGetter<T extends keyof StructureSpawn>(
   property: T,
@@ -63,16 +64,19 @@ StructureSpawn.prototype.trySpawnCreep = function (
     const motherMemory = Memory.rooms[memory.room]
     const cache = this.cache
     if (!motherMemory.creeps) motherMemory.creeps = {}
-    this.spawnCreep(sanitizeBody(body), name, {
+    const result = this.spawnCreep(sanitizeBody(body), name, {
       memory,
       directions: this.getDirections() /*energyStructures: getDistanceOrderedHatches(this.room, creepCost(body))*/,
     })
-    motherMemory.creeps[name] = 0
-    boost.forEach((data) => {
-      this.room.boosts.createRequest(name, data.resource, data.partCount)
-    })
-    delete cache.sourceId
-    delete cache.trySpawn
+    if (result === OK) {
+      motherMemory.creeps[name] = 0
+      boost.forEach((data) => {
+        this.room.boosts.createRequest(name, data.resource, data.partCount)
+      })
+      delete cache.sourceId
+      delete cache.trySpawn
+      spawnClassRoleBinding[memory.role]?.success(name)
+    }
   }
   this.room.visual.info('Try to spawn ' + name, 0, 3)
   return result

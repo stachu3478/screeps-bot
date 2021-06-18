@@ -2,6 +2,7 @@ import remoteMining from 'config/remoteMining'
 import player from 'constants/player'
 import MemoryHandler from 'handler/MemoryHandler'
 import _ from 'lodash'
+import { getCarryNeeded } from './opts'
 import PathMatrix from './PathMatrix'
 
 export default class RemoteMiningPlanner {
@@ -18,7 +19,24 @@ export default class RemoteMiningPlanner {
     this.entryPosition = new RoomPosition(path.newX, path.newY, room.name)
   }
 
-  static shouldMineIn(room: Room, inspectorRoom: Room) {
+  static shouldMineIn(name: string, inspectorRoom: Room) {
+    const roomPath = inspectorRoom.pathScanner.rooms[name]
+    if (!roomPath || !roomPath.safe) {
+      return false
+    }
+    const room = Game.rooms[name]
+    if (!room) {
+      return true
+    }
+    const sources = room.find(FIND_SOURCES)
+    const hostiles = room.find(FIND_HOSTILE_CREEPS)
+    if (
+      hostiles.some(
+        (h) => h.corpus.count(WORK) && sources.some((s) => h.pos.isNearTo(s)),
+      )
+    ) {
+      return false
+    }
     const controller = room.controller
     if (!controller) {
       return true
@@ -33,21 +51,21 @@ export default class RemoteMiningPlanner {
     if (reservation.username !== player) {
       return false
     }
-    const roomPath = inspectorRoom.pathScanner.rooms[room.name]
-    if (!roomPath || !roomPath.safe) {
-      return false
-    }
+
     return true
   }
 
+  static removeSource(room: Room, lookup: Lookup<RoomPosition>) {
+    const remoteMemory = room.memory.r || []
+    delete MemoryHandler.sources[lookup]
+    room.memory.r = remoteMemory.filter((l) => l !== lookup)
+  }
+
   run() {
-    if (!RemoteMiningPlanner.shouldMineIn(this.room, this.inspectorRoom)) {
+    if (!RemoteMiningPlanner.shouldMineIn(this.room.name, this.inspectorRoom)) {
       return
     }
     if (this.path.cost > remoteMining.sources.maxCost) {
-      return
-    }
-    if (!this.path.safe) {
       return
     }
     const sources = this.room.find(FIND_SOURCES)
@@ -63,10 +81,7 @@ export default class RemoteMiningPlanner {
       console.log('source already locked', this.room.name)
       return
     }
-    const path = PathFinder.search(this.entryPosition, {
-      pos: source.pos,
-      range: 1,
-    })
+    const path = this.pathMatrix.findPath(this.entryPosition, source.pos, 1)
     if (path.incomplete) {
       return // todo send dismantlers to clear path
     }
@@ -83,6 +98,7 @@ export default class RemoteMiningPlanner {
       energyCapacity,
       miningCreep: '',
       haulerCreeps: [],
+      carryNeeded: getCarryNeeded(cost, energyCapacity),
     }
     this.remoteMemory.push(lookup)
   }
@@ -110,7 +126,7 @@ export default class RemoteMiningPlanner {
 
   get pathMatrix() {
     if (!this.plannerPathMatrix) {
-      this.plannerPathMatrix = new PathMatrix(this.room.getTerrain())
+      this.plannerPathMatrix = new PathMatrix()
     }
     return this.plannerPathMatrix
   }

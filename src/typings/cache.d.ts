@@ -10,6 +10,7 @@ interface RoomCache {
   sourceKeeperPositions: RoomPosition[]
   structurePositions: RoomPosition[]
   labCooldown?: number
+  containersPresent?: boolean
 }
 
 interface SpawnCache {

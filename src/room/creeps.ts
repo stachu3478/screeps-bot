@@ -21,6 +21,7 @@ import recycle from 'routine/recycle'
 import depositMiner from 'role/creep/depositMiner'
 import ProfilerPlus from 'utils/ProfilerPlus'
 import remoteMiner, { RemoteMiner } from 'role/creep/remoteMiner'
+import collector, { Collector } from 'role/creep/collector'
 
 interface Creeps {
   [key: string]: 0
@@ -84,6 +85,9 @@ export default ProfilerPlus.instance.overrideFn(function creeps(
           break
         case Role.REMOTE_MINER:
           remoteMiner(creep as RemoteMiner)
+          break
+        case Role.COLLECTOR:
+          collector(creep as Collector)
           break
         case Role.EXTRACTOR:
           extractor(creep)

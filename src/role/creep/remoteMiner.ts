@@ -5,6 +5,7 @@ import ProfilerPlus from 'utils/ProfilerPlus'
 import MemoryHandler from 'handler/MemoryHandler'
 import move from 'utils/path'
 import maintainContainer from 'routine/work/maintainContainer'
+import recycle from 'routine/recycle'
 
 export interface RemoteMiner extends Creep {
   memory: RemoteMinerMemory
@@ -20,11 +21,14 @@ export default ProfilerPlus.instance.overrideFn(function miner(
   const lookup = creep.memory.mine
   const sourcePosition = RoomPosition.from(lookup)
   const miningTarget = MemoryHandler.sources[lookup]
-  if (miningTarget && !creep.isRetired) {
-    miningTarget.miningCreep = creep.name
+  if (!miningTarget) {
+    recycle(creep)
+    return
   }
   const roomName = sourcePosition.roomName
-  const invaders = Game.rooms[roomName]?.findHostileCreeps().length
+  const invaders = Game.rooms[roomName]?.findHostileCreeps(
+    (c) => c.corpus.armed,
+  ).length
   const miningPosition = RoomPosition.from(miningTarget.miningPosition)
   if (invaders || !miningTarget) {
     creep.moveToRoom(creep.memory.room)

@@ -52,6 +52,7 @@ interface SourceMemory {
   energyCapacity: number
   miningCreep: string
   haulerCreeps: string[]
+  carryNeeded: number
 }
 
 interface Memory {
@@ -75,7 +76,7 @@ interface Memory {
   roomLimit?: number
   maxUpgradersCount?: number
 
-  profiler: any
+  version?: number
 }
 
 interface BoostData {
