@@ -5,7 +5,7 @@ import spawnUpgrader, { needsUpgraders } from './upgrader'
 import { MinerMemory } from 'role/creep/miner'
 import { findContainers } from 'utils/find'
 import { needsRanger, spawnRanger } from './ranger'
-import { needsScout, spawnScout } from './scout'
+import SpawnScout from './scout'
 import { needsClaimer, spawnClaimer } from './claimer'
 import { needsHauler, spawnHauler } from './hauler'
 import { needsMover, spawnMover } from './mover'
@@ -22,7 +22,7 @@ import SpawnRemoteMiner from './remoteMiner'
 import SpawnCollector from './collector'
 import _ from 'lodash'
 
-const spawningClasses = [SpawnRemoteMiner, SpawnCollector]
+const spawningClasses = [SpawnScout, SpawnRemoteMiner, SpawnCollector]
 export const spawnClassRoleBinding: typeof SpawnCreep[] = []
 spawningClasses.forEach((klass) => {
   spawnClassRoleBinding[new klass(_.find(Game.spawns)!, []).role] = klass
@@ -111,8 +111,6 @@ export default ProfilerPlus.instance.overrideFn(function loop(
     spawnStaticUpgrader(spawn, controller)
   } else if (needsHauler(spawn, creepCountByRole[Role.HAULER])) {
     spawnHauler(spawn)
-  } else if (needsScout(spawn, creepCountByRole[Role.SCOUT])) {
-    spawnScout(spawn)
   } else if (needsBuilder(spawn, creepCountByRole[Role.BUILDER])) {
     spawnBuilder(spawn)
   } else if (needsClaimer(spawn, creepCountByRole[Role.CLAIMER])) {

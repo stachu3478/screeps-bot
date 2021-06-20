@@ -8,7 +8,8 @@ export default abstract class SpawnCreep {
     this.count = creepCountByRole[this.role] || 0
   }
 
-  static success(creepName: string) {}
+  static success(creepName: string, body: BodyPartConstant[]) {}
+  static spawning(spawn: StructureSpawn) {}
 
   runIfNeeded() {
     const needs = this.needs()

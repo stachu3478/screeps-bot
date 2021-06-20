@@ -1,25 +1,27 @@
-import ClaimPlanner from 'planner/military/ClaimPlanner'
+import SpawnCreep from './spawnCreep'
 
-const claimerThreshold = BODYPART_COST[CLAIM] + BODYPART_COST[MOVE]
-export function needsClaim(spawn: StructureSpawn) {
-  if (spawn.room.memory._attack) return false
-  if (spawn.room.energyCapacityAvailable < claimerThreshold) return false
-  const target = ClaimPlanner.instance.target
-  return target && target.source === spawn.room.name
-}
+export default class SpawnScout extends SpawnCreep {
+  public role = Role.SCOUT
 
-export function needsScout(spawn: StructureSpawn, count: number) {
-  return (
-    !Game.rooms.sim &&
-    !spawn.room.cache.scoutsWorking &&
-    spawn.room.pathScanner.scanTarget
-  )
-}
+  static spawning(spawn: StructureSpawn) {
+    spawn.room.cache.scoutsWorking++
+  }
 
-export function spawnScout(spawn: StructureSpawn) {
-  spawn.trySpawnCreep([MOVE], 'S', {
-    role: Role.SCOUT,
-    room: spawn.room.name,
-    deprivity: 0,
-  })
+  needs() {
+    const room = this.spawn.room
+    return (
+      !Game.rooms.sim &&
+      !room.cache.scoutsWorking &&
+      room.pathScanner.scanTarget
+    )
+  }
+
+  run() {
+    const spawn = this.spawn
+    spawn.trySpawnCreep([MOVE], 'S', {
+      role: this.role,
+      room: spawn.room.name,
+      deprivity: 0,
+    })
+  }
 }

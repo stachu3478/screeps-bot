@@ -18,6 +18,7 @@ import RoomLinks from './RoomLinks'
 import RoomPositions from './RoomPositions'
 import DepositPlanner from 'planner/DepositPlanner'
 import ProfilerPlus from 'utils/ProfilerPlus'
+import RemoteMiningMonitor from 'utils/RemoteMiningMonitor'
 
 function defineRoomGetter<T extends keyof Room>(
   property: T,
@@ -128,6 +129,11 @@ defineRoomGetter('duet', (self) => roomDuetHandler(self))
 
 const roomDepositPlanner = memoizeByRoom((r) => new DepositPlanner(r))
 defineRoomGetter('depositPlanner', (self) => roomDepositPlanner(self))
+
+const roomRemoteMiningMonitor = memoizeByRoom(
+  (r) => new RemoteMiningMonitor(r.visual),
+)
+defineRoomGetter('remoteMiningMonitor', (self) => roomRemoteMiningMonitor(self))
 
 Room.prototype.store = function (resource: ResourceConstant) {
   const storage = this.storage

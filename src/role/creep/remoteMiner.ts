@@ -35,7 +35,7 @@ export default ProfilerPlus.instance.overrideFn(function miner(
     creep.say(invaders.toString())
   } else if (roomName !== creep.room.name) {
     creep.moveToRoom(roomName)
-  } else if (!creep.pos.isNearTo(sourcePosition)) {
+  } else if (!creep.pos.isEqualTo(miningPosition)) {
     move.cheap(creep, miningPosition)
   } else {
     const source = sourcePosition.lookFor(LOOK_SOURCES)[0]

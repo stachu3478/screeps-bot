@@ -33,7 +33,7 @@ defineSpawnGetter('distanceToController', (self) => {
 StructureSpawn.prototype.getDirections = function () {
   const directions = ALL_DIRECTIONS.filter((d) => {
     const offset = this.pos.offset(d)
-    return offset?.building(STRUCTURE_ROAD)
+    return offset?.building(STRUCTURE_ROAD)?.pos.walkable
   })
   if (directions.length > 0) return directions
   return ALL_DIRECTIONS
@@ -64,7 +64,8 @@ StructureSpawn.prototype.trySpawnCreep = function (
     const motherMemory = Memory.rooms[memory.room]
     const cache = this.cache
     if (!motherMemory.creeps) motherMemory.creeps = {}
-    const result = this.spawnCreep(sanitizeBody(body), name, {
+    const sanitizedBody = sanitizeBody(body)
+    const result = this.spawnCreep(sanitizedBody, name, {
       memory,
       directions: this.getDirections() /*energyStructures: getDistanceOrderedHatches(this.room, creepCost(body))*/,
     })
@@ -75,7 +76,7 @@ StructureSpawn.prototype.trySpawnCreep = function (
       })
       delete cache.sourceId
       delete cache.trySpawn
-      spawnClassRoleBinding[memory.role]?.success(name)
+      spawnClassRoleBinding[memory.role]?.success(name, sanitizedBody)
     }
   }
   this.room.visual.info('Try to spawn ' + name, 0, 3)

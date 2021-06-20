@@ -27,6 +27,7 @@ interface Room {
   buildings: RoomBuildings
   duet: DuetHandler
   depositPlanner: DepositPlanner
+  remoteMiningMonitor: RemoteMiningMonitor
 
   addBuilding: (x: number, y: number, order?: number) => void
   removeBuilding: (x: number, y: number) => void

@@ -35,9 +35,11 @@ export default class SpawnCollector extends SpawnCreep {
     return !!this.missingRemoteLookup
   }
 
-  static success(name: string) {
+  static success(name: string, body: BodyPartConstant[]) {
     const memory = Memory.creeps[name] as CollectorMemory
+    const cost = _.sum(body, (type) => BODYPART_COST[type])
     MemoryHandler.sources[memory.collect].haulerCreeps.push(name)
+    Game.rooms[memory.room].remoteMiningMonitor.monit(-cost)
   }
 
   private get satisfiesEnergy() {

@@ -21,12 +21,16 @@ export default class RemoteMiningPlanner {
 
   static shouldMineIn(name: string, inspectorRoom: Room) {
     const roomPath = inspectorRoom.pathScanner.rooms[name]
-    if (!roomPath || !roomPath.safe) {
+    if (roomPath && !roomPath.safe) {
       return false
     }
     const room = Game.rooms[name]
     if (!room) {
       return true
+    }
+    const invaderCore = room.buildings.invaderCore
+    if (invaderCore) {
+      return false
     }
     const sources = room.find(FIND_SOURCES)
     const hostiles = room.find(FIND_HOSTILE_CREEPS)
@@ -51,11 +55,16 @@ export default class RemoteMiningPlanner {
     if (reservation.username !== player) {
       return false
     }
-
     return true
   }
 
   static removeSource(room: Room, lookup: Lookup<RoomPosition>) {
+    const memory = MemoryHandler.sources[lookup]
+    console.log(
+      'Bad remote spot removed',
+      memory.cost,
+      RoomPosition.from(lookup),
+    )
     const remoteMemory = room.memory.r || []
     delete MemoryHandler.sources[lookup]
     room.memory.r = remoteMemory.filter((l) => l !== lookup)
@@ -89,6 +98,7 @@ export default class RemoteMiningPlanner {
     if (cost > remoteMining.sources.maxCost) {
       return
     }
+    console.log('New remote spot found', cost, source.pos)
     const miningPosition = _.last(path.path).lookup
     const energyCapacity = this.getSourceCapacity(source)
     this.pathMatrix.addPath(path, this.entryPosition, source.pos)

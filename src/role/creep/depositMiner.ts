@@ -5,6 +5,7 @@ import ProfilerPlus from 'utils/ProfilerPlus'
 export default ProfilerPlus.instance.overrideFn(function depositMiner(
   creep: Creep,
 ) {
+  creep.notifyWhenAttacked(false)
   const planner = creep.motherRoom.depositPlanner
   const targetRoom = planner.room
   if (!targetRoom) {

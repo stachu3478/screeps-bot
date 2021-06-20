@@ -160,11 +160,7 @@ export default [
             RoomPosition.from(lookup as Lookup<RoomPosition>),
           ) || []
       const validPositions = positions.filter((p) => {
-        const r = Game.rooms[p.roomName]
-        if (!r) {
-          return true
-        }
-        return RemoteMiningPlanner.shouldMineIn(r, room)
+        return RemoteMiningPlanner.shouldMineIn(p.roomName, room)
       })
       room.memory.remoteRoads = validPositions.map((p) => p.lookup).join('')
       return validPositions

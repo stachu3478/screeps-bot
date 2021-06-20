@@ -58,4 +58,5 @@ RoomVisual.prototype.details = function (room, creepCount, creepCountByRole) {
     1,
     energyStyle,
   )
+  room.remoteMiningMonitor.show()
 }

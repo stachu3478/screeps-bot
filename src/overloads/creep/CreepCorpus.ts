@@ -46,6 +46,15 @@ export default class CreepCorpus extends Corpus<Creep> {
     return dealt + remaining
   }
 
+  get cost() {
+    return _.sum(this.bodyPartCount, (amount, type) => {
+      if (!type || !amount) {
+        return 0
+      }
+      return BODYPART_COST[type as BodyPartConstant] * amount
+    })
+  }
+
   get healPower() {
     if (!this.object) return 0
     return this.object.body.reduce((sum, p) => sum + this.partHealPower(p), 0)

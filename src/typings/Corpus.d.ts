@@ -6,6 +6,7 @@ declare class Corpus {
   damageDealt(baseAmount: number): number
   rangedMassAttackPowerAt(roomObject: RoomObject): number
   getActive(type: BodyPartConstant): number
+  cost: number
   armed: boolean
   safeDistance: number
   healPower: number

@@ -47,6 +47,10 @@ export default class Corpus<
     return baseAmount
   }
 
+  get cost() {
+    return 0
+  }
+
   get armed() {
     return this.hasActive(ATTACK) || this.hasActive(RANGED_ATTACK)
   }

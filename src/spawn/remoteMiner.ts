@@ -1,5 +1,6 @@
 import remoteMining from 'config/remoteMining'
 import MemoryHandler from 'handler/MemoryHandler'
+import _ from 'lodash'
 import RemoteMiningPlanner from 'planner/RemoteMiningPlanner'
 import { RemoteMiner, RemoteMinerMemory } from 'role/creep/remoteMiner'
 import { progressiveMiner } from './body/work'
@@ -36,9 +37,11 @@ export default class SpawnRemoteMiner extends SpawnCreep {
     return !!this.missingRemoteLookup
   }
 
-  static success(name: string) {
+  static success(name: string, body: BodyPartConstant[]) {
     const memory = Memory.creeps[name] as RemoteMinerMemory
+    const cost = _.sum(body, (type) => BODYPART_COST[type])
     MemoryHandler.sources[memory.mine].miningCreep = name
+    Game.rooms[memory.room].remoteMiningMonitor.monit(-cost)
   }
 
   private get satisfiesEnergy() {

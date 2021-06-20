@@ -1,6 +1,13 @@
 import ClaimPlanner from 'planner/military/ClaimPlanner'
 import { progressiveClaimer } from './body/body'
-import { needsClaim } from './scout'
+
+const claimerThreshold = BODYPART_COST[CLAIM] + BODYPART_COST[MOVE]
+function needsClaim(spawn: StructureSpawn) {
+  if (spawn.room.memory._attack) return false
+  if (spawn.room.energyCapacityAvailable < claimerThreshold) return false
+  const target = ClaimPlanner.instance.target
+  return target && target.source === spawn.room.name
+}
 
 export function needsClaimer(spawn: StructureSpawn, count: number) {
   return needsClaim(spawn) && !count

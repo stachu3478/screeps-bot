@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import tower from '../role/tower'
-import spawnLoop from 'spawn/core'
+import spawnLoop, { spawnClassRoleBinding } from 'spawn/core'
 import callRescue from 'planner/base/rescue'
 import usage from './usage'
 import handleLog from './log'
@@ -15,21 +15,37 @@ import move from 'utils/path'
 import ProfilerPlus from 'utils/ProfilerPlus'
 import RoomStructuresPlanner from 'planner/base/RoomStructuresPlanner'
 
-function probabilisticallyMoveCreepsOutOfSpawnsIfBlocked(
-  spawns: StructureSpawn[],
+function probabilisticallyMoveCreepsOutOfSpawn(
+  pos: RoomPosition,
+  spawning: Spawning,
 ) {
+  if (Math.random() < 0.5) {
+    return true
+  }
+  return spawning.directions.some((d) => {
+    return pos
+      .offset(d)
+      ?.lookFor(LOOK_CREEPS)
+      .some((c) => c.my && move.anywhere(c, d))
+  })
+}
+
+function preventSpawnBlocking(s: StructureSpawn, spawning: Spawning) {
+  if (spawning.remainingTime) return
+  if (spawning.directions.some((d) => s.pos.offset(d)?.walkable)) return
+  if (!probabilisticallyMoveCreepsOutOfSpawn(s.pos, spawning)) {
+    spawning.cancel()
+    console.log('Spawning creep at ' + s.pos + ' cancelled')
+  }
+}
+
+function maintainSpawns(spawns: StructureSpawn[]) {
   spawns.forEach((s) => {
     const spawning = s.spawning
-    if (Math.random() < 0.5) return
     if (!spawning) return
-    if (spawning.remainingTime) return
-    if (spawning.directions.some((d) => s.pos.offset(d)?.walkable)) return
-    spawning.directions.find((d) => {
-      return s.pos
-        .offset(d)
-        ?.lookFor(LOOK_CREEPS)
-        .some((c) => c.my && move.anywhere(c, d))
-    })
+    const creep = Game.creeps[spawning.name]
+    spawnClassRoleBinding[creep.memory.role]?.spawning(s)
+    preventSpawnBlocking(s, spawning)
   })
 }
 
@@ -79,13 +95,13 @@ export default ProfilerPlus.instance.overrideFn(function run(
     mem.creeps,
     room,
     enemy,
-    !shouldAttack,
+    needFighters,
   )
 
   handleLog(cache, controller)
 
   const spawns = room.find(FIND_MY_SPAWNS)
-  probabilisticallyMoveCreepsOutOfSpawnsIfBlocked(spawns)
+  maintainSpawns(spawns)
   if (!spawns.length) {
     if (count === 0 && !creepCountByRole[Role.RETIRED]) callRescue(room)
     const sites = room.find(FIND_CONSTRUCTION_SITES)

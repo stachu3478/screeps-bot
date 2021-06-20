@@ -3,6 +3,7 @@ import ProfilerPlus from 'utils/ProfilerPlus'
 import MemoryHandler from 'handler/MemoryHandler'
 import move from 'utils/path'
 import _ from 'lodash'
+import recycle from 'routine/recycle'
 
 export interface Collector extends Creep {
   memory: CollectorMemory
@@ -13,14 +14,24 @@ export interface CollectorMemory extends CreepMemory {
   put?: Id<AnyStoreStructure>
 }
 
+function canReturnBack(creep: Creep, from: SourceMemory) {
+  return (creep.ticksToLive || 0) - creep.memory.deprivity / 2 > from.cost
+}
+
 export default ProfilerPlus.instance.overrideFn(function collector(
   creep: Collector,
 ) {
   const lookup = creep.memory.collect
   const sourcePosition = RoomPosition.from(lookup)
   const collectTarget = MemoryHandler.sources[lookup]
+  if (!collectTarget) {
+    recycle(creep)
+    return
+  }
   const roomName = sourcePosition.roomName
-  const invaders = Game.rooms[roomName]?.findHostileCreeps().length
+  const invaders = Game.rooms[roomName]?.findHostileCreeps(
+    (c) => c.corpus.armed,
+  ).length
   const miningPosition = RoomPosition.from(collectTarget.miningPosition)
   if (invaders || !collectTarget) {
     creep.moveToRoom(creep.memory.room)
@@ -29,31 +40,36 @@ export default ProfilerPlus.instance.overrideFn(function collector(
   }
   switch (creep.memory.state) {
     case State.ARRIVE:
+      const isNear = creep.pos.isNearTo(miningPosition)
+      const canHold = creep.store.getFreeCapacity(RESOURCE_ENERGY)
       if (roomName !== creep.room.name) {
         creep.moveToRoom(roomName)
-      } else if (!creep.pos.isNearTo(miningPosition)) {
+      } else if (!isNear) {
         move.cheap(creep, miningPosition, true, 1, 1)
-      } else if (
-        !creep.store.getFreeCapacity(RESOURCE_ENERGY) ||
-        creep.isRetired
-      ) {
-        creep.memory.state = State.ARRIVE_BACK
       } else {
-        const resource = _.find(miningPosition.lookFor(LOOK_RESOURCES))
-        if (resource && resource.amount > 50) {
-          creep.pickup(resource)
-          return
-        }
-        const container = miningPosition.building(STRUCTURE_CONTAINER)
-        if (container) {
-          creep.withdraw(container, RESOURCE_ENERGY)
-          return
+        if (!canReturnBack(creep, collectTarget)) {
+          creep.moveTo(miningPosition)
+          creep.suicide()
+        } else if (canHold) {
+          const resource = _.find(miningPosition.lookFor(LOOK_RESOURCES))
+          if (resource && resource.amount > 50) {
+            creep.pickup(resource)
+            return
+          }
+          const container = miningPosition.building(STRUCTURE_CONTAINER)
+          if (container) {
+            creep.withdraw(container, RESOURCE_ENERGY)
+            return
+          }
+        } else {
+          creep.memory.state = State.ARRIVE_BACK
         }
       }
       break
     case State.ARRIVE_BACK:
       if (!creep.store[RESOURCE_ENERGY]) {
         creep.memory.state = State.ARRIVE
+        return
       }
       const structureToPutIn = creep.memory.put
         ? Game.getObjectById(creep.memory.put)
@@ -68,7 +84,14 @@ export default ProfilerPlus.instance.overrideFn(function collector(
         move.cheap(creep, structureToPutIn, true, 1, 1)
         autoRepair(creep)
       } else if (structureToPutIn) {
-        creep.transfer(structureToPutIn, RESOURCE_ENERGY)
+        const result = creep.transfer(structureToPutIn, RESOURCE_ENERGY)
+        if (result === 0) {
+          const transferred = Math.min(
+            structureToPutIn.store.getFreeCapacity(RESOURCE_ENERGY),
+            creep.store[RESOURCE_ENERGY],
+          )
+          creep.motherRoom.remoteMiningMonitor.monit(transferred)
+        }
       }
       break
     default:

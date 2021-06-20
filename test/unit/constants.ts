@@ -38,6 +38,7 @@ Object.assign(global, {
   StructureTower: class extends OwnedStructure {},
   StructureNuker: class extends OwnedStructure {},
   StructureLink: class extends OwnedStructure {},
+  StructureRoad: class extends Structure {},
   Tombstone: class {},
   Ruin: class {},
   PathFinder: {

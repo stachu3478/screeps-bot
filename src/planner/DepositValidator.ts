@@ -8,6 +8,9 @@ export default class DepositValidator {
   private depositCosts: { [key: string]: number | undefined } = {}
 
   validate(traits: DepositTraits, pathRoom: RoomNeighbourPath) {
+    if (!pathRoom.safe) {
+      return false
+    }
     const cost = this.getDepositDistance(traits, pathRoom)
     const resourceMiningCalc = new ResourceMiningCalculator(
       cost,
