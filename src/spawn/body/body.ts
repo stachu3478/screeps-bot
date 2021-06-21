@@ -75,12 +75,14 @@ export function progressiveFighter(energy: number) {
   return parts
 }
 
-export function progressiveCommander(energy: number, level: number = 1) {
+export const tankPack =
+  BODYPART_COST[TOUGH] + BODYPART_COST[ATTACK] + 2 * BODYPART_COST[MOVE]
+export function progressiveCommander(energy: number, lvl: number = 1) {
   // calc basic level cost
   const parts: BodyPartConstant[] = []
-  const levelCost =
-    level *
-    (BODYPART_COST[TOUGH] + BODYPART_COST[ATTACK] + 2 * BODYPART_COST[MOVE])
+  const level = Math.min(lvl, Math.floor(MAX_CREEP_SIZE / 4))
+  const levelCost = level * tankPack
+
   let attackParts = level
   let toughParts = level
 

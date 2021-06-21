@@ -2,7 +2,6 @@ import _ from 'lodash'
 import SpawnCreep from './spawnCreep'
 
 export default class SpawnDefender extends SpawnCreep {
-  public role = Role.DEFENDER
   protected maxCount = 1
   private fulfillBody?: RangerBodyPartConstant[]
 
@@ -37,5 +36,9 @@ export default class SpawnDefender extends SpawnCreep {
       this.fulfillBody = this.room.outpostDefense.fulfillBody() || []
     }
     return this.fulfillBody
+  }
+
+  get role() {
+    return Role.DEFENDER
   }
 }

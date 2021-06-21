@@ -160,6 +160,10 @@ interface RoomMemory {
   boosts?: BoostData
   r?: Lookup<RoomPosition>[] // remotes
   /**
+   * Reserver creep name
+   */
+  R?: string
+  /**
    * During that many ticks defence units
    * will hold fire when they have positive
    * breach calculated

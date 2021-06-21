@@ -62,6 +62,7 @@ export function findTargetStructure(
         s.structureType !== STRUCTURE_RAMPART &&
         s.structureType !== STRUCTURE_WALL &&
         s.structureType !== STRUCTURE_ROAD &&
+        s.structureType !== STRUCTURE_CONTAINER &&
         filter(s),
       range: minRange,
       maxRooms: 1,

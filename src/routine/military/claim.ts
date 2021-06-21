@@ -7,18 +7,14 @@ import {
   DONE,
 } from 'constants/response'
 import MyRooms from 'room/MyRooms'
-import player from 'constants/player'
 
 export default function claim(creep: Creep) {
   const target = creep.room.controller
   if (!target || target.my) return NOTHING_TODO
   let result
-  if (
-    (target.reservation && target.reservation.username !== player) ||
-    (target.level && !target.my)
-  )
+  if (target.attackable) {
     result = creep.attackController(target)
-  else if (creep.pos.isNearTo(target)) {
+  } else if (creep.pos.isNearTo(target)) {
     result = creep.claimController(target)
     if (result === 0) {
       creep.signController(target, 'Auto-claiming. Redefined')

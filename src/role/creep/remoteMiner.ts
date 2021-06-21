@@ -6,6 +6,7 @@ import MemoryHandler from 'handler/MemoryHandler'
 import move from 'utils/path'
 import maintainContainer from 'routine/work/maintainContainer'
 import recycle from 'routine/recycle'
+import { tankPack } from 'spawn/body/body'
 
 export interface RemoteMiner extends Creep {
   memory: RemoteMinerMemory
@@ -29,8 +30,22 @@ export default ProfilerPlus.instance.overrideFn(function miner(
   const miningRoom = Game.rooms[roomName]
   const invaders = miningRoom?.findHostileCreeps((c) => c.corpus.armed).length
   const miningPosition = RoomPosition.from(miningTarget.miningPosition)
+  const motherRoom = creep.motherRoom
   if (invaders) {
-    creep.motherRoom.outpostDefense.request(miningRoom)
+    motherRoom.outpostDefense.request(miningRoom)
+  }
+  if (
+    miningRoom?.buildings.invaderCore &&
+    (!motherRoom.memory._attack ||
+      motherRoom.memory._attack === miningRoom.name)
+  ) {
+    motherRoom.memory._attack = miningRoom.name
+    motherRoom.memory._attackLevel = Math.floor(
+      (motherRoom.energyCapacityAvailable -
+        BODYPART_COST[HEAL] -
+        BODYPART_COST[MOVE]) /
+        tankPack,
+    )
   }
   if (roomName !== creep.room.name) {
     creep.moveToRoom(roomName)

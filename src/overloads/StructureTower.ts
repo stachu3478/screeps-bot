@@ -1,3 +1,5 @@
+import { INVADER_USERNAME } from 'constants/support'
+
 const TOWER_FALLOFF_DAMAGE = (1 - TOWER_FALLOFF) * TOWER_POWER_ATTACK
 const optimalDamageBonus = TOWER_POWER_ATTACK - TOWER_FALLOFF_DAMAGE
 const towerFalloffAreaRange = TOWER_FALLOFF_RANGE - TOWER_OPTIMAL_RANGE
@@ -14,7 +16,7 @@ StructureTower.prototype.attackPowerAt = function (
 }
 
 StructureTower.prototype.isActive = function () {
-  if (this.owner.username === 'Invader') {
+  if (this.owner.username === INVADER_USERNAME) {
     return !!this.room.buildings.invaderCore
   }
   return Structure.prototype.isActive.apply(this)

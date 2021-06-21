@@ -7,7 +7,6 @@ import { progressiveMiner } from './body/work'
 import SpawnCreep from './spawnCreep'
 
 export default class SpawnRemoteMiner extends SpawnCreep {
-  public role = Role.REMOTE_MINER
   private missingRemoteLookup?: Lookup<RoomPosition>
   protected minEnergy = 1300
   protected allowWhenEnergyFull = true
@@ -77,5 +76,9 @@ export default class SpawnRemoteMiner extends SpawnCreep {
     }
     const targetMatches = creep.memory.mine === target
     return targetMatches
+  }
+
+  get role() {
+    return Role.REMOTE_MINER
   }
 }

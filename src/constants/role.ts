@@ -25,4 +25,5 @@ const enum Role {
   REMOTE_MINER = 26,
   COLLECTOR = 27,
   DEFENDER = 28,
+  RESERVER = 29,
 }

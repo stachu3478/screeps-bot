@@ -2,6 +2,7 @@ import '../constants'
 import {
   progressiveClaimer,
   progressiveCommander,
+  tankPack,
 } from '../../../src/spawn/body/body'
 import {
   progressiveWorker,
@@ -11,6 +12,7 @@ import {
 import { Memory } from '../mock'
 import Game from '../mock/Game'
 import { assert, expect } from '../../expect'
+import _ from 'lodash'
 
 describe('spawn/body', () => {
   beforeEach(() => {

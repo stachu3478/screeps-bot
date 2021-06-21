@@ -1,5 +1,4 @@
 export default abstract class SpawnCreep {
-  public role: Role = Role.HARVESTER
   protected spawn: StructureSpawn
   protected count: number
   protected maxCount = Infinity
@@ -41,5 +40,9 @@ export default abstract class SpawnCreep {
 
   protected get room() {
     return this.spawn.room
+  }
+
+  get role(): Role {
+    return Role.HARVESTER
   }
 }

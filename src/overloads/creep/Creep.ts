@@ -157,7 +157,7 @@ Creep.prototype.autoHeal = function () {
     this.heal(nearCreepToHeal)
     return
   }
-  const creepToHeal = _.min(nearCreeps, (c) => c.hits - c.hitsMax)
+  const creepToHeal = _.min(creeps, (c) => c.hits - c.hitsMax)
   if (!creepToHeal.corpus.healthy) {
     this.heal(creepToHeal)
     return

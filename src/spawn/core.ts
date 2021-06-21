@@ -22,12 +22,14 @@ import SpawnRemoteMiner from './remoteMiner'
 import SpawnCollector from './collector'
 import _ from 'lodash'
 import SpawnDefender from './defender'
+import SpawnReserver from './reserver'
 
 const spawningClasses = [
   SpawnScout,
   SpawnDefender,
   SpawnRemoteMiner,
   SpawnCollector,
+  SpawnReserver,
 ]
 export const spawnClassRoleBinding: typeof SpawnCreep[] = []
 spawningClasses.forEach((klass) => {

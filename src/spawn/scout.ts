@@ -1,8 +1,6 @@
 import SpawnCreep from './spawnCreep'
 
 export default class SpawnScout extends SpawnCreep {
-  public role = Role.SCOUT
-
   static spawning(spawn: StructureSpawn) {
     spawn.room.cache.scoutsWorking++
   }
@@ -23,5 +21,9 @@ export default class SpawnScout extends SpawnCreep {
       room: spawn.room.name,
       deprivity: 0,
     })
+  }
+
+  get role() {
+    return Role.SCOUT
   }
 }

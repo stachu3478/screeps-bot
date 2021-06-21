@@ -77,12 +77,9 @@ export default function rangedAttack(creep: AttackCreep) {
   if (!target) return NOTHING_TODO
   const hostiles = findTargetCreeps(creep, (creep) => creep.corpus.armed)
 
-  const isDanger = (target as Creep).corpus.armed
+  const isDanger = (target as Creep).corpus?.armed
   const distances = hostiles.map((hostile) => creep.pos.rangeTo(hostile))
   const leastDistanceFromHostile = Math.min(...distances, Infinity)
-  if (!creep.corpus.healthy) {
-    creep.heal(creep)
-  }
   if (leastDistanceFromHostile < 4) {
     const direction = pickBestDirectionFrom(creep, hostiles, (distance) =>
       Math.abs(Math.floor(distance / 2)),

@@ -1,5 +1,6 @@
 import remoteMining from 'config/remoteMining'
 import player from 'constants/player'
+import { INVADER_USERNAME } from 'constants/support'
 import MemoryHandler from 'handler/MemoryHandler'
 import _ from 'lodash'
 import { getCarryNeeded } from './opts'
@@ -28,10 +29,6 @@ export default class RemoteMiningPlanner {
     if (!room) {
       return true
     }
-    const invaderCore = room.buildings.invaderCore
-    if (invaderCore) {
-      return false
-    }
     const sources = room.find(FIND_SOURCES)
     const hostiles = room.find(FIND_HOSTILE_CREEPS)
     if (
@@ -52,7 +49,10 @@ export default class RemoteMiningPlanner {
     if (!reservation) {
       return true
     }
-    if (reservation.username !== player) {
+    if (
+      reservation.username !== player &&
+      reservation.username !== INVADER_USERNAME
+    ) {
       return false
     }
     return true

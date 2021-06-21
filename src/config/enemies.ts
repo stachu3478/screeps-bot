@@ -1,4 +1,4 @@
-import { SOURCE_KEEPER_USERNAME } from 'constants/support'
+import { INVADER_USERNAME, SOURCE_KEEPER_USERNAME } from 'constants/support'
 import { EnemiesConfig } from 'planner/military/EnemiesPlanner'
 
 const config: EnemiesConfig = {
@@ -13,7 +13,7 @@ const config: EnemiesConfig = {
   /**
    * Choose players that have to be purged out
    */
-  players: ['Invader', SOURCE_KEEPER_USERNAME, 'Christianyo'],
+  players: [INVADER_USERNAME, SOURCE_KEEPER_USERNAME, 'Christianyo'],
   /**
    * Choose players that wont be attacked
    * (specify tolerance as max harmful bodypart count)

@@ -25,17 +25,12 @@ export default function run(creep: Scout) {
     case State.SCOUT:
       creep.memory._arrive = creep.motherRoom.pathScanner.scanTarget
       creep.motherRoom.cache.scoutsWorking++
-      const hostiles = new RoomEnemies(creep.room).find()
-      const hostileNotSafe = hostiles.find((h) => !creep.isSafeFrom(h))
-      if (hostileNotSafe && !creep.pos.isNearTo(hostileNotSafe))
-        move.anywhere(creep, hostileNotSafe.pos.getDirectionTo(creep))
-      else
-        switch (arrive(creep)) {
-          case NOTHING_TODO:
-          case DONE:
-            creep.memory.state = State.IDLE
-            break
-        }
+      switch (arrive(creep)) {
+        case NOTHING_TODO:
+        case DONE:
+          creep.memory.state = State.IDLE
+          break
+      }
       break
     case State.IDLE:
       const target = creep.motherRoom.pathScanner.scanTarget

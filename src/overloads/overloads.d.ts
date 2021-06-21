@@ -196,3 +196,7 @@ interface ConstructionSite {
 interface StructureRoad {
   vaporTime: number
 }
+
+interface StructureController {
+  attackable: boolean
+}

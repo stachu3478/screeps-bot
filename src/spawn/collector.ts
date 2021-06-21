@@ -6,7 +6,6 @@ import { progressiveLiteWorker } from './body/work'
 import SpawnCreep from './spawnCreep'
 
 export default class SpawnCollector extends SpawnCreep {
-  public role = Role.COLLECTOR
   private missingRemoteLookup?: Lookup<RoomPosition>
   private missingCarry = 0
   protected minEnergy = 2500
@@ -91,5 +90,9 @@ export default class SpawnCollector extends SpawnCreep {
       return 0
     }
     return creep.corpus.count(CARRY)
+  }
+
+  get role() {
+    return Role.COLLECTOR
   }
 }
