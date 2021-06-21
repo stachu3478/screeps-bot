@@ -178,6 +178,10 @@ interface RoomMemory {
    */
   u?: [string, string]
   p?: RoomNeighbourPath[]
+  /**
+   * Outpost defense information - room, enemy rangedAttack and heal bodyparts
+   */
+  f?: [string, number, number]
 }
 
 interface StableRoomMemory extends RoomMemory {

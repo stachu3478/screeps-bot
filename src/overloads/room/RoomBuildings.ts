@@ -79,7 +79,7 @@ export default class RoomBuildings {
   }
 
   get invaderCore() {
-    const stack = this.fetched[STRUCTURE_INVADER_CORE]
+    const stack = this.fetched[STRUCTURE_INVADER_CORE] // does not work idk
     return stack && (stack[0] as StructureInvaderCore)
   }
 
@@ -96,12 +96,11 @@ export default class RoomBuildings {
   private get fetched() {
     if (this.fetchTime === Game.time) return this.structures
     this.fetchTime = Game.time
-    this.structures = _.mapValues(CONTROLLER_STRUCTURES, (_) => [])
+    this.structures = {}
     const structures = this.room.find(FIND_STRUCTURES)
     structures.forEach((s) => {
       const type = s.structureType
-      const stack = this.structures[type]
-      if (!stack) return
+      const stack = this.structures[type] || (this.structures[type] = [])
       stack.push(s)
     })
     return this.structures

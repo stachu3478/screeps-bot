@@ -9,6 +9,8 @@ import SpawnCreep from './spawnCreep'
 export default class SpawnRemoteMiner extends SpawnCreep {
   public role = Role.REMOTE_MINER
   private missingRemoteLookup?: Lookup<RoomPosition>
+  protected minEnergy = 1300
+  protected allowWhenEnergyFull = true
 
   run() {
     if (!this.missingRemoteLookup) {
@@ -31,7 +33,7 @@ export default class SpawnRemoteMiner extends SpawnCreep {
   }
 
   needs() {
-    if (this.satisfiesEnergy) {
+    if (super.needs()) {
       this.missingRemoteLookup = this.findMissingRemoteMiner()
     }
     return !!this.missingRemoteLookup
@@ -42,14 +44,6 @@ export default class SpawnRemoteMiner extends SpawnCreep {
     const cost = _.sum(body, (type) => BODYPART_COST[type])
     MemoryHandler.sources[memory.mine].miningCreep = name
     Game.rooms[memory.room].remoteMiningMonitor.monit(-cost)
-  }
-
-  private get satisfiesEnergy() {
-    return (
-      this.spawn.room.energyAvailable >= 1300 ||
-      this.spawn.room.energyAvailable ===
-        this.spawn.room.energyCapacityAvailable
-    )
   }
 
   private findMissingRemoteMiner() {

@@ -14,11 +14,11 @@ export function carryPacks(count: number) {
   return hybridPack(CARRY, MOVE, count)
 }
 
-export function ranger() {
-  return new Array(17)
+export function ranger(rangedAttack = 17, heal = 8): RangerBodyPartConstant[] {
+  return new Array(rangedAttack)
     .fill(RANGED_ATTACK)
-    .concat(new Array(25).fill(MOVE))
-    .concat(new Array(8).fill(HEAL))
+    .concat(new Array(rangedAttack + heal).fill(MOVE))
+    .concat(new Array(heal).fill(HEAL))
 }
 
 export function progressiveClaimer(

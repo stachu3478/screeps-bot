@@ -2,6 +2,26 @@ import _ from 'lodash'
 import config from 'config/claim'
 import MyRooms from 'room/MyRooms'
 
+interface ClaimConfig {
+  minCost: number
+  maxCost: number
+  minSources: number
+  maxRooms: number
+  shards: {
+    [key: string]:
+      | {
+          minCost: number
+          maxRooms: number
+        }
+      | undefined
+  }
+}
+
+interface ClaimTarget {
+  source: string
+  target: string
+}
+
 const instance = _.memoize(() => new ClaimPlanner(config))
 export default class ClaimPlanner {
   private config: ClaimConfig

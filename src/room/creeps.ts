@@ -22,6 +22,7 @@ import depositMiner from 'role/creep/depositMiner'
 import ProfilerPlus from 'utils/ProfilerPlus'
 import remoteMiner, { RemoteMiner } from 'role/creep/remoteMiner'
 import collector, { Collector } from 'role/creep/collector'
+import defender, { Defender } from 'role/creep/military/defender'
 
 interface Creeps {
   [key: string]: 0
@@ -124,6 +125,9 @@ export default ProfilerPlus.instance.overrideFn(function creeps(
           break
         case Role.DEPOSIT_MINER:
           depositMiner(creep)
+          break
+        case Role.DEFENDER:
+          defender(creep as Defender)
           break
         case Role.TOWER_EKHAUSTER:
         case Role.DESTROYER:

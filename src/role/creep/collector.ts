@@ -48,7 +48,7 @@ export default ProfilerPlus.instance.overrideFn(function collector(
         move.cheap(creep, miningPosition, true, 1, 1)
       } else {
         if (!canReturnBack(creep, collectTarget)) {
-          creep.moveTo(miningPosition)
+          move.cheap(creep, miningPosition, false)
           creep.suicide()
         } else if (canHold) {
           const resource = _.find(miningPosition.lookFor(LOOK_RESOURCES))

@@ -26,14 +26,13 @@ export default ProfilerPlus.instance.overrideFn(function miner(
     return
   }
   const roomName = sourcePosition.roomName
-  const invaders = Game.rooms[roomName]?.findHostileCreeps(
-    (c) => c.corpus.armed,
-  ).length
+  const miningRoom = Game.rooms[roomName]
+  const invaders = miningRoom?.findHostileCreeps((c) => c.corpus.armed).length
   const miningPosition = RoomPosition.from(miningTarget.miningPosition)
-  if (invaders || !miningTarget) {
-    creep.moveToRoom(creep.memory.room)
-    creep.say(invaders.toString())
-  } else if (roomName !== creep.room.name) {
+  if (invaders) {
+    creep.motherRoom.outpostDefense.request(miningRoom)
+  }
+  if (roomName !== creep.room.name) {
     creep.moveToRoom(roomName)
   } else if (!creep.pos.isEqualTo(miningPosition)) {
     move.cheap(creep, miningPosition)

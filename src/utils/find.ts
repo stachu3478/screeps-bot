@@ -1,5 +1,5 @@
 import energyDistribution from 'config/energyDistribution'
-import { CREEP_RANGE } from 'constants/support'
+import { CREEP_RANGE, SOURCE_KEEPER_USERNAME } from 'constants/support'
 import _ from 'lodash'
 import { Fighter } from 'role/creep/military/fighter'
 
@@ -15,7 +15,7 @@ export const findContainers = (room: Room) => {
 }
 
 const sourceKeepersFilter = {
-  filter: (c: Creep) => c.owner.username === 'Source Keeper',
+  filter: (c: Creep) => c.owner.username === SOURCE_KEEPER_USERNAME,
 }
 export const findSourceKeepers = (room: Room) =>
   room.find(FIND_HOSTILE_CREEPS, sourceKeepersFilter)

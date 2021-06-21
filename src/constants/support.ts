@@ -29,3 +29,4 @@ export const ALL_EXIT_CONSTANTS: FindExitConstant[] = [
   FIND_EXIT_LEFT,
   FIND_EXIT_BOTTOM,
 ]
+export const SOURCE_KEEPER_USERNAME = 'Source keeper'

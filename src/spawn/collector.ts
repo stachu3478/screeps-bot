@@ -9,6 +9,8 @@ export default class SpawnCollector extends SpawnCreep {
   public role = Role.COLLECTOR
   private missingRemoteLookup?: Lookup<RoomPosition>
   private missingCarry = 0
+  protected minEnergy = 2500
+  protected allowWhenEnergyFull = true
 
   run() {
     if (!this.missingRemoteLookup) {
@@ -29,7 +31,7 @@ export default class SpawnCollector extends SpawnCreep {
   }
 
   needs() {
-    if (this.satisfiesEnergy) {
+    if (super.needs()) {
       this.missingRemoteLookup = this.findMissingCollector()
     }
     return !!this.missingRemoteLookup
@@ -40,14 +42,6 @@ export default class SpawnCollector extends SpawnCreep {
     const cost = _.sum(body, (type) => BODYPART_COST[type])
     MemoryHandler.sources[memory.collect].haulerCreeps.push(name)
     Game.rooms[memory.room].remoteMiningMonitor.monit(-cost)
-  }
-
-  private get satisfiesEnergy() {
-    return (
-      this.spawn.room.energyAvailable >= 2500 ||
-      this.spawn.room.energyAvailable ===
-        this.spawn.room.energyCapacityAvailable
-    )
   }
 
   private findMissingCollector() {

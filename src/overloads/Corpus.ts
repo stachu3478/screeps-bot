@@ -1,4 +1,8 @@
-import { CREEP_RANGE, RANGED_MASS_ATTACK_POWER } from 'constants/support'
+import {
+  CREEP_RANGE,
+  RANGED_MASS_ATTACK_POWER,
+  SOURCE_KEEPER_USERNAME,
+} from 'constants/support'
 import Memoized from 'utils/Memoized'
 
 export default class Corpus<
@@ -56,8 +60,15 @@ export default class Corpus<
   }
 
   get safeDistance() {
-    if (this.hasActive(RANGED_ATTACK)) return 2 + CREEP_RANGE
-    else if (this.hasActive(ATTACK)) return 3
+    if (this.object?.owner.username === SOURCE_KEEPER_USERNAME) {
+      return 4
+    }
+    if (this.hasActive(RANGED_ATTACK)) {
+      return 2 + CREEP_RANGE
+    }
+    if (this.hasActive(ATTACK)) {
+      return 3
+    }
     return 1
   }
 

@@ -18,7 +18,6 @@ interface RangerMemory extends CreepMemory {
 
 interface RangerCache extends CreepCache {
   attack?: Id<Creep | Structure>
-  rangedAttackHitsThreshold?: number
 }
 
 function tryArriveToAttackDestination(creep: Ranger) {
