@@ -125,7 +125,6 @@ interface RoomMemory {
    * Colony source index from room.find sources
    */
   c?: number
-  remoteRoads?: string
   links?: string
   controllerLink?: string
   maxWorkController?: number

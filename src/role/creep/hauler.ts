@@ -8,7 +8,6 @@ import fill from 'routine/haul/fill'
 import draw from 'routine/haul/draw'
 import dumpResources from 'job/dumpResources'
 import collectGarbage from 'utils/collectGarbage'
-import { followJournal } from 'routine/arrive/journal'
 import ProfilerPlus from 'utils/ProfilerPlus'
 
 export default ProfilerPlus.instance.overrideFn(function hauler(creep: Hauler) {
@@ -50,7 +49,7 @@ export default ProfilerPlus.instance.overrideFn(function hauler(creep: Hauler) {
       }
       break
     case State.ARRIVE:
-      switch (arrive(creep, true, true)) {
+      switch (arrive(creep, true)) {
         case NOTHING_TODO:
         case DONE:
           resourceHaul(creep)
@@ -58,8 +57,10 @@ export default ProfilerPlus.instance.overrideFn(function hauler(creep: Hauler) {
       }
       break
     case State.ARRIVE_BACK:
-      if (!followJournal(creep)) {
+      if (creep.motherRoom.name === creep.room.name) {
         dumpResources(creep, State.STORAGE_FILL)
+      } else {
+        creep.moveToRoom(creep.memory.room)
       }
       break
     default:

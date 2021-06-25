@@ -44,7 +44,7 @@ export default class SpawnReserver extends SpawnCreep {
       const position = RoomPosition.from(lookup)
       const miningRoomMemory = Memory.rooms[position.roomName]
       return this.isValidReservationState(
-        miningRoomMemory.R || '',
+        miningRoomMemory?.R || '',
         position.roomName,
       )
     })

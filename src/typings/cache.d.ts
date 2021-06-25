@@ -3,7 +3,6 @@ interface RoomCache {
   repaired?: 0 | 1
   averageUsage?: number
   roadBuilt?: number
-  remoteRoadBuilt?: number
   healthy?: 0 | 1
   leastAvailablePosition?: string
   scoutsWorking: number
