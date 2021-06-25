@@ -1,6 +1,6 @@
 import { posToChar } from '../pos'
 import charPosIterator from 'utils/charPosIterator'
-import { createUnwalkableMatrix } from 'utils/path'
+import { createUnwalkableMatrix } from 'utils/path/path'
 
 export default class ShieldPlanner {
   private positions: RoomPosition[]

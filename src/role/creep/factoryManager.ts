@@ -29,7 +29,7 @@ export default ProfilerPlus.instance.overrideFn(function factoryManager(
       }
       if (creep.store.getUsedCapacity() === 0) {
         creep.memory.role = Role.HARVESTER
-        creep.memory._targetRole = Role.HAULER
+        creep.memory.newRole = Role.HAULER
         const motherRoom = creep.motherRoom
         motherRoom.memory._haul = motherRoom.name
         break

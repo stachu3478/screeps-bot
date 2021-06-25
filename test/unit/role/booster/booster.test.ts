@@ -22,7 +22,7 @@ describe('Creep boost role', () => {
     Game.getObjectById = () => lab1
 
     creep = {
-      memory: { role: Role.BOOSTER, _targetRole: Role.MINER },
+      memory: { role: Role.BOOSTER, newRole: Role.MINER },
     } as BoosterCreep
     creep.room = {} as Room
     creep.room.boosts = {} as BoostManager
@@ -59,7 +59,7 @@ describe('Creep boost role', () => {
         roleBooster.run(creep)
         expect(creep.memory.state).to.be.undefined
         expect(creep.memory.role).to.eql(Role.MINER)
-        expect(creep.memory._targetRole).to.be.undefined
+        expect(creep.memory.newRole).to.be.undefined
         expect(creep.memory._boostLab).to.be.undefined
         expect(creep.room.boosts.getRequest).to.be.called
       })

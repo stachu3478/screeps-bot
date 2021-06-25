@@ -1,7 +1,7 @@
 import { ALL_DIRECTIONS } from 'constants/support'
 import utf15 from 'screeps-utf15'
 import defineGetter from 'utils/defineGetter'
-import { isWalkable, offsetsByDirection } from 'utils/path'
+import { isWalkable, offsetsByDirection } from 'utils/path/path'
 import ProfilerPlus from 'utils/ProfilerPlus'
 import RoomLocation from './room/RoomLocation'
 

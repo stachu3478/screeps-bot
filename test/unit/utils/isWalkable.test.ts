@@ -1,5 +1,5 @@
 import { expect } from '../../expect'
-import { isWalkable } from 'utils/path'
+import { isWalkable } from 'utils/path/path'
 
 describe('utils/path.isWalkable', () => {
   let room: Room

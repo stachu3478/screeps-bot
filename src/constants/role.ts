@@ -27,3 +27,13 @@ const enum Role {
   DEFENDER = 28,
   RESERVER = 29,
 }
+interface RoleCreepMemory<T> extends CreepMemory {
+  role: T & Role
+  mine: T extends Role.REMOTE_MINER ? Lookup<RoomPosition> : undefined
+  collect: T extends Role.COLLECTOR ? Lookup<RoomPosition> : undefined
+  newRole: T extends Role.COLONIZER | Role.BOOSTER ? Role : undefined
+  reserve: T extends Role.RESERVER ? string : undefined
+}
+interface RoleCreep<T> extends Creep {
+  memory: RoleCreepMemory<T>
+}

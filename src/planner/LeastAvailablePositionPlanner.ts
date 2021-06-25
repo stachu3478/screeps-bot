@@ -1,4 +1,4 @@
-import { isWalkable } from 'utils/path'
+import { isWalkable } from 'utils/path/path'
 import whirl from 'utils/whirl'
 
 export default class LeastAvailablePositionPlanner {

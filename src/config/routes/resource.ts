@@ -144,12 +144,12 @@ export default [
     // factory exchange
     from: STRUCTURE_TERMINAL,
     to: STRUCTURE_FACTORY,
-    type: (room: Room) => room.factoryCache.needs,
+    type: (room: Room) => room.buildings.factory?.needs,
     maximumFilledAmount: factoryStoragePerResource,
     dump: true,
     done: (room: Room) => {
       const factory = room.buildings.factory
-      room.factoryCache.needs = factory?.router.findNeededRecipeComponent()
+      factory?.reloadNeeds()
       if (factory) {
         factory.cache.state = State.FACT_BOARD
       }
@@ -158,12 +158,12 @@ export default [
   {
     from: STRUCTURE_FACTORY,
     to: STRUCTURE_TERMINAL,
-    type: (room: Room) => room.factoryCache.dumps,
+    type: (room: Room) => room.buildings.factory?.dumps,
     minimalStoreToDraw: 1,
     dump: true,
     done: (room: Room) => {
       const factory = room.buildings.factory
-      room.factoryCache.dumps = factory?.router.findNotNeededRecipeComponent()
+      factory?.reloadDumps()
       if (factory) {
         factory.cache.state = State.FACT_BOARD
       }

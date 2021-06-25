@@ -8,7 +8,7 @@ import {
   NOTHING_TODO,
   FAILED,
 } from 'constants/response'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import CreepMemoized from 'utils/CreepMemoized'
 import RoomResourceRoute from './RoomResourceRoute'
 import { FillCreep } from 'routine/haul/fill'

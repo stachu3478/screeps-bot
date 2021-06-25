@@ -1,7 +1,7 @@
 import { CREEP_RANGE } from 'constants/support'
 import _ from 'lodash'
 import HitCalculator from 'room/military/HitCalculator'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import CreepSquad from './CreepSquad'
 
 export default class Duet extends CreepSquad {

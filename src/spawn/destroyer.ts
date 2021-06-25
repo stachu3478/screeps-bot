@@ -33,9 +33,9 @@ export function spawnDestroyer(spawn: StructureSpawn) {
   const bodyDef = createBodyDefinition(room, entryDamage)
 
   const body = bodyDef.body
-  const memory = {
+  const memory: CreepMemory = {
     role: Role.BOOSTER,
-    _targetRole: Role.DESTROYER,
+    newRole: Role.DESTROYER,
     room: spawn.room.name,
     deprivity: 50,
   }

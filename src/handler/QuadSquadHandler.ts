@@ -1,4 +1,4 @@
-import { isWalkable } from 'utils/path'
+import { isWalkable } from 'utils/path/path'
 
 export default class QuadSquadHandler {
   private creeps: string[]

@@ -19,8 +19,6 @@ describe('Room', () => {
       'rooms',
       { scoutsWorking: 0, sourceKeeperPositions: [], structurePositions: [] },
     ],
-    ['factoryCache', 'factories', {}],
-    ['powerSpawnCache', 'powerSpawns', {}],
   ].forEach((keys) => {
     describe(`#${keys[0]}`, () => {
       it('value is cached', () => {

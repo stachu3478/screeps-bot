@@ -34,9 +34,9 @@ export function spawnTowerEkhauster(spawn: StructureSpawn) {
   const bodyDef = createBodyDefinition(room, entryDamage)
 
   const body = bodyDef.body
-  const memory = {
+  const memory: CreepMemory = {
     role: Role.BOOSTER,
-    _targetRole: Role.TOWER_EKHAUSTER,
+    newRole: Role.TOWER_EKHAUSTER,
     room: spawn.room.name,
     deprivity: 50,
   }

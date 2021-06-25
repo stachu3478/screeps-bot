@@ -2,7 +2,7 @@ import { DONE, NOTHING_TODO } from 'constants/response'
 import arrive, { ArriveCreep } from 'routine/arrive'
 import recycle from 'routine/recycle'
 import collectGarbage from 'utils/collectGarbage'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import ProfilerPlus from 'utils/ProfilerPlus'
 
 export default ProfilerPlus.instance.overrideFn(function towerEkhauster(

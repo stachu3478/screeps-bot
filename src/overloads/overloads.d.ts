@@ -11,8 +11,6 @@ interface Room {
   links: RoomLinks
   spawn?: StructureSpawn
   cache: RoomCache
-  factoryCache: FactoryCache
-  powerSpawnCache: PowerSpawnCache
   sources: SourceHandler
   my: boolean
   positions: RoomPositions
@@ -88,6 +86,10 @@ interface StructurePowerSpawn {
 interface StructureFactory {
   cache: FactoryCache
   router: FactoryRouter
+  needs?: ResourceConstant
+  dumps?: ResourceConstant
+  reloadNeeds(): void
+  reloadDumps(): void
 }
 
 interface StructureTerminal {

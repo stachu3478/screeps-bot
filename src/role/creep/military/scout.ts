@@ -1,15 +1,8 @@
 import { DONE, NOTHING_TODO } from 'constants/response'
 import arrive from 'routine/arrive'
-import RoomEnemies from 'room/military/RoomEnemies'
-import move from 'utils/path'
 
 export interface Scout extends Creep {
-  cache: ScoutCache
   memory: ScoutMemory
-}
-
-interface ScoutCache extends CreepCache {
-  exit: string
 }
 
 interface ScoutMemory extends CreepMemory {
@@ -36,7 +29,9 @@ export default function run(creep: Scout) {
       const target = creep.motherRoom.pathScanner.scanTarget
       if (target) {
         creep.memory._arrive = target
-        if (arrive(creep) !== NOTHING_TODO) creep.memory.state = State.SCOUT
+        if (arrive(creep) !== NOTHING_TODO) {
+          creep.memory.state = State.SCOUT
+        }
       }
       break
     default:

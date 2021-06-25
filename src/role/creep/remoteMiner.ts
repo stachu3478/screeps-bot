@@ -1,23 +1,12 @@
-import { NOTHING_TODO, NO_RESOURCE, FAILED } from 'constants/response'
-import autoRepair from 'routine/work/autoRepair'
-import autoBuild from 'routine/work/autoBuild'
 import ProfilerPlus from 'utils/ProfilerPlus'
 import MemoryHandler from 'handler/MemoryHandler'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import recycle from 'routine/recycle'
 import { tankPack } from 'spawn/body/body'
 import { maintainBuildingActively } from 'routine/work/maintainBuilding'
 
-export interface RemoteMiner extends Creep {
-  memory: RemoteMinerMemory
-}
-
-export interface RemoteMinerMemory extends CreepMemory {
-  mine: Lookup<RoomPosition>
-}
-
 export default ProfilerPlus.instance.overrideFn(function miner(
-  creep: RemoteMiner,
+  creep: RoleCreep<Role.REMOTE_MINER>,
 ) {
   const lookup = creep.memory.mine
   const sourcePosition = RoomPosition.from(lookup)

@@ -1,7 +1,7 @@
 import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from 'constants/response'
 import { findTarget, findTargetCreeps } from './shared'
 import { pickBestDirectionFrom } from '../shared'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import { CREEP_RANGE } from 'constants/support'
 
 interface AttackCreep extends Creep {

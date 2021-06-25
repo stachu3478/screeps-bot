@@ -1,5 +1,5 @@
 import { NOTHING_TODO, FAILED, DONE, NOTHING_DONE } from '../constants/response'
-import move from 'utils/path'
+import move from 'utils/path/path'
 
 export default function recycle(creep: Creep) {
   const spawn = creep.motherRoom.spawn

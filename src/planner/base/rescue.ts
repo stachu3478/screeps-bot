@@ -1,5 +1,4 @@
 import { progressiveMobileWorker } from 'spawn/body/work'
-import { ColonizerMemory } from 'role/creep/colonizer'
 
 export default function callRescue(room: Room) {
   console.log(`WARNING: No creeps in room ${room.name}!`)
@@ -17,12 +16,11 @@ export default function callRescue(room: Room) {
       return false
     }
     console.log('Try to spawn creep')
-    const memory: ColonizerMemory = {
+    const memory: CreepMemory = {
       role: Role.COLONIZER,
       room: room.name,
       deprivity: 0,
-      _arrive: room.name,
-      _targetRole: Role.MINER,
+      newRole: Role.MINER,
     }
     const body = progressiveMobileWorker(
       Math.max(spawn.room.energyAvailable, SPAWN_ENERGY_START),

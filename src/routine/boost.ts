@@ -1,4 +1,4 @@
-import move from 'utils/path'
+import move from 'utils/path/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, FAILED } from 'constants/response'
 
 interface BoostCreep extends Creep {

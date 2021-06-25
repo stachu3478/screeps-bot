@@ -10,6 +10,8 @@ interface RoomCache {
   structurePositions: RoomPosition[]
   labCooldown?: number
   containersPresent?: boolean
+  enemy?: AnyCreep
+  holdFire?: boolean
 }
 
 interface SpawnCache {
@@ -51,23 +53,8 @@ interface LinkCache {
 }
 
 interface GlobalCache {
-  rooms: {
-    [key: string]: RoomCache
-  }
   spawns: {
     [key: string]: SpawnCache
-  }
-  creeps: {
-    [key: string]: CreepCache
-  }
-  powerSpawns: {
-    [key: string]: PowerSpawnCache
-  }
-  terminals: {
-    [key: string]: TerminalCache
-  }
-  factories: {
-    [key: string]: FactoryCache
   }
   links: {
     [key: string]: LinkCache

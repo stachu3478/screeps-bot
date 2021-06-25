@@ -1,21 +1,10 @@
 import arrive from 'routine/arrive'
-import move from 'utils/path'
+import move from 'utils/path/path'
 
-export interface Reserver extends Creep {
-  memory: ReserverMemory
-}
-
-export interface ReserverMemory extends CreepMemory {
-  role: Role.RESERVER
-  reserve: string
-  _arrive?: string
-}
-
-export default function reserver(creep: Reserver) {
+export default function reserver(creep: RoleCreep<Role.RESERVER>) {
   const target = creep.memory.reserve
   if (target !== creep.room.name) {
-    creep.memory._arrive = target
-    arrive(creep)
+    arrive(creep, false, target)
   } else {
     const controller = Game.rooms[target]?.controller
     if (controller) {

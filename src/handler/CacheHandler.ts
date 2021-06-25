@@ -13,28 +13,8 @@ export default class CacheHandler {
     this.intershardMemoryHandler = intershardMemoryHandler
   }
 
-  get creeps() {
-    return this.cache.creeps
-  }
-
   get spawns() {
     return this.cache.spawns
-  }
-
-  get powerSpawns() {
-    return this.cache.powerSpawns
-  }
-
-  get rooms() {
-    return this.cache.rooms
-  }
-
-  get terminals() {
-    return this.cache.terminals
-  }
-
-  get factories() {
-    return this.cache.factories
   }
 
   get ownedRooms() {

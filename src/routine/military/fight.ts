@@ -1,4 +1,4 @@
-import move from '../../utils/path'
+import move from '../../utils/path/path'
 import { NOTHING_DONE, FAILED, NOTHING_TODO, SUCCESS } from 'constants/response'
 
 interface FightCreep extends Creep {

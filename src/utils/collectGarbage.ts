@@ -1,3 +1,5 @@
+import _ from 'lodash'
+import { cache } from 'overloads/cache'
 import ClaimPlanner from 'planner/military/ClaimPlanner'
 
 function handleRoomBlackList(memory: CreepMemory) {
@@ -19,7 +21,15 @@ function handleClaimerDeadthBeforeClaiming(mem: CreepMemory) {
 }
 
 export default function collectGarbage(name: string) {
-  delete global.Cache.creeps[name]
+  let tombstone: Tombstone | undefined
+  _.some(Game.rooms, (room) => {
+    room.find(FIND_TOMBSTONES).some((t) => {
+      return t.creep.name === name
+    })
+  })
+  if (tombstone) {
+    cache.cache.delete(tombstone.creep.id)
+  }
   if (!Memory.creeps) {
     Memory.creeps = {}
     return

@@ -1,8 +1,8 @@
-import { findSourceKeepers } from './find'
-import Feromon from './feromon'
+import Feromon from '../feromon'
 import { pickBestDirectionFrom } from 'routine/shared'
 import _ from 'lodash'
 import { findTargetCreeps } from 'routine/military/shared'
+import roomCallback from './roomCallback'
 
 interface OffsetByDirection {
   [key: number]: number[]
@@ -23,36 +23,6 @@ export function createUnwalkableMatrix() {
   for (let ox = 0; ox <= 49; ox++)
     for (let oy = 0; oy <= 49; oy++) matrix.set(ox, oy, 255)
   return matrix
-}
-
-export function roomCallback(
-  roomName: string,
-  costMatrix = new PathFinder.CostMatrix(),
-) {
-  const room = Game.rooms[roomName]
-  if (room) {
-    let sourceKeepers: _HasRoomPosition[] = findSourceKeepers(room)
-    if (!sourceKeepers.length) {
-      sourceKeepers = room.buildings.find(STRUCTURE_KEEPER_LAIR)
-    }
-    room.cache.sourceKeeperPositions = sourceKeepers.map((c) => c.pos)
-    room.cache.structurePositions = room
-      .find(FIND_STRUCTURES)
-      .filter((s) => !s.isWalkable)
-      .map((s) => s.pos)
-  }
-  const roomCache = global.Cache.rooms[roomName]
-  if (!roomCache) {
-    return costMatrix
-  }
-  roomCache.sourceKeeperPositions.forEach(({ x, y }) => {
-    for (let ox = -3; ox <= 3; ox++)
-      for (let oy = -3; oy <= 3; oy++) costMatrix.set(x + ox, y + oy, 25)
-  })
-  roomCache.structurePositions.forEach(({ x, y }) => {
-    costMatrix.set(x, y, 255)
-  })
-  return costMatrix
 }
 
 export const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {

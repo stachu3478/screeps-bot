@@ -1,5 +1,5 @@
 import { ALL_DIRECTIONS } from 'constants/support'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import ProfilerPlus from 'utils/ProfilerPlus'
 
 export default ProfilerPlus.instance.overrideFn(function depositMiner(

@@ -1,5 +1,5 @@
 import autoRepair from 'routine/work/autoRepair'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import ProfilerPlus from 'utils/ProfilerPlus'
 
 export default ProfilerPlus.instance.overrideFn(function builder(creep: Creep) {

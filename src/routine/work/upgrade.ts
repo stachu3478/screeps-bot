@@ -1,4 +1,4 @@
-import move from '../../utils/path'
+import move from '../../utils/path/path'
 import { SUCCESS, NOTHING_DONE, FAILED, NO_RESOURCE } from 'constants/response'
 
 export default function upgrade(creep: Creep, staticMode: boolean = false) {

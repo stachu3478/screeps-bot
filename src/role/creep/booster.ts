@@ -1,13 +1,12 @@
 import routineBooster from 'routine/boost'
 import { NOTHING_DONE, SUCCESS } from 'constants/response'
 
-export interface BoosterCreep extends Creep {
+export interface BoosterCreep extends RoleCreep<any> {
   memory: BoosterMemory
 }
 
-interface BoosterMemory extends CreepMemory {
+interface BoosterMemory extends RoleCreepMemory<any> {
   _boostLab?: Id<StructureLab>
-  _targetRole?: number
 }
 
 const roleBooster = {
@@ -34,9 +33,9 @@ const roleBooster = {
           creep.memory.state = State.BOOST
           creep.memory._boostLab = targetLabId
         } else if (!boosts.hasMandatory(creep.name)) {
-          const newRole = creep.memory._targetRole
+          const newRole = creep.memory.newRole
           if (newRole) creep.memory.role = newRole
-          delete creep.memory._targetRole
+          delete creep.memory.newRole
         }
     }
   },

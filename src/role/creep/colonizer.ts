@@ -1,21 +1,12 @@
 import { DONE } from 'constants/response'
 import arrive from 'routine/arrive'
 
-export interface Colonizer extends Creep {
-  memory: ColonizerMemory
-}
-
-export interface ColonizerMemory extends CreepMemory {
-  _arrive?: string
-  _targetRole: number
-}
-
-export default function colonizer(creep: Colonizer) {
+export default function colonizer(creep: RoleCreep<any>) {
   switch (creep.memory.state) {
     case State.ARRIVE:
       switch (arrive(creep)) {
         case DONE:
-          creep.memory.role = creep.memory._targetRole
+          creep.memory.role = creep.memory.newRole
           break
       }
       break

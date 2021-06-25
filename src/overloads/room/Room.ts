@@ -20,6 +20,8 @@ import DepositPlanner from 'planner/DepositPlanner'
 import ProfilerPlus from 'utils/ProfilerPlus'
 import RemoteMiningMonitor from 'utils/RemoteMiningMonitor'
 import RoomOutpostDefense from './RoomOutpostDefense'
+import { memoizeByRoom } from 'overloads/memoize'
+import { roomCache } from 'overloads/cache'
 
 function defineRoomGetter<T extends keyof Room>(
   property: T,
@@ -28,26 +30,7 @@ function defineRoomGetter<T extends keyof Room>(
   defineGetter<Room, RoomConstructor, T>(Room, property, handler)
 }
 
-function memoizeByRoom<T>(fn: (r: Room) => T) {
-  return _.memoize(fn, (r: Room) => r.name)
-}
-
-const roomCache = memoizeByRoom((r) => ({
-  scoutsWorking: 0,
-  sourceKeeperPositions: [],
-  structurePositions: [],
-}))
 defineRoomGetter('cache', (self) => roomCache(self))
-
-defineRoomGetter('factoryCache', (self) => {
-  const cache = global.Cache.factories
-  return cache[self.name] || (cache[self.name] = {})
-})
-
-defineRoomGetter('powerSpawnCache', (self) => {
-  const cache = global.Cache.powerSpawns
-  return cache[self.name] || (cache[self.name] = {})
-})
 
 defineRoomGetter('lab1', (self) => {
   return self.buildingAt(

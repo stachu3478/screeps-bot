@@ -1,4 +1,5 @@
 import defineGetter from 'utils/defineGetter'
+import { cache } from './cache'
 
 function definePowerSpawnGetter<T extends keyof StructurePowerSpawn>(
   property: T,
@@ -11,7 +12,4 @@ function definePowerSpawnGetter<T extends keyof StructurePowerSpawn>(
   )
 }
 
-definePowerSpawnGetter('cache', (self) => {
-  const cache = global.Cache.powerSpawns
-  return cache[self.room.name] || (cache[self.room.name] = {})
-})
+definePowerSpawnGetter('cache', (self) => cache(self))

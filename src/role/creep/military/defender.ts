@@ -2,7 +2,7 @@ import { DONE, NOTHING_TODO } from 'constants/response'
 import arrive from 'routine/arrive'
 import rangedAttack from 'routine/military/rangedAttack'
 import { findTargetCreeps } from 'routine/military/shared'
-import move from 'utils/path'
+import move from 'utils/path/path'
 
 export interface Defender extends Creep {
   memory: DefenderMemory

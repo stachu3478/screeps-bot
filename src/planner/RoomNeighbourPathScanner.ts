@@ -1,7 +1,6 @@
 import { ALL_EXIT_CONSTANTS } from 'constants/support'
 import _ from 'lodash'
-import { roomCallback } from 'utils/path'
-import ThrespassPathfinder from './military/ThrespassPathfinder'
+import roomCallback from 'utils/path/roomCallback'
 
 const pathfindingOpts: PathFinderOpts = {
   maxRooms: 1,

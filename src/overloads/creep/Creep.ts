@@ -3,10 +3,11 @@ import defineGetter from 'utils/defineGetter'
 import ResourceRouteProcessor from 'job/resourceRoute/ResourceRouteProcessor'
 import BuildingRouteProcessor from 'job/buildingRoute/BuildingRouteProcessor'
 import RepairRouteProcessor from 'job/repairRoute/RepairRouteProcessor'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import CreepCorpus from './CreepCorpus'
 import { findTargets } from 'routine/military/shared'
 import { CREEP_RANGE } from 'constants/support'
+import { cache } from 'overloads/cache'
 
 function defineCreepGetter<T extends keyof Creep>(
   property: T,
@@ -19,8 +20,7 @@ function memoizeByCreep<T>(fn: (c: Creep) => T) {
   return _.memoize(fn, (c: Creep) => c.id)
 }
 
-const creepCache = memoizeByCreep(() => ({}))
-defineCreepGetter('cache', (self) => creepCache(self))
+defineCreepGetter('cache', (self) => cache(self))
 
 defineCreepGetter('motherRoom', (self) => {
   return Game.rooms[self.memory.room] || self.room

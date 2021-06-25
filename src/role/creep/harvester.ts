@@ -17,7 +17,7 @@ import fill from 'routine/haul/fill'
 import dumpResources from 'job/dumpResources'
 import { haulCurrentRoom } from 'job/resourceHaul'
 import pick from 'routine/haul/pick'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import ProfilerPlus from 'utils/ProfilerPlus'
 
 export default ProfilerPlus.instance.overrideFn(function harvester(

@@ -1,4 +1,4 @@
-import move, { isWalkable } from 'utils/path'
+import move, { isWalkable } from 'utils/path/path'
 
 export interface MoveCreep extends Creep {
   cache: MoveCache

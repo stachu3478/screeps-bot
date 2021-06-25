@@ -16,7 +16,7 @@ export default class SpawnCollector extends SpawnCreep {
       throw new Error('Missing remote lookup for new creep to assign')
     }
     const sourceMemory = MemoryHandler.sources[this.missingRemoteLookup]
-    const memory: CollectorMemory = {
+    const memory: CreepMemory = {
       role: this.role,
       room: this.spawn.room.name,
       deprivity: sourceMemory.cost * 2,
@@ -92,7 +92,7 @@ export default class SpawnCollector extends SpawnCreep {
     return creep.corpus.count(CARRY)
   }
 
-  get role() {
+  get role(): Role.COLLECTOR {
     return Role.COLLECTOR
   }
 }

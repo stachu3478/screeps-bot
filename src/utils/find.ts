@@ -1,7 +1,6 @@
 import energyDistribution from 'config/energyDistribution'
 import { CREEP_RANGE, SOURCE_KEEPER_USERNAME } from 'constants/support'
 import _ from 'lodash'
-import { Fighter } from 'role/creep/military/fighter'
 
 function persistFilter<T>(arr: (T | undefined)[]): T[] {
   return arr.filter((v) => v) as T[]
@@ -22,7 +21,7 @@ export const findSourceKeepers = (room: Room) =>
 
 const fighterFilter = { filter: (c: Creep) => c.memory.role === Role.FIGHTER }
 export const findFighters = (room: Room) =>
-  room.find(FIND_MY_CREEPS, fighterFilter) as Fighter[]
+  room.find(FIND_MY_CREEPS, fighterFilter)
 
 const damagedCreepsFilter = { filter: (c: Creep) => c.hits < c.hitsMax }
 export const findDamagedCreeps = (room: Room) =>

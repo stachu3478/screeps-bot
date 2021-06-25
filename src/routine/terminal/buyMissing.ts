@@ -11,7 +11,7 @@ export default function buyMissing(terminal: StructureTerminal) {
   if (!missingResource) return DONE
   const missingAmount = storageBuyThreshold - room.store(missingResource)
   const orders = Game.market.getAllOrders({
-    type: 'sell',
+    type: ORDER_SELL,
     resourceType: missingResource,
   })
   if (!orders.length) return NOTHING_TODO

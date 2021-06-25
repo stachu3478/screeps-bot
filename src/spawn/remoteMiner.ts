@@ -3,7 +3,6 @@ import MemoryHandler from 'handler/MemoryHandler'
 import _ from 'lodash'
 import RemoteMiningPlanner from 'planner/remoteMining/RemoteMiningPlanner'
 import RemoteMiningValidator from 'planner/remoteMining/RemoteMiningValidator'
-import { RemoteMiner, RemoteMinerMemory } from 'role/creep/remoteMiner'
 import { progressiveMiner } from './body/work'
 import SpawnCreep from './spawnCreep'
 
@@ -17,7 +16,7 @@ export default class SpawnRemoteMiner extends SpawnCreep {
       throw new Error('Missing remote lookup for new creep to assign')
     }
     const sourceMemory = MemoryHandler.sources[this.missingRemoteLookup]
-    const memory: RemoteMinerMemory = {
+    const memory: CreepMemory = {
       role: this.role,
       room: this.spawn.room.name,
       deprivity: sourceMemory.cost,
@@ -40,7 +39,7 @@ export default class SpawnRemoteMiner extends SpawnCreep {
   }
 
   static success(name: string, body: BodyPartConstant[]) {
-    const memory = Memory.creeps[name] as RemoteMinerMemory
+    const memory = Memory.creeps[name] as RoleCreepMemory<Role.REMOTE_MINER>
     const cost = _.sum(body, (type) => BODYPART_COST[type])
     MemoryHandler.sources[memory.mine].miningCreep = name
     Game.rooms[memory.room].remoteMiningMonitor.monit(-cost)
@@ -71,7 +70,7 @@ export default class SpawnRemoteMiner extends SpawnCreep {
   }
 
   private isValidRemoteMiner(creepName: string, target: string) {
-    const creep = Game.creeps[creepName] as RemoteMiner
+    const creep = Game.creeps[creepName]
     if (!creep) {
       return false
     }

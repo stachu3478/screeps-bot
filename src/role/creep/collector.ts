@@ -1,17 +1,16 @@
 import ProfilerPlus from 'utils/ProfilerPlus'
 import MemoryHandler from 'handler/MemoryHandler'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import _ from 'lodash'
 import recycle from 'routine/recycle'
 import remoteMining from 'config/remoteMining'
 import { maintainBuildingActively } from 'routine/work/maintainBuilding'
 
-export interface Collector extends Creep {
+export interface Collector extends RoleCreep<Role.COLLECTOR> {
   memory: CollectorMemory
 }
 
-export interface CollectorMemory extends CreepMemory {
-  collect: Lookup<RoomPosition>
+export interface CollectorMemory extends RoleCreepMemory<Role.COLLECTOR> {
   put?: Id<AnyStoreStructure>
 }
 

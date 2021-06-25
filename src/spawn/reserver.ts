@@ -1,7 +1,6 @@
 import player from 'constants/player'
 import _ from 'lodash'
 import SpawnCreep from './spawnCreep'
-import { ReserverMemory } from '../role/creep/military/reserver'
 
 export default class SpawnReserver extends SpawnCreep {
   private missingRoom?: string
@@ -12,7 +11,7 @@ export default class SpawnReserver extends SpawnCreep {
     if (!this.missingRoom) {
       throw new Error('Missing remote room for new creep to assign')
     }
-    const memory: ReserverMemory = {
+    const memory: CreepMemory = {
       role: this.role,
       room: this.room.name,
       deprivity: 0,
@@ -32,7 +31,7 @@ export default class SpawnReserver extends SpawnCreep {
   }
 
   static success(name: string, body: BodyPartConstant[]) {
-    const memory = Memory.creeps[name] as ReserverMemory
+    const memory = Memory.creeps[name] as RoleCreepMemory<Role.RESERVER>
     const cost = _.sum(body, (type) => BODYPART_COST[type])
     Memory.rooms[memory.reserve].R = name
     Game.rooms[memory.room].remoteMiningMonitor.monit(-cost)

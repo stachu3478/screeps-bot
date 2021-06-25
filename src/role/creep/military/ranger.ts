@@ -10,7 +10,6 @@ export interface Ranger extends Creep {
 }
 
 interface RangerMemory extends CreepMemory {
-  role: Role.COMMANDER
   _arrive?: string
   _prev_hits?: number
   _runTicks?: number

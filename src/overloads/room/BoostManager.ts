@@ -165,7 +165,7 @@ export default class BoostManager {
       if (boostInfo) boostRequests.push(boostInfo)
     })
     if (boostRequests.length) {
-      creepMemory._targetRole = creepMemory.role
+      creepMemory.newRole = creepMemory.role
       creepMemory.role = Role.BOOSTER
     }
     return boostRequests

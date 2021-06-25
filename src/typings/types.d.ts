@@ -6,7 +6,7 @@ type RouteStatus = [number, number, number]
 // memory extension samples
 interface CreepMemory {
   role: Role
-  _targetRole?: number
+  newRole?: number
   room: string
   state?: State
   _move?: {
@@ -39,6 +39,10 @@ interface CreepMemory {
    * Creep room path step
    */
   R?: [string, string, RoomNeighbourPath]
+
+  mine?: Lookup<RoomPosition>
+  reserve?: string
+  collect?: Lookup<RoomPosition>
 }
 
 interface Stats {

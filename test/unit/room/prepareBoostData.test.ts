@@ -23,7 +23,9 @@ describe('Preparing array of boosting data', () => {
     boostInfo2 = {} as BoostInfo
     creepMemory = { role: 123 } as CreepMemory
     sinon.restore()
-    boostedMemory = { _targetRole: 123, role: Role.BOOSTER } as CreepMemory
+    boostedMemory = {} as CreepMemory
+    boostedMemory.newRole = 123
+    boostedMemory.role = Role.BOOSTER
   })
 
   describe('All boosts rejected', () => {

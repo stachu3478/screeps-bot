@@ -1,4 +1,4 @@
-import move from '../../utils/path'
+import move from '../../utils/path/path'
 import { SUCCESS, NOTHING_TODO, NOTHING_DONE, DONE } from 'constants/response'
 
 export default function memoryLessFill(

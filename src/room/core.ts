@@ -11,7 +11,7 @@ import lab from 'role/lab'
 import factory from 'role/factory'
 import rolePowerSpawn from 'role/powerSpawn'
 import EnemyPicker from './military/EnemyPicker'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import ProfilerPlus from 'utils/ProfilerPlus'
 import RoomStructuresPlanner from 'planner/base/RoomStructuresPlanner'
 
@@ -64,18 +64,17 @@ export default ProfilerPlus.instance.overrideFn(function run(
 
   const enemyPicker = new EnemyPicker(room)
   enemyPicker.fetch()
-  let enemy: AnyCreep | undefined
   let needFighters = false
   let shouldAttack = false
   let towersProcessed = false
   const towers = room.buildings.towers
   if (enemyPicker.any) {
-    enemy = enemyPicker.enemy!
+    cache.enemy = enemyPicker.enemy!
     const canDeal = enemyPicker.dealt > 0
     shouldAttack = room.defencePolicy.shouldAttack(canDeal)
     needFighters = enemyPicker.maxDealable <= 0
     if (shouldAttack) {
-      towers.forEach((t) => tower(t, enemy))
+      towers.forEach((t) => tower(t, cache.enemy))
       towersProcessed = true
     }
     room.visual.enemy(enemyPicker, shouldAttack, room.defencePolicy)
@@ -91,12 +90,8 @@ export default ProfilerPlus.instance.overrideFn(function run(
   }
   cache.scoutsWorking = 0
 
-  const { creepCountByRole, count } = creeps(
-    mem.creeps,
-    room,
-    enemy,
-    needFighters,
-  )
+  cache.holdFire = needFighters
+  const { creepCountByRole, count } = creeps(mem.creeps, room)
 
   handleLog(cache, controller)
 

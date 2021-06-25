@@ -1,6 +1,6 @@
 import remoteMining from 'config/remoteMining'
 import MemoryHandler from 'handler/MemoryHandler'
-import { roomCallback } from 'utils/path'
+import roomCallback from 'utils/path/roomCallback'
 
 export default class RemoteSourceValidator {
   private roomPath: RoomNeighbourPath

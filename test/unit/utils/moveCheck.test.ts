@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import sinon from 'sinon'
-import move from 'utils/path'
+import move from 'utils/path/path'
 import { expect } from '../../expect'
 
 describe('Check for creep is moving', () => {

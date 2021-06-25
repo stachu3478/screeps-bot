@@ -10,12 +10,7 @@ let cacheHandler: CacheHandler
 describe('CacheHandler', () => {
   beforeEach(() => {
     cache = {
-      creeps: {},
       spawns: {},
-      powerSpawns: {},
-      rooms: {},
-      terminals: {},
-      factories: {},
       feromon: {},
       links: {},
     }
