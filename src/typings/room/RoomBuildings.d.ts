@@ -2,6 +2,12 @@ declare class RoomBuildings {
   get<T>(
     ...types: (T & StructureConstant)[]
   ): ConcreteStructure<T & StructureConstant>[]
+  find<T>(
+    type: T & StructureConstant,
+  ): ConcreteStructure<T & StructureConstant>[]
+  findOne<T>(
+    type: T & StructureConstant,
+  ): ConcreteStructure<T & StructureConstant> | undefined
   factory?: StructureFactory
   labs: StructureLab[]
   extractor?: StructureExtractor

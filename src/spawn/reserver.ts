@@ -78,8 +78,18 @@ export default class SpawnReserver extends SpawnCreep {
     }
     const ticksAtArrive =
       reservationTicks - pathRoom.cost - CREEP_SPAWN_TIME * 2
+    if (ticksAtArrive > 0) {
+      return true
+    }
+    console.log(
+      'need to reserve',
+      targetRoom,
+      ticksAtArrive,
+      reservationTicks,
+      pathRoom.cost,
+    )
     const optimalClaimParts = Math.floor(
-      (CONTROLLER_RESERVE_MAX - reservationTicks) /
+      (CONTROLLER_RESERVE_MAX - ticksAtArrive) /
         (CREEP_CLAIM_LIFE_TIME - pathRoom.cost) +
         1,
     )
@@ -89,7 +99,7 @@ export default class SpawnReserver extends SpawnCreep {
     )
     this.claimParts = Math.min(optimalClaimParts, energyClaimPartLimit)
     this.missingRoom = targetRoom
-    return ticksAtArrive > 0 || this.claimParts === 0
+    return this.claimParts === 0
   }
 
   get role(): Role.RESERVER {

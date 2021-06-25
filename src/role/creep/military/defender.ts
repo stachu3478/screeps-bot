@@ -57,6 +57,7 @@ export default function defender(creep: Defender) {
       switch (rangedAttack(creep)) {
         case NOTHING_TODO:
           creep.memory.state = State.IDLE
+          creep.motherRoom.outpostDefense.cancel()
           break
       }
       break

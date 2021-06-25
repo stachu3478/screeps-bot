@@ -1,21 +1,13 @@
 import { ALL_EXIT_CONSTANTS } from 'constants/support'
 import _ from 'lodash'
+import { roomCallback } from 'utils/path'
 import ThrespassPathfinder from './military/ThrespassPathfinder'
 
 const pathfindingOpts: PathFinderOpts = {
   maxRooms: 1,
   plainCost: 1,
   swampCost: 5,
-  roomCallback: (roomName) => {
-    const room = Game.rooms[roomName]
-    const costs = new PathFinder.CostMatrix()
-    room.find(FIND_STRUCTURES).forEach((s) => {
-      if (s.isWalkable) return
-      // Can't walk through non-walkable buildings
-      costs.set(s.pos.x, s.pos.y, 0xff)
-    })
-    return costs
-  },
+  roomCallback,
 }
 
 export interface RoomNeighbour {

@@ -8,5 +8,7 @@ export default {
   sources: {
     maxCost: ClaimPlanner.instance.minCost / 2,
     workParkOverload: 1.2,
+    haulerReturnTimeMargin: 10,
+    resourcePickupAmountThreshold: 50,
   },
 }

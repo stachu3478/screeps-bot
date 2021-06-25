@@ -23,74 +23,70 @@ export default class RoomBuildings {
     return structures
   }
 
+  findOne<T>(type: T & StructureConstant) {
+    const stack = this.fetched[type]
+    return stack && (stack[0] as ConcreteStructure<T & StructureConstant>)
+  }
+
+  find<T>(type: T & StructureConstant) {
+    const stack = this.fetched[type]
+    return (stack || []) as ConcreteStructure<T & StructureConstant>[]
+  }
+
   get factory() {
-    const stack = this.fetched[STRUCTURE_FACTORY]
-    return stack && (stack[0] as StructureFactory)
+    return this.findOne(STRUCTURE_FACTORY)
   }
 
   get labs() {
-    const stack = this.fetched[STRUCTURE_LAB]
-    return (stack || []) as StructureLab[]
+    return this.find(STRUCTURE_LAB)
   }
 
   get extractor() {
-    const stack = this.fetched[STRUCTURE_EXTRACTOR]
-    return stack && (stack[0] as StructureExtractor)
+    return this.findOne(STRUCTURE_EXTRACTOR)
   }
 
   get powerSpawn() {
-    const stack = this.fetched[STRUCTURE_POWER_SPAWN]
-    return stack && (stack[0] as StructurePowerSpawn)
+    return this.findOne(STRUCTURE_POWER_SPAWN)
   }
 
   get spawnsWithExtensions() {
-    const spawns: (StructureSpawn | StructureExtension)[] = this.spawns
-    return spawns.concat(this.extensions)
+    return this.get(STRUCTURE_SPAWN, STRUCTURE_EXTENSION)
   }
 
   get observer() {
-    const stack = this.fetched[STRUCTURE_OBSERVER]
-    return stack && (stack[0] as StructureObserver)
+    return this.findOne(STRUCTURE_OBSERVER)
   }
 
   get towers() {
-    const stack = this.fetched[STRUCTURE_TOWER]
-    return (stack || []) as StructureTower[]
+    return this.find(STRUCTURE_TOWER)
   }
 
   get spawns() {
-    const stack = this.fetched[STRUCTURE_SPAWN]
-    return (stack || []) as StructureSpawn[]
+    return this.find(STRUCTURE_SPAWN)
   }
 
   get extensions() {
-    const stack = this.fetched[STRUCTURE_EXTENSION]
-    return (stack || []) as StructureExtension[]
+    return this.find(STRUCTURE_EXTENSION)
   }
 
   get nuker() {
-    const stack = this.fetched[STRUCTURE_NUKER]
-    return stack && (stack[0] as StructureNuker)
+    return this.findOne(STRUCTURE_NUKER)
   }
 
   get links() {
-    const stack = this.fetched[STRUCTURE_LINK]
-    return (stack || []) as StructureLink[]
+    return this.find(STRUCTURE_LINK)
   }
 
   get invaderCore() {
-    const stack = this.fetched[STRUCTURE_INVADER_CORE] // does not work idk
-    return stack && (stack[0] as StructureInvaderCore)
+    return this.findOne(STRUCTURE_INVADER_CORE)
   }
 
   get roads() {
-    const stack = this.fetched[STRUCTURE_ROAD]
-    return (stack || []) as StructureRoad[]
+    return this.find(STRUCTURE_ROAD)
   }
 
   get containers() {
-    const stack = this.fetched[STRUCTURE_CONTAINER]
-    return (stack || []) as StructureContainer[]
+    return this.find(STRUCTURE_CONTAINER)
   }
 
   private get fetched() {

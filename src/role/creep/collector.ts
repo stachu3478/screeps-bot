@@ -4,6 +4,7 @@ import MemoryHandler from 'handler/MemoryHandler'
 import move from 'utils/path'
 import _ from 'lodash'
 import recycle from 'routine/recycle'
+import remoteMining from 'config/remoteMining'
 
 export interface Collector extends Creep {
   memory: CollectorMemory
@@ -14,8 +15,19 @@ export interface CollectorMemory extends CreepMemory {
   put?: Id<AnyStoreStructure>
 }
 
+function canGoAndReturn(creep: Creep, from: SourceMemory) {
+  return (creep.ticksToLive || 0) > from.cost * 2
+}
+
 function canReturnBack(creep: Creep, from: SourceMemory) {
-  return (creep.ticksToLive || 0) - creep.memory.deprivity / 2 > from.cost
+  return (creep.ticksToLive || 0) > from.cost
+}
+
+function canMarginlyReturnBack(creep: Creep, from: SourceMemory) {
+  return (
+    (creep.ticksToLive || 0) >
+    from.cost + remoteMining.sources.haulerReturnTimeMargin
+  )
 }
 
 export default ProfilerPlus.instance.overrideFn(function collector(
@@ -48,11 +60,15 @@ export default ProfilerPlus.instance.overrideFn(function collector(
         move.cheap(creep, miningPosition, true, 1, 1)
       } else {
         if (!canReturnBack(creep, collectTarget)) {
-          move.cheap(creep, miningPosition, false)
-          creep.suicide()
-        } else if (canHold) {
+          if (move.cheap(creep, miningPosition, false) === 0) {
+            creep.suicide()
+          }
+        } else if (canHold && canMarginlyReturnBack(creep, collectTarget)) {
           const resource = _.find(miningPosition.lookFor(LOOK_RESOURCES))
-          if (resource && resource.amount > 50) {
+          if (
+            resource &&
+            resource.amount > remoteMining.sources.resourcePickupAmountThreshold
+          ) {
             creep.pickup(resource)
             return
           }
@@ -68,7 +84,11 @@ export default ProfilerPlus.instance.overrideFn(function collector(
       break
     case State.ARRIVE_BACK:
       if (!creep.store[RESOURCE_ENERGY]) {
-        creep.memory.state = State.ARRIVE
+        if (canGoAndReturn(creep, collectTarget)) {
+          creep.memory.state = State.ARRIVE
+        } else {
+          recycle(creep)
+        }
         return
       }
       const structureToPutIn = creep.memory.put

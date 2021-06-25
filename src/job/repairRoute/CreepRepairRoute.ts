@@ -66,7 +66,6 @@ export default class CreepRepairRoute extends CreepMemoized<RepairCreep> {
     if (memorizedStructure && this.route.validateTarget(memorizedStructure)) {
       return memorizedStructure
     }
-    console.log(memorizedStructure, 'invalidated emm', Keys.repairTarget)
     return this.route.choose(this.creep.pos, ignoreCreeps)
   }
 }

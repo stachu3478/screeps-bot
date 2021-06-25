@@ -14,23 +14,19 @@ export default class RoomOutpostDefense {
       return
     }
     const invaders = new RoomEnemies(room).find()
-    const rangedAttackParts = _.sum(invaders, (i) =>
-      i.corpus.count(RANGED_ATTACK),
-    )
-    const healParts = _.sum(invaders, (i) => i.corpus.count(HEAL))
-    this.memory.f = [room.name, rangedAttackParts, healParts]
+    const rangedAttackPower = _.sum(invaders, (i) => i.corpus.rangedAttackPower)
+    const healPower = _.sum(invaders, (i) => i.corpus.healPower)
+    this.memory.f = [room.name, rangedAttackPower, healPower]
   }
 
   fulfillBody() {
     if (!this.memory.f) {
       return false
     }
-    const [, rangedAttackParts, healParts] = this.memory.f
-    const allyHealParts = Math.ceil(
-      (rangedAttackParts * RANGED_ATTACK_POWER + 1) / HEAL_POWER,
-    )
+    const [, rangedAttackPower, healPower] = this.memory.f
+    const allyHealParts = Math.ceil((rangedAttackPower + 1) / HEAL_POWER)
     const allyRangedAttackParts = Math.ceil(
-      (healParts * HEAL_POWER + 1) / RANGED_ATTACK_POWER,
+      (healPower + 1) / RANGED_ATTACK_POWER,
     )
     if (allyRangedAttackParts + allyHealParts > MAX_CREEP_SIZE / 2) {
       console.log(
@@ -45,6 +41,10 @@ export default class RoomOutpostDefense {
       allyHealParts,
     )
     return ranger(allyRangedAttackParts, allyHealParts)
+  }
+
+  cancel() {
+    delete this.memory.f
   }
 
   get targetRoom() {

@@ -25,12 +25,21 @@ export function createUnwalkableMatrix() {
   return matrix
 }
 
-function roomCallback(roomName: string, costMatrix: CostMatrix) {
+export function roomCallback(
+  roomName: string,
+  costMatrix = new PathFinder.CostMatrix(),
+) {
   const room = Game.rooms[roomName]
   if (room) {
-    const sourceKeepers = findSourceKeepers(room)
+    let sourceKeepers: _HasRoomPosition[] = findSourceKeepers(room)
+    if (!sourceKeepers.length) {
+      sourceKeepers = room.buildings.find(STRUCTURE_KEEPER_LAIR)
+    }
     room.cache.sourceKeeperPositions = sourceKeepers.map((c) => c.pos)
-    room.cache.structurePositions = room.find(FIND_STRUCTURES).map((s) => s.pos)
+    room.cache.structurePositions = room
+      .find(FIND_STRUCTURES)
+      .filter((s) => !s.isWalkable)
+      .map((s) => s.pos)
   }
   const roomCache = global.Cache.rooms[roomName]
   if (!roomCache) {
