@@ -1,6 +1,6 @@
 import _ from 'lodash'
 import { NOTHING_TODO, SUCCESS, DONE } from 'constants/response'
-import { tradeBlackMap, energyCost } from 'utils/handleTerminal'
+import { getOrderValue } from 'utils/handleTerminal'
 import { resourcesToBuy, storageBuyThreshold } from 'config/terminal'
 
 export default function buyMissing(terminal: StructureTerminal) {
@@ -16,24 +16,15 @@ export default function buyMissing(terminal: StructureTerminal) {
   })
   if (!orders.length) return NOTHING_TODO
   const best = _.min(orders, (o) => {
-    const destRoomName = o.roomName
-    if (o.amount === 0) return -Infinity
-    if (!destRoomName || tradeBlackMap[destRoomName]) return -Infinity // don't trust black deals :>
-    return (
-      TERMINAL_MIN_SEND * o.price +
-      Game.market.calcTransactionCost(
-        TERMINAL_MIN_SEND,
-        room.name,
-        destRoomName,
-      ) *
-        energyCost
-    )
+    return getOrderValue(room, o, Infinity)
   })
   const result = Game.market.deal(
     best.id,
     Math.min(missingAmount, best.amount, terminal.store[missingResource]),
     room.name,
   )
-  if (result === 0) return SUCCESS
+  if (result === 0) {
+    return SUCCESS
+  }
   return NOTHING_TODO
 }

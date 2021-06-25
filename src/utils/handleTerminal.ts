@@ -1,9 +1,40 @@
 import _ from 'lodash'
 import handleLab from './handleLab'
 import handleFactory from './handleFactory'
+import MyRooms from 'room/MyRooms'
+import EnemiesPlanner from 'planner/military/EnemiesPlanner'
 
-interface SomeMap {
-  [key: string]: number
+function canTradeWith(roomName: string) {
+  let roomPath: RoomNeighbourPath | undefined
+  MyRooms.get().find((r) => {
+    return (roomPath = r.pathScanner.rooms[roomName])
+  })
+  if (!roomPath) {
+    return false
+  }
+  return !EnemiesPlanner.instance.isTradeDisallowed(roomPath.owner)
+}
+
+export function getOrderValue(room: Room, o: Order, blackValue: number) {
+  const destRoomName = o.roomName
+  if (o.amount === 0) {
+    return blackValue
+  }
+  if (!destRoomName) {
+    return o.price
+  }
+  if (!canTradeWith(destRoomName)) {
+    return blackValue // don't trust black deals :>
+  }
+  return (
+    TERMINAL_MIN_SEND * o.price +
+    Game.market.calcTransactionCost(
+      TERMINAL_MIN_SEND,
+      room.name,
+      destRoomName,
+    ) *
+      energyCost
+  )
 }
 
 export function getAverageCost(resourceType: ResourceConstant) {
@@ -21,42 +52,6 @@ export function getAverageCost(resourceType: ResourceConstant) {
 }
 
 export const energyCost = getAverageCost(RESOURCE_ENERGY)
-const tradeBlackList = [
-  'W4N29',
-  'W6N33',
-  'W7N33',
-  'W9N32',
-  'W11N35',
-  'W11N34',
-  'W11N25',
-  'W5N31',
-  'E1N29',
-  'W11N25',
-  'W8N38',
-  'W9N38',
-  'W9N39',
-  'W13N33',
-  'W12N37',
-  'W13N33',
-  'W15N32',
-  'W15N29',
-  'W16N39',
-  'W22N21',
-  'RoyalKnight',
-  'sjfhsjfh',
-  'TPEZ',
-  'Unwannadie',
-  'WheatEars',
-  'wjx123xxx',
-  'wyt',
-  'Yuandiaodiaodiao',
-  'ZAchiever',
-  'zzsstt644',
-]
-export const tradeBlackMap: SomeMap = {}
-tradeBlackList.forEach((n) => {
-  tradeBlackMap[n] = 1
-})
 
 export default function handleTerminal(
   terminal: StructureTerminal,

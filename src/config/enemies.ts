@@ -15,6 +15,11 @@ const config: EnemiesConfig = {
    */
   players: [INVADER_USERNAME, SOURCE_KEEPER_USERNAME, 'Christianyo'],
   /**
+   * Choose players that should not trade with
+   * all enemies also won't have trade relations
+   */
+  tradeShutdown: ['ZeusIsComing', 'Przemo199', 'Tibilius'],
+  /**
    * Choose players that wont be attacked
    * (specify tolerance as max harmful bodypart count)
    */

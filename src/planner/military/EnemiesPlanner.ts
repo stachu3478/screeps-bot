@@ -7,6 +7,7 @@ export interface EnemiesConfig {
   enableWar: boolean
   aliances: string[]
   players: string[]
+  tradeShutdown: string[]
   clones: boolean
   maxCost: number
   nukes: boolean
@@ -29,6 +30,13 @@ export default class EnemiesPlanner {
     this.clones = new CloneScanner()
     this.enemies = config.players
     this.config = config
+  }
+
+  isTradeDisallowed(username?: string) {
+    return (
+      this.config.tradeShutdown.indexOf(username || '') !== -1 ||
+      this.isEnemy(username)
+    )
   }
 
   isEnemy(username?: string) {

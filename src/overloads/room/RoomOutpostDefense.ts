@@ -34,6 +34,7 @@ export default class RoomOutpostDefense {
         allyRangedAttackParts,
         allyHealParts,
       )
+      this.cancel()
     }
     console.log(
       'Requesting defender with',
