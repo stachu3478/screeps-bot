@@ -5,6 +5,8 @@ import _ from 'lodash'
 import recycle from 'routine/recycle'
 import remoteMining from 'config/remoteMining'
 import { maintainBuildingActively } from 'routine/work/maintainBuilding'
+import autoBuild from 'routine/work/autoBuild'
+import { NOTHING_TODO } from 'constants/response'
 
 export interface Collector extends RoleCreep<Role.COLLECTOR> {
   memory: CollectorMemory
@@ -98,10 +100,14 @@ export default ProfilerPlus.instance.overrideFn(function collector(
       creep.memory.put = structureToPutIn?.id
       if (creep.memory.room !== creep.room.name) {
         creep.moveToRoom(creep.memory.room)
-        maintainBuildingActively(creep, creep.pos, STRUCTURE_ROAD)
+        if (autoBuild(creep) === NOTHING_TODO) {
+          maintainBuildingActively(creep, creep.pos, STRUCTURE_ROAD)
+        }
       } else if (structureToPutIn && !creep.pos.isNearTo(structureToPutIn)) {
         move.cheap(creep, structureToPutIn, true, 1, 1)
-        maintainBuildingActively(creep, creep.pos, STRUCTURE_ROAD)
+        if (autoBuild(creep) === NOTHING_TODO) {
+          maintainBuildingActively(creep, creep.pos, STRUCTURE_ROAD)
+        }
       } else if (structureToPutIn) {
         const result = creep.transfer(structureToPutIn, RESOURCE_ENERGY)
         if (result === 0) {

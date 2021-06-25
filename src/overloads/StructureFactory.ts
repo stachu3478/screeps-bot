@@ -30,7 +30,7 @@ StructureFactory.prototype.reloadNeeds = function () {
   }
 }
 
-StructureFactory.prototype.reloadNeeds = function () {
+StructureFactory.prototype.reloadDumps = function () {
   if (!this.cache.dumps) {
     this.cache.dumps = this.router.findNotNeededRecipeComponent()
   }

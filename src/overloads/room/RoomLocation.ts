@@ -54,8 +54,8 @@ export default class RoomLocation {
   findRoomPathStep(
     current: string,
     to: string,
-    myRooms = MyRooms,
     using?: Room,
+    myRooms = MyRooms,
   ): RoomNeighbourPath | undefined {
     const allRooms = myRooms.get()
     const found =

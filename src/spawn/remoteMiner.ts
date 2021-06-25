@@ -8,7 +8,7 @@ import SpawnCreep from './spawnCreep'
 
 export default class SpawnRemoteMiner extends SpawnCreep {
   private missingRemoteLookup?: Lookup<RoomPosition>
-  protected minEnergy = 1300
+  protected minEnergy = 2500
   protected allowWhenEnergyFull = true
 
   run() {

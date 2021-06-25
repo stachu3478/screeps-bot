@@ -4,6 +4,7 @@ import SpawnCreep from './spawnCreep'
 
 export default class SpawnReserver extends SpawnCreep {
   private missingRoom?: string
+  protected minEnergy = 2500
   protected allowWhenEnergyFull = true
   private claimParts = 0
 

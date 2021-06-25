@@ -79,10 +79,7 @@ export default class SpawnCollector extends SpawnCreep {
 
   private getCarryCount(creepName: string, target: string) {
     const creep = Game.creeps[creepName] as Collector
-    if (!creep) {
-      return 0
-    }
-    if (creep.isRetired) {
+    if (!creep || creep.isRetired) {
       return 0
     }
     const targetMatches = creep.memory.collect === target

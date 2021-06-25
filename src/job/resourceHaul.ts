@@ -2,6 +2,7 @@ import { ACCEPTABLE } from 'constants/response'
 import pick from 'routine/haul/pick'
 import Hauler from 'role/creep/hauler.d'
 import { findHaulable } from 'utils/find'
+import { getFillableGenericStruture } from 'utils/fill'
 
 function getHaulable(structure?: StructureStorage | StructureTerminal) {
   return structure && structure.store.getUsedCapacity() && structure
@@ -9,8 +10,10 @@ function getHaulable(structure?: StructureStorage | StructureTerminal) {
 
 export function haulCurrentRoom(creep: Hauler) {
   const mem = creep.memory
-  const storage = creep.motherRoom.storage
-  if (!storage || storage.store.getFreeCapacity() < 10000) return false
+  const storage = getFillableGenericStruture(creep.motherRoom, 10000) // why was only storage
+  if (!storage) {
+    return false
+  }
   if (pick(creep) in ACCEPTABLE) {
     mem.state = State.PICK
     return true

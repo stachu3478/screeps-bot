@@ -27,8 +27,8 @@ import SpawnReserver from './reserver'
 const spawningClasses = [
   SpawnScout,
   SpawnDefender,
-  SpawnRemoteMiner,
   SpawnCollector,
+  SpawnRemoteMiner,
   SpawnReserver,
 ]
 export const spawnClassRoleBinding: typeof SpawnCreep[] = []
