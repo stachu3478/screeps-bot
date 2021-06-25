@@ -1,6 +1,6 @@
 import { ALL_DIRECTIONS } from 'constants/support'
 import _ from 'lodash'
-import RemoteMiningPlanner from './RemoteMiningPlanner'
+import RemoteMiningPlanner from './remoteMining/RemoteMiningPlanner'
 
 export default class RoomInspector {
   private room: Room

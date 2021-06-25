@@ -1,5 +1,4 @@
 import { SUCCESS, NOTHING_TODO, DONE } from '../constants/response'
-import move from 'utils/path'
 import { keepJournal } from './arrive/journal'
 import { ensureEmpty } from 'role/creep/shared'
 

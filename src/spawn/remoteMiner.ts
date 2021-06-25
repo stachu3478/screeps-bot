@@ -1,7 +1,8 @@
 import remoteMining from 'config/remoteMining'
 import MemoryHandler from 'handler/MemoryHandler'
 import _ from 'lodash'
-import RemoteMiningPlanner from 'planner/RemoteMiningPlanner'
+import RemoteMiningPlanner from 'planner/remoteMining/RemoteMiningPlanner'
+import RemoteMiningValidator from 'planner/remoteMining/RemoteMiningValidator'
 import { RemoteMiner, RemoteMinerMemory } from 'role/creep/remoteMiner'
 import { progressiveMiner } from './body/work'
 import SpawnCreep from './spawnCreep'
@@ -56,7 +57,10 @@ export default class SpawnRemoteMiner extends SpawnCreep {
       const minerName = memory.miningCreep
       const position = RoomPosition.from(memory.miningPosition)
       if (
-        !RemoteMiningPlanner.shouldMineIn(position.roomName, this.spawn.room)
+        !new RemoteMiningValidator(
+          position.roomName,
+          this.spawn.room,
+        ).validateRoom()
       ) {
         RemoteMiningPlanner.removeSource(this.spawn.room, lookup)
         return false

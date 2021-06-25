@@ -1,10 +1,10 @@
-import autoRepair from 'routine/work/autoRepair'
 import ProfilerPlus from 'utils/ProfilerPlus'
 import MemoryHandler from 'handler/MemoryHandler'
 import move from 'utils/path'
 import _ from 'lodash'
 import recycle from 'routine/recycle'
 import remoteMining from 'config/remoteMining'
+import { maintainBuildingActively } from 'routine/work/maintainBuilding'
 
 export interface Collector extends Creep {
   memory: CollectorMemory
@@ -99,10 +99,10 @@ export default ProfilerPlus.instance.overrideFn(function collector(
       creep.memory.put = structureToPutIn?.id
       if (creep.memory.room !== creep.room.name) {
         creep.moveToRoom(creep.memory.room)
-        autoRepair(creep)
+        maintainBuildingActively(creep, creep.pos, STRUCTURE_ROAD)
       } else if (structureToPutIn && !creep.pos.isNearTo(structureToPutIn)) {
         move.cheap(creep, structureToPutIn, true, 1, 1)
-        autoRepair(creep)
+        maintainBuildingActively(creep, creep.pos, STRUCTURE_ROAD)
       } else if (structureToPutIn) {
         const result = creep.transfer(structureToPutIn, RESOURCE_ENERGY)
         if (result === 0) {

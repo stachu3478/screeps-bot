@@ -1,7 +1,7 @@
 import _ from 'lodash'
 import BuildingRoute from 'job/buildingRoute/BuildingRoute'
 import checkIntegrity from 'planner/place/checkIntegrity'
-import RemoteMiningPlanner from 'planner/RemoteMiningPlanner'
+import RemoteMiningPlanner from 'planner/remoteMining/RemoteMiningPlanner'
 
 const charToPositionMapper = (
   room: Room,
@@ -146,53 +146,6 @@ export default [
     structure: STRUCTURE_OBSERVER,
     positions: (room: Room) => [room.positions.leastAvailable],
     from: findStorageAndTerminal,
-    forceReplacement,
-  },
-  // remote roads for fast remote moving
-  {
-    structure: STRUCTURE_ROAD,
-    positions: (room: Room) => {
-      const roads = room.memory.remoteRoads || ''
-      const positions =
-        roads
-          .match(/.{1,2}/g)
-          ?.map((lookup) =>
-            RoomPosition.from(lookup as Lookup<RoomPosition>),
-          ) || []
-      const validPositions = positions.filter((p) => {
-        return RemoteMiningPlanner.shouldMineIn(p.roomName, room)
-      })
-      room.memory.remoteRoads = validPositions.map((p) => p.lookup).join('')
-      return validPositions
-    },
-    from: findStorageTerminalAndContainers,
-    // it is expensive, lets check that rarely
-    if: (room: Room) => (room.cache.remoteRoadBuilt || 0) > Game.time,
-    done: (room: Room) => {
-      const roads = room.memory.remoteRoads || ''
-      const positions =
-        roads
-          .match(/.{1,2}/g)
-          ?.map((lookup) =>
-            RoomPosition.from(lookup as Lookup<RoomPosition>),
-          ) || []
-      room.cache.remoteRoadBuilt = Math.min.apply(
-        null,
-        positions
-          .map((p) => {
-            if (!Game.rooms[p.roomName]) {
-              return Game.time + 10000
-            }
-            const road = p.building(STRUCTURE_ROAD)
-            if (!road) {
-              return Game.time + 10000
-            }
-            return road.vaporTime
-          })
-          .concat([Game.time + 10000]),
-      )
-      return positions
-    },
     forceReplacement,
   },
 ].map((options) => new BuildingRoute(options))

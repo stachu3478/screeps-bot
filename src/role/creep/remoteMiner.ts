@@ -4,9 +4,9 @@ import autoBuild from 'routine/work/autoBuild'
 import ProfilerPlus from 'utils/ProfilerPlus'
 import MemoryHandler from 'handler/MemoryHandler'
 import move from 'utils/path'
-import maintainContainer from 'routine/work/maintainContainer'
 import recycle from 'routine/recycle'
 import { tankPack } from 'spawn/body/body'
+import { maintainBuildingActively } from 'routine/work/maintainBuilding'
 
 export interface RemoteMiner extends Creep {
   memory: RemoteMinerMemory
@@ -53,36 +53,13 @@ export default ProfilerPlus.instance.overrideFn(function miner(
     move.cheap(creep, miningPosition)
   } else {
     const source = sourcePosition.lookFor(LOOK_SOURCES)[0]
-    if (creep.store.getFreeCapacity() === 0) {
-      maintainContainer(creep, miningPosition)
-    }
-    switch (creep.memory.state) {
-      case State.HARVESTING:
-        creep.harvest(source)
-        break
-      case State.REPAIR:
-        switch (autoRepair(creep)) {
-          case NO_RESOURCE:
-            creep.memory.state = State.HARVESTING
-            break
-          case NOTHING_TODO:
-            creep.memory.state = State.BUILD
-            break
-        }
-        break
-      case State.BUILD:
-        switch (autoBuild(creep)) {
-          case NO_RESOURCE:
-            creep.memory.state = State.HARVESTING
-            break
-          case NOTHING_TODO:
-          case FAILED:
-            creep.memory.state = State.HARVESTING
-            break
-        }
-        break
-      default:
-        creep.memory.state = State.HARVESTING
+    if (
+      !(
+        !creep.store.getFreeCapacity() &&
+        maintainBuildingActively(creep, miningPosition, STRUCTURE_CONTAINER)
+      )
+    ) {
+      creep.harvest(source)
     }
   }
 },

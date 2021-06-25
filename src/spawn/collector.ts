@@ -1,6 +1,6 @@
 import MemoryHandler from 'handler/MemoryHandler'
 import _ from 'lodash'
-import RemoteMiningPlanner from 'planner/RemoteMiningPlanner'
+import RemoteMiningPlanner from 'planner/remoteMining/RemoteMiningPlanner'
 import { Collector, CollectorMemory } from 'role/creep/collector'
 import { progressiveLiteWorker } from './body/work'
 import SpawnCreep from './spawnCreep'

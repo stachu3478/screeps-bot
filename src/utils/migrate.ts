@@ -1,4 +1,8 @@
 import _ from 'lodash'
 
-export const VERSION = 1
-export default function runMigration() {}
+export const VERSION = 2
+export default function runMigration() {
+  _.forEach(Memory.rooms, (roomMemory) => {
+    delete roomMemory.remoteRoads
+  })
+}
