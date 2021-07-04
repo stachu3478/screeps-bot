@@ -1,7 +1,6 @@
 import _ from 'lodash'
 import BuildingRoute from 'job/buildingRoute/BuildingRoute'
 import checkIntegrity from 'planner/place/checkIntegrity'
-import RemoteMiningPlanner from 'planner/remoteMining/RemoteMiningPlanner'
 
 const charToPositionMapper = (
   room: Room,
@@ -18,7 +17,10 @@ const findStorageTerminalAndContainers = (room: Room) =>
   room.buildings.get(STRUCTURE_STORAGE, STRUCTURE_TERMINAL, STRUCTURE_CONTAINER)
 export const findStorageAndTerminal = (room: Room) =>
   room.buildings.get(STRUCTURE_STORAGE, STRUCTURE_TERMINAL)
-const forceReplacement = (room: Room) => room.buildings.spawns.length > 1
+const exclusive = (structure: Structure) =>
+  structure.structureType !== STRUCTURE_RAMPART &&
+  (structure.structureType !== STRUCTURE_SPAWN ||
+    structure.room.buildings.spawns.length > 1)
 export default [
   // most important spawn
   {
@@ -26,7 +28,7 @@ export default [
     positions: (room: Room) =>
       charToPositionMapper(room, room.memory.structs, 1, 1),
     from: findStorageTerminalAndContainers,
-    forceReplacement,
+    exclusive,
   },
   // mostly important defense
   {
@@ -34,14 +36,13 @@ export default [
     positions: (room: Room) =>
       charToPositionMapper(room, room.memory.structs, 5, 6),
     from: findStorageTerminalAndContainers,
-    forceReplacement,
+    exclusive,
   },
   // protect your base
   {
     structure: STRUCTURE_RAMPART,
     positions: (room: Room) => room.positions.forShield,
     from: findStorageTerminalAndContainers,
-    forceReplacement,
   },
   /*{ // todo get wall positions
     structure: STRUCTURE_WALL,
@@ -53,7 +54,7 @@ export default [
     positions: (room: Room) =>
       charToPositionMapper(room, room.memory.structs, 2, 1),
     from: findStorageTerminalAndContainers,
-    forceReplacement,
+    exclusive,
   },
   // extend spawn
   {
@@ -61,7 +62,7 @@ export default [
     positions: (room: Room) =>
       charToPositionMapper(room, room.memory.structs, 15),
     from: findStorageTerminalAndContainers,
-    forceReplacement,
+    exclusive,
   },
   // roads for fast moving
   {
@@ -75,7 +76,7 @@ export default [
         ...room.buildings.roads.map((r) => r.vaporTime),
         1500,
       )),
-    forceReplacement,
+    exclusive,
   },
   // other useful buildings
   {
@@ -83,7 +84,7 @@ export default [
     positions: (room: Room) =>
       charToPositionMapper(room, room.memory.structs, 3, 1),
     from: findStorageAndTerminal,
-    forceReplacement,
+    exclusive,
   },
   {
     structure: STRUCTURE_LINK,
@@ -94,33 +95,33 @@ export default [
       return charToPositionMapper(room, links)
     },
     from: findStorageAndTerminal,
-    forceReplacement,
+    exclusive,
   },
   {
     structure: STRUCTURE_EXTRACTOR,
     positions: (room: Room) => (room.mineral ? [room.mineral.pos] : []),
     from: findStorageAndTerminal,
-    forceReplacement,
+    exclusive,
   },
   {
     structure: STRUCTURE_SPAWN,
     positions: (room: Room) =>
       charToPositionMapper(room, room.memory.structs, 13, 2),
     from: findStorageAndTerminal,
-    forceReplacement,
+    exclusive,
   },
   {
     structure: STRUCTURE_FACTORY,
     positions: (room: Room) =>
       charToPositionMapper(room, room.memory.structs, 4, 1),
     from: findStorageAndTerminal,
-    forceReplacement,
+    exclusive,
   },
   {
     structure: STRUCTURE_LAB,
     positions: (room: Room) => room.positions.forLabs,
     from: findStorageAndTerminal,
-    forceReplacement,
+    exclusive,
     done: (room: Room) => {
       room.memory.structs = checkIntegrity(
         room.memory.structs || '',
@@ -133,19 +134,19 @@ export default [
     positions: (room: Room) =>
       charToPositionMapper(room, room.memory.structs, 11, 1),
     from: findStorageAndTerminal,
-    forceReplacement,
+    exclusive,
   },
   {
     structure: STRUCTURE_NUKER,
     positions: (room: Room) =>
       charToPositionMapper(room, room.memory.structs, 12, 1),
     from: findStorageAndTerminal,
-    forceReplacement,
+    exclusive,
   },
   {
     structure: STRUCTURE_OBSERVER,
     positions: (room: Room) => [room.positions.leastAvailable],
     from: findStorageAndTerminal,
-    forceReplacement,
+    exclusive,
   },
 ].map((options) => new BuildingRoute(options))

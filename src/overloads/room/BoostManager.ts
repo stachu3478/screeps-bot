@@ -150,7 +150,7 @@ export default class BoostManager {
   }
 
   prepareData(
-    creepMemory: CreepMemory,
+    creepMemory: CreepMemoryTraits,
     parts: BodyPartConstant[],
     actions: string[],
     body: BodyPartConstant[],

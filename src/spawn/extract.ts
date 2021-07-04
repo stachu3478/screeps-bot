@@ -10,11 +10,7 @@ export function needsExtractor(spawn: StructureSpawn, extractorCount?: number) {
 }
 
 export default function extract(spawn: StructureSpawn) {
-  let memory = {
-    role: Role.EXTRACTOR,
-    room: spawn.room.name,
-    deprivity: 0,
-  }
+  let memory = { role: Role.EXTRACTOR }
   const body = progressiveWorker(spawn.room.energyCapacityAvailable)
   const boostRequests = spawn.room.boosts.prepareData(
     memory,

@@ -42,12 +42,13 @@ StructureSpawn.prototype.getDirections = function () {
 StructureSpawn.prototype.trySpawnCreep = function (
   body: BodyPartConstant[],
   letter: string,
-  memory: CreepMemory,
+  memoryTraits: CreepMemoryTraits,
   retry: boolean = false,
   cooldown: number = 100,
   boost: BoostInfo[] = [],
 ) {
   const name = uniqName(letter)
+  const memory = { room: this.room.name, deprivity: 0, ...memoryTraits }
   const result = this.spawnCreep(body, name, { memory, dryRun: true })
   if (result !== 0) {
     if (result !== ERR_NOT_ENOUGH_ENERGY)

@@ -2,6 +2,7 @@ import _ from 'lodash'
 import RoomEnemies from 'room/military/RoomEnemies'
 import { ranger } from 'spawn/body/body'
 import remoteMining from '../../config/remoteMining'
+import { BODYPART_HITS } from '../../constants/support'
 
 export default class RoomOutpostDefense {
   private memory: RoomMemory
@@ -25,7 +26,7 @@ export default class RoomOutpostDefense {
     if (!this.memory.f) {
       return false
     }
-    const [, rangedAttackPower, healPower, hits] = this.memory.f
+    const [, rangedAttackPower, healPower, hits = BODYPART_HITS] = this.memory.f
     const effectiveDamageNeeded = Math.ceil(
       hits / remoteMining.sources.maxFightTime,
     )

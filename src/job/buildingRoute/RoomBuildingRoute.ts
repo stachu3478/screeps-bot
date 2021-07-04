@@ -69,9 +69,7 @@ export default class RoomBuildingRoute {
         return false
       }
       const structuresAt = pos.lookFor(LOOK_STRUCTURES)
-      const matchingStructure = structuresAt.some(
-        (s) => s.structureType === this.route.structure,
-      )
+      const matchingStructure = pos.building(this.route.structure)
       if (matchingStructure) {
         return false
       }
@@ -88,10 +86,14 @@ export default class RoomBuildingRoute {
   }
 
   private clearSpace(structuresAt: Structure[]) {
-    if (this.forceReplacement) {
-      return structuresAt.some((s) => !s.isWalkable && s.destroy() === OK)
+    return structuresAt.some((s) => this.exclusiveFor(s) && s.destroy() === OK)
+  }
+
+  private exclusiveFor(structure: Structure) {
+    if (typeof this.route.exclusive === 'function') {
+      return this.route.exclusive(structure)
     }
-    return false
+    return !!this.route.exclusive
   }
 
   private get room() {
@@ -100,12 +102,5 @@ export default class RoomBuildingRoute {
 
   private get positions() {
     return this.route.positions(this.room)
-  }
-
-  private get forceReplacement() {
-    if (typeof this.route.forceReplacement === 'function') {
-      return this.route.forceReplacement(this.room)
-    }
-    return !!this.route.forceReplacement
   }
 }

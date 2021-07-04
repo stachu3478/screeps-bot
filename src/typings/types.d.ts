@@ -4,10 +4,15 @@ interface SourceMap {
 
 type RouteStatus = [number, number, number]
 // memory extension samples
-interface CreepMemory {
+interface CreepMemoryBase {
+  room: string
+  deprivity: number
+}
+interface CreepMemoryTraits {
+  room?: string
+  deprivity?: number
   role: Role
   newRole?: number
-  room: string
   state?: State
   _move?: {
     path: string
@@ -18,7 +23,6 @@ interface CreepMemory {
     }
     t?: number
   }
-  deprivity: number
   /**
    * Last room where the creep was
    */
@@ -43,6 +47,11 @@ interface CreepMemory {
   mine?: Lookup<RoomPosition>
   reserve?: string
   collect?: Lookup<RoomPosition>
+}
+
+interface CreepMemory extends CreepMemoryTraits {
+  room: string
+  deprivity: number
 }
 
 interface Stats {

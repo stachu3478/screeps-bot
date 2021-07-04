@@ -12,10 +12,8 @@ export default class SpawnReserver extends SpawnCreep {
     if (!this.missingRoom) {
       throw new Error('Missing remote room for new creep to assign')
     }
-    const memory: CreepMemory = {
+    const memory: CreepMemoryTraits = {
       role: this.role,
-      room: this.room.name,
-      deprivity: 0,
       reserve: this.missingRoom,
     }
     const body = new Array(this.claimParts)

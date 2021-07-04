@@ -20,9 +20,8 @@ export function spawnDepositMiner(spawn: StructureSpawn) {
     cost,
     depositTraits.lastCooldown,
   )
-  const memory: CreepMemory = {
+  const memory: CreepMemoryTraits = {
     role: Role.DEPOSIT_MINER,
-    room: spawn.room.name,
     deprivity: cost,
   }
   spawn.trySpawnCreep(parts, 'I', memory)

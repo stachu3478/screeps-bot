@@ -16,10 +16,9 @@ export default function callRescue(room: Room) {
       return false
     }
     console.log('Try to spawn creep')
-    const memory: CreepMemory = {
+    const memory: CreepMemoryTraits = {
       role: Role.COLONIZER,
       room: room.name,
-      deprivity: 0,
       newRole: Role.MINER,
     }
     const body = progressiveMobileWorker(

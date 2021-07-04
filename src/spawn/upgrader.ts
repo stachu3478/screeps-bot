@@ -37,11 +37,7 @@ export default function spawnUpgrader(
       mem.workControllerOver--
     }
   }
-  const creepMemory: CreepMemory = {
-    role: Role.UPGRADER,
-    room: spawn.room.name,
-    deprivity: 0,
-  }
+  const creepMemory: CreepMemoryTraits = { role: Role.UPGRADER }
   const boostRequests = spawn.room.boosts.prepareData(
     creepMemory,
     [CARRY, WORK],

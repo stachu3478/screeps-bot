@@ -16,11 +16,7 @@ export default class SpawnScout extends SpawnCreep {
 
   run() {
     const spawn = this.spawn
-    spawn.trySpawnCreep([MOVE], 'S', {
-      role: this.role,
-      room: spawn.room.name,
-      deprivity: 0,
-    })
+    spawn.trySpawnCreep([MOVE], 'S', { role: this.role })
   }
 
   get role() {

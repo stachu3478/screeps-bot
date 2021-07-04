@@ -95,11 +95,7 @@ export default ProfilerPlus.instance.overrideFn(function loop(
     spawn.trySpawnCreep(
       progressiveLiteWorker(Math.max(SPAWN_ENERGY_START, energyDeclared)),
       'J',
-      {
-        role: Role.HARVESTER,
-        room: spawn.room.name,
-        deprivity: 0,
-      },
+      { role: Role.HARVESTER },
     )
   } else if (needsFighters(needsFighter)) {
     spawnFighter(spawn)

@@ -16,6 +16,7 @@ export default function draw(
   target: AnyStoreStructure | Tombstone | Ruin | null | undefined = creep.memory
     ._draw && Game.getObjectById(creep.memory._draw),
   resourceType: ResourceConstant = creep.memory._drawType || RESOURCE_ENERGY,
+  currentRoomOnly = false,
 ) {
   if (!target) return NOTHING_TODO
   const result = memoryLessDraw(
@@ -23,6 +24,7 @@ export default function draw(
     target,
     resourceType,
     creep.memory._drawAmount,
+    currentRoomOnly,
   )
   if (result === SUCCESS) {
     delete creep.memory._draw

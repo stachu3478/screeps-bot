@@ -19,7 +19,7 @@ declare class BoostManager {
     done?: boolean,
   ) => void
   prepareData: (
-    creepMemory: CreepMemory,
+    creepMemory: CreepMemoryTraits,
     parts: BodyPartConstant[],
     actions: string[],
     body: BodyPartConstant[],

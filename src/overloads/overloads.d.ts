@@ -69,7 +69,7 @@ interface StructureSpawn {
   trySpawnCreep: (
     body: BodyPartConstant[],
     letter: string,
-    toMemory: CreepMemory,
+    toMemory: CreepMemoryTraits,
     retry?: boolean,
     cooldown?: number,
     boost?: BoostInfo[],

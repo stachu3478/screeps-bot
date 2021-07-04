@@ -8,11 +8,7 @@ export function needsMover(spawn: StructureSpawn, count: number) {
 }
 
 export function spawnMover(spawn: StructureSpawn) {
-  const memory = {
-    role: Role.MOVER,
-    room: spawn.room.name,
-    deprivity: 10,
-  }
+  const memory = { role: Role.MOVER, deprivity: 10 }
   const moveParts = Math.min(
     spawn.room.energyAvailable / 50,
     spawn.room.memory._moveNeeds || 0,

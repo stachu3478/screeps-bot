@@ -18,6 +18,6 @@ export function spawnClaimer(spawn: StructureSpawn) {
     spawn.room.energyAvailable,
     ClaimPlanner.instance.claimerDeaths,
   )
-  const memory = { role: Role.CLAIMER, room: spawn.room.name, deprivity: 0 }
+  const memory = { role: Role.CLAIMER }
   spawn.trySpawnCreep(body, 'C', memory, false, 20)
 }

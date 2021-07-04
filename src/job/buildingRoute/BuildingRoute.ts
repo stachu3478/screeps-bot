@@ -23,9 +23,10 @@ interface BuildingRouteOptions {
    */
   done?: (room: Room) => any
   /**
-   * Whether building should be replaced if an other type exists there
+   * Whether only this building should be placed here
+   * Can be a function against placed structure
    */
-  forceReplacement?: boolean | ((room: Room) => boolean)
+  exclusive?: boolean | ((structure: Structure) => boolean)
   /**
    * Whether building should be replaced if an other type exists there
    */
@@ -66,8 +67,8 @@ export default class BuildingRoute {
     return this.options.structure
   }
 
-  get forceReplacement() {
-    return this.options.forceReplacement
+  get exclusive() {
+    return this.options.exclusive
   }
 
   get remote() {

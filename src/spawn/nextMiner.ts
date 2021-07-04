@@ -13,9 +13,8 @@ export function spawnNextMiner(spawn: StructureSpawn) {
   if (freeSource === -1) return
   spawn.cache.sourceId = freeSource
   const spec = spawn.room.sources.getDistance(freeSource)
-  const memory: MinerMemory = {
+  const memory: CreepMemoryTraits = {
     role: Role.MINER,
-    room: spawn.room.name,
     deprivity: spec,
   }
   spawn.trySpawnCreep(parts, 'M', memory)

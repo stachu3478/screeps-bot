@@ -21,7 +21,6 @@ export function spawnHauler(spawn: StructureSpawn) {
   )
   spawn.trySpawnCreep(carryPacks(carryPackCount), 'H', {
     role: Role.HAULER,
-    room: spawn.room.name,
     deprivity: 10,
   })
 }

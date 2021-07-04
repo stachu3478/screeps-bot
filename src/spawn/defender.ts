@@ -6,11 +6,7 @@ export default class SpawnDefender extends SpawnCreep {
   private fulfillBody?: RangerBodyPartConstant[]
 
   run() {
-    const memory = {
-      role: this.role,
-      room: this.spawn.room.name,
-      deprivity: 0,
-    }
+    const memory = { role: this.role }
     this.spawn.trySpawnCreep(this.body, 'F', memory, false, 10)
   }
 

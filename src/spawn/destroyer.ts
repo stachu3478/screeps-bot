@@ -33,10 +33,9 @@ export function spawnDestroyer(spawn: StructureSpawn) {
   const bodyDef = createBodyDefinition(room, entryDamage)
 
   const body = bodyDef.body
-  const memory: CreepMemory = {
+  const memory: CreepMemoryTraits = {
     role: Role.BOOSTER,
     newRole: Role.DESTROYER,
-    room: spawn.room.name,
     deprivity: 50,
   }
   const creepName = uniqName('Y' + spawn.name)

@@ -9,10 +9,6 @@ export function needsRanger(spawn: StructureSpawn, count: number) {
 }
 
 export function spawnRanger(spawn: StructureSpawn) {
-  const memory = {
-    role: Role.RANGER,
-    room: spawn.room.name,
-    deprivity: 0,
-  }
+  const memory = { role: Role.RANGER }
   spawn.trySpawnCreep(ranger(), 'R', memory, false, 10)
 }

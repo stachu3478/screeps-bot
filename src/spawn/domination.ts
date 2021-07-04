@@ -6,7 +6,7 @@ export default function domination(
 ) {
   const mem = spawn.room.memory
   if (!mem._attack) return
-  const memory = { role: Role.COMMANDER, room: spawn.room.name, deprivity: 0 }
+  const memory = { role: Role.COMMANDER }
   const body = progressiveCommander(
     spawn.room.energyCapacityAvailable,
     mem._attackLevel || 3,

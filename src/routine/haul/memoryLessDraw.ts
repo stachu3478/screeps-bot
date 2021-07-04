@@ -12,6 +12,7 @@ export default function memoryLessDraw(
   target: AnyStoreStructure | Tombstone | Ruin,
   resourceType: ResourceConstant,
   amount?: number,
+  currentRoomOnly = false,
 ) {
   if (creep.store.getFreeCapacity(resourceType) === 0) return DONE
   const withdrawAmount = Math.min(
@@ -24,7 +25,8 @@ export default function memoryLessDraw(
     if (creep.room.name !== target.pos.roomName) {
       creep.moveToRoom(target.pos.roomName)
     } else {
-      move.cheap(creep, target)
+      const maxRooms = currentRoomOnly ? 1 : 16
+      move.cheap(creep, target, true, 1, maxRooms)
     }
   } else if (result === ERR_NOT_ENOUGH_RESOURCES) return NOTHING_TODO
   else if (result !== 0) return FAILED

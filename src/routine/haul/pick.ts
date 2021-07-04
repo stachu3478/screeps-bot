@@ -18,6 +18,7 @@ interface AutoPickCache extends CreepCache {
 
 export default ProfilerPlus.instance.overrideFn(function pick(
   creep: AutoPickCreep,
+  currentRoomOnly = false,
 ) {
   const cache = creep.cache
   let target = cache.pick && Game.getObjectById(cache.pick)
@@ -31,7 +32,10 @@ export default ProfilerPlus.instance.overrideFn(function pick(
   const result = creep.pickup(target)
   remaining -= target.amount
   if (result === ERR_NOT_IN_RANGE) {
-    if (creep.moveTo(target) === ERR_NO_PATH) return NOTHING_TODO
+    const opts = currentRoomOnly ? { maxRooms: 1 } : {}
+    if (creep.moveTo(target, opts) === ERR_NO_PATH) {
+      return NOTHING_TODO
+    }
     return NOTHING_DONE
   }
 

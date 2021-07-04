@@ -60,7 +60,7 @@ export default ProfilerPlus.instance.overrideFn(function harvester(
       } else creep.memory.state = State.IDLE
       break
     case State.PICK:
-      switch (pick(creep)) {
+      switch (pick(creep, true)) {
         case FAILED:
         case NOTHING_TODO:
         case DONE:
@@ -70,7 +70,7 @@ export default ProfilerPlus.instance.overrideFn(function harvester(
       }
       break
     case State.DRAW:
-      switch (draw(creep)) {
+      switch (draw(creep, null, undefined, true)) {
         case FAILED:
         case NOTHING_TODO:
         case DONE:
