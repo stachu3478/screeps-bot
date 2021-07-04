@@ -51,6 +51,10 @@ export default class Corpus<
     return baseAmount
   }
 
+  get effectiveHitsMax() {
+    return this.object?.hitsMax || 0
+  }
+
   get cost() {
     return 0
   }
@@ -61,7 +65,7 @@ export default class Corpus<
 
   get safeDistance() {
     if (this.object?.owner.username === SOURCE_KEEPER_USERNAME) {
-      return 4
+      return 3
     }
     if (this.hasActive(RANGED_ATTACK)) {
       return 2 + CREEP_RANGE

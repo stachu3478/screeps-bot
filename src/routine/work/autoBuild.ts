@@ -1,3 +1,4 @@
+import { CREEP_RANGE } from 'constants/support'
 import {
   SUCCESS,
   NOTHING_TODO,
@@ -18,8 +19,8 @@ export default function autoBuild(creep: AutoBuildCreep) {
   const cache = creep.cache
   if (storedEnergy === 0) return NO_RESOURCE
   let target = cache.build && Game.getObjectById(cache.build)
-  if (!target) {
-    target = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, 3)[0]
+  if (!target || target.pos.getRangeTo(creep) > CREEP_RANGE) {
+    target = creep.pos.findInRange(FIND_CONSTRUCTION_SITES, CREEP_RANGE)[0]
     if (!target) return NOTHING_TODO
     cache.build = target.id
   }

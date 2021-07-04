@@ -12,6 +12,5 @@ interface HarvesterCache extends CreepCache {
   repair?: Id<Structure>
   auto_repair?: Id<Structure>
   repair_cooldown?: number
-  pick_pos?: string
   build?: Id<ConstructionSite>
 }

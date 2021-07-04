@@ -32,18 +32,19 @@ export default class CreepCorpus extends Corpus<Creep> {
     let dealt = 0
     let remaining = baseAmount
     this.object!.body.every((part) => {
-      let damage = 0
-      if (part.type !== TOUGH || !part.boost)
-        dealt += damage = Math.min(part.hits, remaining)
-      else {
-        const boostMultipler = BOOSTS.tough[part.boost].damage
-        dealt += Math.min(part.hits, remaining * boostMultipler)
-        damage = Math.min(part.hits / boostMultipler, remaining)
-      }
-      remaining -= damage
+      const hits = this.partEffectiveHits(part)
+      dealt += Math.min(part.hits, remaining * (hits / part.hits))
+      remaining -= Math.min(hits, remaining)
       return remaining > 0
     })
     return dealt + remaining
+  }
+
+  get effectiveHitsMax() {
+    const body = this.object?.body || []
+    return _.sum(body, (part) => {
+      return this.partEffectiveHitsMax(part)
+    })
   }
 
   get cost() {
@@ -90,6 +91,15 @@ export default class CreepCorpus extends Corpus<Creep> {
     if (part.type !== RANGED_ATTACK || !this.partActive(part)) return 0
     if (!part.boost) return RANGED_ATTACK_POWER
     return BOOSTS.ranged_attack[part.boost].rangedAttack * RANGED_ATTACK_POWER
+  }
+
+  private partEffectiveHits(part: Creep['body'][0], hits = part.hits) {
+    if (part.type !== TOUGH || !part.boost) return hits
+    return hits / BOOSTS.tough[part.boost].damage
+  }
+
+  private partEffectiveHitsMax(part: Creep['body'][0]) {
+    return this.partEffectiveHits(part, BODYPART_HITS)
   }
 
   private computeBodyPartHitThresholdAndCount() {

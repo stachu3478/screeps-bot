@@ -54,7 +54,7 @@ const creepCorpus = memoizeByCreep((c) => new CreepCorpus(c))
 defineCreepGetter('corpus', (self) => creepCorpus(self))
 
 Creep.prototype.isSafeFrom = function (creep: AnyCreep) {
-  return this.pos.getRangeTo(creep) > creep.corpus.safeDistance
+  return this.pos.isSafeFrom(creep)
 }
 
 Creep.prototype.safeRangeXY = function (x: number, y: number) {

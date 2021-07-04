@@ -14,6 +14,7 @@ export default function run(creep: Scout) {
     case State.INIT:
       creep.notifyWhenAttacked(false)
       creep.memory.state = State.SCOUT
+      creep.motherRoom.cache.scoutsWorking++
       break
     case State.SCOUT:
       creep.memory._arrive = creep.motherRoom.pathScanner.scanTarget
@@ -31,6 +32,7 @@ export default function run(creep: Scout) {
         creep.memory._arrive = target
         if (arrive(creep) !== NOTHING_TODO) {
           creep.memory.state = State.SCOUT
+          creep.motherRoom.cache.scoutsWorking++
         }
       }
       break

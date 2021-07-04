@@ -6,7 +6,7 @@ import recycle from 'routine/recycle'
 import remoteMining from 'config/remoteMining'
 import { maintainBuildingActively } from 'routine/work/maintainBuilding'
 import autoBuild from 'routine/work/autoBuild'
-import { NOTHING_TODO } from 'constants/response'
+import { FAILED, NOTHING_TODO } from 'constants/response'
 
 export interface Collector extends RoleCreep<Role.COLLECTOR> {
   memory: CollectorMemory
@@ -29,6 +29,13 @@ function canMarginlyReturnBack(creep: Creep, from: SourceMemory) {
     (creep.ticksToLive || 0) >
     from.cost + remoteMining.sources.haulerReturnTimeMargin
   )
+}
+
+function buildAndMaintainRoads(creep: Creep) {
+  const result = autoBuild(creep)
+  if (result === NOTHING_TODO || result === FAILED) {
+    maintainBuildingActively(creep, creep.pos, STRUCTURE_ROAD)
+  }
 }
 
 export default ProfilerPlus.instance.overrideFn(function collector(
@@ -60,6 +67,7 @@ export default ProfilerPlus.instance.overrideFn(function collector(
       } else if (!isNear) {
         move.cheap(creep, miningPosition, true, 1, 1)
       } else {
+        buildAndMaintainRoads(creep)
         if (!canReturnBack(creep, collectTarget)) {
           if (move.cheap(creep, miningPosition, false) === 0) {
             creep.suicide()
@@ -100,14 +108,10 @@ export default ProfilerPlus.instance.overrideFn(function collector(
       creep.memory.put = structureToPutIn?.id
       if (creep.memory.room !== creep.room.name) {
         creep.moveToRoom(creep.memory.room)
-        if (autoBuild(creep) === NOTHING_TODO) {
-          maintainBuildingActively(creep, creep.pos, STRUCTURE_ROAD)
-        }
+        buildAndMaintainRoads(creep)
       } else if (structureToPutIn && !creep.pos.isNearTo(structureToPutIn)) {
         move.cheap(creep, structureToPutIn, true, 1, 1)
-        if (autoBuild(creep) === NOTHING_TODO) {
-          maintainBuildingActively(creep, creep.pos, STRUCTURE_ROAD)
-        }
+        buildAndMaintainRoads(creep)
       } else if (structureToPutIn) {
         const result = creep.transfer(structureToPutIn, RESOURCE_ENERGY)
         if (result === 0) {

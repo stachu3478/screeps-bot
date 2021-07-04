@@ -188,7 +188,7 @@ interface RoomMemory {
   /**
    * Outpost defense information - room, enemy rangedAttack and heal bodyparts
    */
-  f?: [string, number, number]
+  f?: [string, number, number, number]
 }
 
 interface StableRoomMemory extends RoomMemory {

@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import RoomEnemies from 'room/military/RoomEnemies'
 import { ranger } from 'spawn/body/body'
+import remoteMining from '../../config/remoteMining'
 
 export default class RoomOutpostDefense {
   private memory: RoomMemory
@@ -16,31 +17,24 @@ export default class RoomOutpostDefense {
     const invaders = new RoomEnemies(room).find()
     const rangedAttackPower = _.sum(invaders, (i) => i.corpus.rangedAttackPower)
     const healPower = _.sum(invaders, (i) => i.corpus.healPower)
-    this.memory.f = [room.name, rangedAttackPower, healPower]
+    const hits = _.sum(invaders, (i) => i.corpus.effectiveHitsMax)
+    this.memory.f = [room.name, rangedAttackPower, healPower, hits]
   }
 
   fulfillBody() {
     if (!this.memory.f) {
       return false
     }
-    const [, rangedAttackPower, healPower] = this.memory.f
-    const allyHealParts = Math.ceil((rangedAttackPower + 1) / HEAL_POWER)
-    const allyRangedAttackParts = Math.ceil(
-      (healPower + 1) / RANGED_ATTACK_POWER,
+    const [, rangedAttackPower, healPower, hits] = this.memory.f
+    const effectiveDamageNeeded = Math.ceil(
+      hits / remoteMining.sources.maxFightTime,
     )
+    const damageNeeded = effectiveDamageNeeded + healPower
+    const allyHealParts = Math.ceil((rangedAttackPower + 1) / HEAL_POWER)
+    const allyRangedAttackParts = Math.ceil(damageNeeded / RANGED_ATTACK_POWER)
     if (allyRangedAttackParts + allyHealParts > MAX_CREEP_SIZE / 2) {
-      console.log(
-        'That big creep is not supported',
-        allyRangedAttackParts,
-        allyHealParts,
-      )
       this.cancel()
     }
-    console.log(
-      'Requesting defender with',
-      allyRangedAttackParts,
-      allyHealParts,
-    )
     return ranger(allyRangedAttackParts, allyHealParts)
   }
 

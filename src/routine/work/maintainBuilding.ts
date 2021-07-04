@@ -38,10 +38,13 @@ export function maintainBuildingActively(
   const buildingOrSite = findOrCreateBuildingOrSite(position, type)
   if (buildingOrSite instanceof ConstructionSite) {
     creep.build(buildingOrSite)
+    return true
   } else if (
     buildingOrSite instanceof Structure &&
     buildingOrSite.hits < buildingOrSite.hitsMax
   ) {
     creep.repair(buildingOrSite)
+    return true
   }
+  return false
 }

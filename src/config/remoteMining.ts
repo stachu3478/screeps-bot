@@ -10,5 +10,6 @@ export default {
     workParkOverload: 1.2,
     haulerReturnTimeMargin: 10,
     resourcePickupAmountThreshold: 50,
+    maxFightTime: 50,
   },
 }

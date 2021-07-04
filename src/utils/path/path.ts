@@ -40,6 +40,14 @@ export const isWalkable = (room: Room, x: number, y: number, me?: Creep) => {
   return !creep || creep === me
 }
 
+const isSafePos = (
+  pos: RoomPosition,
+  hostiles = Game.rooms[pos.roomName]?.findHostileCreeps(
+    (creep) => creep.corpus.armed,
+  ) || [],
+) => {
+  return hostiles.every((hostile) => pos.isSafeFrom(hostile))
+}
 const zmod = (a: number, b: number) => a - Math.floor(a / b) * b
 const move = {
   anywhere: (
@@ -126,7 +134,9 @@ const move = {
   },
   keepAwayFromHostiles: (creep: Creep) => {
     const hostiles = findTargetCreeps(creep, (creep) => creep.corpus.armed)
-    if (hostiles.every((hostile) => creep.isSafeFrom(hostile))) return true
+    if (isSafePos(creep.pos, hostiles)) {
+      return true
+    }
     const direction = pickBestDirectionFrom(
       creep,
       hostiles,
@@ -180,16 +190,24 @@ const move = {
     if (!moveMemory) return result
     const dir = move.getPathDirection(moveMemory)
     if (dir) {
-      const creepOnRoad = creep.pos.offset(dir)?.lookFor(LOOK_CREEPS)[0]
-      if (creepOnRoad)
-        result = move.handleCreepOnRoad(
-          creepOnRoad,
-          creep,
-          target,
-          options,
-          dir,
-          result,
-        )
+      const offset = creep.pos.offset(dir)
+      if (offset) {
+        const creepOnRoad = offset.lookFor(LOOK_CREEPS)[0]
+        if (creepOnRoad) {
+          result = move.handleCreepOnRoad(
+            creepOnRoad,
+            creep,
+            target,
+            options,
+            dir,
+            result,
+          )
+        }
+        if (!isSafePos(offset)) {
+          creep.cancelOrder('move')
+          delete creep.memory._move
+        }
+      }
     }
     moveMemory.t = Game.time
     return result

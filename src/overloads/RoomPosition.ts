@@ -138,4 +138,8 @@ RoomPosition.from = (lookup) => {
   }
 }
 
+RoomPosition.prototype.isSafeFrom = function (creep: AnyCreep) {
+  return this.getRangeTo(creep) > creep.corpus.safeDistance
+}
+
 ProfilerPlus.instance.overrideObject(RoomPosition, 'RoomPosition')

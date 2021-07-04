@@ -120,6 +120,7 @@ interface RoomPosition {
   eachOffset(
     callback: (pos: RoomPosition, direction: DirectionConstant) => void,
   ): void
+  isSafeFrom(creep: AnyCreep): boolean
   lookup: Lookup<RoomPosition>
   allOffsets: RoomPosition[]
   walkable: boolean

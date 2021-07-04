@@ -1,16 +1,6 @@
-import {
-  DONE,
-  NOTHING_DONE,
-  NOTHING_TODO,
-  FAILED,
-  SUCCESS,
-} from 'constants/response'
-import storageFill from 'routine/haul/storageFill'
+import { DONE, NOTHING_DONE, NOTHING_TODO, FAILED } from 'constants/response'
 import autoRepair from 'routine/work/autoRepair'
-import arrive from 'routine/arrive'
 import dismantle from 'routine/work/dismantle'
-import drawStorage from 'routine/haul/storageDraw'
-import energyHaul from 'job/energyHaul'
 import Harvester from './harvester.d'
 import draw from 'routine/haul/draw'
 import fill from 'routine/haul/fill'
@@ -69,48 +59,14 @@ export default ProfilerPlus.instance.overrideFn(function harvester(
         move.check(creep) && autoRepair(creep)
       } else creep.memory.state = State.IDLE
       break
-    case State.STORAGE_FILL:
-      switch (storageFill(creep)) {
-        case NOTHING_DONE:
-          autoRepair(creep)
-          break
-        default:
-          energyHaul(creep)
-      }
-      break
-    case State.STORAGE_DRAW:
-      switch (drawStorage(creep)) {
-        case DONE:
-        case SUCCESS:
-          creep.memory.state = State.IDLE
-          break
-        case NOTHING_TODO:
-        case FAILED:
-          energyHaul(creep)
-      }
-      break
-    case State.ARRIVE:
-      switch (arrive(creep)) {
-        case NOTHING_TODO:
-        case DONE:
-          energyHaul(creep)
-          break
-      }
-      break
-    case State.ARRIVE_HOSTILE:
-      switch (arrive(creep)) {
-        case NOTHING_TODO:
-        case DONE:
-          creep.memory.state = State.DISMANTLE
-          break
-      }
-      break
     case State.PICK:
       switch (pick(creep)) {
         case FAILED:
         case NOTHING_TODO:
         case DONE:
-          dumpResources(creep, State.FILL)
+          if (!haulCurrentRoom(creep)) {
+            dumpResources(creep, State.FILL)
+          }
       }
       break
     case State.DRAW:
@@ -118,7 +74,9 @@ export default ProfilerPlus.instance.overrideFn(function harvester(
         case FAILED:
         case NOTHING_TODO:
         case DONE:
-          dumpResources(creep, State.FILL)
+          if (!haulCurrentRoom(creep)) {
+            dumpResources(creep, State.FILL)
+          }
       }
       break
     case State.FILL:
