@@ -2,6 +2,10 @@ import { ALL_DIRECTIONS } from 'constants/support'
 import _ from 'lodash'
 import RemoteMiningPlanner from './remoteMining/RemoteMiningPlanner'
 
+function maxTowersAttackPowerAt(towers: StructureTower[], pos: RoomPosition) {
+  return _.sum(towers, (t) => t.attackPowerAt({ pos }, true))
+}
+
 export default class RoomInspector {
   private room: Room
 
@@ -50,10 +54,20 @@ export default class RoomInspector {
       info.name,
     ).disbordered()
     const towers = this.room.buildings.towers.filter((s) => s.isActive())
-    const entranceTowerDamage = _.sum(towers, (t) =>
-      t.attackPowerAt({ pos: entryPosition }, true),
-    )
+    const entranceTowerDamage = maxTowersAttackPowerAt(towers, entryPosition)
     info.entranceDamage = entranceTowerDamage
+    info.maxTowerDamage = _.max(
+      towers.map((t) => {
+        return _.max(
+          [
+            t.pos.limitedOffsetXY(TOWER_OPTIMAL_RANGE, TOWER_OPTIMAL_RANGE),
+            t.pos.limitedOffsetXY(TOWER_OPTIMAL_RANGE, -TOWER_OPTIMAL_RANGE),
+            t.pos.limitedOffsetXY(-TOWER_OPTIMAL_RANGE, TOWER_OPTIMAL_RANGE),
+            t.pos.limitedOffsetXY(-TOWER_OPTIMAL_RANGE, -TOWER_OPTIMAL_RANGE),
+          ].map((pos) => maxTowersAttackPowerAt(towers, pos)),
+        )
+      }),
+    )
     if (info.safe === false) return false
     return info.entranceDamage === 0
   }

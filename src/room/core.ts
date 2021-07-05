@@ -68,8 +68,8 @@ export default ProfilerPlus.instance.overrideFn(function run(
   let shouldAttack = false
   let towersProcessed = false
   const towers = room.buildings.towers
-  if (enemyPicker.any) {
-    cache.enemy = enemyPicker.enemy!
+  if (enemyPicker.enemy) {
+    cache.enemy = enemyPicker.enemy
     const canDeal = enemyPicker.dealt > 0
     shouldAttack = room.defencePolicy.shouldAttack(canDeal)
     needFighters = enemyPicker.maxDealable <= 0

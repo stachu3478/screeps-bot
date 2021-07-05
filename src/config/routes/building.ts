@@ -20,7 +20,10 @@ export const findStorageAndTerminal = (room: Room) =>
 const exclusive = (structure: Structure) =>
   structure.structureType !== STRUCTURE_RAMPART &&
   (structure.structureType !== STRUCTURE_SPAWN ||
-    structure.room.buildings.spawns.length > 1)
+    structure.room.buildings.spawns.length > 1) &&
+  (structure.structureType !== STRUCTURE_STORAGE ||
+    !!structure.room.terminal) &&
+  (structure.structureType !== STRUCTURE_TERMINAL || !!structure.room.storage)
 export default [
   // most important spawn
   {

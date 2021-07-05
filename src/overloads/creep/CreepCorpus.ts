@@ -33,10 +33,14 @@ export default class CreepCorpus extends Corpus<Creep> {
     let remaining = baseAmount
     this.object!.body.every((part) => {
       const hits = this.partEffectiveHits(part)
-      dealt += Math.min(part.hits, remaining * (hits / part.hits))
+      if (!hits) {
+        return true
+      }
+      dealt += Math.min(part.hits, remaining * (part.hits / hits))
       remaining -= Math.min(hits, remaining)
       return remaining > 0
     })
+    dealt = dealt || 0
     return dealt + remaining
   }
 

@@ -119,6 +119,7 @@ interface RoomNeighbourPath {
   controllerFortified?: boolean
   safe?: boolean
   entranceDamage?: number
+  maxTowerDamage?: number
   deposits: DepositTraits[]
 }
 

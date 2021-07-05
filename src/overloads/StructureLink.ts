@@ -1,5 +1,6 @@
 import link from 'config/link'
 import defineGetter from 'utils/defineGetter'
+import { memoizeBy } from './memoize'
 
 function defineLinkGetter<T extends keyof StructureLink>(
   property: T,
@@ -12,28 +13,19 @@ function defineLinkGetter<T extends keyof StructureLink>(
   )
 }
 
-defineLinkGetter('cache', (self) => {
-  const cache = global.Cache.links
-  if (cache[self.id]) return cache[self.id]
-  const newCache = {
-    isCollector: false,
-    isDrain: false,
-  }
-  link.find((r) => {
-    const links = r.links(self.room)
-    const found = links.find((l) => l.id === self.id)
-    if (!found) return
-    if (r.mode === 'both') {
-      newCache.isCollector = true
-      newCache.isDrain = true
-      return true
-    }
-    if (r.mode === 'drain') newCache.isDrain = true
-    if (r.mode === 'collect') newCache.isCollector = true
-    return false
+const linkIsFor = (mode: string) => (self: _HasId) => {
+  return link.some((r) => {
+    const room = Game.structures[self.id].room
+    return (
+      r.links(room).some((l) => l.id === self.id) &&
+      (r.mode === 'both' || r.mode === mode)
+    )
   })
-  return (cache[self.id] = newCache)
-})
+}
+const linkIsDrain = memoizeBy(linkIsFor('drain'))
+defineLinkGetter('isDrain', (self) => linkIsDrain(self))
+const linkIsCollector = memoizeBy(linkIsFor('collector'))
+defineLinkGetter('isCollector', (self) => linkIsCollector(self))
 
 StructureLink.prototype.onTransfer = function (amount: number) {
   const stored = this.store[RESOURCE_ENERGY] + amount

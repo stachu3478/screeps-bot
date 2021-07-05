@@ -22,14 +22,14 @@ export default class RoomPathScanner {
   }
 
   // to do move mothod to other class
-  getEntryDamage(roomName: string) {
+  getMaxDamage(roomName: string) {
     let info = this.infos[roomName]
-    if (!info || _.isUndefined(info.entranceDamage)) return
-    let dmg = info.entranceDamage || 0
+    if (!info || _.isUndefined(info.maxTowerDamage)) return
+    let dmg = info.maxTowerDamage || 0
     while (this.room.name !== info.through) {
       info = this.infos[info.through]
       if (!info) return
-      dmg = Math.max(info.entranceDamage || 0, dmg)
+      dmg = Math.max(info.maxTowerDamage || 0, dmg)
     }
     return dmg
   }

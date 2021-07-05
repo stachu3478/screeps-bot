@@ -25,7 +25,9 @@ export default class RoomEnemies {
 
   private isEnemy(creep: AnyCreep) {
     const username = creep.owner.username
-    if (this.enemies.isEnemy(username)) return true
+    if (this.enemies.isEnemy(username)) {
+      return true
+    }
     const tolerance = enemies.allies[username] || 0
     const harmfulParts = this.getHarmfulBodypartCount(creep)
     const passes = harmfulParts <= tolerance

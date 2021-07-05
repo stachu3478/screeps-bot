@@ -1,8 +1,9 @@
 import _ from 'lodash'
 import sinon from 'sinon'
-import boostData from '../mock/boostData'
-import { expect } from '../../expect'
+
 import BoostManager from 'overloads/room/BoostManager'
+import { expect } from '../../expect'
+import boostData from '../mock/boostData'
 
 describe('Getting best option for boosting action', () => {
   let room: Room
@@ -24,12 +25,13 @@ describe('Getting best option for boosting action', () => {
         [RESOURCE_CATALYZED_GHODIUM_ACID]: 0,
       },
     } as StructureTerminal
+    lab = {} as StructureLab
     room.externalLabs = [lab]
     sinon.restore()
   })
 
   describe('no terminal', () => {
-    it('should return null', function () {
+    it('returns null', () => {
       delete room.terminal
       expect(
         room.boosts.getBestAvailable('work', 'upgradeController', 10),
@@ -38,7 +40,7 @@ describe('Getting best option for boosting action', () => {
   })
 
   describe('no external labs', () => {
-    it('should return null', function () {
+    it('returns null', () => {
       room.externalLabs = []
       expect(
         room.boosts.getBestAvailable('work', 'upgradeController', 10),
@@ -47,7 +49,7 @@ describe('Getting best option for boosting action', () => {
   })
 
   describe('no resource in terminal', () => {
-    it('should return null', function () {
+    it('returns null', () => {
       room.terminal = room.terminal || ({} as StructureTerminal)
       room.terminal.store[RESOURCE_GHODIUM_HYDRIDE] = 0
       expect(
@@ -57,53 +59,66 @@ describe('Getting best option for boosting action', () => {
   })
 
   describe('only weakiest resource in terminal', () => {
-    it('should return the weakiest resource', function () {
+    it('returns the weakiest resource', () => {
       expect(
         room.boosts.getBestAvailable('work', 'upgradeController', 10),
       ).to.eql({
-        resource: RESOURCE_GHODIUM_HYDRIDE,
         partCount: 300 / LAB_BOOST_MINERAL,
+        resource: RESOURCE_GHODIUM_HYDRIDE,
       })
     })
   })
 
   describe('more resources in terminal', () => {
-    it('should return the better resource', function () {
+    it('returns the better resource', () => {
       room.terminal = room.terminal || ({} as StructureTerminal)
       room.terminal.store[RESOURCE_GHODIUM_ACID] = 300
       expect(
         room.boosts.getBestAvailable('work', 'upgradeController', 10),
       ).to.eql({
-        resource: RESOURCE_GHODIUM_ACID,
         partCount: 300 / LAB_BOOST_MINERAL,
+        resource: RESOURCE_GHODIUM_ACID,
       })
     })
   })
 
   describe('more amounts not needed', () => {
-    it('should respect better resource', function () {
+    it('respects better resource', () => {
       room.terminal = room.terminal || ({} as StructureTerminal)
       room.terminal.store[RESOURCE_GHODIUM_HYDRIDE] = 3000
       room.terminal.store[RESOURCE_GHODIUM_ACID] = 300
       expect(
         room.boosts.getBestAvailable('work', 'upgradeController', 10),
       ).to.eql({
-        resource: RESOURCE_GHODIUM_ACID,
         partCount: 300 / LAB_BOOST_MINERAL,
+        resource: RESOURCE_GHODIUM_ACID,
       })
     })
   })
 
   describe('more amounts needed', () => {
-    it('should respect better amount', function () {
+    it('respects better amount', () => {
       room.terminal = room.terminal || ({} as StructureTerminal)
       room.terminal.store[RESOURCE_GHODIUM_HYDRIDE] = 3000
       room.terminal.store[RESOURCE_GHODIUM_ACID] = 300
       expect(
         room.boosts.getBestAvailable('work', 'upgradeController', 100),
       ).to.eql({
-        resource: RESOURCE_GHODIUM_HYDRIDE,
         partCount: 3000 / LAB_BOOST_MINERAL,
+        resource: RESOURCE_GHODIUM_HYDRIDE,
+      })
+    })
+  })
+
+  describe('less amount available', () => {
+    it('requests lower amount', () => {
+      room.terminal = room.terminal || ({} as StructureTerminal)
+      room.terminal.store[RESOURCE_GHODIUM_ACID] = 300
+      expect(
+        room.boosts.getBestAvailable('work', 'upgradeController', 100),
+      ).to.eql({
+        partCount: 300 / LAB_BOOST_MINERAL,
+        resource: RESOURCE_GHODIUM_ACID,
       })
     })
   })

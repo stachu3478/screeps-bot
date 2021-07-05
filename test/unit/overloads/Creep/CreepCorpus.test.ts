@@ -2,6 +2,7 @@ import '../../constants'
 import '../../../../src/overloads/all'
 import { expect } from '../../../expect'
 import CreepCorpus from 'overloads/creep/CreepCorpus'
+import { SOURCE_KEEPER_USERNAME } from 'constants/support'
 
 describe('CreepCorpus', () => {
   let creep: Creep
@@ -9,7 +10,7 @@ describe('CreepCorpus', () => {
   beforeEach(() => {
     // @ts-ignore : allow adding Game to global
     global.Game = _.clone(Game)
-    creep = { name: 'test' } as Creep
+    creep = { name: 'test', owner: { username: 'test' } } as Creep
     Game.getObjectById = () => creep
   })
 
@@ -179,6 +180,23 @@ describe('CreepCorpus', () => {
 
       it('returns 5', () => {
         expect(corpus.safeDistance).to.eq(5)
+      })
+    })
+
+    context('when is source keeper', () => {
+      beforeEach(() => {
+        creep.body = [
+          { type: RANGED_ATTACK, hits: 1 },
+          { type: CARRY, hits: 100 },
+          { type: MOVE, hits: 100 },
+        ]
+        creep.hits = 201
+        corpus = new CreepCorpus(creep)
+        creep.owner.username = SOURCE_KEEPER_USERNAME
+      })
+
+      it('returns 3', () => {
+        expect(corpus.safeDistance).to.eq(3)
       })
     })
   })

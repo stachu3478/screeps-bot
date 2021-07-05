@@ -47,17 +47,9 @@ interface FactoryCache {
   producing?: CommodityConstant
 }
 
-interface LinkCache {
-  isDrain: boolean
-  isCollector: boolean
-}
-
 interface GlobalCache {
   spawns: {
     [key: string]: SpawnCache
-  }
-  links: {
-    [key: string]: LinkCache
   }
 
   ownedRooms?: number

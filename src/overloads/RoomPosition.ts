@@ -142,4 +142,10 @@ RoomPosition.prototype.isSafeFrom = function (creep: AnyCreep) {
   return this.getRangeTo(creep) > creep.corpus.safeDistance
 }
 
+RoomPosition.prototype.limitedOffsetXY = function (x, y) {
+  const newX = Math.min(Math.max(this.x + x, 0), 49)
+  const newY = Math.min(Math.max(this.y + y, 0), 49)
+  return new RoomPosition(newX, newY, this.roomName)
+}
+
 ProfilerPlus.instance.overrideObject(RoomPosition, 'RoomPosition')

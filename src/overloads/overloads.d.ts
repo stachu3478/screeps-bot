@@ -104,6 +104,7 @@ interface RoomPositionConstructor {
 type Lookup<T> = string & Tag.OpaqueTag<T>
 interface RoomPosition {
   offset: (direction: DirectionConstant) => RoomPosition | undefined
+  limitedOffsetXY: (x: number, y: number) => RoomPosition
   rangeXY: (x: number, y: number) => number
   range: (pos: RoomPosition) => number
   rangeTo: (obj: _HasRoomPosition) => number
@@ -169,7 +170,8 @@ interface StructureNuker {
 }
 
 interface StructureLink {
-  cache: LinkCache
+  isCollector: boolean
+  isDrain: boolean
 }
 
 interface Tombstone {
